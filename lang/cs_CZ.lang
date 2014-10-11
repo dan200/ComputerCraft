@@ -14,7 +14,7 @@ tile.computercraft:advanced_computer.name=Pokročilý počítač
 # Peripherals
 ###############
 
-tile.computercraft:drive.name=Pevná disk
+tile.computercraft:drive.name=Pevný disk
 tile.computercraft:printer.name=Tiskárna
 tile.computercraft:monitor.name=Monitor
 tile.computercraft:advanced_monitor.name=Pokročilý monitor
