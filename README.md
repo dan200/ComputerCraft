@@ -1,4 +1,4 @@
 ComputerCraft
 =============
 
-Issue tracker for ComputerCraft - http://www.computercraft.info
+API, Localization Repository, Issue and Bug tracker for ComputerCraft - http://www.computercraft.info
