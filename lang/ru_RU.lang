@@ -1,0 +1,82 @@
+﻿#################
+# Tiles
+#################
+
+
+###############
+# Computers
+###############
+
+tile.computercraft:computer.name=Компютер
+tile.computercraft:advanced_computer.name=Продвинутый Компютер
+
+###############
+# Peripherals
+###############
+
+tile.computercraft:drive.name=Дисковод
+tile.computercraft:printer.name=Принтер
+tile.computercraft:monitor.name=Монитор
+tile.computercraft:advanced_monitor.name=Тач-Скрин
+tile.computercraft:wireless_modem.name=Беспроводной Модем
+tile.computercraft:wired_modem.name=Проводной Модем
+tile.computercraft:cable.name=Сетевой Кабель
+
+###############
+# Turtles
+###############
+
+tile.computercraft:turtle.name=Черепаха
+tile.computercraft:turtle.upgraded.name=%s черепаха
+tile.computercraft:turtle.upgraded_twice.name=%s %s черепаха
+tile.computercraft:advanced_turtle.name=Умная Черепаха
+tile.computercraft:advanced_turtle.upgraded.name=Умная %s черепаха
+tile.computercraft:advanced_turtle.upgraded_twice.name=Умная %s %s черепаха
+
+
+#################
+# Items
+#################
+
+###############
+# Floppy Disk
+###############
+
+item.computercraft:disk.name=Дискета
+item.computercraft:treasure_disk.name=Дискета
+
+###############
+# Printed Items
+###############
+
+item.computercraft:page.name=Отпечатанная страница
+item.computercraft:pages.name=Отпечатанные страницы
+item.computercraft:book.name=Отпечатанная книга
+
+###############
+# PDAs
+###############
+
+item.computercraft:pocket_computer.name=Цифровой помошник
+item.computercraft:pocket_computer.upgraded.name=%s Цифровой помошник
+item.computercraft:advanced_pocket_computer.name=Планшет
+item.computercraft:advanced_pocket_computer.upgraded.name=%s планшет
+
+#################
+# Upgrades
+#################
+
+upgrade.minecraft:diamond_sword.adjective=атакующая
+upgrade.minecraft:diamond_shovel.adjective=копающая
+upgrade.minecraft:diamond_pickaxe.adjective=добывающая
+upgrade.minecraft:diamond_axe.adjective=рубящая
+upgrade.minecraft:diamond_hoe.adjective=пашущая
+upgrade.computercraft:wireless_modem.adjective=беспроводная
+upgrade.minecraft:crafting_table.adjective=создающая
+
+#################
+# GUI's
+#################
+
+gui.computercraft:wired_modem.peripheral_connected=Переферия "%s" подключена
+gui.computercraft:wired_modem.peripheral_disconnected=Переферия "%s" отключена
