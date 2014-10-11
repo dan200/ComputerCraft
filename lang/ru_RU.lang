@@ -8,7 +8,7 @@
 ###############
 
 tile.computercraft:computer.name=Компютер
-tile.computercraft:advanced_computer.name=Продвинутый Компютер
+tile.computercraft:advanced_computer.name=Продвинутый компютер
 
 ###############
 # Peripherals
@@ -17,10 +17,10 @@ tile.computercraft:advanced_computer.name=Продвинутый Компюте�
 tile.computercraft:drive.name=Дисковод
 tile.computercraft:printer.name=Принтер
 tile.computercraft:monitor.name=Монитор
-tile.computercraft:advanced_monitor.name=Тач-Скрин
-tile.computercraft:wireless_modem.name=Беспроводной Модем
-tile.computercraft:wired_modem.name=Проводной Модем
-tile.computercraft:cable.name=Сетевой Кабель
+tile.computercraft:advanced_monitor.name=Тач-скрин
+tile.computercraft:wireless_modem.name=Беспроводной модем
+tile.computercraft:wired_modem.name=Проводной модем
+tile.computercraft:cable.name=Сетевой кабель
 
 ###############
 # Turtles
