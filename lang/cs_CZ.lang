@@ -69,8 +69,8 @@ item.computercraft:advanced_pocket_computer.upgraded.name=Pokročilý %s kapesn�
 upgrade.minecraft:diamond_sword.adjective=Zabíjecí
 upgrade.minecraft:diamond_shovel.adjective=Kopací
 upgrade.minecraft:diamond_pickaxe.adjective=Těžící
-upgrade.minecraft:diamond_axe.adjective=Felling
-upgrade.minecraft:diamond_hoe.adjective=Farming
+upgrade.minecraft:diamond_axe.adjective=Kácecí
+upgrade.minecraft:diamond_hoe.adjective=Zemědělská
 upgrade.computercraft:wireless_modem.adjective=Bezdrátová
 upgrade.minecraft:crafting_table.adjective=Kraftící
 
