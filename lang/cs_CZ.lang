@@ -78,5 +78,5 @@ upgrade.minecraft:crafting_table.adjective=Kraftící
 # GUI's
 #################
 
-gui.computercraft:wired_modem.peripheral_connected=Peripheral "%s" připojen k síťi
-gui.computercraft:wired_modem.peripheral_disconnected=Peripheral "%s" odpojen ze síťe
+gui.computercraft:wired_modem.peripheral_connected=Zařízení "%s" připojeno k síťi
+gui.computercraft:wired_modem.peripheral_disconnected=Zařízení "%s" odpojeno ze síťe
