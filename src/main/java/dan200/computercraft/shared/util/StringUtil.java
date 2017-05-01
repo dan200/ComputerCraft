@@ -1,20 +1,20 @@
 package dan200.computercraft.shared.util;
 
-import java.util.regex.Pattern;
-
 public class StringUtil
 {
-    private static final Pattern INVALID_PATTERN = Pattern.compile( "[^ -~]" );
-
     public static String normaliseLabel( String label )
     {
-        label = INVALID_PATTERN.matcher( label ).replaceAll( "" );
+        StringBuilder builder = new StringBuilder();
 
-        if( label.length() > 32 )
+        for (int i = 0; i < label.length() && builder.length() < 32; i++)
         {
-            label = label.substring( 0, 32 );
+            char c = label.charAt( i );
+            if( (c >= ' ' && c <= '~') || (c >= 161 && c <= 172) || (c >= 174 && c <= 255) )
+            {
+                builder.append( c );
+            }
         }
 
-        return label;
+        return builder.toString();
     }
 }
