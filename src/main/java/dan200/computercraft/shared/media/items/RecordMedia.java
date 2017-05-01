@@ -13,6 +13,7 @@ import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 // An implementation of IMedia for ItemRecord's
 public class RecordMedia implements IMedia
@@ -43,7 +44,7 @@ public class RecordMedia implements IMedia
     public SoundEvent getAudio( ItemStack stack )
     {
         ItemRecord itemRecord = (ItemRecord)stack.getItem();
-        return itemRecord.getSound();
+        return ObfuscationReflectionHelper.getPrivateValue(ItemRecord.class, itemRecord, "field_185076_b");
     }
     
     @Override

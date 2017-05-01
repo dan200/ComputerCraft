@@ -8,19 +8,19 @@ package dan200.computercraft.shared.media.inventory;
 
 import dan200.computercraft.shared.util.InventoryUtil;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 
 public class ContainerHeldItem extends Container
 {
     private final ItemStack m_stack;
-    private final int m_slot;
+    private final EnumHand m_hand;
 
-    public ContainerHeldItem( InventoryPlayer player )
+    public ContainerHeldItem( EntityPlayer player, EnumHand hand )
     {
-        m_slot = player.currentItem;
-        m_stack = InventoryUtil.copyItem( player.getStackInSlot( m_slot ) );
+        m_hand = hand;
+        m_stack = InventoryUtil.copyItem( player.getHeldItem( hand ) );
     }
 
     public ItemStack getStack()
@@ -33,7 +33,7 @@ public class ContainerHeldItem extends Container
     {
         if( player != null && player.isEntityAlive() )
         {
-            ItemStack stack = player.inventory.getStackInSlot( m_slot );
+            ItemStack stack = player.getHeldItem( m_hand );
             if( (stack == m_stack) || (stack != null && m_stack != null && stack.getItem() == m_stack.getItem()) )
             {
                 return true;

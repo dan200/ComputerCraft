@@ -20,11 +20,11 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class ItemPrintout extends Item
-{    
+{
     public static final int LINES_PER_PAGE = 21;
     public static final int LINE_MAX_LENGTH = 25;
     public static final int MAX_PAGES = 16;
-    
+
     public enum Type
     {
         Single,
@@ -39,7 +39,7 @@ public class ItemPrintout extends Item
         setUnlocalizedName( "computercraft:page" );
         setCreativeTab( ComputerCraft.mainCreativeTab );
     }
-    
+
     @Override
     public void getSubItems( Item itemID, CreativeTabs tabs, List list )
     {
@@ -47,7 +47,7 @@ public class ItemPrintout extends Item
         list.add( createMultipleFromTitleAndText( null, new String[ 2*LINES_PER_PAGE ], new String[ 2*LINES_PER_PAGE ] ) );
         list.add( createBookFromTitleAndText( null, new String[ 2*LINES_PER_PAGE ], new String[ 2*LINES_PER_PAGE ] ) );
     }
-    
+
     @Override
     public void addInformation( ItemStack itemstack, EntityPlayer par2EntityPlayer, List list, boolean flag )
     {
@@ -57,7 +57,7 @@ public class ItemPrintout extends Item
             list.add( title );
         }
     }
-    
+
     @Override
     public String getUnlocalizedName( ItemStack stack )
     {
@@ -79,18 +79,17 @@ public class ItemPrintout extends Item
             }
         }
     }
-    
+
     @Override
     public ActionResult<ItemStack> onItemRightClick( ItemStack stack, World world, EntityPlayer player, EnumHand hand )
     {
         if( !world.isRemote )
         {
-            ComputerCraft.openPrintoutGUI( player );
-            return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
+            ComputerCraft.openPrintoutGUI( player, hand );
         }
-        return new ActionResult<ItemStack>( EnumActionResult.PASS, stack );
+        return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
     }
-    
+
     private static ItemStack createFromTitleAndText( Type type, String title, String[] text, String[] colours )
     {
         // Calculate damage
@@ -150,12 +149,12 @@ public class ItemPrintout extends Item
         // Return stack
         return stack;
     }
-    
+
     public static ItemStack createSingleFromTitleAndText( String title, String[] text, String[] colours )
     {
         return createFromTitleAndText( Type.Single, title, text, colours );
     }
-    
+
     public static ItemStack createMultipleFromTitleAndText( String title, String[] text, String[] colours )
     {
         return createFromTitleAndText( Type.Multiple, title, text, colours );
@@ -196,7 +195,7 @@ public class ItemPrintout extends Item
         }
         return null;
     }
-    
+
     public static int getPageCount( ItemStack stack )
     {
         NBTTagCompound nbt = stack.getTagCompound();
@@ -206,7 +205,7 @@ public class ItemPrintout extends Item
         }
         return 1;
     }
-    
+
     public static String[] getText( ItemStack stack )
     {
         NBTTagCompound nbt = stack.getTagCompound();
@@ -224,8 +223,8 @@ public class ItemPrintout extends Item
             }
         }
         return lines;
-    }    
-    
+    }
+
     public static String[] getColours( ItemStack stack )
     {
         NBTTagCompound nbt = stack.getTagCompound();

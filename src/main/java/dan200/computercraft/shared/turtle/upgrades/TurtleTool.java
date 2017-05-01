@@ -281,8 +281,7 @@ public class TurtleTool implements ITurtleUpgrade
 
             // Destroy the block
             IBlockState previousState = world.getBlockState( newPosition );
-            Block previousBlock = previousState.getBlock();
-            world.playSound( null, newPosition, previousBlock.getSoundType().getBreakSound(), SoundCategory.BLOCKS, (previousBlock.getSoundType().getVolume() + 1.0F) / 2.0F, previousBlock.getSoundType().getPitch() * 0.8F );
+			world.playEvent(2001, newPosition, Block.getStateId(previousState));
             world.setBlockToAir( newPosition );
 
             // Remember the previous block
