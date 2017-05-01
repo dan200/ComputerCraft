@@ -242,6 +242,10 @@ public class ComputerCraft
         prop.setComment( "The disk space limit for floppy disks, in bytes" );
         floppySpaceLimit = prop.getInt();
 
+        prop = config.get(Configuration.CATEGORY_GENERAL, "maximumFilesOpen", maximumFilesOpen);
+        prop.setComment( "How many files a computer can have open at the same time" );
+        maximumFilesOpen = prop.getInt();
+
         prop = config.get(Configuration.CATEGORY_GENERAL, "turtlesNeedFuel", turtlesNeedFuel);
         prop.setComment( "Set whether Turtles require fuel to move" );
         turtlesNeedFuel = prop.getBoolean( turtlesNeedFuel );

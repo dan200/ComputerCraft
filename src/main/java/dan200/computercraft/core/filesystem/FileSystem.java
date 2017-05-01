@@ -6,6 +6,7 @@
 
 package dan200.computercraft.core.filesystem;
 
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 
@@ -654,7 +655,7 @@ public class FileSystem
     {
         synchronized( m_openFiles )
         {
-            if( m_openFiles.size() >= 4 )
+            if( m_openFiles.size() >= ComputerCraft.maximumFilesOpen )
             {
                 throw new FileSystemException("Too many files already open");
             }
