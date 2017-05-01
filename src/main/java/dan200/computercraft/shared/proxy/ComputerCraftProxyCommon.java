@@ -15,7 +15,6 @@ import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
 import dan200.computercraft.shared.computer.blocks.BlockComputer;
 import dan200.computercraft.shared.computer.blocks.TileCommandComputer;
 import dan200.computercraft.shared.computer.blocks.TileComputer;
-import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.inventory.ContainerComputer;
@@ -63,16 +62,15 @@ import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -127,8 +125,9 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         Item item = recordStack.getItem();
         if( item instanceof ItemRecord )
         {
-            ItemRecord record = (ItemRecord)item;
-            return record.getRecordNameLocal();
+            ItemRecord record = (ItemRecord) item;
+            String key = ObfuscationReflectionHelper.getPrivateValue( ItemRecord.class, record, "field_185077_c" );
+            return I18n.translateToLocal( key );
         }
         return null;
     }
