@@ -65,9 +65,11 @@ public abstract class TileGeneric extends TileEntity
 
     public final void updateBlock()
     {
+        markDirty();
         BlockPos pos = getPos();
+        IBlockState state = worldObj.getBlockState( pos );
         worldObj.markBlockRangeForRenderUpdate( pos, pos );
-        worldObj.markChunkDirty( pos, this );
+        worldObj.notifyBlockUpdate( getPos(), state, state, 3 );
     }
 
     protected final void setBlockState( IBlockState newState )
@@ -207,5 +209,20 @@ public abstract class TileGeneric extends TileEntity
                 break;
             }
         }
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag ()
+    {
+        NBTTagCompound tag = super.getUpdateTag();
+        writeDescription( tag );
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag (NBTTagCompound tag)
+    {
+        super.handleUpdateTag(tag);
+        readDescription( tag );
     }
 }
