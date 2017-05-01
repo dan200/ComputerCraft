@@ -30,6 +30,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.*;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
@@ -135,7 +137,7 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public void getDroppedItems( List<ItemStack> drops, int fortune, boolean creative, boolean silkTouch )
+    public void getDroppedItems( List<ItemStack> drops, boolean creative )
     {
         IComputer computer = getComputer();
         if( !creative || (computer != null && computer.getLabel() != null) )
@@ -157,10 +159,10 @@ public class TileTurtle extends TileComputerBase
         requestTileEntityUpdate();
 
         // Apply dye
-        ItemStack currentItem = player.getCurrentEquippedItem();
+        ItemStack currentItem = player.getHeldItem( EnumHand.MAIN_HAND );
         if( currentItem != null )
         {
-            if( currentItem.getItem() == Items.dye )
+            if( currentItem.getItem() == Items.DYE )
             {
                 // Dye to change turtle colour
                 if( !worldObj.isRemote )
@@ -177,7 +179,7 @@ public class TileTurtle extends TileComputerBase
                 }
                 return true;
             }
-            else if( currentItem.getItem() == Items.water_bucket && m_brain.getDyeColour() != -1 )
+            else if( currentItem.getItem() == Items.WATER_BUCKET && m_brain.getDyeColour() != -1 )
             {
                 // Water to remove turtle colour
                 if( !worldObj.isRemote )
@@ -187,7 +189,7 @@ public class TileTurtle extends TileComputerBase
                         m_brain.setDyeColour( -1 );
                         if( !player.capabilities.isCreativeMode )
                         {
-                            currentItem.setItem( Items.bucket );
+                            currentItem.setItem( Items.BUCKET );
                         }
                     }
                 }
@@ -237,7 +239,7 @@ public class TileTurtle extends TileComputerBase
     @Override
     public AxisAlignedBB getBounds()
     {
-        Vec3 offset = getRenderOffset( 1.0f );
+        Vec3d offset = getRenderOffset( 1.0f );
         return new AxisAlignedBB(
             offset.xCoord + 0.125, offset.yCoord + 0.125, offset.zCoord + 0.125,
             offset.xCoord + 0.875, offset.yCoord + 0.875, offset.zCoord + 0.875
@@ -299,9 +301,9 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public void writeToNBT( NBTTagCompound nbttagcompound )
+    public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
-        super.writeToNBT( nbttagcompound );
+        nbttagcompound = super.writeToNBT( nbttagcompound );
 
         // Write inventory
         NBTTagList nbttaglist = new NBTTagList();
@@ -318,7 +320,9 @@ public class TileTurtle extends TileComputerBase
         nbttagcompound.setTag( "Items", nbttaglist );
 
         // Write brain
-        m_brain.writeToNBT( nbttagcompound );
+        nbttagcompound = m_brain.writeToNBT( nbttagcompound );
+
+        return nbttagcompound;
     }
 
     @Override
@@ -379,7 +383,7 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public Vec3 getRenderOffset( float f )
+    public Vec3d getRenderOffset( float f )
     {
         return m_brain.getRenderOffset( f );
     }
@@ -524,15 +528,15 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
         if( hasCustomName() )
         {
-            return new ChatComponentText( getName() );
+            return new TextComponentString( getName() );
         }
         else
         {
-            return new ChatComponentTranslation( getName() );
+            return new TextComponentTranslation( getName() );
         }
     }
 

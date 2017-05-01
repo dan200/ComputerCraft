@@ -6,7 +6,7 @@
 
 package dan200.computercraft.shared.peripheral.modem;
 
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -61,7 +61,7 @@ public class WirelessNetwork implements INetwork
 	}
 	
 	@Override
-	public synchronized void transmit( int channel, int replyChannel, Object payload, World world, Vec3 pos, double range, boolean interdimensional, Object senderObject )
+	public synchronized void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
 	{
 		Set<IReceiver> receivers = m_receivers.get( channel );
 		if( receivers != null )
@@ -75,11 +75,11 @@ public class WirelessNetwork implements INetwork
 		}
 	}
 		
-	private void tryTransmit( IReceiver receiver, int replyChannel, Object payload, World world, Vec3 pos, double range, boolean interdimensional, Object senderObject )
+	private void tryTransmit( IReceiver receiver, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
 	{
         if( receiver.getWorld() == world )
         {
-            Vec3 position = receiver.getWorldPosition();
+            Vec3d position = receiver.getWorldPosition();
             double receiveRange = Math.max( range, receiver.getReceiveRange() ); // Ensure range is symmetrical
             double distanceSq = position.squareDistanceTo( pos );
             if( interdimensional || receiver.isInterdimensional() || distanceSq <= ( receiveRange * receiveRange ) )

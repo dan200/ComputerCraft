@@ -13,7 +13,7 @@ import dan200.computercraft.shared.common.IDirectionalTile;
 import dan200.computercraft.shared.computer.blocks.IComputerTile;
 import dan200.computercraft.shared.util.Colour;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 public interface ITurtleTile extends IComputerTile, IDirectionalTile
 {
@@ -22,7 +22,7 @@ public interface ITurtleTile extends IComputerTile, IDirectionalTile
     public ITurtleUpgrade getUpgrade( TurtleSide side );
     public ITurtleAccess getAccess();
 
-    public Vec3 getRenderOffset( float f );
+    public Vec3d getRenderOffset( float f );
     public float getRenderYaw( float f );
     public float getToolRenderAngle( TurtleSide side, float f );
 }

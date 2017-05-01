@@ -18,7 +18,8 @@ import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -26,6 +27,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
@@ -132,8 +134,9 @@ public class TurtleTool implements ITurtleUpgrade
 
     protected boolean canBreakBlock( World world, BlockPos pos )
 	{
-		Block block = world.getBlockState( pos ).getBlock();
-		if( block.isAir( world, pos ) || block == Blocks.bedrock || block.getBlockHardness( world, pos ) <= -1.0F )
+        IBlockState state = world.getBlockState( pos );
+		Block block = state.getBlock();
+		if( block.isAir( state, world, pos ) || block == Blocks.BEDROCK || block.getBlockHardness( state, world, pos ) <= -1.0F )
 		{
 			return false;
 		}
@@ -161,10 +164,10 @@ public class TurtleTool implements ITurtleUpgrade
         final TurtlePlayer turtlePlayer = TurtlePlaceCommand.createPlayer( turtle, position, direction );
 
         // See if there is an entity present
-        Vec3 turtlePos = new Vec3( turtlePlayer.posX, turtlePlayer.posY, turtlePlayer.posZ );
-        Vec3 rayDir = turtlePlayer.getLook( 1.0f );
-        Vec3 rayStart = turtlePos;
-        Pair<Entity, Vec3> hit = WorldUtil.rayTraceEntities( world, rayStart, rayDir, 1.5 );
+        Vec3d turtlePos = new Vec3d( turtlePlayer.posX, turtlePlayer.posY, turtlePlayer.posZ );
+        Vec3d rayDir = turtlePlayer.getLook( 1.0f );
+        Vec3d rayStart = turtlePos;
+        Pair<Entity, Vec3d> hit = WorldUtil.rayTraceEntities( world, rayStart, rayDir, 1.5 );
         if( hit != null )
         {
             // Load up the turtle's inventory
@@ -188,9 +191,9 @@ public class TurtleTool implements ITurtleUpgrade
 
             // Place on the entity
             boolean placed = false;
-            if( hitEntity.canAttackWithItem() && !hitEntity.hitByEntity( turtlePlayer ) )
+            if( hitEntity.canBeAttackedWithItem() && !hitEntity.hitByEntity( turtlePlayer ) )
             {
-                float damage = (float)turtlePlayer.getEntityAttribute( SharedMonsterAttributes.attackDamage ).getAttributeValue();
+                float damage = (float)turtlePlayer.getEntityAttribute( SharedMonsterAttributes.ATTACK_DAMAGE ).getAttributeValue();
                 damage *= getDamageMultiplier();
                 if( damage > 0.0f )
                 {
@@ -277,16 +280,13 @@ public class TurtleTool implements ITurtleUpgrade
             }
 
             // Destroy the block
-            Block previousBlock = world.getBlockState( newPosition ).getBlock();
             IBlockState previousState = world.getBlockState( newPosition );
-            if( previousBlock != null )
-            {
-                world.playSoundEffect( newPosition.getX() + 0.5, newPosition.getY() + 0.5, newPosition.getZ() + 0.5, previousBlock.stepSound.getBreakSound(), (previousBlock.stepSound.getVolume() + 1.0F) / 2.0F, previousBlock.stepSound.getFrequency() * 0.8F);
-            }
+            Block previousBlock = previousState.getBlock();
+            world.playSound( null, newPosition, previousBlock.getSoundType().getBreakSound(), SoundCategory.BLOCKS, (previousBlock.getSoundType().getVolume() + 1.0F) / 2.0F, previousBlock.getSoundType().getPitch() * 0.8F );
             world.setBlockToAir( newPosition );
 
             // Remember the previous block
-            if( turtle instanceof TurtleBrain && previousBlock != null )
+            if( turtle instanceof TurtleBrain )
             {
                 TurtleBrain brain = (TurtleBrain)turtle;
                 brain.saveBlockChange( newPosition, previousState );

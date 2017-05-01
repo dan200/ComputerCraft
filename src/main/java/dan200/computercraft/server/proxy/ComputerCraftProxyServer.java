@@ -13,7 +13,8 @@ import dan200.computercraft.shared.peripheral.printer.TilePrinter;
 import dan200.computercraft.shared.proxy.ComputerCraftProxyCommon;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -64,7 +65,7 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
 	}
 	
 	@Override
-	public void playRecord( String record, String recordInfo, World world, BlockPos pos )
+	public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
 	{
 	}
 
@@ -101,6 +102,6 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
 	@Override
 	public File getWorldDir( World world )
 	{
-		return new File( ComputerCraft.getBaseDir(), DimensionManager.getWorld(0).getSaveHandler().getWorldDirectoryName() );
+        return DimensionManager.getWorld( 0 ).getSaveHandler().getWorldDirectory();
 	}
 }

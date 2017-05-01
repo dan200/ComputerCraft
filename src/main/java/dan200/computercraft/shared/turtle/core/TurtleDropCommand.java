@@ -12,9 +12,12 @@ import dan200.computercraft.api.turtle.TurtleAnimation;
 import dan200.computercraft.api.turtle.TurtleCommandResult;
 import dan200.computercraft.shared.util.InventoryUtil;
 import dan200.computercraft.shared.util.WorldUtil;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -81,7 +84,7 @@ public class TurtleDropCommand implements ITurtleCommand
         {
             // Drop the item into the world
             WorldUtil.dropItemStack( stack, world, oldPosition, direction );
-            world.playSoundEffect( newPosition.getX() + 0.5, newPosition.getY() + 0.5, newPosition.getZ() + 0.5, "random.pop", 0.2f, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7f + 1.0f) * 2.0f );
+            world.playBroadcastSound( 1000, newPosition, 0 );
             turtle.playAnimation( TurtleAnimation.Wait );
             return TurtleCommandResult.success();
         }

@@ -302,7 +302,7 @@ public class Terminal
         m_changed = false;
 	}
 
-    public void writeToNBT( NBTTagCompound nbttagcompound )
+    public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
         nbttagcompound.setInteger( "term_cursorX", m_cursorX );
         nbttagcompound.setInteger( "term_cursorY", m_cursorY );
@@ -315,6 +315,7 @@ public class Terminal
             nbttagcompound.setString( "term_textColour_" + n, m_textColour[n].toString() );
             nbttagcompound.setString( "term_textBgColour_" + n, m_backgroundColour[ n ].toString() );
         }
+        return nbttagcompound;
     }
 
     public void readFromNBT( NBTTagCompound nbttagcompound )

@@ -9,7 +9,7 @@ package dan200.computercraft.shared.peripheral.printer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -61,10 +61,10 @@ public class ContainerPrinter extends Container
     }
 
 	@Override
-	public void onCraftGuiOpened( ICrafting crafting )
+	public void addListener( IContainerListener crafting )
 	{
-		super.onCraftGuiOpened( crafting );
-		crafting.sendProgressBarUpdate( this, 0, m_printer.isPrinting() ? 1 : 0 );
+		super.addListener( crafting );
+        crafting.sendProgressBarUpdate( this, 0, m_printer.isPrinting() ? 1 : 0 );
 	}
 	
 	@Override
@@ -75,9 +75,9 @@ public class ContainerPrinter extends Container
 		if( !m_printer.getWorld().isRemote )
 		{
 			boolean printing = m_printer.isPrinting();
-			for (int i=0; i<crafters.size(); ++i)
+			for (int i=0; i<listeners.size(); ++i)
 			{
-				ICrafting icrafting = (ICrafting)crafters.get(i);					
+				IContainerListener icrafting = (IContainerListener)listeners.get(i);
 				if( printing != m_lastPrinting )
 				{
 					icrafting.sendProgressBarUpdate( this, 0, printing ? 1 : 0 );
@@ -122,7 +122,7 @@ public class ContainerPrinter extends Container
             else 
             {
             	// Transfer from inventory to printer
-            	if( itemstack1.getItem() == Items.dye )
+            	if( itemstack1.getItem() == Items.DYE )
             	{
 					if( !mergeItemStack(itemstack1, 0, 1, false) )
 					{

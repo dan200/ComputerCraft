@@ -14,8 +14,8 @@ import dan200.computercraft.api.turtle.TurtleCommandResult;
 import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -88,7 +88,7 @@ public class TurtleMoveCommand implements ITurtleCommand
                                 (double) direction.getFrontOffsetY(),
                                 (double) direction.getFrontOffsetZ()
                             );
-                            if( !oldWorld.func_147461_a( pushedBB ).isEmpty() ) // getCollidingBlockBoundingBoxes
+                            if( !oldWorld.getCollisionBoxes( pushedBB ).isEmpty() )
                             {
                                 return TurtleCommandResult.failure( "Movement obstructed" );
                             }

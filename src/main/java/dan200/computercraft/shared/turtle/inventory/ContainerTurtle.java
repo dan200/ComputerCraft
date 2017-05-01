@@ -11,7 +11,7 @@ import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -76,16 +76,16 @@ public class ContainerTurtle extends Container
 		return m_selectedSlot;
 	}
 	
-	private void sendStateToPlayer( ICrafting icrafting )
+	private void sendStateToPlayer( IContainerListener icrafting )
 	{
         int selectedSlot = m_turtle.getSelectedSlot();
         icrafting.sendProgressBarUpdate( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
 	}
 						
 	@Override
-	public void onCraftGuiOpened( ICrafting crafting )
+	public void addListener( IContainerListener crafting )
 	{
-		super.onCraftGuiOpened( crafting );
+		super.addListener( crafting );
         sendStateToPlayer( crafting );
 	}
 	
@@ -95,9 +95,9 @@ public class ContainerTurtle extends Container
         super.detectAndSendChanges();
 		
         int selectedSlot = m_turtle.getSelectedSlot();
-        for( int i=0; i<crafters.size(); ++i )
+        for( int i=0; i<listeners.size(); ++i )
         {
-            ICrafting icrafting = (ICrafting)crafters.get(i);
+            IContainerListener icrafting = (IContainerListener)listeners.get(i);
             if( m_selectedSlot != selectedSlot )
             {
                 icrafting.sendProgressBarUpdate( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );

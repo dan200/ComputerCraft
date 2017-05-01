@@ -17,6 +17,7 @@ import dan200.computercraft.shared.peripheral.common.BlockPeripheral;
 import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
 import dan200.computercraft.shared.util.InventoryUtil;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.audio.Sound;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -24,6 +25,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -89,13 +92,13 @@ public class TileDiskDrive extends TilePeripheralBase
             // Try to put a disk into the drive
             if( !worldObj.isRemote )
             {
-                ItemStack disk = player.getCurrentEquippedItem();
+                ItemStack disk = player.getHeldItem( EnumHand.MAIN_HAND );
                 if( disk != null && getStackInSlot(0) == null )
                 {
                     if( ComputerCraft.getMedia( disk ) != null )
                     {
                         setInventorySlotContents( 0, disk );
-                        player.destroyCurrentEquippedItem();
+                        player.setHeldItem( EnumHand.MAIN_HAND, null );
                         return true;
                     }
                 }
@@ -143,15 +146,16 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbttagcompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
-        super.writeToNBT(nbttagcompound);
+        nbttagcompound = super.writeToNBT(nbttagcompound);
 		if( m_diskStack != null )
 		{
             NBTTagCompound item = new NBTTagCompound();
 			m_diskStack.writeToNBT( item );
             nbttagcompound.setTag( "item", item );
         }
+        return nbttagcompound;
     }
     
     @Override
@@ -178,7 +182,7 @@ public class TileDiskDrive extends TilePeripheralBase
 				if( m_recordQueued )
 				{
 					IMedia contents = getDiskMedia();
-					String record = (contents != null) ? contents.getAudioRecordName( m_diskStack ) : null;
+					SoundEvent record = (contents != null) ? contents.getAudio( m_diskStack ) : null;
 					if( record != null )
 					{
 						m_recordPlaying = true;
@@ -331,15 +335,15 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
         if( hasCustomName() )
         {
-            return new ChatComponentText( getName() );
+            return new TextComponentString( getName() );
         }
         else
         {
-            return new ChatComponentTranslation( getName() );
+            return new TextComponentTranslation( getName() );
         }
     }
 
@@ -603,7 +607,7 @@ public class TileDiskDrive extends TilePeripheralBase
 			worldObj.spawnEntityInWorld(entityitem);
 			if( !destroyed )
 			{
-				worldObj.playAuxSFX(1000, getPos(), 0);
+				worldObj.playBroadcastSound(1000, getPos(), 0);
 			}
 		}
     }
@@ -665,7 +669,7 @@ public class TileDiskDrive extends TilePeripheralBase
 	private void playRecord()
 	{
         IMedia contents = getDiskMedia();
-        String record = (contents != null) ? contents.getAudioRecordName( m_diskStack ) : null;
+        SoundEvent record = (contents != null) ? contents.getAudio( m_diskStack ) : null;
         if( record != null )
         {
             ComputerCraft.playRecord( record, contents.getAudioTitle( m_diskStack ), worldObj, getPos() );

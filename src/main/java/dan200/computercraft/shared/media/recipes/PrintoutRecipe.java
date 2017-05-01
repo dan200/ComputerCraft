@@ -67,7 +67,7 @@ public class PrintoutRecipe implements IRecipe
 						numPrintouts++;
 						printoutFound = true;
 					}
-					else if( item == Items.paper )
+					else if( item == Items.PAPER )
 					{
 						if( printouts == null )
 						{
@@ -77,11 +77,11 @@ public class PrintoutRecipe implements IRecipe
 						numPages++;
 						numPrintouts++;
 					}
-					else if( item == Items.string && !stringFound )
+					else if( item == Items.STRING && !stringFound )
 					{
 						stringFound = true;
 					}
-					else if( item == Items.leather && !leatherFound )
+					else if( item == Items.LEATHER && !leatherFound )
 					{
 						leatherFound = true;
 					}

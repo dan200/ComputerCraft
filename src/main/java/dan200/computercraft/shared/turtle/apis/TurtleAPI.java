@@ -478,7 +478,7 @@ public class TurtleAPI implements ILuaAPI
                 if( stack != null && stack.stackSize > 0 )
                 {
                     Item item = stack.getItem();
-                    String name = ((ResourceLocation)Item.itemRegistry.getNameForObject( item )).toString();
+                    String name = ((ResourceLocation)Item.REGISTRY.getNameForObject( item )).toString();
                     int damage = stack.getItemDamage();
                     int count = stack.stackSize;
 

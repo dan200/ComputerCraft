@@ -18,11 +18,11 @@ import dan200.computercraft.shared.util.DirectionUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -94,7 +94,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             // Get renderers
             Minecraft mc = Minecraft.getMinecraft();
             Tessellator tessellator = Tessellator.getInstance();
-            WorldRenderer renderer = tessellator.getWorldRenderer();
+            VertexBuffer renderer = tessellator.getBuffer();
 
             // Get terminal
             ClientTerminal clientTerminal = (ClientTerminal)origin.getTerminal();

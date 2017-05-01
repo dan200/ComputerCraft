@@ -118,7 +118,7 @@ public class DiskDrivePeripheral implements IPeripheral
                 IMedia media = m_diskDrive.getDiskMedia();
                 if( media != null )
                 {
-                    return new Object[] { media.getAudioRecordName( m_diskDrive.getDiskStack() ) != null };
+                    return new Object[] { media.getAudio( m_diskDrive.getDiskStack() ) != null };
                 }
                 return new Object[] { false };
             }

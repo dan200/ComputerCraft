@@ -12,9 +12,9 @@ import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.BlockPeripheral;
 import dan200.computercraft.shared.peripheral.common.BlockPeripheralVariant;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class TileWirelessModem extends TileModemBase
@@ -38,10 +38,10 @@ public class TileWirelessModem extends TileModemBase
 		}
 		
 	    @Override
-		protected Vec3 getPosition()
+		protected Vec3d getPosition()
 		{
             BlockPos pos = m_entity.getPos().offset( m_entity.getDirection() );
-			return new Vec3( (double)pos.getX(), (double)pos.getY(), (double)pos.getZ() );
+			return new Vec3d( (double)pos.getX(), (double)pos.getY(), (double)pos.getZ() );
 		}
 
         @Override

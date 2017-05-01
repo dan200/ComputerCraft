@@ -16,20 +16,20 @@ import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ISmartItemModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -89,10 +89,12 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
 
     private void registerItemModel( Item item, ItemMeshDefinition definition, String[] names )
     {
+        ResourceLocation[] resources = new ResourceLocation[names.length];
         for( int i=0; i<names.length; ++i )
         {
-            ModelBakery.addVariantName( item, "computercraft:" + names[ i ] );
+            resources[i] = new ResourceLocation( "computercraft:" + names[i] );
         }
+        ModelBakery.registerItemVariants( item, resources );
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, definition );
     }
 
@@ -129,7 +131,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         @SubscribeEvent
         public void onTextureStitchEvent( TextureStitchEvent.Pre event )
         {
-            event.map.registerSprite( new ResourceLocation( "computercraft", "blocks/craftyUpgrade" ) );
+            event.getMap().registerSprite( new ResourceLocation( "computercraft", "blocks/craftyUpgrade" ) );
         }
 
         @SubscribeEvent
@@ -150,38 +152,30 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
 
         private void loadModel( ModelBakeEvent event, String name )
         {
-            try
-            {
-                IModel model = event.modelLoader.getModel(
-                    new ResourceLocation( "computercraft", "block/" + name )
-                );
-                IBakedModel bakedModel = model.bake(
-                    model.getDefaultState(),
-                    DefaultVertexFormats.ITEM,
-                    new Function<ResourceLocation, TextureAtlasSprite>()
+            IModel model = ModelLoaderRegistry.getModelOrMissing(
+                new ResourceLocation( "computercraft", "block/" + name )
+            );
+            IBakedModel bakedModel = model.bake(
+                model.getDefaultState(),
+                DefaultVertexFormats.ITEM,
+                new Function<ResourceLocation, TextureAtlasSprite>()
+                {
+                    @Override
+                    public TextureAtlasSprite apply( ResourceLocation location )
                     {
-                        @Override
-                        public TextureAtlasSprite apply( ResourceLocation location )
-                        {
-                            return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( location.toString() );
-                        }
+                        return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( location.toString() );
                     }
-                );
-                event.modelRegistry.putObject(
-                    new ModelResourceLocation( "computercraft:" + name, "inventory" ),
-                    bakedModel
-                );
-            }
-            catch( IOException e )
-            {
-                System.out.println( "Could not load model: name" );
-                e.printStackTrace();
-            }
+                }
+            );
+            event.getModelRegistry().putObject(
+                new ModelResourceLocation( "computercraft:" + name, "inventory" ),
+                bakedModel
+            );
         }
 
-        private void loadSmartModel( ModelBakeEvent event, String name, ISmartItemModel smartModel )
+        private void loadSmartModel( ModelBakeEvent event, String name, IBakedModel smartModel )
         {
-            event.modelRegistry.putObject(
+            event.getModelRegistry().putObject(
                 new ModelResourceLocation( "computercraft:" + name, "inventory" ),
                 smartModel
             );

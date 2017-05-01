@@ -15,7 +15,9 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -122,7 +124,7 @@ public class ItemDiskLegacy extends Item
 	}
 	
     @Override
-	public String getAudioRecordName( ItemStack stack )
+	public SoundEvent getAudio( ItemStack stack )
 	{
 		return null;
 	}
@@ -139,19 +141,13 @@ public class ItemDiskLegacy extends Item
 		return ComputerCraftAPI.createSaveDirMount( world, "computer/disk/" + diskID, ComputerCraft.floppySpaceLimit );
     }
 
-	@Override
-    public int getColorFromItemStack( ItemStack stack, int layer )
-    {
-        return layer == 0 ? 0xffffff : getColor(stack);
-    }
-
 	public int getColor( ItemStack stack )
 	{
 		return Colour.Blue.getHex();
 	}
 
 	@Override
-    public boolean doesSneakBypassUse( World world, BlockPos pos, EntityPlayer player )
+    public boolean doesSneakBypassUse( ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player )
     {
         return true;
     }

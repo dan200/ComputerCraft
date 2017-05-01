@@ -7,8 +7,9 @@
 package dan200.computercraft.shared.turtle.upgrades;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -24,19 +25,21 @@ public class TurtleShovel extends TurtleTool
 	{
 		if( super.canBreakBlock( world, pos ) )
 		{
-			Block block = world.getBlockState( pos ).getBlock();
-			return 
-				block.getMaterial() == Material.ground ||
-				block.getMaterial() == Material.sand ||
-				block.getMaterial() == Material.snow ||
-                block.getMaterial() == Material.clay ||
-				block.getMaterial() == Material.craftedSnow ||
-				block.getMaterial() == Material.grass ||
-				block.getMaterial() == Material.plants ||
-				block.getMaterial() == Material.cactus ||
-				block.getMaterial() == Material.gourd ||
-				block.getMaterial() == Material.leaves ||
-				block.getMaterial() == Material.vine;
+            IBlockState state = world.getBlockState( pos );
+			Block block = state.getBlock();
+            Material material = block.getMaterial( state );
+			return
+                    material == Material.GROUND ||
+                    material == Material.SAND ||
+                    material == Material.SNOW ||
+                    material == Material.CLAY ||
+                    material == Material.CRAFTED_SNOW ||
+                    material == Material.GRASS ||
+                    material == Material.PLANTS ||
+                    material == Material.CACTUS ||
+                    material == Material.GOURD ||
+                    material == Material.LEAVES ||
+                    material == Material.VINE;
 		}
 		return false;
 	}

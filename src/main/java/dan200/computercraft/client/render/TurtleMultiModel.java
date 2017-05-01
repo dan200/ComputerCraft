@@ -1,85 +1,92 @@
 package dan200.computercraft.client.render;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
+import net.minecraft.world.World;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 
-public class TurtleMultiModel implements IFlexibleBakedModel
+public class TurtleMultiModel implements IBakedModel
 {
-    private IFlexibleBakedModel m_baseModel;
-    private IFlexibleBakedModel m_overlayModel;
-    private IFlexibleBakedModel m_leftUpgradeModel;
-    private IFlexibleBakedModel m_rightUpgradeModel;
-
+    private IBakedModel m_baseModel;
+    private IBakedModel m_overlayModel;
+    private IBakedModel m_leftUpgradeModel;
+    private Matrix4f m_leftUpgradeTransform;
+    private IBakedModel m_rightUpgradeModel;
+    private Matrix4f m_rightUpgradeTransform;
     private List<BakedQuad> m_generalQuads;
-    private List<BakedQuad>[] m_faceQuads;
+    private List<BakedQuad> m_faceQuads[];
 
     public TurtleMultiModel( IBakedModel baseModel, IBakedModel overlayModel, IBakedModel leftUpgradeModel, Matrix4f leftUpgradeTransform, IBakedModel rightUpgradeModel, Matrix4f rightUpgradeTransform )
     {
         // Get the models
-        m_baseModel = makeFlexible( baseModel );
-        m_overlayModel = makeFlexible( overlayModel );
-        m_leftUpgradeModel = makeFlexible( leftUpgradeModel );
-        m_rightUpgradeModel = makeFlexible( rightUpgradeModel );
-
-        // Bake the quads
-        m_generalQuads = new ArrayList<BakedQuad>();
-        m_generalQuads.addAll( m_baseModel.getGeneralQuads() );
-        if( m_overlayModel != null )
-        {
-            m_generalQuads.addAll( m_overlayModel.getGeneralQuads() );
-        }
-        if( m_leftUpgradeModel != null )
-        {
-            m_generalQuads.addAll( transformQuads( m_leftUpgradeModel.getFormat(), m_leftUpgradeModel.getGeneralQuads(), leftUpgradeTransform ) );
-        }
-        if( m_rightUpgradeModel != null )
-        {
-            m_generalQuads.addAll( transformQuads( m_rightUpgradeModel.getFormat(), m_rightUpgradeModel.getGeneralQuads(), rightUpgradeTransform ) );
-        }
-
-        m_faceQuads = new List[ EnumFacing.VALUES.length ];
-        for( EnumFacing facing : EnumFacing.VALUES )
-        {
-            List<BakedQuad> faces = new ArrayList<BakedQuad>();
-            faces.addAll( m_baseModel.getFaceQuads( facing ) );
-            if( m_overlayModel != null )
-            {
-                faces.addAll( m_overlayModel.getFaceQuads( facing ) );
-            }
-            if( m_leftUpgradeModel != null )
-            {
-                faces.addAll( transformQuads( m_leftUpgradeModel.getFormat(), m_leftUpgradeModel.getFaceQuads( facing ), leftUpgradeTransform ) );
-            }
-            if( m_rightUpgradeModel != null )
-            {
-                faces.addAll( transformQuads( m_rightUpgradeModel.getFormat(), m_rightUpgradeModel.getFaceQuads( facing ), rightUpgradeTransform ) );
-            }
-            m_faceQuads[ facing.getIndex() ] = faces;
-        }
+        m_baseModel = baseModel;
+        m_overlayModel = overlayModel;
+        m_leftUpgradeModel = leftUpgradeModel;
+        m_leftUpgradeTransform = leftUpgradeTransform;
+        m_rightUpgradeModel = rightUpgradeModel;
+        m_rightUpgradeTransform = rightUpgradeTransform;
+        m_generalQuads = null;
+        m_faceQuads = new List[6];
     }
 
     @Override
-    public List<BakedQuad> getFaceQuads( EnumFacing side )
+    public List<BakedQuad> getQuads( IBlockState state, EnumFacing side, long rand )
     {
-        return m_faceQuads[ side.getIndex() ];
-    }
-
-    @Override
-    public List<BakedQuad> getGeneralQuads()
-    {
-        return m_generalQuads;
+        if( side != null )
+        {
+            if( m_faceQuads[ side.ordinal() ] == null )
+            {
+                List<BakedQuad> quads = new ArrayList<BakedQuad>();
+                if( m_overlayModel != null )
+                {
+                    quads.addAll( m_overlayModel.getQuads( state, side, rand ) );
+                }
+                if( m_leftUpgradeModel != null )
+                {
+                    quads.addAll( transformQuads( m_leftUpgradeModel.getQuads( state, side, rand ), m_leftUpgradeTransform ) );
+                }
+                if( m_rightUpgradeModel != null )
+                {
+                    quads.addAll( transformQuads( m_rightUpgradeModel.getQuads( state, side, rand ), m_rightUpgradeTransform ) );
+                }
+                m_faceQuads[ side.ordinal() ] = quads;
+            }
+            return  m_faceQuads[ side.ordinal() ];
+        }
+        else
+        {
+            if( m_generalQuads == null )
+            {
+                m_generalQuads = new ArrayList<BakedQuad>();
+                m_generalQuads.addAll( m_baseModel.getQuads( state, side, rand ) );
+                if( m_overlayModel != null )
+                {
+                    m_generalQuads.addAll( m_overlayModel.getQuads( state, side, rand ) );
+                }
+                if( m_leftUpgradeModel != null )
+                {
+                    m_generalQuads.addAll( transformQuads( m_leftUpgradeModel.getQuads( state, side, rand ), m_leftUpgradeTransform ) );
+                }
+                if( m_rightUpgradeModel != null )
+                {
+                    m_generalQuads.addAll( transformQuads( m_rightUpgradeModel.getQuads( state, side, rand ), m_rightUpgradeTransform ) );
+                }
+            }
+            return m_generalQuads;
+        }
     }
 
     @Override
@@ -113,12 +120,12 @@ public class TurtleMultiModel implements IFlexibleBakedModel
     }
 
     @Override
-    public VertexFormat getFormat()
+    public ItemOverrideList getOverrides()
     {
-        return m_baseModel.getFormat();
+        return ItemOverrideList.NONE;
     }
 
-    private List<BakedQuad> transformQuads( VertexFormat format, List<BakedQuad> input, Matrix4f transform )
+    private List<BakedQuad> transformQuads( List<BakedQuad> input, Matrix4f transform )
     {
         if( transform == null || input.size() == 0 )
         {
@@ -130,17 +137,18 @@ public class TurtleMultiModel implements IFlexibleBakedModel
             for( int i=0; i<input.size(); ++i )
             {
                 BakedQuad quad = input.get( i );
-                output.add( transformQuad( format, quad, transform ) );
+                output.add( transformQuad( quad, transform ) );
             }
             return output;
         }
     }
 
-    private BakedQuad transformQuad( VertexFormat format, BakedQuad quad, Matrix4f transform )
+    private BakedQuad transformQuad( BakedQuad quad, Matrix4f transform )
     {
         int[] vertexData = quad.getVertexData().clone();
-        BakedQuad copy = new BakedQuad( vertexData, quad.getTintIndex(), quad.getFace() );
         int offset = 0;
+        BakedQuad copy = new BakedQuad( vertexData, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat() );
+        VertexFormat format = copy.getFormat();
         for( int i=0; i<format.getElementCount(); ++i ) // For each vertex element
         {
             VertexFormatElement element = format.getElement( i );
@@ -175,21 +183,5 @@ public class TurtleMultiModel implements IFlexibleBakedModel
             offset += element.getSize();
         }
         return copy;
-    }
-
-    private IFlexibleBakedModel makeFlexible( IBakedModel model )
-    {
-        if( model == null )
-        {
-            return null;
-        }
-        else if( model instanceof IFlexibleBakedModel )
-        {
-            return (IFlexibleBakedModel)model;
-        }
-        else
-        {
-            return new IFlexibleBakedModel.Wrapper( model, DefaultVertexFormats.ITEM );
-        }
     }
 }

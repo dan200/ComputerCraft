@@ -26,14 +26,16 @@ import dan200.computercraft.shared.turtle.entity.TurtleVisionCamera;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -184,9 +186,8 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 
     private void registerItemModel( Item item, int damage, String name )
     {
-        name = "computercraft:" + name;
-        ModelResourceLocation res = new ModelResourceLocation( name, "inventory" );
-        ModelBakery.addVariantName( item, name );
+        ModelResourceLocation res = new ModelResourceLocation( "computercraft:" + name, "inventory" );
+        ModelBakery.registerItemVariants( item, new ResourceLocation( "computercraft", name ) );
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, damage, res );
     }
 
@@ -197,9 +198,8 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 
     private void registerItemModel( Item item, String name )
     {
-        name = "computercraft:" + name;
-        final ModelResourceLocation res = new ModelResourceLocation( name, "inventory" );
-        ModelBakery.addVariantName( item, name );
+        final ModelResourceLocation res = new ModelResourceLocation( "computercraft:" + name, "inventory" );
+        ModelBakery.registerItemVariants( item, new ResourceLocation( "computercraft", name ) );
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, new ItemMeshDefinition()
         {
             @Override
@@ -217,10 +217,12 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 
     private void registerItemModel( Item item, ItemMeshDefinition definition, String[] names )
     {
-        for( int i=0; i<names.length; ++i )
+        ResourceLocation[] resources = new ResourceLocation[names.length];
+        for( int i=0; i<resources.length; ++i )
         {
-            ModelBakery.addVariantName( item, "computercraft:" + names[i] );
+            resources[i] = new ResourceLocation( "computercraft", names[i] );
         }
+        ModelBakery.registerItemVariants( item, resources );
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, definition );
     }
 	
@@ -267,7 +269,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 	}
 	
 	@Override
-	public void playRecord( String record, String recordInfo, World world, BlockPos pos )
+	public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
 	{
 		Minecraft mc = FMLClientHandler.instance().getClient();
 		world.playRecord( pos, record );
@@ -326,7 +328,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 	@Override
 	public File getWorldDir( World world )
 	{
-		return new File( ComputerCraft.getBaseDir(), "saves/" + world.getSaveHandler().getWorldDirectoryName() );
+        return world.getSaveHandler().getWorldDirectory();
 	}
 
     @Override
@@ -425,10 +427,10 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         public void onRenderPlayer( RenderPlayerEvent.Pre event )
         {
             Minecraft mc = Minecraft.getMinecraft();
-            if( event.entityPlayer.isUser() && mc.getRenderViewEntity() instanceof TurtleVisionCamera )
+            if( event.getEntityPlayer().isUser() && mc.getRenderViewEntity() instanceof TurtleVisionCamera )
             {
                 // HACK: Force the 'livingPlayer' variable to the player, this ensures the entity is drawn
-                event.renderer.getRenderManager().livingPlayer = event.entityPlayer;
+                //event.getRenderer().getRenderManager().livingPlayer = event.getEntityPlayer();
             }
         }
 
@@ -436,10 +438,10 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         public void onRenderPlayer( RenderPlayerEvent.Post event )
         {
             Minecraft mc = Minecraft.getMinecraft();
-            if( event.entityPlayer.isUser() && mc.getRenderViewEntity() instanceof TurtleVisionCamera )
+            if( event.getEntityPlayer().isUser() && mc.getRenderViewEntity() instanceof TurtleVisionCamera )
             {
                 // HACK: Restore the 'livingPlayer' variable to what it was before the RenderPlayerEvent.Pre hack
-                event.renderer.getRenderManager().livingPlayer = mc.getRenderViewEntity();
+                //event.getRenderer().getRenderManager().livingPlayer = mc.getRenderViewEntity();
             }
         }
 
@@ -449,7 +451,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             Minecraft mc = Minecraft.getMinecraft();
             if( mc.getRenderViewEntity() instanceof TurtleVisionCamera )
             {
-                switch( event.type )
+                switch( event.getType() )
                 {
                     case HELMET:
                     case PORTAL:

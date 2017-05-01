@@ -13,8 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -120,7 +120,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
             results.add( result );
 
 			// Consume resources from the inventory
-            ItemStack[] remainingItems = CraftingManager.getInstance().func_180303_b( this, world ); // getRemainingItems
+            ItemStack[] remainingItems = CraftingManager.getInstance().getRemainingItems( this, world );
 			for( int n=0; n<size; ++n )
 			{
 				ItemStack stack = getStackInSlot( n );
@@ -214,9 +214,9 @@ public class TurtleInventoryCrafting extends InventoryCrafting
     }
 
 	@Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
-        return new ChatComponentText( "" );
+        return new TextComponentString( "" );
     }
 
 	@Override

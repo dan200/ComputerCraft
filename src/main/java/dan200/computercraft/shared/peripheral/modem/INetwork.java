@@ -6,13 +6,13 @@
 
 package dan200.computercraft.shared.peripheral.modem;
 
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public interface INetwork
 {
 	public void addReceiver( IReceiver receiver );
 	public void removeReceiver( IReceiver receiver );
-	public void transmit( int channel, int replyChannel, Object payload, World world, Vec3 pos, double range, boolean interdimensional, Object senderObject );
+	public void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject );
 	public boolean isWireless();
 }

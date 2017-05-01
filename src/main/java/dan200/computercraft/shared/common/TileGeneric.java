@@ -16,10 +16,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -65,8 +65,9 @@ public abstract class TileGeneric extends TileEntity
 
     public final void updateBlock()
     {
-        worldObj.markBlockForUpdate( getPos() );
-        worldObj.markChunkDirty( getPos(), this );
+        BlockPos pos = getPos();
+        worldObj.markBlockRangeForRenderUpdate( pos, pos );
+        worldObj.markChunkDirty( pos, this );
     }
 
     protected final void setBlockState( IBlockState newState )
@@ -74,7 +75,7 @@ public abstract class TileGeneric extends TileEntity
         worldObj.setBlockState( getPos(), newState, 3 );
     }
 
-    public void getDroppedItems( List<ItemStack> drops, int fortune, boolean creative, boolean silkTouch )
+    public void getDroppedItems( List<ItemStack> drops, boolean creative )
     {
     }
 
@@ -185,16 +186,16 @@ public abstract class TileGeneric extends TileEntity
     }
 
     @Override
-    public final Packet getDescriptionPacket()
+    public final SPacketUpdateTileEntity getUpdatePacket()
     {
         // Communicate properties
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         writeDescription( nbttagcompound );
-        return new S35PacketUpdateTileEntity( getPos(), 0, nbttagcompound );
+        return new SPacketUpdateTileEntity( getPos(), 0, nbttagcompound );
     }
 
     @Override
-    public final void onDataPacket( NetworkManager net, S35PacketUpdateTileEntity packet )
+    public final void onDataPacket( NetworkManager net, SPacketUpdateTileEntity packet )
     {
         switch( packet.getTileEntityType() )
         {

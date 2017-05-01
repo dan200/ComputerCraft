@@ -13,9 +13,10 @@ import dan200.computercraft.api.turtle.TurtleVerb;
 import dan200.computercraft.shared.turtle.core.TurtlePlaceCommand;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -32,13 +33,15 @@ public class TurtleHoe extends TurtleTool
 	{
 		if( super.canBreakBlock( world, pos ) )
 		{
-			Block block = world.getBlockState( pos ).getBlock();
+            IBlockState state = world.getBlockState( pos );
+			Block block = state.getBlock();
+            Material material = block.getMaterial( state );
 			return
-				block.getMaterial() == Material.plants ||
-				block.getMaterial() == Material.cactus ||
-				block.getMaterial() == Material.gourd ||
-				block.getMaterial() == Material.leaves ||
-				block.getMaterial() == Material.vine;
+                material == Material.PLANTS ||
+                material == Material.CACTUS ||
+                material == Material.GOURD ||
+                material == Material.LEAVES ||
+                material == Material.VINE;
 		}
 		return false;
 	}

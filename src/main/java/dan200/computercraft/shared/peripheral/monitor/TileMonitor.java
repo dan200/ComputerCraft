@@ -20,8 +20,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -112,14 +112,15 @@ public class TileMonitor extends TilePeripheralBase
     }
 
     @Override
-    public void writeToNBT( NBTTagCompound nbttagcompound )
+    public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
-        super.writeToNBT(nbttagcompound);
+        nbttagcompound = super.writeToNBT( nbttagcompound);
 		nbttagcompound.setInteger( "xIndex", m_xIndex );
 		nbttagcompound.setInteger( "yIndex", m_yIndex );
 		nbttagcompound.setInteger( "width", m_width );
 		nbttagcompound.setInteger( "height", m_height );
 		nbttagcompound.setInteger( "dir", m_dir );
+        return nbttagcompound;
     }
 
     @Override

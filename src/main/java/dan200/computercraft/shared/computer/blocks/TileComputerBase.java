@@ -22,8 +22,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 
 public abstract class TileComputerBase extends TileGeneric
@@ -113,8 +114,8 @@ public abstract class TileComputerBase extends TileGeneric
     @Override
     public boolean onActivate( EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ )
     {
-        ItemStack currentItem = player.getCurrentEquippedItem();
-        if( currentItem != null && currentItem.getItem() == Items.name_tag && canNameWithTag( player ) )
+        ItemStack currentItem = player.getHeldItem( EnumHand.MAIN_HAND );
+        if( currentItem != null && currentItem.getItem() == Items.NAME_TAG && canNameWithTag( player ) )
         {
             // Label to rename computer
             if( !worldObj.isRemote )
@@ -232,9 +233,9 @@ public abstract class TileComputerBase extends TileGeneric
     }
 
     @Override
-    public void writeToNBT( NBTTagCompound nbttagcompound )
+    public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
-        super.writeToNBT( nbttagcompound );
+        nbttagcompound = super.writeToNBT( nbttagcompound );
 
         // Save ID, label and power state
         if( m_computerID >= 0 )
@@ -246,6 +247,7 @@ public abstract class TileComputerBase extends TileGeneric
             nbttagcompound.setString( "label", m_label );
         }
         nbttagcompound.setBoolean( "on", m_on );
+        return nbttagcompound;
     }
 
     @Override

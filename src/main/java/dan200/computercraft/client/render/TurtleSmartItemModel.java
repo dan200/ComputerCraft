@@ -15,25 +15,27 @@ import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
 import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.Holiday;
 import dan200.computercraft.shared.util.HolidayUtil;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ISmartItemModel;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ISmartVariant;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TurtleSmartItemModel implements ISmartItemModel, IResourceManagerReloadListener
+public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReloadListener
 {
     private static class TurtleModelCombination
     {
@@ -92,40 +94,49 @@ public class TurtleSmartItemModel implements ISmartItemModel, IResourceManagerRe
 
     private ItemStack m_defaultItem;
     private HashMap<TurtleModelCombination, IBakedModel> m_cachedModels;
+    private ItemOverrideList m_overrides;
 
     public TurtleSmartItemModel()
     {
         m_defaultItem = TurtleItemFactory.create( -1, null, null, ComputerFamily.Normal, null, null, 0, null );
         m_cachedModels = new HashMap<TurtleModelCombination, IBakedModel>();
+        m_overrides = new ItemOverrideList( new ArrayList<ItemOverride>() )
+        {
+            @Override
+            public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+            {
+                ItemTurtleBase turtle = (ItemTurtleBase) stack.getItem();
+                ComputerFamily family = turtle.getFamily( stack );
+                Colour colour = turtle.getColour( stack );
+                ITurtleUpgrade leftUpgrade = turtle.getUpgrade( stack, TurtleSide.Left );
+                ITurtleUpgrade rightUpgrade = turtle.getUpgrade( stack, TurtleSide.Right );
+                ResourceLocation overlay = turtle.getOverlay( stack );
+                boolean christmas = HolidayUtil.getCurrentHoliday() == Holiday.Christmas;
+                TurtleModelCombination combo = new TurtleModelCombination( family, colour, leftUpgrade, rightUpgrade, overlay, christmas );
+                if( m_cachedModels.containsKey( combo ) )
+                {
+                    return m_cachedModels.get( combo );
+                }
+                else
+                {
+                    IBakedModel model = buildModel( combo );
+                    m_cachedModels.put( combo, model );
+                    return model;
+                }
+            }
+        };
+    }
+
+    @Override
+    public ItemOverrideList getOverrides()
+    {
+        return m_overrides;
     }
 
     @Override
     public void onResourceManagerReload( IResourceManager resourceManager )
     {
         m_cachedModels.clear();
-    }
-
-    @Override
-    public IBakedModel handleItemState( ItemStack stack )
-    {
-        ItemTurtleBase turtle = (ItemTurtleBase) stack.getItem();
-        ComputerFamily family = turtle.getFamily( stack );
-        Colour colour = turtle.getColour( stack );
-        ITurtleUpgrade leftUpgrade = turtle.getUpgrade( stack, TurtleSide.Left );
-        ITurtleUpgrade rightUpgrade = turtle.getUpgrade( stack, TurtleSide.Right );
-        ResourceLocation overlay = turtle.getOverlay( stack );
-        boolean christmas = HolidayUtil.getCurrentHoliday() == Holiday.Christmas;
-        TurtleModelCombination combo = new TurtleModelCombination( family, colour, leftUpgrade, rightUpgrade, overlay, christmas );
-        if( m_cachedModels.containsKey( combo ) )
-        {
-            return m_cachedModels.get( combo );
-        }
-        else
-        {
-            IBakedModel model = buildModel( combo );
-            m_cachedModels.put( combo, model );
-            return model;
-        }
     }
 
     private IBakedModel buildModel( TurtleModelCombination combo )
@@ -163,15 +174,9 @@ public class TurtleSmartItemModel implements ISmartItemModel, IResourceManagerRe
     // These should not be called:
 
     @Override
-    public List getFaceQuads( EnumFacing facing )
+    public List<BakedQuad> getQuads( IBlockState state, EnumFacing facing, long rand )
     {
-        return getDefaultModel().getFaceQuads( facing );
-    }
-
-    @Override
-    public List getGeneralQuads()
-    {
-        return getDefaultModel().getGeneralQuads();
+        return getDefaultModel().getQuads( state, facing, rand );
     }
 
     @Override
@@ -206,6 +211,6 @@ public class TurtleSmartItemModel implements ISmartItemModel, IResourceManagerRe
 
     private IBakedModel getDefaultModel()
     {
-        return handleItemState( m_defaultItem );
+        return m_overrides.handleItemState( this, m_defaultItem, null, null );
     }
 }

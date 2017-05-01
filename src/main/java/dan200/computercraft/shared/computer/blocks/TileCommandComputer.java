@@ -12,19 +12,22 @@ import dan200.computercraft.shared.computer.core.IComputer;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.*;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TileCommandComputer extends TileComputer
 {
-    public class CommandSender extends CommandBlockLogic
+    public class CommandSender extends CommandBlockBaseLogic
     {
         private Map<Integer, String> m_outputTable;
 
@@ -51,7 +54,7 @@ public class TileCommandComputer extends TileComputer
         // ICommandSender
 
         @Override
-        public IChatComponent getDisplayName()
+        public ITextComponent getDisplayName()
         {
             IComputer computer = TileCommandComputer.this.getComputer();
             if( computer != null )
@@ -59,14 +62,14 @@ public class TileCommandComputer extends TileComputer
                 String label = computer.getLabel();
                 if( label != null )
                 {
-                    return new ChatComponentText( computer.getLabel() );
+                    return new TextComponentString( computer.getLabel() );
                 }
             }
-            return new ChatComponentText( "@" );
+            return new TextComponentString( "@" );
         }
 
         @Override
-        public void addChatMessage( IChatComponent chatComponent )
+        public void addChatMessage( ITextComponent chatComponent )
         {
             m_outputTable.put( m_outputTable.size() + 1, chatComponent.getUnformattedText() );
         }
@@ -84,16 +87,22 @@ public class TileCommandComputer extends TileComputer
         }
 
         @Override
-        public Vec3 getPositionVector()
+        public Vec3d getPositionVector()
         {
             BlockPos pos = getPosition();
-            return new Vec3( pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5 );
+            return new Vec3d( pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5 );
         }
 
         @Override
         public World getEntityWorld()
         {
-            return TileCommandComputer.this.worldObj;
+            return TileCommandComputer.this.getWorld();
+        }
+
+        @Override
+        public MinecraftServer getServer()
+        {
+            return TileCommandComputer.this.getWorld().getMinecraftServer();
         }
 
         @Override
@@ -111,13 +120,13 @@ public class TileCommandComputer extends TileComputer
         }
 
         @Override
-        public int func_145751_f()
+        public int getCommandBlockType()
         {
             return 0;
         }
 
         @Override
-        public void func_145757_a( ByteBuf p_145757_1_ )
+        public void fillInInfo( ByteBuf buf )
         {
         }
     }
@@ -163,10 +172,10 @@ public class TileCommandComputer extends TileComputer
     @Override
     public boolean isUsable( EntityPlayer player, boolean ignoreRange )
     {
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = player.getServer();
         if( server == null || !server.isCommandBlockEnabled() )
         {
-            player.addChatMessage( new ChatComponentTranslation( "advMode.notEnabled" ) );
+            player.addChatMessage( new TextComponentTranslation( "advMode.notEnabled" ) );
             return false;
         }
         else if( ComputerCraft.canPlayerUseCommands( player ) && player.capabilities.isCreativeMode )
@@ -175,7 +184,7 @@ public class TileCommandComputer extends TileComputer
         }
         else
         {
-            player.addChatMessage( new ChatComponentTranslation( "advMode.notAllowed" ) );
+            player.addChatMessage( new TextComponentTranslation( "advMode.notAllowed" ) );
             return false;
         }
     }

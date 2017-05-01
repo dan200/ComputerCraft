@@ -27,6 +27,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
 import java.io.File;
@@ -71,11 +73,11 @@ public class TileCable extends TileModemBase
         }
 
 	    @Override
-		protected Vec3 getPosition()
+		protected Vec3d getPosition()
 		{
 			EnumFacing direction = m_entity.getDirection();
             BlockPos pos = m_entity.getPos().offset( direction );
-			return new Vec3( (double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5 );
+			return new Vec3d( (double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5 );
 		}
 
         @Override
@@ -287,7 +289,7 @@ public class TileCable extends TileModemBase
     }
 
     @Override
-    public void getDroppedItems( List<ItemStack> drops, int fortune, boolean creative, boolean silkTouch )
+    public void getDroppedItems( List<ItemStack> drops, boolean creative )
     {
         if( !creative )
         {
@@ -337,7 +339,7 @@ public class TileCable extends TileModemBase
                 case WiredModem:
                 {
                     // Drop everything and remove block
-                    ((BlockGeneric)getBlockType()).dropAllItems( worldObj, getPos(), 0, false, false );
+                    ((BlockGeneric)getBlockType()).dropAllItems( worldObj, getPos(), false );
                     worldObj.setBlockToAir( getPos() );
                     break;
                 }
@@ -456,13 +458,13 @@ public class TileCable extends TileModemBase
                     if( oldPeriphName != null )
                     {
                         player.addChatMessage(
-                            new ChatComponentTranslation( "gui.computercraft:wired_modem.peripheral_disconnected", oldPeriphName )
+                            new TextComponentTranslation( "gui.computercraft:wired_modem.peripheral_disconnected", oldPeriphName )
                         );
                     }
                     if( periphName != null )
                     {
                         player.addChatMessage(
-                            new ChatComponentTranslation( "gui.computercraft:wired_modem.peripheral_connected", periphName )
+                            new TextComponentTranslation( "gui.computercraft:wired_modem.peripheral_connected", periphName )
                         );
                     }
                     return true;
@@ -488,12 +490,13 @@ public class TileCable extends TileModemBase
     }
 
 	@Override	
-    public void writeToNBT(NBTTagCompound nbttagcompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
 		// Write properties
-        super.writeToNBT(nbttagcompound);
+        nbttagcompound = super.writeToNBT(nbttagcompound);
 		nbttagcompound.setBoolean( "peripheralAccess", m_peripheralAccessAllowed );
 		nbttagcompound.setInteger( "peripheralID", m_attachedPeripheralID );
+        return nbttagcompound;
     }
     
     @Override
@@ -590,7 +593,7 @@ public class TileCable extends TileModemBase
 	}
 	
     @Override
-	public void transmit( int channel, int replyChannel, Object payload, World world, Vec3 pos, double range, boolean interdimensional, Object senderObject )
+	public void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
 	{
 		Packet p = new Packet();
 		p.channel = channel;

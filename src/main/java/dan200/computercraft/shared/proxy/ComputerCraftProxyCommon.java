@@ -65,7 +65,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -127,18 +128,13 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
 		if( item instanceof ItemRecord )
 		{
 			ItemRecord record = (ItemRecord)item;
-            if( (( ResourceLocation)Item.itemRegistry.getNameForObject( record )).getResourceDomain().equals( "minecraft" ) )
-			{
-				return "C418 - " + record.recordName;
-			}
-			// TODO: determine descriptions for mod items (ie: Portal gun mod)
-			return record.recordName;
+			return record.getRecordNameLocal();
 		}
 		return null;
 	}
 		
 	@Override
-	public abstract void playRecord( String record, String recordInfo, World world, BlockPos pos );
+	public abstract void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos );
 	
 	@Override
 	public abstract Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive );
@@ -163,7 +159,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
 	@Override 
 	public void handlePacket( final ComputerCraftPacket packet, final EntityPlayer player )
     {
-        IThreadListener listener = MinecraftServer.getServer();
+        IThreadListener listener = player.getServer();
         if( listener != null )
         {
             if( listener.isCallingFromMinecraftThread() )
@@ -217,10 +213,10 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
                 if( tileEntity != null && tileEntity instanceof TileGeneric )
                 {
                     TileGeneric generic = (TileGeneric)tileEntity;
-                    Packet description = generic.getDescriptionPacket();
+                    Packet description = generic.getUpdatePacket();
                     if( description != null )
                     {
-                        ((EntityPlayerMP)player).playerNetServerHandler.sendPacket( description );
+                        ((EntityPlayerMP)player).connection.sendPacket( description );
                     }
                 }
                 break;
@@ -286,107 +282,107 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
 		ItemStack computer = ComputerItemFactory.create( -1, null, ComputerFamily.Normal );
 		GameRegistry.addRecipe( computer,
 			"XXX", "XYX", "XZX",
-			'X', Blocks.stone,
-			'Y', Items.redstone,
-			'Z', Blocks.glass_pane
+			'X', Blocks.STONE,
+			'Y', Items.REDSTONE,
+			'Z', Blocks.GLASS_PANE
 		);
 
         // Advanced Computer
 		ItemStack advancedComputer = ComputerItemFactory.create( -1, null, ComputerFamily.Advanced );
 		GameRegistry.addRecipe( advancedComputer,
 			"XXX", "XYX", "XZX",
-			'X', Items.gold_ingot,
-			'Y', Items.redstone,
-			'Z', Blocks.glass_pane
+			'X', Items.GOLD_INGOT,
+			'Y', Items.REDSTONE,
+			'Z', Blocks.GLASS_PANE
 		);
 
         // Disk Drive
 		ItemStack diskDrive = PeripheralItemFactory.create( PeripheralType.DiskDrive, null, 1 );
 		GameRegistry.addRecipe( diskDrive,
 			"XXX", "XYX", "XYX",
-			'X', Blocks.stone,
-			'Y', Items.redstone
+			'X', Blocks.STONE,
+			'Y', Items.REDSTONE
 		);
 		
 		// Wireless Modem
 		ItemStack wirelessModem = PeripheralItemFactory.create( PeripheralType.WirelessModem, null, 1 );
 		GameRegistry.addRecipe( wirelessModem,
 			"XXX", "XYX", "XXX",
-			'X', Blocks.stone,
-			'Y', Items.ender_pearl
+			'X', Blocks.STONE,
+			'Y', Items.ENDER_PEARL
 		);
 				
 		// Monitor
 		ItemStack monitor = PeripheralItemFactory.create( PeripheralType.Monitor, null, 1 );
 		GameRegistry.addRecipe( monitor,
 			"XXX", "XYX", "XXX",
-			'X', Blocks.stone,
-			'Y', Blocks.glass_pane
+			'X', Blocks.STONE,
+			'Y', Blocks.GLASS_PANE
 		);
 				
 		// PrinterEmpty
 		ItemStack printer = PeripheralItemFactory.create( PeripheralType.Printer, null, 1 );
 		GameRegistry.addRecipe( printer,
 			"XXX", "XYX", "XZX",
-			'X', Blocks.stone,
-			'Y', Items.redstone,
-			'Z', new ItemStack( Items.dye, 1, 0 ) // 0 = Black
+			'X', Blocks.STONE,
+			'Y', Items.REDSTONE,
+			'Z', new ItemStack( Items.DYE, 1, 0 ) // 0 = Black
 		);
 
 		// Advanced Monitor
 		ItemStack advancedMonitors = PeripheralItemFactory.create( PeripheralType.AdvancedMonitor, null, 4 );
 		GameRegistry.addRecipe( advancedMonitors,
 			"XXX", "XYX", "XXX",
-			'X', Items.gold_ingot,
-			'Y', Blocks.glass_pane
+			'X', Items.GOLD_INGOT,
+			'Y', Blocks.GLASS_PANE
 		);
 
 		// Networking Cable
 		ItemStack cable = PeripheralItemFactory.create( PeripheralType.Cable, null, 6 );
 		GameRegistry.addRecipe( cable,
 			" X ", "XYX", " X ",
-			'X', Blocks.stone,
-			'Y', Items.redstone
+			'X', Blocks.STONE,
+			'Y', Items.REDSTONE
 		);
 		
 		// Wired Modem
 		ItemStack wiredModem = PeripheralItemFactory.create( PeripheralType.WiredModem, null, 1 );
 		GameRegistry.addRecipe( wiredModem,
 			"XXX", "XYX", "XXX",
-			'X', Blocks.stone,
-			'Y', Items.redstone
+			'X', Blocks.STONE,
+			'Y', Items.REDSTONE
 		);
 
         // Computer
         ItemStack commandComputer = ComputerItemFactory.create( -1, null, ComputerFamily.Command );
         GameRegistry.addRecipe( commandComputer,
             "XXX", "XYX", "XZX",
-            'X', Blocks.stone,
-            'Y', Blocks.command_block,
-            'Z', Blocks.glass_pane
+            'X', Blocks.STONE,
+            'Y', Blocks.COMMAND_BLOCK,
+            'Z', Blocks.GLASS_PANE
         );
 
         // Advanced Modem
         ItemStack advancedModem = PeripheralItemFactory.create( PeripheralType.AdvancedModem, null, 1 );
         GameRegistry.addRecipe( advancedModem,
             "XXX", "XYX", "XXX",
-            'X', Items.gold_ingot,
-            'Y', Items.ender_eye
+            'X', Items.GOLD_INGOT,
+            'Y', Items.ENDER_EYE
         );
 
         // Disk
 		GameRegistry.addRecipe( new DiskRecipe() );
 
         // Impostor Disk recipes (to fool NEI)
-		ItemStack paper = new ItemStack( Items.paper, 1 );
-		ItemStack redstone = new ItemStack( Items.redstone, 1 );
+		ItemStack paper = new ItemStack( Items.PAPER, 1 );
+		ItemStack redstone = new ItemStack( Items.REDSTONE, 1 );
 		ItemStack basicDisk = ItemDiskLegacy.createFromIDAndColour( -1, null, Colour.Blue.getHex() );
 		GameRegistry.addRecipe( new ImpostorShapelessRecipe( basicDisk, new Object[] { redstone, paper } ) );
 
 		for( int colour=0; colour<16; ++colour )
 		{
 			ItemStack disk = ItemDiskLegacy.createFromIDAndColour( -1, null, Colour.values()[ colour ].getHex() );
-			ItemStack dye = new ItemStack( Items.dye, 1, colour );
+			ItemStack dye = new ItemStack( Items.DYE, 1, colour );
 			for( int otherColour=0; otherColour<16; ++otherColour )
 			{
 				if( colour != otherColour )
@@ -410,28 +406,28 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
 		ItemStack bookPrintout = ItemPrintout.createBookFromTitleAndText( null, null, null );
 
 		// Impostor Printout recipes (to fool NEI)
-		ItemStack string = new ItemStack( Items.string, 1, 0 );
+		ItemStack string = new ItemStack( Items.STRING, 1, 0 );
 		GameRegistry.addRecipe( new ImpostorShapelessRecipe( multiplePrintout, new Object[] { singlePrintout, singlePrintout, string } ) );
 
-		ItemStack leather = new ItemStack( Items.leather, 1, 0 );
+		ItemStack leather = new ItemStack( Items.LEATHER, 1, 0 );
 		GameRegistry.addRecipe( new ImpostorShapelessRecipe( bookPrintout, new Object[] { leather, singlePrintout, string } ) );
 
         // Pocket Computer
         ItemStack pocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, false );
         GameRegistry.addRecipe( pocketComputer,
             "XXX", "XYX", "XZX",
-            'X', Blocks.stone,
-            'Y', Items.golden_apple,
-            'Z', Blocks.glass_pane
+            'X', Blocks.STONE,
+            'Y', Items.GOLDEN_APPLE,
+            'Z', Blocks.GLASS_PANE
         );
 
         // Advanced Pocket Computer
         ItemStack advancedPocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Advanced, false );
         GameRegistry.addRecipe( advancedPocketComputer,
             "XXX", "XYX", "XZX",
-            'X', Items.gold_ingot,
-            'Y', Items.golden_apple,
-            'Z', Blocks.glass_pane
+            'X', Items.GOLD_INGOT,
+            'Y', Items.GOLDEN_APPLE,
+            'Z', Blocks.GLASS_PANE
         );
 
         // Wireless Pocket Computer
@@ -449,16 +445,16 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         // Dan
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString( "SkullOwner", "dan200" );
-		ItemStack danHead = new ItemStack( Items.skull, 1, 3 );
+		ItemStack danHead = new ItemStack( Items.SKULL, 1, 3 );
 		danHead.setTagCompound( tag );
-		GameRegistry.addShapelessRecipe( danHead, computer, new ItemStack( Items.skull, 1, 1 ) );
+		GameRegistry.addShapelessRecipe( danHead, computer, new ItemStack( Items.SKULL, 1, 1 ) );
 
         // Cloudy
 		tag = new NBTTagCompound();
 		tag.setString( "SkullOwner", "Cloudhunter" );
-		ItemStack cloudyHead = new ItemStack( Items.skull, 1, 3 );
+		ItemStack cloudyHead = new ItemStack( Items.SKULL, 1, 3 );
 		cloudyHead.setTagCompound( tag );
-		GameRegistry.addShapelessRecipe( cloudyHead, monitor, new ItemStack( Items.skull, 1, 1 ) );
+		GameRegistry.addShapelessRecipe( cloudyHead, monitor, new ItemStack( Items.SKULL, 1, 1 ) );
 	}
 	
 	private void registerTileEntities()

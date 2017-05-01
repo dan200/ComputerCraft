@@ -9,8 +9,9 @@ package dan200.computercraft.shared.util;
 import dan200.computercraft.ComputerCraft;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -30,24 +31,25 @@ public class RedstoneUtil
     {
         int power = 0;
         Block block = getBlock( world, pos );
-        if( block != null && block != Blocks.air )
+        if( block != null && block != Blocks.AIR )
         {
-            if( block == Blocks.redstone_wire )
+            IBlockState state = world.getBlockState( pos );
+            if( block == Blocks.REDSTONE_WIRE )
             {
                 if( side != EnumFacing.UP )
                 {
-                    power = ((Integer)world.getBlockState( pos ).getValue( BlockRedstoneWire.POWER )).intValue();
+                    power = ((Integer)state.getValue( BlockRedstoneWire.POWER )).intValue();
                 }
                 else
                 {
                     power = 0;
                 }
             }
-            else if( block.canProvidePower() )
+            else if( block.canProvidePower( state ) )
             {
-                power = block.getWeakPower( world, pos, world.getBlockState( pos ), side.getOpposite() );
+                power = block.getWeakPower( state, world, pos, side.getOpposite() );
             }
-            if( block.isNormalCube( world, pos ) )
+            if( block.isNormalCube( state, world, pos ) )
             {
                 for( EnumFacing testSide : EnumFacing.VALUES )
                 {
@@ -55,9 +57,9 @@ public class RedstoneUtil
                     {
                         BlockPos testPos = pos.offset( testSide );
                         Block neighbour = getBlock( world, testPos );
-                        if( neighbour != null && neighbour.canProvidePower() )
+                        if( neighbour != null && neighbour.canProvidePower( state ) )
                         {
-                            power = Math.max( power, neighbour.getStrongPower( world, testPos, world.getBlockState( testPos ), testSide.getOpposite() ) );
+                            power = Math.max( power, neighbour.getStrongPower( state, world, testPos, testSide.getOpposite() ) );
                         }
                     }
                 }
@@ -82,10 +84,10 @@ public class RedstoneUtil
         Block block = getBlock( world, pos );
         BlockPos neighbourPos = pos.offset( side );
         Block neighbour = getBlock( world, neighbourPos );
-        if( neighbour != null && neighbour != Blocks.air )
+        if( neighbour != null && neighbour != Blocks.AIR )
         {
             world.notifyBlockOfStateChange( neighbourPos, block );
-            if( neighbour.isNormalCube( world, neighbourPos ) )
+            if( neighbour.isNormalCube( world.getBlockState( neighbourPos ), world, neighbourPos ) )
             {
                 world.notifyNeighborsOfStateExcept( neighbourPos, neighbour, side.getOpposite() );
             }

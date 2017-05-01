@@ -9,7 +9,7 @@ package dan200.computercraft.shared.util;
 import dan200.computercraft.shared.common.IDirectionalTile;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class DirectionUtil
 {

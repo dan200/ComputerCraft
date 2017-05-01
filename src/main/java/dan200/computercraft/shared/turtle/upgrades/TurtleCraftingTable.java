@@ -9,9 +9,9 @@ package dan200.computercraft.shared.turtle.upgrades;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelManager;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -38,7 +38,7 @@ public class TurtleCraftingTable implements ITurtleUpgrade
     {
         m_id = new ResourceLocation( "minecraft", "crafting_table" );
         m_legacyID = legacyId;
-        m_item = new ItemStack( Blocks.crafting_table, 1, 0 );
+        m_item = new ItemStack( Blocks.CRAFTING_TABLE, 1, 0 );
     }
 
     @Override

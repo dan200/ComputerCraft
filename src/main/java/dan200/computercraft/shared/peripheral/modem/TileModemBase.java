@@ -10,7 +10,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.common.BlockGeneric;
 import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 
 public abstract class TileModemBase extends TilePeripheralBase
@@ -50,7 +50,7 @@ public abstract class TileModemBase extends TilePeripheralBase
         ) )
         {
             // Drop everything and remove block
-            ((BlockGeneric)getBlockType()).dropAllItems( worldObj, getPos(), 0, false, false );
+            ((BlockGeneric)getBlockType()).dropAllItems( worldObj, getPos(), false );
             worldObj.setBlockToAir( getPos() );
         }
     }

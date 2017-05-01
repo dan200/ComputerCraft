@@ -16,8 +16,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -145,7 +145,7 @@ public class TurtleSuckCommand implements ITurtleCommand
                     if( storedItems )
                     {
                         // Play fx
-                        world.playSoundEffect( oldPosition.getX() + 0.5, oldPosition.getY() + 0.5, oldPosition.getZ() + 0.5, "random.pop", 0.2f, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7f + 1.0f) * 2.0f );
+                        world.playBroadcastSound( 1000, oldPosition, 0 );
                         turtle.playAnimation( TurtleAnimation.Wait );
                         return TurtleCommandResult.success();
                     }

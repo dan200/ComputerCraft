@@ -45,7 +45,7 @@ public abstract class TilePeripheralBase extends TileGeneric
     }
 
     @Override
-    public void getDroppedItems( List<ItemStack> drops, int fortune, boolean creative, boolean silkTouch )
+    public void getDroppedItems( List<ItemStack> drops, boolean creative )
     {
         if( !creative )
         {
@@ -150,16 +150,17 @@ public abstract class TilePeripheralBase extends TileGeneric
     }
 
 	@Override	
-    public void writeToNBT( NBTTagCompound nbttagcompound )
+    public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
 		// Write properties
-        super.writeToNBT( nbttagcompound );
+        nbttagcompound = super.writeToNBT( nbttagcompound );
 		nbttagcompound.setInteger( "dir", m_dir.getIndex() );
 		nbttagcompound.setInteger( "anim", m_anim );
         if( m_label != null )
         {
             nbttagcompound.setString( "label", m_label );
         }
+        return nbttagcompound;
     }
 
     @Override

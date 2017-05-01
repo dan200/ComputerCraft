@@ -14,7 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -50,11 +50,11 @@ public class TurtleCompareCommand implements ITurtleCommand
         {
             if( !world.isAirBlock( newPosition ) )
             {
-                Block lookAtBlock = world.getBlockState( newPosition ).getBlock();
-                if( lookAtBlock != null && !lookAtBlock.isAir( world, newPosition ) )
+                IBlockState lookAtState = world.getBlockState( newPosition );
+                Block lookAtBlock = lookAtState.getBlock();
+                if( !lookAtBlock.isAir( lookAtState, world, newPosition ) )
                 {
                     // Try createStackedBlock first
-                    IBlockState lookAtState = world.getBlockState( newPosition );
                     if( !lookAtBlock.hasTileEntity( lookAtState ) )
                     {
                         try

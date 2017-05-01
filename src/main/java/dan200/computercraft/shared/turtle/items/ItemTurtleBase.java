@@ -21,10 +21,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -142,29 +142,29 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
         ITurtleUpgrade right = getUpgrade( stack, TurtleSide.Right );
         if( left != null && right != null )
         {
-            return StatCollector.translateToLocalFormatted(
+            return I18n.translateToLocalFormatted(
                 baseString + ".upgraded_twice.name",
-                StatCollector.translateToLocal( right.getUnlocalisedAdjective() ),
-                StatCollector.translateToLocal( left.getUnlocalisedAdjective() )
+                I18n.translateToLocal( right.getUnlocalisedAdjective() ),
+                I18n.translateToLocal( left.getUnlocalisedAdjective() )
             );
         }
         else if( left != null )
         {
-            return StatCollector.translateToLocalFormatted(
+            return I18n.translateToLocalFormatted(
                 baseString + ".upgraded.name",
-                StatCollector.translateToLocal( left.getUnlocalisedAdjective() )
+                I18n.translateToLocal( left.getUnlocalisedAdjective() )
             );
         }
         else if( right != null )
         {
-            return StatCollector.translateToLocalFormatted(
+            return I18n.translateToLocalFormatted(
                 baseString + ".upgraded.name",
-                StatCollector.translateToLocal( right.getUnlocalisedAdjective() )
+                I18n.translateToLocal( right.getUnlocalisedAdjective() )
             );
         }
         else
         {
-            return StatCollector.translateToLocal( baseString + ".name" );
+            return I18n.translateToLocal( baseString + ".name" );
         }
     }
 

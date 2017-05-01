@@ -26,7 +26,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.translation.I18n;;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -156,7 +160,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     }
 
     @Override
-    public ItemStack onItemRightClick( ItemStack stack, World world, EntityPlayer player )
+    public ActionResult<ItemStack> onItemRightClick( ItemStack stack, World world, EntityPlayer player, EnumHand hand )
     {
         if( !world.isRemote )
         {
@@ -166,8 +170,9 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
                 computer.turnOn();
             }
             ComputerCraft.openPocketComputerGUI( player );
+            return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
         }
-        return stack;
+        return new ActionResult<ItemStack>( EnumActionResult.PASS, stack );
     }
 
     @Override
@@ -194,14 +199,14 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         boolean modem = getHasModem( stack );
         if( modem )
         {
-            return StatCollector.translateToLocalFormatted(
+            return I18n.translateToLocalFormatted(
                 baseString + ".upgraded.name",
-                StatCollector.translateToLocal( "upgrade.computercraft:wireless_modem.adjective" )
+                I18n.translateToLocal( "upgrade.computercraft:wireless_modem.adjective" )
             );
         }
         else
         {
-            return StatCollector.translateToLocal( baseString + ".name" );
+            return I18n.translateToLocal( baseString + ".name" );
         }
     }
 
@@ -370,7 +375,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     }
 
     @Override
-    public String getAudioRecordName( ItemStack stack )
+    public SoundEvent getAudio( ItemStack stack )
     {
         return null;
     }

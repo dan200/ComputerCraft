@@ -24,6 +24,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -101,9 +103,9 @@ public class TilePrinter extends TilePeripheralBase
     }
 
 	@Override	
-    public void writeToNBT(NBTTagCompound nbttagcompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
-        super.writeToNBT(nbttagcompound);
+        nbttagcompound = super.writeToNBT(nbttagcompound);
 
 		// Write page
 		synchronized( m_page )
@@ -129,6 +131,8 @@ public class TilePrinter extends TilePeripheralBase
 			}
 			nbttagcompound.setTag("Items", nbttaglist);
 		}
+
+        return nbttagcompound;
     }
 
     @Override
@@ -254,15 +258,15 @@ public class TilePrinter extends TilePeripheralBase
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
         if( hasCustomName() )
         {
-            return new ChatComponentText( getName() );
+            return new TextComponentString( getName() );
         }
         else
         {
-            return new ChatComponentTranslation( getName() );
+            return new TextComponentTranslation( getName() );
         }
     }
 
@@ -424,13 +428,13 @@ public class TilePrinter extends TilePeripheralBase
 	
 	private boolean isInk( ItemStack stack )
 	{
-		return (stack.getItem() == Items.dye);
+		return (stack.getItem() == Items.DYE);
 	}
 
 	private boolean isPaper( ItemStack stack )
 	{
 		Item item = stack.getItem();
-		return ( item == Items.paper || (item instanceof ItemPrintout && ItemPrintout.getType( stack ) == ItemPrintout.Type.Single) );
+		return ( item == Items.PAPER || (item instanceof ItemPrintout && ItemPrintout.getType( stack ) == ItemPrintout.Type.Single) );
 	}
 
 	private boolean canInputPage()

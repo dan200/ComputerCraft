@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -92,7 +93,7 @@ public abstract class ItemComputerBase extends ItemBlock implements IComputerIte
     }
 
     @Override
-    public String getAudioRecordName( ItemStack stack )
+    public SoundEvent getAudio( ItemStack stack )
     {
         return null;
     }

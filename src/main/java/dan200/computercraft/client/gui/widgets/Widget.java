@@ -6,16 +6,16 @@
 
 package dan200.computercraft.client.gui.widgets;
 
+import dan200.computercraftedu.client.gui.widgets.MousePos;
+import dan200.computercraftedu.client.gui.widgets.WidgetContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -177,11 +177,11 @@ public abstract class Widget extends Gui
     protected void drawFullImage( int x, int y, int w, int h )
     {
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.getWorldRenderer().begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX );
-        tessellator.getWorldRenderer().pos( (double) ( x + 0 ), (double) ( y + h ), (double) this.zLevel ).tex( 0.0, 1.0 ).endVertex();
-        tessellator.getWorldRenderer().pos( (double) ( x + w ), (double) ( y + h ), (double) this.zLevel ).tex( 1.0, 1.0 ).endVertex();
-        tessellator.getWorldRenderer().pos( (double) ( x + w ), (double) ( y + 0 ), (double) this.zLevel ).tex( 1.0, 0.0 ).endVertex();
-        tessellator.getWorldRenderer().pos( (double) ( x + 0 ), (double) ( y + 0 ), (double) this.zLevel ).tex( 0.0, 0.0 ).endVertex();
+        tessellator.getBuffer().begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX );
+        tessellator.getBuffer().pos( (double) ( x + 0 ), (double) ( y + h ), (double) this.zLevel ).tex( 0.0, 1.0 ).endVertex();
+        tessellator.getBuffer().pos( (double) ( x + w ), (double) ( y + h ), (double) this.zLevel ).tex( 1.0, 1.0 ).endVertex();
+        tessellator.getBuffer().pos( (double) ( x + w ), (double) ( y + 0 ), (double) this.zLevel ).tex( 1.0, 0.0 ).endVertex();
+        tessellator.getBuffer().pos( (double) ( x + 0 ), (double) ( y + 0 ), (double) this.zLevel ).tex( 0.0, 0.0 ).endVertex();
         tessellator.draw();
     }
 
@@ -381,6 +381,6 @@ public abstract class Widget extends Gui
     protected void playClickSound()
     {
         Minecraft mc = Minecraft.getMinecraft();
-        mc.getSoundHandler().playSound( PositionedSoundRecord.create( new ResourceLocation( "gui.button.press" ), 1.0F ) );
+        mc.getSoundHandler().playSound( PositionedSoundRecord.getMasterRecord( SoundEvents.UI_BUTTON_CLICK, 1.0F ) );
     }
 }

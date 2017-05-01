@@ -9,20 +9,25 @@ package dan200.computercraft.shared.turtle.entity;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class TurtleVisionCamera extends EntityLivingBase
 {
     private ITurtleAccess m_turtle;
-    private ItemStack[] m_inventory;
+    private ArrayList<ItemStack> m_armor;
 
     public TurtleVisionCamera( World world, ITurtleAccess turtle )
     {
         super( world );
         m_turtle = turtle;
-        m_inventory = new ItemStack[0];
+        m_armor = new ArrayList<ItemStack>();
         applyPos();
     }
 
@@ -38,6 +43,12 @@ public class TurtleVisionCamera extends EntityLivingBase
     }
 
     @Override
+    public EnumHandSide getPrimaryHand()
+    {
+        return EnumHandSide.RIGHT;
+    }
+
+    @Override
     public void onUpdate()
     {
         m_turtle = ((TurtleBrain)m_turtle).getFutureSelf();
@@ -46,7 +57,7 @@ public class TurtleVisionCamera extends EntityLivingBase
 
     private void applyPos()
     {
-        Vec3 prevPos = m_turtle.getVisualPosition( 0.0f );
+        Vec3d prevPos = m_turtle.getVisualPosition( 0.0f );
         this.lastTickPosX = this.prevPosX = prevPos.xCoord;
         this.lastTickPosY = this.prevPosY = prevPos.yCoord;
         this.lastTickPosZ = this.prevPosZ = prevPos.zCoord;
@@ -54,7 +65,7 @@ public class TurtleVisionCamera extends EntityLivingBase
         this.prevRotationYaw = m_turtle.getVisualYaw( 0.0f );
         this.prevCameraPitch = 0.0f;
 
-        Vec3 pos = m_turtle.getVisualPosition( 1.0f );
+        Vec3d pos = m_turtle.getVisualPosition( 1.0f );
         this.posX = pos.xCoord;
         this.posY = pos.yCoord;
         this.posZ = pos.zCoord;
@@ -76,31 +87,25 @@ public class TurtleVisionCamera extends EntityLivingBase
     // EntityLivingBase overrides:
 
     @Override
-    public ItemStack getHeldItem()
+    public ItemStack getHeldItem( EnumHand hand )
     {
         return null;
     }
 
     @Override
-    public ItemStack getEquipmentInSlot( int slot )
+    public void setItemStackToSlot(EntityEquipmentSlot slot, ItemStack stack)
+    {
+    }
+
+    @Override
+    public ItemStack getItemStackFromSlot(EntityEquipmentSlot slot)
     {
         return null;
     }
 
     @Override
-    public ItemStack getCurrentArmor( int slotIn )
+    public Iterable<ItemStack> getArmorInventoryList()
     {
-        return null;
-    }
-
-    @Override
-    public void setCurrentItemOrArmor( int slot, ItemStack stack )
-    {
-    }
-
-    @Override
-    public ItemStack[] getInventory()
-    {
-        return m_inventory;
+        return m_armor;
     }
 }

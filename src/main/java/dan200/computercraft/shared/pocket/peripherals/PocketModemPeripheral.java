@@ -2,7 +2,7 @@ package dan200.computercraft.shared.pocket.peripherals;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.peripheral.modem.WirelessModemPeripheral;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -14,18 +14,18 @@ import net.minecraft.world.World;
 public class PocketModemPeripheral extends WirelessModemPeripheral
 {
     private World m_world;
-    private Vec3 m_position;
+    private Vec3d m_position;
 
     public PocketModemPeripheral( boolean advanced )
     {
         super( advanced );
         m_world = null;
-        m_position = new Vec3( 0.0, 0.0, 0.0 );
+        m_position = new Vec3d( 0.0, 0.0, 0.0 );
     }
 
     public void setLocation( World world, double x, double y, double z )
     {
-        m_position = new Vec3( x, y, z );
+        m_position = new Vec3d( x, y, z );
         if( m_world != world )
         {
             m_world = world;
@@ -40,7 +40,7 @@ public class PocketModemPeripheral extends WirelessModemPeripheral
     }
 
     @Override
-    protected Vec3 getPosition()
+    protected Vec3d getPosition()
     {
         if( m_world != null )
         {

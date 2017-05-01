@@ -16,15 +16,15 @@ import dan200.computercraft.shared.util.DirectionUtil;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -34,8 +34,8 @@ public class BlockPeripheral extends BlockPeripheralBase
 {
     public static class Properties
     {
-        public static final PropertyDirection FACING = PropertyDirection.create( "facing",EnumFacing.Plane.HORIZONTAL );
-        public static final PropertyEnum VARIANT = PropertyEnum.create( "variant", BlockPeripheralVariant.class );
+        public static final PropertyDirection FACING = PropertyDirection.create( "facing", EnumFacing.Plane.HORIZONTAL );
+        public static final PropertyEnum<BlockPeripheralVariant> VARIANT = PropertyEnum.<BlockPeripheralVariant>create( "variant", BlockPeripheralVariant.class );
     }
 
     public BlockPeripheral()
@@ -50,15 +50,15 @@ public class BlockPeripheral extends BlockPeripheralBase
     }
 
     @SideOnly( Side.CLIENT)
-    public EnumWorldBlockLayer getBlockLayer()
+    public BlockRenderLayer getBlockLayer()
     {
-        return EnumWorldBlockLayer.CUTOUT;
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty[] {
+        return new BlockStateContainer(this, new IProperty[] {
             Properties.FACING,
             Properties.VARIANT
         });

@@ -13,7 +13,7 @@ import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
@@ -78,7 +78,7 @@ public class TurtlePlayer extends FakePlayer
     }
 
     @Override
-    public void mountEntity( Entity entity )
+    public void mountEntityAndWakeUp()
     {
     }
 

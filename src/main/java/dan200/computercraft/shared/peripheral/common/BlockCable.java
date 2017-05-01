@@ -13,11 +13,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 
@@ -27,7 +27,7 @@ public class BlockCable extends BlockPeripheralBase
 
     public static class Properties
     {
-        public static final PropertyEnum MODEM = PropertyEnum.create( "modem", BlockCableModemVariant.class );
+        public static final PropertyEnum<BlockCableModemVariant> MODEM = PropertyEnum.<BlockCableModemVariant>create( "modem", BlockCableModemVariant.class );
         public static final PropertyBool CABLE = PropertyBool.create( "cable" );
         public static final PropertyBool NORTH = PropertyBool.create( "north" );
         public static final PropertyBool SOUTH = PropertyBool.create( "south" );
@@ -74,9 +74,9 @@ public class BlockCable extends BlockPeripheralBase
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty[] {
+        return new BlockStateContainer(this, new IProperty[] {
             Properties.MODEM,
             Properties.CABLE,
             Properties.NORTH,
@@ -209,7 +209,7 @@ public class BlockCable extends BlockPeripheralBase
     }
 
     @Override
-    public boolean shouldSideBeRendered( IBlockAccess world, BlockPos pos, EnumFacing side )
+    public boolean shouldSideBeRendered( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side )
     {
         return true;
     }

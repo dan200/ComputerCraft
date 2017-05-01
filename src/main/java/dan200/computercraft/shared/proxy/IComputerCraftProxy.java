@@ -14,7 +14,8 @@ import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public interface IComputerCraftProxy
 	public Object getFixedWidthFontRenderer();
 
 	public String getRecordInfo( ItemStack item );
-	public void playRecord( String record, String recordInfo, World world, BlockPos pos );
+	public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos );
 
 	public Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive );
 	public Object getComputerGUI( TileComputer computer );

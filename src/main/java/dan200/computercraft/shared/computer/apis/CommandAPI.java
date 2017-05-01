@@ -20,7 +20,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -83,7 +83,7 @@ public class CommandAPI implements ILuaAPI
 
     private Object[] doCommand( String command )
     {
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = m_computer.getWorld().getMinecraftServer();
         if( server != null && server.isCommandBlockEnabled() )
         {
             ICommandManager commandManager = server.getCommandManager();
@@ -111,7 +111,7 @@ public class CommandAPI implements ILuaAPI
         // Get the details of the block
         IBlockState state = world.getBlockState( pos );
         Block block = state.getBlock();
-        String name = ((ResourceLocation)Block.blockRegistry.getNameForObject( block )).toString();
+        String name = ((ResourceLocation)Block.REGISTRY.getNameForObject( block )).toString();
         int metadata = block.getMetaFromState( state );
 
         Map<Object, Object> table = new HashMap<Object, Object>();
@@ -188,7 +188,7 @@ public class CommandAPI implements ILuaAPI
                     {
                         int i = 1;
                         Map<Object, Object> result = new HashMap<Object, Object>();
-                        MinecraftServer server = MinecraftServer.getServer();
+                        MinecraftServer server = m_computer.getWorld().getMinecraftServer();
                         if( server != null )
                         {
                             ICommandManager commandManager = server.getCommandManager();
@@ -201,7 +201,7 @@ public class CommandAPI implements ILuaAPI
                                 ICommand command = (ICommand)entry.getValue();
                                 try
                                 {
-                                    if( command.canCommandSenderUseCommand( commmandSender ) )
+                                    if( command.checkPermission( server, commmandSender ) )
                                     {
                                         result.put( i++, name );
                                     }

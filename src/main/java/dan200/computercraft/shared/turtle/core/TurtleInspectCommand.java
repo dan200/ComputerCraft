@@ -14,7 +14,7 @@ import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -49,7 +49,7 @@ public class TurtleInspectCommand implements ITurtleCommand
             {
                 IBlockState state = world.getBlockState( newPosition );
                 Block block = state.getBlock();
-                String name = ((ResourceLocation)Block.blockRegistry.getNameForObject( block )).toString();
+                String name = ((ResourceLocation)Block.REGISTRY.getNameForObject( block )).toString();
                 int metadata = block.getMetaFromState( state );
 
                 Map<Object, Object> table = new HashMap<Object, Object>();

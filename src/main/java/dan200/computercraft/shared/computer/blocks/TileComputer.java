@@ -47,7 +47,7 @@ public class TileComputer extends TileComputerBase
     }
 
     @Override
-    public void getDroppedItems( List<ItemStack> drops, int fortune, boolean creative, boolean silkTouch )
+    public void getDroppedItems( List<ItemStack> drops, boolean creative )
     {
         IComputer computer = getComputer();
         if( !creative || (computer != null && computer.getLabel() != null) )

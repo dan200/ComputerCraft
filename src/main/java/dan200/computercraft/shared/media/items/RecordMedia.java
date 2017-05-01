@@ -11,6 +11,7 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
 // An implementation of IMedia for ItemRecord's
@@ -39,10 +40,10 @@ public class RecordMedia implements IMedia
 	}
 	
 	@Override
-	public String getAudioRecordName( ItemStack stack )
+	public SoundEvent getAudio( ItemStack stack )
 	{
 		ItemRecord itemRecord = (ItemRecord)stack.getItem();
-		return "records." + itemRecord.recordName;
+        return itemRecord.getSound();
 	}
     
 	@Override

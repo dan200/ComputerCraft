@@ -19,7 +19,7 @@ public class PacketHandler
         try
         {
             ComputerCraftPacket packet = new ComputerCraftPacket();
-            packet.fromBytes( event.packet.payload() );
+            packet.fromBytes( event.getPacket().payload() );
             ComputerCraft.handlePacket( packet, null );
         }
         catch( Exception e )
@@ -34,8 +34,8 @@ public class PacketHandler
         try
         {
             ComputerCraftPacket packet = new ComputerCraftPacket();
-            packet.fromBytes( event.packet.payload() );
-            ComputerCraft.handlePacket( packet, ((NetHandlerPlayServer)event.handler).playerEntity );
+            packet.fromBytes( event.getPacket().payload() );
+            ComputerCraft.handlePacket( packet, ((NetHandlerPlayServer)event.getHandler()).playerEntity );
         }
         catch( Exception e )
         {

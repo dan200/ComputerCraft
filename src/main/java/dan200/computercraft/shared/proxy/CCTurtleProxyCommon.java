@@ -342,37 +342,37 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         // Recipes
         // Turtle
         GameRegistry.addRecipe( new TurtleRecipe( new Item[] {
-            Items.iron_ingot, Items.iron_ingot, Items.iron_ingot,
-            Items.iron_ingot, Item.getItemFromBlock( ComputerCraft.Blocks.computer ), Items.iron_ingot,
-            Items.iron_ingot, Item.getItemFromBlock( Blocks.chest ), Items.iron_ingot,
+            Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT,
+            Items.IRON_INGOT, Item.getItemFromBlock( ComputerCraft.Blocks.computer ), Items.IRON_INGOT,
+            Items.IRON_INGOT, Item.getItemFromBlock( Blocks.CHEST ), Items.IRON_INGOT,
         }, ComputerFamily.Normal ) );
         GameRegistry.addRecipe( new TurtleUpgradeRecipe() );
 
         // Impostor Turtle recipe (to fool NEI)
-        ItemStack iron = new ItemStack( Items.iron_ingot, 1 );
+        ItemStack iron = new ItemStack( Items.IRON_INGOT, 1 );
         GameRegistry.addRecipe( new ImpostorRecipe( 3, 3,
             new ItemStack[] {
                 iron, iron, iron,
                 iron, ComputerItemFactory.create( -1, null, ComputerFamily.Normal ), iron,
-                iron, new ItemStack( Blocks.chest, 1 ), iron,
+                iron, new ItemStack( Blocks.CHEST, 1 ), iron,
             },
             TurtleItemFactory.create( -1, null, null, ComputerFamily.Normal, null, null, 0, null )
         ) );
 
         // Advanced Turtle
         GameRegistry.addRecipe( new TurtleRecipe( new Item[] {
-            Items.gold_ingot, Items.gold_ingot, Items.gold_ingot,
-            Items.gold_ingot, Item.getItemFromBlock( ComputerCraft.Blocks.computer ), Items.gold_ingot,
-            Items.gold_ingot, Item.getItemFromBlock( Blocks.chest ), Items.gold_ingot,
+            Items.GOLD_INGOT, Items.GOLD_INGOT, Items.GOLD_INGOT,
+            Items.GOLD_INGOT, Item.getItemFromBlock( ComputerCraft.Blocks.computer ), Items.GOLD_INGOT,
+            Items.GOLD_INGOT, Item.getItemFromBlock( Blocks.CHEST ), Items.GOLD_INGOT,
         }, ComputerFamily.Advanced ) );
 
         // Impostor Advanced Turtle recipe (to fool NEI)
-        ItemStack gold = new ItemStack( Items.gold_ingot, 1 );
+        ItemStack gold = new ItemStack( Items.GOLD_INGOT, 1 );
         GameRegistry.addRecipe( new ImpostorRecipe( 3, 3,
             new ItemStack[] {
                 gold, gold, gold,
                 gold, ComputerItemFactory.create( -1, null, ComputerFamily.Advanced ), gold,
-                gold, new ItemStack( Blocks.chest, 1 ), gold,
+                gold, new ItemStack( Blocks.CHEST, 1 ), gold,
             },
             TurtleItemFactory.create( -1, null, null, ComputerFamily.Advanced, null, null, 0, null )
         ) );
@@ -384,19 +384,19 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         ComputerCraft.Upgrades.craftingTable = new TurtleCraftingTable( 2 );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.craftingTable );
 
-        ComputerCraft.Upgrades.diamondSword = new TurtleSword( new ResourceLocation( "minecraft", "diamond_sword" ), 3, "upgrade.minecraft:diamond_sword.adjective", Items.diamond_sword );
+        ComputerCraft.Upgrades.diamondSword = new TurtleSword( new ResourceLocation( "minecraft", "diamond_sword" ), 3, "upgrade.minecraft:diamond_sword.adjective", Items.DIAMOND_SWORD );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.diamondSword );
 
-        ComputerCraft.Upgrades.diamondShovel = new TurtleShovel( new ResourceLocation( "minecraft", "diamond_shovel" ), 4, "upgrade.minecraft:diamond_shovel.adjective", Items.diamond_shovel );
+        ComputerCraft.Upgrades.diamondShovel = new TurtleShovel( new ResourceLocation( "minecraft", "diamond_shovel" ), 4, "upgrade.minecraft:diamond_shovel.adjective", Items.DIAMOND_SHOVEL );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.diamondShovel );
 
-        ComputerCraft.Upgrades.diamondPickaxe = new TurtleTool( new ResourceLocation( "minecraft", "diamond_pickaxe" ), 5, "upgrade.minecraft:diamond_pickaxe.adjective", Items.diamond_pickaxe );
+        ComputerCraft.Upgrades.diamondPickaxe = new TurtleTool( new ResourceLocation( "minecraft", "diamond_pickaxe" ), 5, "upgrade.minecraft:diamond_pickaxe.adjective", Items.DIAMOND_PICKAXE );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.diamondPickaxe );
 
-        ComputerCraft.Upgrades.diamondAxe = new TurtleAxe( new ResourceLocation( "minecraft", "diamond_axe" ), 6, "upgrade.minecraft:diamond_axe.adjective", Items.diamond_axe );
+        ComputerCraft.Upgrades.diamondAxe = new TurtleAxe( new ResourceLocation( "minecraft", "diamond_axe" ), 6, "upgrade.minecraft:diamond_axe.adjective", Items.DIAMOND_AXE );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.diamondAxe );
 
-        ComputerCraft.Upgrades.diamondHoe = new TurtleHoe( new ResourceLocation( "minecraft", "diamond_hoe" ), 7, "upgrade.minecraft:diamond_hoe.adjective", Items.diamond_hoe );
+        ComputerCraft.Upgrades.diamondHoe = new TurtleHoe( new ResourceLocation( "minecraft", "diamond_hoe" ), 7, "upgrade.minecraft:diamond_hoe.adjective", Items.DIAMOND_HOE );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.diamondHoe );
 
         ComputerCraft.Upgrades.advancedModem =  new TurtleModem( true, new ResourceLocation( "computercraft", "advanced_modem" ), -1 );
@@ -427,7 +427,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
 		@SubscribeEvent
 		public void onEntityLivingDrops( LivingDropsEvent event )
 		{
-			dispatchEntityDrops( event.entity, event.drops );
+			dispatchEntityDrops( event.getEntity(), event.getDrops() );
 		}
     }
     

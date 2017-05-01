@@ -27,6 +27,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -297,7 +299,7 @@ public class TurtleBrain implements ITurtleAccess
         }
     }
 
-    public void writeToNBT( NBTTagCompound nbttagcompound )
+    public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
         // Write state
         nbttagcompound.setInteger( "dir", m_direction.getIndex() );
@@ -338,6 +340,8 @@ public class TurtleBrain implements ITurtleAccess
         {
             nbttagcompound.setTag( "rightUpgradeNBT", (NBTTagCompound) getUpgradeNBTData( TurtleSide.Right ).copy() );
         }
+
+        return nbttagcompound;
     }
 
     private String getUpgradeID( ITurtleUpgrade upgrade )
@@ -535,11 +539,11 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public Vec3 getVisualPosition( float f )
+    public Vec3d getVisualPosition( float f )
     {
-        Vec3 offset = getRenderOffset( f );
+        Vec3d offset = getRenderOffset( f );
         BlockPos pos = m_owner.getPos();
-        return new Vec3(
+        return new Vec3d(
             pos.getX() + 0.5 + offset.xCoord,
             pos.getY() + 0.5 + offset.yCoord,
             pos.getZ() + 0.5 + offset.zCoord
@@ -856,7 +860,7 @@ public class TurtleBrain implements ITurtleAccess
         return false;
     }
 
-    public Vec3 getRenderOffset( float f )
+    public Vec3d getRenderOffset( float f )
     {
         switch( m_animation )
         {
@@ -893,7 +897,7 @@ public class TurtleBrain implements ITurtleAccess
                 }
 
                 double distance = -1.0 + (double)getAnimationFraction( f );
-                return new Vec3(
+                return new Vec3d(
                     distance * (double)dir.getFrontOffsetX(),
                     distance * (double)dir.getFrontOffsetY(),
                     distance * (double)dir.getFrontOffsetZ()
@@ -901,7 +905,7 @@ public class TurtleBrain implements ITurtleAccess
             }
             default:
             {
-                return new Vec3( 0.0, 0.0, 0.0 );
+                return new Vec3d( 0.0, 0.0, 0.0 );
             }
         }
     }
@@ -1140,7 +1144,7 @@ public class TurtleBrain implements ITurtleAccess
                 Holiday currentHoliday = HolidayUtil.getCurrentHoliday();
                 if( currentHoliday == Holiday.Valentines )
                 {
-                    Vec3 position = getVisualPosition( 1.0f );
+                    Vec3d position = getVisualPosition( 1.0f );
                     if( position != null )
                     {
                         double x = position.xCoord + world.rand.nextGaussian() * 0.1;

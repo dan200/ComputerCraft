@@ -12,7 +12,7 @@ import dan200.computercraft.shared.peripheral.PeripheralType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -21,7 +21,7 @@ public abstract class BlockPeripheralBase extends BlockDirectional
 {
     public BlockPeripheralBase()
     {
-        super( Material.rock );
+        super( Material.ROCK );
     }
 
     protected abstract IBlockState getDefaultBlockState( PeripheralType type, EnumFacing placedSide );
@@ -30,13 +30,13 @@ public abstract class BlockPeripheralBase extends BlockDirectional
     protected abstract TilePeripheralBase createTile( PeripheralType type );
 
     @Override
-    public final boolean isOpaqueCube()
+    public final boolean isOpaqueCube( IBlockState state )
     {
         return false;
     }
 
     @Override
-    public final boolean isFullCube()
+    public final boolean isFullCube( IBlockState state )
     {
         return false;
     }

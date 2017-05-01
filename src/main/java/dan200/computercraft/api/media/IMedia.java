@@ -8,6 +8,7 @@ package dan200.computercraft.api.media;
 
 import dan200.computercraft.api.filesystem.IMount;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
 /**
@@ -43,7 +44,7 @@ public interface IMedia
 	 * @param stack The itemstack to inspect.
 	 * @return The name, or null if this item does not represent an item with audio.
 	 */
-	public String getAudioRecordName( ItemStack stack );	
+	public SoundEvent getAudio( ItemStack stack );
     
 	/**
 	 * If this disk represents an item with data (like a floppy disk), get a mount representing it's contents. This will be mounted onto the filesystem of the computercraft while the media is in the disk drive.

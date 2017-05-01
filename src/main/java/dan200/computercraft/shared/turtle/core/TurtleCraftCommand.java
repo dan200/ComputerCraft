@@ -14,7 +14,7 @@ import dan200.computercraft.shared.turtle.upgrades.TurtleInventoryCrafting;
 import dan200.computercraft.shared.util.InventoryUtil;
 import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 

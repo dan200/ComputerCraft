@@ -53,7 +53,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
@@ -121,8 +122,6 @@ public class ComputerCraft
 
 	public static int computerSpaceLimit = 1000 * 1000;
 	public static int floppySpaceLimit = 125 * 1000;
-
-	public static int treasureDiskLootFrequency = 1;
 
     // Blocks and Items
 	public static class Blocks
@@ -198,71 +197,67 @@ public class ComputerCraft
         // Setup general
 
 		Property prop = config.get(Configuration.CATEGORY_GENERAL, "http_enable", http_enable);
-		prop.comment = "Enable the \"http\" API on Computers (see \"http_whitelist\" for more fine grained control than this)";
+		prop.setComment( "Enable the \"http\" API on Computers (see \"http_whitelist\" for more fine grained control than this)" );
         http_enable = prop.getBoolean(http_enable);
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "http_whitelist", http_whitelist );
-        prop.comment = "A semicolon limited list of wildcards for domains that can be accessed through the \"http\" API on Computers. Set this to \"*\" to access to the entire internet. Example: \"*.pastebin.com;*.github.com;*.computercraft.info\" will restrict access to just those 3 domains.";
+        prop.setComment( "A semicolon limited list of wildcards for domains that can be accessed through the \"http\" API on Computers. Set this to \"*\" to access to the entire internet. Example: \"*.pastebin.com;*.github.com;*.computercraft.info\" will restrict access to just those 3 domains." );
         http_whitelist = prop.getString();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "disable_lua51_features", disable_lua51_features );
-        prop.comment = "Set this to true to disable Lua 5.1 functions that will be removed in a future update. Useful for ensuring forward compatibility of your programs now.";
+        prop.setComment( "Set this to true to disable Lua 5.1 functions that will be removed in a future update. Useful for ensuring forward compatibility of your programs now." );
         disable_lua51_features = prop.getBoolean( disable_lua51_features );
 
         prop = config.get( Configuration.CATEGORY_GENERAL, "default_computer_settings", default_computer_settings );
-        prop.comment = "A comma seperated list of default system settings to set on new computers. Example: \"shell.autocomplete=false,lua.autocomplete=false,edit.autocomplete=false\" will disable all autocompletion";
+        prop.setComment( "A comma seperated list of default system settings to set on new computers. Example: \"shell.autocomplete=false,lua.autocomplete=false,edit.autocomplete=false\" will disable all autocompletion" );
         default_computer_settings = prop.getString();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "enableCommandBlock", enableCommandBlock);
-		prop.comment = "Enable Command Block peripheral support";
+		prop.setComment( "Enable Command Block peripheral support" );
 		enableCommandBlock = prop.getBoolean(enableCommandBlock);
 
 		prop = config.get(Configuration.CATEGORY_GENERAL, "modem_range", modem_range);
-		prop.comment = "The range of Wireless Modems at low altitude in clear weather, in meters";
+		prop.setComment( "The range of Wireless Modems at low altitude in clear weather, in meters" );
 		modem_range = Math.min( prop.getInt(), 100000 );
 
 		prop = config.get(Configuration.CATEGORY_GENERAL, "modem_highAltitudeRange", modem_highAltitudeRange);
-		prop.comment = "The range of Wireless Modems at maximum altitude in clear weather, in meters";
+		prop.setComment( "The range of Wireless Modems at maximum altitude in clear weather, in meters" );
 		modem_highAltitudeRange = Math.min( prop.getInt(), 100000 );
 
 		prop = config.get(Configuration.CATEGORY_GENERAL, "modem_rangeDuringStorm", modem_rangeDuringStorm);
-		prop.comment = "The range of Wireless Modems at low altitude in stormy weather, in meters";
+		prop.setComment( "The range of Wireless Modems at low altitude in stormy weather, in meters" );
 		modem_rangeDuringStorm = Math.min( prop.getInt(), 100000 );
 
 		prop = config.get(Configuration.CATEGORY_GENERAL, "modem_highAltitudeRangeDuringStorm", modem_highAltitudeRangeDuringStorm);
-		prop.comment = "The range of Wireless Modems at maximum altitude in stormy weather, in meters";
+		prop.setComment( "The range of Wireless Modems at maximum altitude in stormy weather, in meters" );
 		modem_highAltitudeRangeDuringStorm = Math.min( prop.getInt(), 100000 );
 
 		prop = config.get(Configuration.CATEGORY_GENERAL, "computerSpaceLimit", computerSpaceLimit);
-		prop.comment = "The disk space limit for computers and turtles, in bytes";
+		prop.setComment( "The disk space limit for computers and turtles, in bytes" );
 		computerSpaceLimit = prop.getInt();
 
 		prop = config.get(Configuration.CATEGORY_GENERAL, "floppySpaceLimit", floppySpaceLimit);
-		prop.comment = "The disk space limit for floppy disks, in bytes";
+		prop.setComment( "The disk space limit for floppy disks, in bytes" );
 		floppySpaceLimit = prop.getInt();
 
-		prop = config.get(Configuration.CATEGORY_GENERAL, "treasureDiskLootFrequency", treasureDiskLootFrequency);
-		prop.comment = "The frequency that treasure disks will be found in dungeon chests, from 0 to 100. Increase this value if running a modpack with lots of mods that add dungeon loot, or you just want more treasure disks. Set to 0 to disable treasure disks.";
-		treasureDiskLootFrequency = prop.getInt();
-
         prop = config.get(Configuration.CATEGORY_GENERAL, "turtlesNeedFuel", turtlesNeedFuel);
-        prop.comment = "Set whether Turtles require fuel to move";
+        prop.setComment( "Set whether Turtles require fuel to move" );
         turtlesNeedFuel = prop.getBoolean( turtlesNeedFuel );
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "turtleFuelLimit", turtleFuelLimit);
-        prop.comment = "The fuel limit for Turtles";
+        prop.setComment( "The fuel limit for Turtles" );
         turtleFuelLimit = prop.getInt( turtleFuelLimit );
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "advancedTurtleFuelLimit", advancedTurtleFuelLimit);
-        prop.comment = "The fuel limit for Advanced Turtles";
+        prop.setComment( "The fuel limit for Advanced Turtles" );
         advancedTurtleFuelLimit = prop.getInt(advancedTurtleFuelLimit);
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "turtlesObeyBlockProtection", turtlesObeyBlockProtection);
-        prop.comment = "If set to true, Turtles will be unable to build, dig, or enter protected areas (such as near the server spawn point)";
+        prop.setComment(  "If set to true, Turtles will be unable to build, dig, or enter protected areas (such as near the server spawn point)" );
         turtlesObeyBlockProtection = prop.getBoolean( turtlesObeyBlockProtection );
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "turtlesCanPush", turtlesCanPush);
-        prop.comment = "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so";
+        prop.setComment( "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so" );
         turtlesCanPush = prop.getBoolean(turtlesCanPush);
 
         config.save();
@@ -285,7 +280,6 @@ public class ComputerCraft
     @Mod.EventHandler
     public void onServerStarting( FMLServerStartingEvent event )
     {
-        ItemTreasureDisk.registerDungeonLoot();
     }
 
     @Mod.EventHandler
@@ -338,7 +332,7 @@ public class ComputerCraft
 		return proxy.getFixedWidthFontRenderer();
 	}
 
-	public static void playRecord( String record, String recordInfo, World world, BlockPos pos )
+	public static void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
 	{
 		proxy.playRecord( record, recordInfo, world, pos );
 	}
@@ -426,20 +420,20 @@ public class ComputerCraft
 
     public static boolean canPlayerUseCommands( EntityPlayer player )
     {
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = player.getServer();
         if( server != null )
         {
-            return server.getConfigurationManager().canSendCommands( player.getGameProfile() );
+            return server.getPlayerList().canSendCommands( player.getGameProfile() );
         }
         return false;
     }
 
     public static boolean isPlayerOpped( EntityPlayer player )
     {
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = player.getServer();
         if( server != null )
         {
-            return server.getConfigurationManager().getOppedPlayers().getEntry( player.getGameProfile() ) != null;
+            return server.getPlayerList().getOppedPlayers().getEntry( player.getGameProfile() ) != null;
         }
         return false;
     }
@@ -454,7 +448,7 @@ public class ComputerCraft
 
     public static boolean isBlockEnterable( World world, BlockPos pos, EntityPlayer player )
     {
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = player.getServer();
         if( server != null && !world.isRemote )
         {
             if( server.isBlockProtected( world, pos, player ) )
@@ -476,7 +470,7 @@ public class ComputerCraft
 
     public static boolean isBlockEditable( World world, BlockPos pos, EntityPlayer player )
     {
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = player.getServer();
         if( server != null && !world.isRemote )
         {
             if( server.isBlockProtected( world, pos, player ) )

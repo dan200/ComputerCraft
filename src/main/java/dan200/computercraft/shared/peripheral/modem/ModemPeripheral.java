@@ -10,7 +10,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public abstract class ModemPeripheral
         }
 
 		@Override
-		public Vec3 getWorldPosition()
+		public Vec3d getWorldPosition()
 		{
 			return m_owner.getWorldPosition();
 		}
@@ -135,7 +135,7 @@ public abstract class ModemPeripheral
 
     protected abstract World getWorld();
 
-    protected abstract Vec3 getPosition();
+    protected abstract Vec3d getPosition();
         
     public synchronized void destroy()
     {
@@ -163,7 +163,7 @@ public abstract class ModemPeripheral
 		return (m_computer != null) && m_open;
 	}
 
-	public synchronized Vec3 getWorldPosition()
+	public synchronized Vec3d getWorldPosition()
 	{
 		return getPosition();
 	}
@@ -338,7 +338,7 @@ public abstract class ModemPeripheral
 				synchronized( this )
 				{
                     World world = getWorld();
-					Vec3 position = getPosition();
+					Vec3d position = getPosition();
                     if( world != null && position != null && m_network != null)
                     {
     					m_network.transmit( channel, replyChannel, payload, world, position, getTransmitRange(), isInterdimensional(), this );

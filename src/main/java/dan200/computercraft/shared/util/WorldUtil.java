@@ -7,10 +7,12 @@
 package dan200.computercraft.shared.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -27,10 +29,11 @@ public class WorldUtil
     {
         if( isBlockInWorld( world, pos ) )
         {
-            Block block = world.getBlockState( pos ).getBlock();
+            IBlockState state = world.getBlockState( pos );
+            Block block = state.getBlock();
             if( block != null )
             {
-                return block.getMaterial().isLiquid();
+                return block.getMaterial( state ).isLiquid();
             }
         }
         return false;
@@ -41,13 +44,13 @@ public class WorldUtil
         return pos.offset( dir );
     }
 
-    public static Pair<Entity, Vec3> rayTraceEntities( World world, Vec3 vecStart, Vec3 vecDir, double distance )
+    public static Pair<Entity, Vec3d> rayTraceEntities( World world, Vec3d vecStart, Vec3d vecDir, double distance )
     {
-        Vec3 vecEnd = vecStart.addVector( vecDir.xCoord * distance, vecDir.yCoord * distance, vecDir.zCoord * distance );
+        Vec3d vecEnd = vecStart.addVector( vecDir.xCoord * distance, vecDir.yCoord * distance, vecDir.zCoord * distance );
 
         // Raycast for blocks
-        MovingObjectPosition result = world.rayTraceBlocks( vecStart.addVector(0.0,0.0,0.0), vecEnd.addVector(0.0,0.0,0.0) );
-        if( result != null && result.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK )
+        RayTraceResult result = world.rayTraceBlocks( vecStart.addVector(0.0,0.0,0.0), vecEnd.addVector(0.0,0.0,0.0) );
+        if( result != null && result.typeOfHit == RayTraceResult.Type.BLOCK )
         {
             distance = vecStart.distanceTo( result.hitVec );
             vecEnd = vecStart.addVector( vecDir.xCoord * distance, vecDir.yCoord * distance, vecDir.zCoord * distance );
@@ -94,7 +97,7 @@ public class WorldUtil
                 continue;
             }
 
-            MovingObjectPosition littleBoxResult = littleBox.calculateIntercept( vecStart, vecEnd );
+            RayTraceResult littleBoxResult = littleBox.calculateIntercept( vecStart, vecEnd );
             if( littleBoxResult != null )
             {
                 double dist = vecStart.distanceTo( littleBoxResult.hitVec );
@@ -115,7 +118,7 @@ public class WorldUtil
         }
         if( closest != null && closestDist <= distance )
         {
-            Vec3 closestPos = vecStart.addVector( vecDir.xCoord * closestDist, vecDir.yCoord * closestDist, vecDir.zCoord * closestDist );
+            Vec3d closestPos = vecStart.addVector( vecDir.xCoord * closestDist, vecDir.yCoord * closestDist, vecDir.zCoord * closestDist );
             return Pair.of( closest, closestPos );
         }
         return null;

@@ -9,9 +9,9 @@ package dan200.computercraft.shared.peripheral.modem;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.peripheral.common.BlockPeripheral;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class TileAdvancedModem extends TileModemBase
@@ -35,10 +35,10 @@ public class TileAdvancedModem extends TileModemBase
         }
 
 	    @Override
-		protected Vec3 getPosition()
+		protected Vec3d getPosition()
 		{
             BlockPos pos = m_entity.getPos().offset( m_entity.getDirection() );
-			return new Vec3( (double)pos.getX(), (double)pos.getY(), (double)pos.getZ() );
+			return new Vec3d( (double)pos.getX(), (double)pos.getY(), (double)pos.getZ() );
 		}
 
         @Override
@@ -64,7 +64,7 @@ public class TileAdvancedModem extends TileModemBase
     {
         // Wireless Modem
         IBlockState state = getBlockState();
-        return (EnumFacing)state.getValue( BlockPeripheral.Properties.FACING );
+        return (EnumFacing)state.getValue( BlockAdvancedModem.Properties.FACING );
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TileAdvancedModem extends TileModemBase
     {
         // Wireless Modem
         setBlockState( getBlockState()
-            .withProperty( BlockPeripheral.Properties.FACING, dir )
+            .withProperty( BlockAdvancedModem.Properties.FACING, dir )
         );
     }
 

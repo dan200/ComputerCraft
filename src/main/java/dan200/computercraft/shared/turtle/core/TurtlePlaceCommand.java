@@ -22,10 +22,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.tuple.Pair;
@@ -200,10 +203,10 @@ public class TurtlePlaceCommand implements ITurtleCommand
         // See if there is an entity present
         final World world = turtle.getWorld();
         final BlockPos position = turtle.getPosition();
-        Vec3 turtlePos = new Vec3( turtlePlayer.posX, turtlePlayer.posY, turtlePlayer.posZ );
-        Vec3 rayDir = turtlePlayer.getLook( 1.0f );
-        Vec3 rayStart = turtlePos;
-        Pair<Entity, Vec3> hit = WorldUtil.rayTraceEntities( world, rayStart, rayDir, 1.5 );
+        Vec3d turtlePos = new Vec3d( turtlePlayer.posX, turtlePlayer.posY, turtlePlayer.posZ );
+        Vec3d rayDir = turtlePlayer.getLook( 1.0f );
+        Vec3d rayStart = turtlePos;
+        Pair<Entity, Vec3d> hit = WorldUtil.rayTraceEntities( world, rayStart, rayDir, 1.5 );
         if( hit == null )
         {
             return stack;
@@ -216,7 +219,7 @@ public class TurtlePlaceCommand implements ITurtleCommand
 
         // Start claiming entity drops
         Entity hitEntity = hit.getKey();
-        Vec3 hitPos = hit.getValue();
+        Vec3d hitPos = hit.getValue();
         ComputerCraft.setEntityDropConsumer( hitEntity, new IEntityDropConsumer()
         {
             @Override
@@ -232,20 +235,17 @@ public class TurtlePlaceCommand implements ITurtleCommand
 
         // Place on the entity
         boolean placed = false;
-        if( hitEntity.interactFirst( turtlePlayer ) )
+        if( hitEntity.applyPlayerInteraction( turtlePlayer, hitPos, stackCopy, EnumHand.MAIN_HAND ) == EnumActionResult.SUCCESS )
         {
             placed = true;
+            turtlePlayer.loadInventory( stackCopy );
         }
         else if( hitEntity instanceof EntityLivingBase )
         {
-            placed = item.itemInteractionForEntity( stackCopy, turtlePlayer, (EntityLivingBase)hitEntity );
+            placed = item.itemInteractionForEntity( stackCopy, turtlePlayer, (EntityLivingBase)hitEntity, EnumHand.MAIN_HAND );
             if( placed )
             {
                 turtlePlayer.loadInventory( stackCopy );
-            }
-            else if( hitEntity.interactAt( turtlePlayer, hitPos ) ) // interact
-            {
-                placed = true;
             }
         }
 
@@ -346,19 +346,23 @@ public class TurtlePlaceCommand implements ITurtleCommand
 
         // Do the deploying (put everything in the players inventory)
         boolean placed = false;
-        if( item.onItemUseFirst( stackCopy, turtlePlayer, turtle.getWorld(), position, side, hitX, hitY, hitZ ) ||
-            item.onItemUse( stackCopy, turtlePlayer, turtle.getWorld(), position, side, hitX, hitY, hitZ ) )
+        if( item.onItemUseFirst( stackCopy, turtlePlayer, turtle.getWorld(), position, side, hitX, hitY, hitZ, EnumHand.MAIN_HAND ) == EnumActionResult.SUCCESS )
+        {
+            placed = true;
+            turtlePlayer.loadInventory( stackCopy );
+        }
+        else if( item.onItemUse( stackCopy, turtlePlayer, turtle.getWorld(), position, EnumHand.MAIN_HAND, side, hitX, hitY, hitZ ) == EnumActionResult.SUCCESS )
         {
             placed = true;
             turtlePlayer.loadInventory( stackCopy );
         }
         else if( item instanceof ItemBucket || item instanceof ItemBoat || item instanceof ItemLilyPad || item instanceof ItemGlassBottle )
         {
-            ItemStack result = item.onItemRightClick( stackCopy, turtle.getWorld(), turtlePlayer );
-            if( !ItemStack.areItemStacksEqual( stack, result ) )
+            ActionResult<ItemStack> result = item.onItemRightClick( stackCopy, turtle.getWorld(), turtlePlayer, EnumHand.MAIN_HAND );
+            if( result.getType() == EnumActionResult.SUCCESS && !ItemStack.areItemStacksEqual( stack, result.getResult() ) )
             {
                 placed = true;
-                turtlePlayer.loadInventory( result );
+                turtlePlayer.loadInventory( result.getResult() );
             }
         }
 
@@ -386,20 +390,20 @@ public class TurtlePlaceCommand implements ITurtleCommand
                         {
                             if( split[ i - firstLine ].length() > 15 )
                             {
-                                signTile.signText[ i ] = new ChatComponentText( split[ i - firstLine ].substring( 0, 15 ) );
+                                signTile.signText[ i ] = new TextComponentString( split[ i - firstLine ].substring( 0, 15 ) );
                             }
                             else
                             {
-                                signTile.signText[ i ] = new ChatComponentText( split[ i - firstLine ] );
+                                signTile.signText[ i ] = new TextComponentString( split[ i - firstLine ] );
                             }
                         }
                         else
                         {
-                            signTile.signText[i] = new ChatComponentText( "" );
+                            signTile.signText[i] = new TextComponentString( "" );
                         }
                     }
                     signTile.markDirty();
-                    world.markBlockForUpdate( signTile.getPos() );
+                    world.markBlockRangeForRenderUpdate( signTile.getPos(), signTile.getPos() );
                 }
             }
         }

@@ -16,10 +16,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -54,7 +55,7 @@ public abstract class BlockGeneric extends Block implements
         if( tile != null && tile instanceof TileGeneric )
         {
             TileGeneric generic = (TileGeneric)tile;
-            generic.getDroppedItems( drops, fortune, false, false );
+            generic.getDroppedItems( drops, false );
         }
         return drops;
     }
@@ -66,22 +67,20 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final boolean removedByPlayer( World world, BlockPos pos, EntityPlayer player, boolean willHarvest )
+    public final boolean removedByPlayer( IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest )
     {
     	if( !world.isRemote )
     	{
             // Drop items
-            int fortune = EnchantmentHelper.getFortuneModifier( player );
             boolean creative = player.capabilities.isCreativeMode;
-            boolean silkTouch = EnchantmentHelper.getSilkTouchModifier( player );
-            dropAllItems( world, pos, fortune, creative, silkTouch );
+            dropAllItems( world, pos, creative );
         }
 
         // Remove block
-        return super.removedByPlayer( world, pos, player, willHarvest );
+        return super.removedByPlayer( state, world, pos, player, willHarvest );
     }
 
-    public final void dropAllItems( World world, BlockPos pos, int fortune, boolean creative, boolean silkTouch )
+    public final void dropAllItems( World world, BlockPos pos, boolean creative )
     {
         // Get items to drop
         List<ItemStack> drops = new ArrayList<ItemStack>( 1 );
@@ -89,7 +88,7 @@ public abstract class BlockGeneric extends Block implements
         if( tile != null && tile instanceof TileGeneric )
         {
             TileGeneric generic = (TileGeneric)tile;
-            generic.getDroppedItems( drops, fortune, creative, silkTouch );
+            generic.getDroppedItems( drops, creative );
         }
 
         // Drop items
@@ -123,7 +122,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
 	@Override
-    public final ItemStack getPickBlock( MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player )
+    public final ItemStack getPickBlock( IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
@@ -141,7 +140,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final boolean onBlockActivated( World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ )
+    public final boolean onBlockActivated( World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
@@ -153,7 +152,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final void onNeighborBlockChange( World world, BlockPos pos, IBlockState state, Block neighbour )
+    public final void onNeighborChange( IBlockAccess world, BlockPos pos, BlockPos neighborPos )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
@@ -164,7 +163,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final boolean isSideSolid( IBlockAccess world, BlockPos pos, EnumFacing side )
+    public final boolean isSideSolid( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
@@ -176,7 +175,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final boolean canBeReplacedByLeaves( IBlockAccess world, BlockPos pos )
+    public final boolean canBeReplacedByLeaves( IBlockState state, IBlockAccess world, BlockPos pos )
     {
         return false; // Generify me if anyone ever feels the need to change this
     }
@@ -196,37 +195,56 @@ public abstract class BlockGeneric extends Block implements
         return super.getExplosionResistance( exploder );
     }
 
-    private void setBlockBounds( AxisAlignedBB bounds )
-    {
-        setBlockBounds(
-            (float)bounds.minX, (float)bounds.minY, (float)bounds.minZ,
-            (float)bounds.maxX, (float)bounds.maxY, (float)bounds.maxZ
-        );
-    }
-
     @Override
-    public final void setBlockBoundsBasedOnState( IBlockAccess world, BlockPos pos )
+    public final AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
         {
             TileGeneric generic = (TileGeneric)tile;
-            setBlockBounds( generic.getBounds() );
+            return generic.getBounds();
         }
+        return NULL_AABB;
     }
 
     @Override
-    public final AxisAlignedBB getCollisionBoundingBox( World world, BlockPos pos, IBlockState state )
+    public final AxisAlignedBB getSelectedBoundingBox( IBlockState state, World world, BlockPos pos )
     {
-        setBlockBoundsBasedOnState( world, pos );
-        return super.getCollisionBoundingBox( world, pos, state );
+        return getBoundingBox( state, world, pos );
     }
 
     @Override
-    public final void addCollisionBoxesToList( World world, BlockPos pos, IBlockState state, AxisAlignedBB bigBox, List list, Entity entity )
+    public final AxisAlignedBB getCollisionBoundingBox( IBlockState state, World world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof TileGeneric )
+        if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
+        {
+            TileGeneric generic = (TileGeneric)tile;
+
+            // Get collision bounds
+            List<AxisAlignedBB> collision = new ArrayList<AxisAlignedBB>( 1 );
+            generic.getCollisionBounds( collision );
+
+            // Return the union of the collision bounds
+            if( collision.size() > 0 )
+            {
+                AxisAlignedBB aabb = collision.get( 0 );
+                for (int i=1; i<collision.size(); ++i )
+                {
+                    AxisAlignedBB other = collision.get( 1 );
+                    aabb = aabb.union( other );
+                }
+                return aabb;
+            }
+        }
+        return NULL_AABB;
+    }
+
+    @Override
+    public final void addCollisionBoxToList( IBlockState state, World world, BlockPos pos, AxisAlignedBB bigBox, List<AxisAlignedBB> list, Entity entity )
+    {
+        TileEntity tile = world.getTileEntity( pos );
+        if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
         {
             TileGeneric generic = (TileGeneric)tile;
 
@@ -241,26 +259,20 @@ public abstract class BlockGeneric extends Block implements
                 while( it.hasNext() )
                 {
                     AxisAlignedBB localBounds = it.next();
-                    setBlockBounds( localBounds );
-
-                    AxisAlignedBB bounds = super.getCollisionBoundingBox( world, pos, state );
-                    if( bounds != null && bigBox.intersectsWith(bounds) )
-                    {
-                        list.add( bounds );
-                    }
+                    addCollisionBoxToList( pos, bigBox, list, localBounds );
                 }
             }
         }
     }
 
     @Override
-    public final boolean canProvidePower()
+    public final boolean canProvidePower( IBlockState state )
     {
         return true;
     }
 
     @Override
-    public final boolean canConnectRedstone( IBlockAccess world, BlockPos pos, EnumFacing side )
+    public final boolean canConnectRedstone( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
@@ -272,7 +284,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final int getStrongPower( IBlockAccess world, BlockPos pos, IBlockState state, EnumFacing oppositeSide )
+    public final int getStrongPower( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing oppositeSide )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
@@ -284,9 +296,9 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final int getWeakPower( IBlockAccess world, BlockPos pos, IBlockState state, EnumFacing oppositeSide )
+    public final int getWeakPower( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing oppositeSide )
     {
-        return getStrongPower( world, pos, state, oppositeSide );
+        return getStrongPower( state, world, pos, oppositeSide );
     }
 
     public boolean getBundledRedstoneConnectivity( World world, BlockPos pos, EnumFacing side )
@@ -312,7 +324,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public boolean onBlockEventReceived( World world, BlockPos pos, IBlockState state, int eventID, int eventParameter )
+    public boolean eventReceived( IBlockState state, World world, BlockPos pos, int eventID, int eventParameter )
     {
         if( world.isRemote )
         {

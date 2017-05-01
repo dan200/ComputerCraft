@@ -14,9 +14,9 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
@@ -80,7 +80,7 @@ public class InventoryUtil
             {
                 // Special case code for double chests
                 Block block = world.getBlockState( pos ).getBlock();
-                if( block == Blocks.chest || block == Blocks.trapped_chest )
+                if( block == Blocks.CHEST || block == Blocks.TRAPPED_CHEST )
                 {
                     // Check if it's a double chest, and return a combined inventory if so
                     if( world.getBlockState( pos.west() ).getBlock() == block )
@@ -107,16 +107,16 @@ public class InventoryUtil
         }
 
         // Look for entity with inventory
-        Vec3 vecStart = new Vec3(
+        Vec3d vecStart = new Vec3d(
             pos.getX() + 0.5 + 0.6 * side.getFrontOffsetX(),
             pos.getY() + 0.5 + 0.6 * side.getFrontOffsetY(),
             pos.getZ() + 0.5 + 0.6 * side.getFrontOffsetZ()
         );
         EnumFacing dir = side.getOpposite();
-        Vec3 vecDir = new Vec3(
+        Vec3d vecDir = new Vec3d(
             dir.getFrontOffsetX(), dir.getFrontOffsetY(), dir.getFrontOffsetZ()
         );
-        Pair<Entity, Vec3> hit = WorldUtil.rayTraceEntities( world, vecStart, vecDir, 1.1 );
+        Pair<Entity, Vec3d> hit = WorldUtil.rayTraceEntities( world, vecStart, vecDir, 1.1 );
         if( hit != null )
         {
             Entity entity = hit.getKey();
