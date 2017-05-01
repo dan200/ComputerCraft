@@ -123,6 +123,7 @@ public class ComputerCraft
 
     public static int computerSpaceLimit = 1000 * 1000;
     public static int floppySpaceLimit = 125 * 1000;
+    public static int maximumFilesOpen = 128;
 
     // Blocks and Items
     public static class Blocks

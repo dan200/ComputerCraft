@@ -290,8 +290,8 @@ public class FileSystem
         }
     }
 
-    private Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
-    private Set<IMountedFile> m_openFiles = new HashSet<IMountedFile>();
+    private final Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
+    private final Set<IMountedFile> m_openFiles = new HashSet<IMountedFile>();
     
     public FileSystem( String rootLabel, IMount rootMount ) throws FileSystemException
     {
@@ -649,6 +649,33 @@ public class FileSystem
             }
         }
     }
+
+    private synchronized IMountedFile openFile( IMountedFile file ) throws FileSystemException
+    {
+        synchronized( m_openFiles )
+        {
+            if( m_openFiles.size() >= 4 )
+            {
+                throw new FileSystemException("Too many files already open");
+            }
+
+            m_openFiles.add( file );
+            return file;
+        }
+    }
+
+    private synchronized void closeFile( IMountedFile file, Closeable handle ) throws IOException
+    {
+        synchronized( m_openFiles )
+        {
+            m_openFiles.remove( file );
+
+            if( handle != null )
+            {
+                handle.close();
+            }
+        }
+    }
     
     public synchronized IMountedFileNormal openForRead( String path ) throws FileSystemException
     {
@@ -684,11 +711,7 @@ public class FileSystem
                 @Override
                 public void close() throws IOException
                 {
-                    synchronized( m_openFiles )
-                    {
-                        m_openFiles.remove( this );
-                        reader.close();
-                    }
+                    closeFile( this, reader );
                 }
                 
                 @Override
@@ -697,11 +720,7 @@ public class FileSystem
                     throw new UnsupportedOperationException();
                 }
             };
-            synchronized( m_openFiles )
-            {
-                m_openFiles.add( file );
-            }
-            return file;
+            return (IMountedFileNormal) openFile( file );
         }
         return null;
     }
@@ -744,11 +763,7 @@ public class FileSystem
                 @Override
                 public void close() throws IOException
                 {
-                    synchronized( m_openFiles )
-                    {
-                        m_openFiles.remove( this );
-                        writer.close();
-                    }
+                    closeFile( this, writer );
                 }
                 
                 @Override
@@ -757,11 +772,7 @@ public class FileSystem
                     writer.flush();
                 }
             };
-            synchronized( m_openFiles )
-            {
-                m_openFiles.add( file );
-            }
-            return file;
+            return (IMountedFileNormal) openFile( file );
         }
         return null;
     }
@@ -790,11 +801,7 @@ public class FileSystem
                 @Override
                 public void close() throws IOException
                 {
-                    synchronized( m_openFiles )
-                    {
-                        m_openFiles.remove( this );
-                        stream.close();
-                    }
+                    closeFile( this, stream );
                 }
                 
                 @Override
@@ -803,11 +810,7 @@ public class FileSystem
                     throw new UnsupportedOperationException();
                 }
             };
-            synchronized( m_openFiles )
-            {
-                m_openFiles.add( file );
-            }
-            return file;
+            return (IMountedFileBinary) openFile( file );
         }
         return null;
     }
@@ -836,11 +839,7 @@ public class FileSystem
                 @Override
                 public void close() throws IOException
                 {
-                    synchronized( m_openFiles )
-                    {
-                        m_openFiles.remove( this );
-                        stream.close();
-                    }
+                    closeFile( this, stream );
                 }
                 
                 @Override
@@ -849,11 +848,7 @@ public class FileSystem
                     stream.flush();
                 }
             };
-            synchronized( m_openFiles )
-            {
-                m_openFiles.add( file );
-            }
-            return file;
+            return (IMountedFileBinary) openFile( file );
         }
         return null;
     }
