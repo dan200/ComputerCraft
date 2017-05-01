@@ -3,9 +3,10 @@
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
- 
+
 package dan200.computercraft;
 
+import com.google.common.base.CaseFormat;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 import dan200.computercraft.api.media.IMedia;
@@ -82,7 +83,10 @@ import java.util.List;
 // UNIVERSAL //
 ///////////////
 
-@Mod( modid = "ComputerCraft", name = "ComputerCraft", version = "${version}" )
+@Mod(
+    modid = "ComputerCraft", name = "ComputerCraft", version = "${version}",
+    guiFactory = "dan200.computercraft.client.gui.GuiConfigCC$Factory"
+)
 public class ComputerCraft
 {
     // GUI IDs
@@ -95,6 +99,8 @@ public class ComputerCraft
     public static final int pocketComputerGUIID = 106;
 
     // Configuration options
+    public static Configuration config;
+
     public static boolean http_enable = true;
     public static String http_whitelist = "*";
     public static boolean disable_lua51_features = false;
@@ -192,11 +198,20 @@ public class ComputerCraft
     public void preInit( FMLPreInitializationEvent event )
     {
         // Load config
-        Configuration config = new Configuration( event.getSuggestedConfigurationFile() );
+        config = new Configuration( event.getSuggestedConfigurationFile() );
         config.load();
 
-        // Setup general
+        syncConfig();
 
+        // Setup network
+        networkEventChannel = NetworkRegistry.INSTANCE.newEventDrivenChannel( "CC" );
+        networkEventChannel.register( new PacketHandler() );
+
+        proxy.preInit();
+        turtleProxy.preInit();
+    }
+
+    public static void syncConfig() {
         Property prop = config.get(Configuration.CATEGORY_GENERAL, "http_enable", http_enable);
         prop.setComment( "Enable the \"http\" API on Computers (see \"http_whitelist\" for more fine grained control than this)" );
         http_enable = prop.getBoolean(http_enable);
@@ -261,14 +276,12 @@ public class ComputerCraft
         prop.setComment( "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so" );
         turtlesCanPush = prop.getBoolean(turtlesCanPush);
 
+        for (Property property : config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
+        {
+            property.setLanguageKey( "gui.computercraft:config." + CaseFormat.LOWER_CAMEL.to( CaseFormat.LOWER_UNDERSCORE, property.getName() ) );
+        }
+
         config.save();
-
-        // Setup network
-        networkEventChannel = NetworkRegistry.INSTANCE.newEventDrivenChannel( "CC" );
-        networkEventChannel.register( new PacketHandler() );
-
-        proxy.preInit();
-        turtleProxy.preInit();
     }
 
     @Mod.EventHandler
