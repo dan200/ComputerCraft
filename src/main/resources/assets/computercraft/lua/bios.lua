@@ -643,11 +643,11 @@ if http then
         local ok, err = nativeHTTPRequest( _url, _post, _headers )
         if ok then
             while true do
-                local event, param1, param2 = os.pullEvent()
+                local event, param1, param2, param3 = os.pullEvent()
                 if event == "http_success" and param1 == _url then
                     return param2
                 elseif event == "http_failure" and param1 == _url then
-                    return nil, param2
+                    return nil, param2, param3
                 end
             end
         end

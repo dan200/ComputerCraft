@@ -6,12 +6,15 @@
 
 package dan200.computercraft.core.apis;
 
+import com.google.common.base.Joiner;
 import dan200.computercraft.ComputerCraft;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -130,7 +133,16 @@ public class HTTPRequest
                     }
 
                     // Read response
-                    InputStream is = connection.getInputStream();
+                    InputStream is;
+                    int code = connection.getResponseCode();
+                    boolean responseSuccess;
+                    if (code >= 200 && code < 400) {
+                        is = connection.getInputStream();
+                        responseSuccess = true;
+                    } else {
+                        is = connection.getErrorStream();
+                        responseSuccess = false;
+                    }
                     InputStreamReader isr;
                     try
                     {
@@ -192,9 +204,15 @@ public class HTTPRequest
                         {
                             // We completed
                             m_complete = true;
-                            m_success = true;
+                            m_success = responseSuccess;
                             m_result = result.toString();
                             m_responseCode = connection.getResponseCode();
+
+                            Joiner joiner = Joiner.on( ',' );
+                            Map<String, String> headers = m_responseHeaders = new HashMap<String, String>();
+                            for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
+                                headers.put(header.getKey(), joiner.join( header.getValue() ));
+                            }
                         }
                     }
 
@@ -241,6 +259,12 @@ public class HTTPRequest
         }
     }
 
+    public Map<String, String> getResponseHeaders() {
+        synchronized (m_lock) {
+            return m_responseHeaders;
+        }
+    }
+
     public boolean wasSuccessful()
     {
         synchronized(m_lock) {
@@ -270,4 +294,5 @@ public class HTTPRequest
     private boolean m_success;
     private String m_result;
     private int m_responseCode;
+    private Map<String, String> m_responseHeaders;
 }

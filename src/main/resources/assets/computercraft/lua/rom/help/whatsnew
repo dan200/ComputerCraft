@@ -1,6 +1,6 @@
-New Features in ComputerCraft 1.79:
+New Features in ComputerCraft 1.80:
 
-* Ported ComputerCraftEdu to Minecraft 1.8.9
-* Fixed a handful of bugs in ComputerCraft
+* Added .getResponseHeaders() to HTTP responses.
+* Return a HTTP response when a HTTP error occurs.
 
 Type "help changelog" to see the full version history.
