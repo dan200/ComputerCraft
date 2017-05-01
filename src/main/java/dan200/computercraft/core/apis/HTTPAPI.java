@@ -69,7 +69,7 @@ public class HTTPAPI implements ILuaAPI
         }
     }
     
-    private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode, final Map<String, Map<Integer, String>> responseHeaders )
+    private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode, final Map<String, String> responseHeaders )
     {
         return new ILuaObject() {
             @Override

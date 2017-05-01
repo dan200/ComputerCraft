@@ -6,6 +6,7 @@
 
 package dan200.computercraft.core.apis;
 
+import com.google.common.base.Joiner;
 import dan200.computercraft.ComputerCraft;
 
 import java.io.*;
@@ -207,16 +208,10 @@ public class HTTPRequest
                             m_result = result.toString();
                             m_responseCode = connection.getResponseCode();
 
-                            Map<String, Map<Integer, String>> headers = m_responseHeaders = new HashMap<String, Map<Integer, String>>();
+                            Joiner joiner = Joiner.on( ',' );
+                            Map<String, String> headers = m_responseHeaders = new HashMap<String, String>();
                             for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
-                                Map<Integer, String> values = new HashMap<Integer, String>();
-
-                                int i = 0;
-                                for (String value : header.getValue()) {
-                                    values.put(++i, value);
-                                }
-
-                                headers.put(header.getKey(), values);
+                                headers.put(header.getKey(), joiner.join( header.getValue() ));
                             }
                         }
                     }
@@ -264,7 +259,7 @@ public class HTTPRequest
         }
     }
 
-    public Map<String, Map<Integer, String>> getResponseHeaders() {
+    public Map<String, String> getResponseHeaders() {
         synchronized (m_lock) {
             return m_responseHeaders;
         }
@@ -299,5 +294,5 @@ public class HTTPRequest
     private boolean m_success;
     private String m_result;
     private int m_responseCode;
-    private Map<String, Map<Integer, String>> m_responseHeaders;
+    private Map<String, String> m_responseHeaders;
 }
