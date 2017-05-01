@@ -651,12 +651,20 @@ public class FileSystem
         }
     }
 
-    private synchronized IMountedFile openFile( IMountedFile file ) throws FileSystemException
+    private synchronized IMountedFile openFile( IMountedFile file, Closeable handle ) throws FileSystemException
     {
         synchronized( m_openFiles )
         {
             if( m_openFiles.size() >= ComputerCraft.maximumFilesOpen )
             {
+                if( handle != null )
+                {
+                    try {
+                        handle.close();
+                    } catch ( IOException ignored ) {
+                        // shrug
+                    }
+                }
                 throw new FileSystemException("Too many files already open");
             }
 
@@ -721,7 +729,7 @@ public class FileSystem
                     throw new UnsupportedOperationException();
                 }
             };
-            return (IMountedFileNormal) openFile( file );
+            return (IMountedFileNormal) openFile( file, reader );
         }
         return null;
     }
@@ -773,7 +781,7 @@ public class FileSystem
                     writer.flush();
                 }
             };
-            return (IMountedFileNormal) openFile( file );
+            return (IMountedFileNormal) openFile( file, writer );
         }
         return null;
     }
@@ -811,7 +819,7 @@ public class FileSystem
                     throw new UnsupportedOperationException();
                 }
             };
-            return (IMountedFileBinary) openFile( file );
+            return (IMountedFileBinary) openFile( file, stream );
         }
         return null;
     }
@@ -849,7 +857,7 @@ public class FileSystem
                     stream.flush();
                 }
             };
-            return (IMountedFileBinary) openFile( file );
+            return (IMountedFileBinary) openFile( file, stream );
         }
         return null;
     }
