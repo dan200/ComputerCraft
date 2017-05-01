@@ -52,12 +52,16 @@ public class HTTPAPI implements ILuaAPI
                     if( h.wasSuccessful() ) {
                         // Queue the "http_success" event
                         final BufferedReader contents = h.getContents();
-                        final int responseCode = h.getResponseCode();
-                        final Object result = wrapBufferedReader( contents, responseCode );
+                        final Object result = wrapBufferedReader( contents, h.getResponseCode(), h.getResponseHeaders() );
                         m_apiEnvironment.queueEvent( "http_success", new Object[] { url, result } );
                     } else {
                         // Queue the "http_failure" event
-                        m_apiEnvironment.queueEvent( "http_failure", new Object[] { url, "Could not connect" } );
+                        BufferedReader contents = h.getContents();
+                        Object result = null;
+                        if( contents != null ) {
+                            result = wrapBufferedReader( contents, h.getResponseCode(), h.getResponseHeaders() );
+                        }
+                        m_apiEnvironment.queueEvent( "http_failure", new Object[]{ url, "Could not connect", result } );
                     }
                     it.remove();
                 }
@@ -65,7 +69,7 @@ public class HTTPAPI implements ILuaAPI
         }
     }
     
-    private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode )
+    private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode, final Map<String, Map<Integer, String>> responseHeaders )
     {
         return new ILuaObject() {
             @Override
@@ -75,7 +79,8 @@ public class HTTPAPI implements ILuaAPI
                     "readLine",
                     "readAll",
                     "close",
-                    "getResponseCode"
+                    "getResponseCode",
+                    "getResponseHeaders",
                 };
             }
             
@@ -130,6 +135,11 @@ public class HTTPAPI implements ILuaAPI
                     {
                         // getResponseCode
                         return new Object[] { responseCode };
+                    }
+                    case 4:
+                    {
+                        // getResponseHeaders
+                        return new Object[] { responseHeaders };
                     }
                     default:
                     {
