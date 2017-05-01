@@ -16,15 +16,15 @@ import net.minecraft.world.World;
 
 public class CommandBlockPeripheralProvider implements IPeripheralProvider
 {
-	@Override
-	public IPeripheral getPeripheral( World world, BlockPos pos, EnumFacing side )
-	{
+    @Override
+    public IPeripheral getPeripheral( World world, BlockPos pos, EnumFacing side )
+    {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileEntityCommandBlock )
         {
             TileEntityCommandBlock commandBlock = (TileEntityCommandBlock)tile;
-    		return new CommandBlockPeripheral( commandBlock );
+            return new CommandBlockPeripheral( commandBlock );
         }
         return null;
-	}
+    }
 }

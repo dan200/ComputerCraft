@@ -16,38 +16,38 @@ import net.minecraft.util.math.BlockPos;
 
 public class CommandBlockPeripheral implements IPeripheral
 {
-	private final TileEntityCommandBlock m_commandBlock;
+    private final TileEntityCommandBlock m_commandBlock;
 
-	public CommandBlockPeripheral( TileEntityCommandBlock commandBlock )
-	{
-		m_commandBlock = commandBlock;
-	}
+    public CommandBlockPeripheral( TileEntityCommandBlock commandBlock )
+    {
+        m_commandBlock = commandBlock;
+    }
 
-	// IPeripheral methods
+    // IPeripheral methods
 
-	@Override
-	public String getType()
-	{
-		return "command";
-	}
+    @Override
+    public String getType()
+    {
+        return "command";
+    }
 
-	@Override
-	public String[] getMethodNames()
-	{
-		return new String[] {
-			"getCommand",
-			"setCommand",
-			"runCommand",
-		};
-	}
+    @Override
+    public String[] getMethodNames()
+    {
+        return new String[] {
+            "getCommand",
+            "setCommand",
+            "runCommand",
+        };
+    }
 
-	@Override
-	public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, final Object[] arguments ) throws LuaException, InterruptedException
-	{
-		switch (method)
-		{
-			case 0:
-			{
+    @Override
+    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, final Object[] arguments ) throws LuaException, InterruptedException
+    {
+        switch (method)
+        {
+            case 0:
+            {
                 // getCommand
                 return context.executeMainThreadTask( new ILuaTask()
                 {
@@ -59,14 +59,14 @@ public class CommandBlockPeripheral implements IPeripheral
                         };
                     }
                 } );
-			}
-			case 1:
-			{
+            }
+            case 1:
+            {
                 // setCommand
-				if( arguments.length < 1 || !(arguments[0] instanceof String) )
-				{
-					throw new LuaException( "Expected string" );
-				}
+                if( arguments.length < 1 || !(arguments[0] instanceof String) )
+                {
+                    throw new LuaException( "Expected string" );
+                }
 
                 final String command = (String) arguments[ 0 ];
                 context.issueMainThreadTask( new ILuaTask()
@@ -81,9 +81,9 @@ public class CommandBlockPeripheral implements IPeripheral
                     }
                 } );
                 return null;
-			}
-			case 2:
-			{
+            }
+            case 2:
+            {
                 // runCommand
                 return context.executeMainThreadTask( new ILuaTask()
                 {
@@ -102,20 +102,20 @@ public class CommandBlockPeripheral implements IPeripheral
                         }
                     }
                 } );
-			}
-		}
-		return null;
-	}
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public void attach( IComputerAccess computer )
-	{	
-	}
+    @Override
+    public void attach( IComputerAccess computer )
+    {    
+    }
 
-	@Override
-	public void detach( IComputerAccess computer )
-	{
-	}
+    @Override
+    public void detach( IComputerAccess computer )
+    {
+    }
 
     @Override
     public boolean equals( IPeripheral other )

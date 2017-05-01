@@ -41,17 +41,17 @@ import java.util.Iterator;
 public class TurtleTool implements ITurtleUpgrade
 {
     private ResourceLocation m_id;
-	private int m_legacyId;
-	private String m_adjective;
-	protected ItemStack m_item;
+    private int m_legacyId;
+    private String m_adjective;
+    protected ItemStack m_item;
 
-	public TurtleTool( ResourceLocation id, int legacyID, String adjective, Item item )
-	{
-		m_id = id;
+    public TurtleTool( ResourceLocation id, int legacyID, String adjective, Item item )
+    {
+        m_id = id;
         m_legacyId = legacyID;
-		m_adjective = adjective;
-		m_item = new ItemStack( item, 1, 0 );
-	}
+        m_adjective = adjective;
+        m_item = new ItemStack( item, 1, 0 );
+    }
 
     @Override
     public ResourceLocation getUpgradeID()
@@ -60,34 +60,34 @@ public class TurtleTool implements ITurtleUpgrade
     }
 
     @Override
-	public int getLegacyUpgradeID()
-	{
-		return m_legacyId;
-	}
+    public int getLegacyUpgradeID()
+    {
+        return m_legacyId;
+    }
 
     @Override
-	public String getUnlocalisedAdjective()
-	{
-		return m_adjective;
-	}
+    public String getUnlocalisedAdjective()
+    {
+        return m_adjective;
+    }
 
     @Override
-	public TurtleUpgradeType getType()
-	{
-		return TurtleUpgradeType.Tool;
-	}
+    public TurtleUpgradeType getType()
+    {
+        return TurtleUpgradeType.Tool;
+    }
 
     @Override
-	public ItemStack getCraftingItem()
-	{
-		return m_item.copy();
-	}
+    public ItemStack getCraftingItem()
+    {
+        return m_item.copy();
+    }
 
     @Override
-	public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
-	{
-		return null;
-	}
+    public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
+    {
+        return null;
+    }
 
     @Override
     @SideOnly( Side.CLIENT )
@@ -133,31 +133,31 @@ public class TurtleTool implements ITurtleUpgrade
     }
 
     protected boolean canBreakBlock( World world, BlockPos pos )
-	{
+    {
         IBlockState state = world.getBlockState( pos );
-		Block block = state.getBlock();
-		if( block.isAir( state, world, pos ) || block == Blocks.BEDROCK || block.getBlockHardness( state, world, pos ) <= -1.0F )
-		{
-			return false;
-		}
-		return true;
-	}
-	
-	protected boolean canHarvestBlock( World world, BlockPos pos )
-	{
+        Block block = state.getBlock();
+        if( block.isAir( state, world, pos ) || block == Blocks.BEDROCK || block.getBlockHardness( state, world, pos ) <= -1.0F )
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    protected boolean canHarvestBlock( World world, BlockPos pos )
+    {
         Block block = world.getBlockState( pos ).getBlock();
-		TurtlePlayer turtlePlayer = new TurtlePlayer( (WorldServer)world );
-		turtlePlayer.loadInventory( m_item.copy() );
-		return ForgeHooks.canHarvestBlock( block, turtlePlayer, world, pos );
-	}
-	
-	protected float getDamageMultiplier()
-	{
-		return 3.0f;
-	}
-	
-	private TurtleCommandResult attack( final ITurtleAccess turtle, EnumFacing direction )
-	{
+        TurtlePlayer turtlePlayer = new TurtlePlayer( (WorldServer)world );
+        turtlePlayer.loadInventory( m_item.copy() );
+        return ForgeHooks.canHarvestBlock( block, turtlePlayer, world, pos );
+    }
+    
+    protected float getDamageMultiplier()
+    {
+        return 3.0f;
+    }
+    
+    private TurtleCommandResult attack( final ITurtleAccess turtle, EnumFacing direction )
+    {
         // Create a fake player, and orient it appropriately
         final World world = turtle.getWorld();
         final BlockPos position = turtle.getPosition();
@@ -230,13 +230,13 @@ public class TurtleTool implements ITurtleUpgrade
         }
 
         return TurtleCommandResult.failure( "Nothing to attack here" );
-	}
-	
-	private TurtleCommandResult dig( ITurtleAccess turtle, EnumFacing direction )
-	{
+    }
+    
+    private TurtleCommandResult dig( ITurtleAccess turtle, EnumFacing direction )
+    {
         // Get ready to dig
-		World world = turtle.getWorld();
-		BlockPos position = turtle.getPosition();
+        World world = turtle.getWorld();
+        BlockPos position = turtle.getPosition();
         BlockPos newPosition = WorldUtil.moveCoords( position, direction );
 
         if( WorldUtil.isBlockInWorld( world, newPosition ) &&
@@ -292,15 +292,15 @@ public class TurtleTool implements ITurtleUpgrade
                 brain.saveBlockChange( newPosition, previousState );
             }
 
-    		return TurtleCommandResult.success();
+            return TurtleCommandResult.success();
         }
 
         return TurtleCommandResult.failure( "Nothing to dig here" );
-	}
+    }
 
-	private java.util.List<ItemStack> getBlockDropped( World world, BlockPos pos )
+    private java.util.List<ItemStack> getBlockDropped( World world, BlockPos pos )
     {
-    	Block block = world.getBlockState( pos ).getBlock();
-    	return block.getDrops( world, pos, world.getBlockState( pos ), 0 );
+        Block block = world.getBlockState( pos ).getBlock();
+        return block.getDrops( world, pos, world.getBlockState( pos ), 0 );
     }
 }

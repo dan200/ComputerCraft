@@ -30,33 +30,33 @@ import javax.vecmath.Matrix4f;
 
 public class TurtleModem implements ITurtleUpgrade
 {
-	private static class Peripheral extends WirelessModemPeripheral
-		implements IPeripheral
-	{
-		private final ITurtleAccess m_turtle;
+    private static class Peripheral extends WirelessModemPeripheral
+        implements IPeripheral
+    {
+        private final ITurtleAccess m_turtle;
 
-		public Peripheral( ITurtleAccess turtle, boolean advanced )
-		{
+        public Peripheral( ITurtleAccess turtle, boolean advanced )
+        {
             super( advanced );
-			m_turtle = turtle;
-		}
+            m_turtle = turtle;
+        }
 
         @Override
-		protected World getWorld()
-		{
-			return m_turtle.getWorld();
-		}
+        protected World getWorld()
+        {
+            return m_turtle.getWorld();
+        }
 
         @Override
-		protected Vec3d getPosition()
-		{
+        protected Vec3d getPosition()
+        {
             BlockPos turtlePos = m_turtle.getPosition();
             return new Vec3d(
                 (double)turtlePos.getX(),
                 (double)turtlePos.getY(),
                 (double)turtlePos.getZ()
             );
-		}
+        }
 
         @Override
         public boolean equals( IPeripheral other )
@@ -71,7 +71,7 @@ public class TurtleModem implements ITurtleUpgrade
     }
 
     private boolean m_advanced;
-	private ResourceLocation m_id;
+    private ResourceLocation m_id;
     private int m_legacyID;
 
     @SideOnly( Side.CLIENT )
@@ -87,11 +87,11 @@ public class TurtleModem implements ITurtleUpgrade
     private ModelResourceLocation m_rightOnModel;
 
     public TurtleModem( boolean advanced, ResourceLocation id, int legacyId )
-	{
+    {
         m_advanced = advanced;
         m_id = id;
-		m_legacyID = legacyId;
-	}
+        m_legacyID = legacyId;
+    }
 
     @Override
     public ResourceLocation getUpgradeID()
@@ -99,15 +99,15 @@ public class TurtleModem implements ITurtleUpgrade
         return m_id;
     }
 
-	@Override
-	public int getLegacyUpgradeID()
-	{
-		return m_legacyID;
-	}
-	
-	@Override
-	public String getUnlocalisedAdjective()
-	{
+    @Override
+    public int getLegacyUpgradeID()
+    {
+        return m_legacyID;
+    }
+    
+    @Override
+    public String getUnlocalisedAdjective()
+    {
         if( m_advanced )
         {
             return "upgrade.computercraft:advanced_modem.adjective";
@@ -116,17 +116,17 @@ public class TurtleModem implements ITurtleUpgrade
         {
             return "upgrade.computercraft:wireless_modem.adjective";
         }
-	}
-	
-	@Override
-	public TurtleUpgradeType getType()
-	{
-		return TurtleUpgradeType.Peripheral;
-	}
-	
-	@Override
-	public ItemStack getCraftingItem()
-	{
+    }
+    
+    @Override
+    public TurtleUpgradeType getType()
+    {
+        return TurtleUpgradeType.Peripheral;
+    }
+    
+    @Override
+    public ItemStack getCraftingItem()
+    {
         if( m_advanced )
         {
             return PeripheralItemFactory.create( PeripheralType.AdvancedModem, null, 1 );
@@ -135,19 +135,19 @@ public class TurtleModem implements ITurtleUpgrade
         {
             return PeripheralItemFactory.create( PeripheralType.WirelessModem, null, 1 );
         }
-	}
+    }
 
-	@Override
-	public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
-	{
-		return new Peripheral( turtle, m_advanced );
-	}
+    @Override
+    public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
+    {
+        return new Peripheral( turtle, m_advanced );
+    }
 
-	@Override
-	public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing dir )
-	{
-		return null;
-	}
+    @Override
+    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing dir )
+    {
+        return null;
+    }
 
     @SideOnly( Side.CLIENT )
     private void loadModelLocations()

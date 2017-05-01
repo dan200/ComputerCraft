@@ -16,154 +16,154 @@ import java.util.*;
 
 public class HTTPAPI implements ILuaAPI
 {
-	private IAPIEnvironment m_apiEnvironment;
-	private List<HTTPRequest> m_httpRequests;
-	
-	public HTTPAPI( IAPIEnvironment environment )
-	{
-		m_apiEnvironment = environment;
-		m_httpRequests = new ArrayList<HTTPRequest>();
-	}
-	
-	@Override
+    private IAPIEnvironment m_apiEnvironment;
+    private List<HTTPRequest> m_httpRequests;
+    
+    public HTTPAPI( IAPIEnvironment environment )
+    {
+        m_apiEnvironment = environment;
+        m_httpRequests = new ArrayList<HTTPRequest>();
+    }
+    
+    @Override
     public String[] getNames()
     {
-    	return new String[] {
-    		"http"
-    	};
+        return new String[] {
+            "http"
+        };
     }
 
-	@Override
-	public void startup( )
-	{
-	}
+    @Override
+    public void startup( )
+    {
+    }
 
-	@Override
-	public void advance( double _dt )
-	{
-		// Wait for all of our http requests 
-		synchronized( m_httpRequests )
-		{
-			Iterator<HTTPRequest> it = m_httpRequests.iterator();
-			while( it.hasNext() ) {
-				final HTTPRequest h = it.next();
-				if( h.isComplete() ) {
-					final String url = h.getURL();
-					if( h.wasSuccessful() ) {
-						// Queue the "http_success" event
-						final BufferedReader contents = h.getContents();
-						final int responseCode = h.getResponseCode();
-						final Object result = wrapBufferedReader( contents, responseCode );
-						m_apiEnvironment.queueEvent( "http_success", new Object[] { url, result } );
-					} else {
-						// Queue the "http_failure" event
-						m_apiEnvironment.queueEvent( "http_failure", new Object[] { url, "Could not connect" } );
-					}
-					it.remove();
-				}
-			}
-		}
-	}
-	
-	private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode )
-	{
-		return new ILuaObject() {
-			@Override
-			public String[] getMethodNames()
-			{
-				return new String[] {
-					"readLine",
-					"readAll",
-					"close",
-					"getResponseCode"
-				};
-			}
-			
-			@Override
-			public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
-			{
-				switch( method )
-				{
-					case 0:
-					{
-						// readLine
-						try {
-							String line = reader.readLine();
-							if( line != null ) {
-								return new Object[] { line };
-							} else {
-								return null;
-							}
-						} catch( IOException e ) {
-							return null;
-						}
-					}
-					case 1:
-					{
-						// readAll
-						try {
-							StringBuilder result = new StringBuilder( "" );
-							String line = reader.readLine();
-							while( line != null ) {
-								result.append( line );
-								line = reader.readLine();
-								if( line != null ) {
-									result.append( "\n" );
-								}
-							}
-							return new Object[] { result.toString() };
-						} catch( IOException e ) {
-							return null;
-						}
-					}
-					case 2:
-					{
-						// close
-						try {
-							reader.close();
-							return null;
-						} catch( IOException e ) {
-							return null;
-						}
-					}
-					case 3:
-					{
+    @Override
+    public void advance( double _dt )
+    {
+        // Wait for all of our http requests 
+        synchronized( m_httpRequests )
+        {
+            Iterator<HTTPRequest> it = m_httpRequests.iterator();
+            while( it.hasNext() ) {
+                final HTTPRequest h = it.next();
+                if( h.isComplete() ) {
+                    final String url = h.getURL();
+                    if( h.wasSuccessful() ) {
+                        // Queue the "http_success" event
+                        final BufferedReader contents = h.getContents();
+                        final int responseCode = h.getResponseCode();
+                        final Object result = wrapBufferedReader( contents, responseCode );
+                        m_apiEnvironment.queueEvent( "http_success", new Object[] { url, result } );
+                    } else {
+                        // Queue the "http_failure" event
+                        m_apiEnvironment.queueEvent( "http_failure", new Object[] { url, "Could not connect" } );
+                    }
+                    it.remove();
+                }
+            }
+        }
+    }
+    
+    private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode )
+    {
+        return new ILuaObject() {
+            @Override
+            public String[] getMethodNames()
+            {
+                return new String[] {
+                    "readLine",
+                    "readAll",
+                    "close",
+                    "getResponseCode"
+                };
+            }
+            
+            @Override
+            public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+            {
+                switch( method )
+                {
+                    case 0:
+                    {
+                        // readLine
+                        try {
+                            String line = reader.readLine();
+                            if( line != null ) {
+                                return new Object[] { line };
+                            } else {
+                                return null;
+                            }
+                        } catch( IOException e ) {
+                            return null;
+                        }
+                    }
+                    case 1:
+                    {
+                        // readAll
+                        try {
+                            StringBuilder result = new StringBuilder( "" );
+                            String line = reader.readLine();
+                            while( line != null ) {
+                                result.append( line );
+                                line = reader.readLine();
+                                if( line != null ) {
+                                    result.append( "\n" );
+                                }
+                            }
+                            return new Object[] { result.toString() };
+                        } catch( IOException e ) {
+                            return null;
+                        }
+                    }
+                    case 2:
+                    {
+                        // close
+                        try {
+                            reader.close();
+                            return null;
+                        } catch( IOException e ) {
+                            return null;
+                        }
+                    }
+                    case 3:
+                    {
                         // getResponseCode
-						return new Object[] { responseCode };
-					}
-					default:
-					{
-						return null;
-					}
-				}
-			}
-		};
-	}
-	
-	@Override
-	public void shutdown( )
-	{
-		synchronized( m_httpRequests )
-		{
-			Iterator<HTTPRequest> it = m_httpRequests.iterator();
-			while( it.hasNext() ) {
-				HTTPRequest r = it.next();
-				r.cancel();
-			}
-			m_httpRequests.clear();
-		}
-	}
+                        return new Object[] { responseCode };
+                    }
+                    default:
+                    {
+                        return null;
+                    }
+                }
+            }
+        };
+    }
+    
+    @Override
+    public void shutdown( )
+    {
+        synchronized( m_httpRequests )
+        {
+            Iterator<HTTPRequest> it = m_httpRequests.iterator();
+            while( it.hasNext() ) {
+                HTTPRequest r = it.next();
+                r.cancel();
+            }
+            m_httpRequests.clear();
+        }
+    }
 
-	@Override
+    @Override
     public String[] getMethodNames()
     {
-     	return new String[] {
+         return new String[] {
             "request",
             "checkURL"
         };
     }
 
-	@Override
+    @Override
     public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
     {
         switch( method )
@@ -242,5 +242,5 @@ public class HTTPAPI implements ILuaAPI
                 return null;
             }
         }
-	}
+    }
 }

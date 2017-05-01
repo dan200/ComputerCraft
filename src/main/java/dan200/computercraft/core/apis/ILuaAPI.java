@@ -11,7 +11,7 @@ public interface ILuaAPI extends ILuaObject
 {
     public String[] getNames();
 
-	public void startup(); // LT
-	public void advance( double _dt ); // MT
-	public void shutdown(); // LT
+    public void startup(); // LT
+    public void advance( double _dt ); // MT
+    public void shutdown(); // LT
 }

@@ -23,7 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class InventoryUtil
 {
-	// Methods for comparing things:
+    // Methods for comparing things:
 
     public static boolean areItemsEqual( ItemStack a, ItemStack b )
     {
@@ -37,26 +37,26 @@ public class InventoryUtil
         return false;
     }
 
-	public static boolean areItemsStackable( ItemStack a, ItemStack b )
-	{
-		if( a == b )
-		{
-			return true;
-		}
-		
-		if( a != null && b != null && a.getItem() == b.getItem() )
-		{
-			if( a.getItemDamage() == b.getItemDamage() )
-			{
-				if( (a.getTagCompound() == null && b.getTagCompound() == null) ||
-					(a.getTagCompound() != null && b.getTagCompound() != null && a.getTagCompound().equals( b.getTagCompound() ) ) )
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    public static boolean areItemsStackable( ItemStack a, ItemStack b )
+    {
+        if( a == b )
+        {
+            return true;
+        }
+        
+        if( a != null && b != null && a.getItem() == b.getItem() )
+        {
+            if( a.getItemDamage() == b.getItemDamage() )
+            {
+                if( (a.getTagCompound() == null && b.getTagCompound() == null) ||
+                    (a.getTagCompound() != null && b.getTagCompound() != null && a.getTagCompound().equals( b.getTagCompound() ) ) )
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public static ItemStack copyItem( ItemStack a )
     {
@@ -127,17 +127,17 @@ public class InventoryUtil
         }
         return null;
     }
-	
-	// Methods for placing into inventories:
-	
-	public static ItemStack storeItems( ItemStack itemstack, IInventory inventory, int start, int range, int begin )
-	{
+    
+    // Methods for placing into inventories:
+    
+    public static ItemStack storeItems( ItemStack itemstack, IInventory inventory, int start, int range, int begin )
+    {
         int[] slots = makeSlotList( start, range, begin );
-		return storeItems( itemstack, inventory, slots, null );
-	}
+        return storeItems( itemstack, inventory, slots, null );
+    }
 
-	public static ItemStack storeItems( ItemStack itemstack, IInventory inventory, EnumFacing side )
-	{
+    public static ItemStack storeItems( ItemStack itemstack, IInventory inventory, EnumFacing side )
+    {
         // Try ISidedInventory
         if( inventory instanceof ISidedInventory )
         {
@@ -147,20 +147,20 @@ public class InventoryUtil
             return storeItems( itemstack, inventory, slots, side );
         }
 
-		// No ISidedInventory, store into any slot
-		int[] slots = makeSlotList( 0, inventory.getSizeInventory(), 0 ); // TODO: optimise this out?
-		return storeItems( itemstack, inventory, slots, side );
-	}
-	
-	// Methods for taking out of inventories
-	
+        // No ISidedInventory, store into any slot
+        int[] slots = makeSlotList( 0, inventory.getSizeInventory(), 0 ); // TODO: optimise this out?
+        return storeItems( itemstack, inventory, slots, side );
+    }
+    
+    // Methods for taking out of inventories
+    
     public static ItemStack takeItems( int count, IInventory inventory, int start, int range, int begin )
     {
         int[] slots = makeSlotList( start, range, begin );
-    	return takeItems( count, inventory, slots, null );
+        return takeItems( count, inventory, slots, null );
     }
-    	
-	public static ItemStack takeItems( int count, IInventory inventory, EnumFacing side )
+        
+    public static ItemStack takeItems( int count, IInventory inventory, EnumFacing side )
     {
         // Try ISidedInventory
         if( inventory instanceof ISidedInventory )
@@ -171,127 +171,127 @@ public class InventoryUtil
             return takeItems( count, inventory, slots, side );
         }
 
-		// No ISidedInventory, store into any slot
-		int[] slots = makeSlotList( 0, inventory.getSizeInventory(), 0 );
-		return takeItems( count, inventory, slots, side );
+        // No ISidedInventory, store into any slot
+        int[] slots = makeSlotList( 0, inventory.getSizeInventory(), 0 );
+        return takeItems( count, inventory, slots, side );
     }
     
-	// Private methods
+    // Private methods
 
-	private static int[] makeSlotList( int start, int range, int begin )
-	{
-		if( start < 0 || range == 0 )
-		{
-			return null;
-		}
-		
-		int[] slots = new int[range];
-		for( int n=0; n<slots.length; ++n )
-		{
-			slots[n] = start + ( (n + (begin - start)) % range );
-		}
-		return slots;
-	}
-	    
+    private static int[] makeSlotList( int start, int range, int begin )
+    {
+        if( start < 0 || range == 0 )
+        {
+            return null;
+        }
+        
+        int[] slots = new int[range];
+        for( int n=0; n<slots.length; ++n )
+        {
+            slots[n] = start + ( (n + (begin - start)) % range );
+        }
+        return slots;
+    }
+        
     private static ItemStack storeItems( ItemStack stack, IInventory inventory, int[] slots, EnumFacing face )
     {
-    	if( slots == null || slots.length == 0 )
-    	{
-    		return stack;
-    	}
-    	if( stack == null || stack.stackSize == 0 )
-    	{
-    		return null;
-    	}
+        if( slots == null || slots.length == 0 )
+        {
+            return stack;
+        }
+        if( stack == null || stack.stackSize == 0 )
+        {
+            return null;
+        }
 
-		// Inspect the slots in order and try to find empty or stackable slots
+        // Inspect the slots in order and try to find empty or stackable slots
         ItemStack remainder = stack;
-		for( int n=0; n<slots.length; ++n )
-		{
-			int slot = slots[n];
-			if( canPlaceItemThroughFace( inventory, slot, remainder, face ) )
-			{
-				ItemStack slotContents = inventory.getStackInSlot(slot);
-				if( slotContents == null )
-				{
-					// Slot is empty
-					int space = inventory.getInventoryStackLimit();
-					if( space >= remainder.stackSize )
-					{
+        for( int n=0; n<slots.length; ++n )
+        {
+            int slot = slots[n];
+            if( canPlaceItemThroughFace( inventory, slot, remainder, face ) )
+            {
+                ItemStack slotContents = inventory.getStackInSlot(slot);
+                if( slotContents == null )
+                {
+                    // Slot is empty
+                    int space = inventory.getInventoryStackLimit();
+                    if( space >= remainder.stackSize )
+                    {
                         // Items fit completely in slot
-						inventory.setInventorySlotContents( slot, remainder );
-						inventory.markDirty();
-						return null;
-					}
-				    else
+                        inventory.setInventorySlotContents( slot, remainder );
+                        inventory.markDirty();
+                        return null;
+                    }
+                    else
                     {
                         // Items fit partially in slot
                         remainder = remainder.copy();
-    					inventory.setInventorySlotContents( slot, remainder.splitStack( space ) );
+                        inventory.setInventorySlotContents( slot, remainder.splitStack( space ) );
                     }
-				}
-				else if( areItemsStackable( slotContents, remainder ) )
-				{
-					// Slot is occupied, but matching
-					int space = Math.min( slotContents.getMaxStackSize(), inventory.getInventoryStackLimit() ) - slotContents.stackSize;
-					if( space >= remainder.stackSize )
-					{
+                }
+                else if( areItemsStackable( slotContents, remainder ) )
+                {
+                    // Slot is occupied, but matching
+                    int space = Math.min( slotContents.getMaxStackSize(), inventory.getInventoryStackLimit() ) - slotContents.stackSize;
+                    if( space >= remainder.stackSize )
+                    {
                         // Items fit completely in slot
-						slotContents.stackSize += remainder.stackSize;
-						inventory.setInventorySlotContents( slot, slotContents );
-						inventory.markDirty();
-						return null;
-					}
-					else if( space > 0 )
-					{
+                        slotContents.stackSize += remainder.stackSize;
+                        inventory.setInventorySlotContents( slot, slotContents );
+                        inventory.markDirty();
+                        return null;
+                    }
+                    else if( space > 0 )
+                    {
                         // Items fit partially in slot
                         remainder = remainder.copy();
                         remainder.stackSize -= space;
-						slotContents.stackSize += space;
-						inventory.setInventorySlotContents( slot, slotContents );
-					}
-				}
-			}
-		}
+                        slotContents.stackSize += space;
+                        inventory.setInventorySlotContents( slot, slotContents );
+                    }
+                }
+            }
+        }
 
         // If the output isn't the input, inform the change
-		if( remainder != stack )
-		{
-			inventory.markDirty();
-		}
+        if( remainder != stack )
+        {
+            inventory.markDirty();
+        }
         return remainder;
     }
 
-	private static boolean canPlaceItemThroughFace( IInventory inventory, int slot, ItemStack itemstack, EnumFacing face )
-	{
-		if( inventory.isItemValidForSlot( slot, itemstack ) )
-		{
-			if( face != null && inventory instanceof ISidedInventory )
-			{
-				ISidedInventory sided = (ISidedInventory)inventory;
-				return sided.canInsertItem( slot, itemstack, face );
-			}
-			return true;
-		}
-		return false;
-	}
+    private static boolean canPlaceItemThroughFace( IInventory inventory, int slot, ItemStack itemstack, EnumFacing face )
+    {
+        if( inventory.isItemValidForSlot( slot, itemstack ) )
+        {
+            if( face != null && inventory instanceof ISidedInventory )
+            {
+                ISidedInventory sided = (ISidedInventory)inventory;
+                return sided.canInsertItem( slot, itemstack, face );
+            }
+            return true;
+        }
+        return false;
+    }
 
     private static ItemStack takeItems( int count, IInventory inventory, int[] slots, EnumFacing face )
     {
-    	if( slots == null )
-    	{
-    		return null;
-    	}
+        if( slots == null )
+        {
+            return null;
+        }
 
-    	// Combine multiple stacks from inventory into one if necessary
+        // Combine multiple stacks from inventory into one if necessary
         ItemStack partialStack = null;
         int countRemaining = count;
-		for( int n=0; n<slots.length; ++n )
-		{
-			int slot = slots[n];
+        for( int n=0; n<slots.length; ++n )
+        {
+            int slot = slots[n];
             if( countRemaining > 0 )
             {
-			    ItemStack stack = inventory.getStackInSlot( slot );
+                ItemStack stack = inventory.getStackInSlot( slot );
                 if( stack != null && canTakeItemThroughFace( inventory, slot, stack, face ) )
                 {
                     if( partialStack == null || areItemsStackable( stack, partialStack ) )
@@ -328,9 +328,9 @@ public class InventoryUtil
                             }
                         }
                     }
-				}
-			}
-		}
+                }
+            }
+        }
 
         // Return the final stack
         if( partialStack != null )
@@ -338,16 +338,16 @@ public class InventoryUtil
             inventory.markDirty();
             return partialStack;
         }
-		return null;
-	}
+        return null;
+    }
 
-	private static boolean canTakeItemThroughFace( IInventory inventory, int slot, ItemStack itemstack, EnumFacing face )
-	{
-		if( face != null && inventory instanceof ISidedInventory )
-		{
-			ISidedInventory sided = (ISidedInventory)inventory;
-			return sided.canExtractItem( slot, itemstack, face );
-		}
-		return true;
-	}
+    private static boolean canTakeItemThroughFace( IInventory inventory, int slot, ItemStack itemstack, EnumFacing face )
+    {
+        if( face != null && inventory instanceof ISidedInventory )
+        {
+            ISidedInventory sided = (ISidedInventory)inventory;
+            return sided.canExtractItem( slot, itemstack, face );
+        }
+        return true;
+    }
 }

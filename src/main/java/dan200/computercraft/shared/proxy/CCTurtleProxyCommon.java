@@ -43,46 +43,46 @@ import net.minecraftforge.oredict.RecipeSorter;
 import java.util.*;
 
 public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
-{	
-	private Map<Integer, ITurtleUpgrade> m_legacyTurtleUpgrades;
+{    
+    private Map<Integer, ITurtleUpgrade> m_legacyTurtleUpgrades;
     private Map<String, ITurtleUpgrade> m_turtleUpgrades;
-	private Map<Entity, IEntityDropConsumer> m_dropConsumers;
+    private Map<Entity, IEntityDropConsumer> m_dropConsumers;
 
-	public CCTurtleProxyCommon()
-	{
+    public CCTurtleProxyCommon()
+    {
         m_legacyTurtleUpgrades = new HashMap<Integer, ITurtleUpgrade>();
-		m_turtleUpgrades = new HashMap<String, ITurtleUpgrade>();
-		m_dropConsumers = new WeakHashMap<Entity, IEntityDropConsumer>();
-	}
-	
-	// ICCTurtleProxy implementation
-	
-	@Override		
-	public void preInit()
-	{
-		registerItems();
-	}
-	
-	@Override		
-	public void init()
-	{
-		registerForgeHandlers();
-		registerTileEntities();
-	}
+        m_turtleUpgrades = new HashMap<String, ITurtleUpgrade>();
+        m_dropConsumers = new WeakHashMap<Entity, IEntityDropConsumer>();
+    }
+    
+    // ICCTurtleProxy implementation
+    
+    @Override        
+    public void preInit()
+    {
+        registerItems();
+    }
+    
+    @Override        
+    public void init()
+    {
+        registerForgeHandlers();
+        registerTileEntities();
+    }
 
-	@Override
-	public void registerTurtleUpgrade( ITurtleUpgrade upgrade )
-	{
-		// Check conditions
-		int id = upgrade.getLegacyUpgradeID();
-		if( id >= 0 && id < 64 )
-		{
-			throw new RuntimeException( "Error registering '"+upgrade.getUnlocalisedAdjective()+" Turtle'. Legacy UpgradeID '"+id+"' is reserved by ComputerCraft" );
-		}
-		
-		// Register
-		registerTurtleUpgradeInternal( upgrade );
-	}
+    @Override
+    public void registerTurtleUpgrade( ITurtleUpgrade upgrade )
+    {
+        // Check conditions
+        int id = upgrade.getLegacyUpgradeID();
+        if( id >= 0 && id < 64 )
+        {
+            throw new RuntimeException( "Error registering '"+upgrade.getUnlocalisedAdjective()+" Turtle'. Legacy UpgradeID '"+id+"' is reserved by ComputerCraft" );
+        }
+        
+        // Register
+        registerTurtleUpgradeInternal( upgrade );
+    }
 
     @Override
     public ITurtleUpgrade getTurtleUpgrade( String id )
@@ -91,16 +91,16 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     }
 
     @Override
-	public ITurtleUpgrade getTurtleUpgrade( int legacyId )
-	{
-		return m_legacyTurtleUpgrades.get( legacyId );
-	}
-	
-	@Override
-	public ITurtleUpgrade getTurtleUpgrade( ItemStack stack )
-	{
-		for( ITurtleUpgrade upgrade : m_turtleUpgrades.values() )
-		{
+    public ITurtleUpgrade getTurtleUpgrade( int legacyId )
+    {
+        return m_legacyTurtleUpgrades.get( legacyId );
+    }
+    
+    @Override
+    public ITurtleUpgrade getTurtleUpgrade( ItemStack stack )
+    {
+        for( ITurtleUpgrade upgrade : m_turtleUpgrades.values() )
+        {
             try
             {
                 ItemStack upgradeStack = upgrade.getCraftingItem();
@@ -113,9 +113,9 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             {
                 continue;
             }
-		}
-		return null;
-	}
+        }
+        return null;
+    }
 
     public static boolean isUpgradeVanilla( ITurtleUpgrade upgrade )
     {
@@ -133,8 +133,8 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             return true;
         }
     }
-	
-	private void addAllUpgradedTurtles( ComputerFamily family, List<ItemStack> list )
+    
+    private void addAllUpgradedTurtles( ComputerFamily family, List<ItemStack> list )
     {
         ItemStack basicStack = TurtleItemFactory.create( -1, null, null, family, null, null, 0, null );
         if( basicStack != null )
@@ -161,89 +161,89 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                 list.add( stack );
             }
         }
-	}
-	
-	@Override
-	public void addAllUpgradedTurtles( List<ItemStack> list )
-	{
-		addAllUpgradedTurtles( ComputerFamily.Normal, list );
-		addAllUpgradedTurtles( ComputerFamily.Advanced, list );
-	}
-	
-	@Override
-	public void setEntityDropConsumer( Entity entity, IEntityDropConsumer consumer )
-	{
-		if( !m_dropConsumers.containsKey( entity ) )
-		{
-			boolean captured = ObfuscationReflectionHelper.<Boolean, Entity>getPrivateValue(
-				Entity.class,
-				entity, 
-				"captureDrops"
-			).booleanValue();
-			
-			if( !captured )
-			{
-				ObfuscationReflectionHelper.setPrivateValue(
+    }
+    
+    @Override
+    public void addAllUpgradedTurtles( List<ItemStack> list )
+    {
+        addAllUpgradedTurtles( ComputerFamily.Normal, list );
+        addAllUpgradedTurtles( ComputerFamily.Advanced, list );
+    }
+    
+    @Override
+    public void setEntityDropConsumer( Entity entity, IEntityDropConsumer consumer )
+    {
+        if( !m_dropConsumers.containsKey( entity ) )
+        {
+            boolean captured = ObfuscationReflectionHelper.<Boolean, Entity>getPrivateValue(
+                Entity.class,
+                entity, 
+                "captureDrops"
+            ).booleanValue();
+            
+            if( !captured )
+            {
+                ObfuscationReflectionHelper.setPrivateValue(
                         Entity.class,
                         entity,
                         new Boolean( true ),
                         "captureDrops"
                 );
-				
-				ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
+                
+                ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
                         Entity.class,
                         entity,
                         "capturedDrops"
                 );
-				
-				if( items == null || items.size() == 0 )
-				{
-					m_dropConsumers.put( entity, consumer );
-				}
-			}
-		}
-	}	
-	
-	@Override
-	public void clearEntityDropConsumer( Entity entity )
-	{
-		if( m_dropConsumers.containsKey( entity ) )
-		{
-			boolean captured = ObfuscationReflectionHelper.<Boolean, Entity>getPrivateValue(
+                
+                if( items == null || items.size() == 0 )
+                {
+                    m_dropConsumers.put( entity, consumer );
+                }
+            }
+        }
+    }    
+    
+    @Override
+    public void clearEntityDropConsumer( Entity entity )
+    {
+        if( m_dropConsumers.containsKey( entity ) )
+        {
+            boolean captured = ObfuscationReflectionHelper.<Boolean, Entity>getPrivateValue(
                     Entity.class,
                     entity,
                     "captureDrops"
             );
-			
-			if( captured )
-			{
-				ObfuscationReflectionHelper.setPrivateValue(
-					Entity.class,
-					entity, 
-					new Boolean( false ),
-					"captureDrops"
-				);
-				
-				ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
+            
+            if( captured )
+            {
+                ObfuscationReflectionHelper.setPrivateValue(
+                    Entity.class,
+                    entity, 
+                    new Boolean( false ),
+                    "captureDrops"
+                );
+                
+                ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
                         Entity.class,
                         entity,
                         "capturedDrops"
                 );
-				
-				if( items != null )
-				{
-					dispatchEntityDrops( entity, items );
-					items.clear();
-				}
-			}
-			m_dropConsumers.remove( entity );
-		}
-	}
+                
+                if( items != null )
+                {
+                    dispatchEntityDrops( entity, items );
+                    items.clear();
+                }
+            }
+            m_dropConsumers.remove( entity );
+        }
+    }
 
     private void registerTurtleUpgradeInternal( ITurtleUpgrade upgrade )
-	{
-		// Check conditions
-		int legacyID = upgrade.getLegacyUpgradeID();
+    {
+        // Check conditions
+        int legacyID = upgrade.getLegacyUpgradeID();
         if( legacyID >= 0 )
         {
             if( legacyID >= Short.MAX_VALUE )
@@ -273,13 +273,13 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         m_turtleUpgrades.put( id, upgrade );
 
         // Add a bunch of impostor recipes
-		if( isUpgradeVanilla( upgrade )  )
-		{
-			// Add fake recipes to fool NEI
-			List recipeList = CraftingManager.getInstance().getRecipeList();
-			ItemStack craftingItem = upgrade.getCraftingItem();
+        if( isUpgradeVanilla( upgrade )  )
+        {
+            // Add fake recipes to fool NEI
+            List recipeList = CraftingManager.getInstance().getRecipeList();
+            ItemStack craftingItem = upgrade.getCraftingItem();
 
-			// A turtle just containing this upgrade
+            // A turtle just containing this upgrade
             for( ComputerFamily family : ComputerFamily.values() )
             {
                 if( !isUpgradeSuitableForFamily( family, upgrade ) )
@@ -318,22 +318,22 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                     }
                 }
             }
-		}
-	}
-	
-	private void registerItems()
-	{
+        }
+    }
+    
+    private void registerItems()
+    {
         // Blocks
-		// Turtle
+        // Turtle
         ComputerCraft.Blocks.turtle = BlockTurtle.createTurtleBlock();
-		GameRegistry.registerBlock( ComputerCraft.Blocks.turtle, ItemTurtleLegacy.class, "CC-Turtle" );
+        GameRegistry.registerBlock( ComputerCraft.Blocks.turtle, ItemTurtleLegacy.class, "CC-Turtle" );
 
         ComputerCraft.Blocks.turtleExpanded = BlockTurtle.createTurtleBlock();
-		GameRegistry.registerBlock( ComputerCraft.Blocks.turtleExpanded, ItemTurtleNormal.class, "CC-TurtleExpanded" );
+        GameRegistry.registerBlock( ComputerCraft.Blocks.turtleExpanded, ItemTurtleNormal.class, "CC-TurtleExpanded" );
 
         // Advanced Turtle
         ComputerCraft.Blocks.turtleAdvanced = BlockTurtle.createTurtleBlock();
-		GameRegistry.registerBlock( ComputerCraft.Blocks.turtleAdvanced, ItemTurtleAdvanced.class, "CC-TurtleAdvanced" );
+        GameRegistry.registerBlock( ComputerCraft.Blocks.turtleAdvanced, ItemTurtleAdvanced.class, "CC-TurtleAdvanced" );
 
         // Recipe types
         RecipeSorter.register( "computercraft:turtle", TurtleRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
@@ -403,47 +403,47 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.advancedModem );
     }
 
-	private void registerTileEntities()
-	{
-		// TileEntities
-		GameRegistry.registerTileEntity( TileTurtle.class, "turtle" );
-		GameRegistry.registerTileEntity( TileTurtleExpanded.class, "turtleex" );
-		GameRegistry.registerTileEntity( TileTurtleAdvanced.class, "turtleadv" );
-	}
-	
-	private void registerForgeHandlers()
-	{
-		ForgeHandlers handlers = new ForgeHandlers();
-		MinecraftForge.EVENT_BUS.register( handlers );
-	}
-		
-	public class ForgeHandlers
-	{
-		private ForgeHandlers()
-		{
-		}
+    private void registerTileEntities()
+    {
+        // TileEntities
+        GameRegistry.registerTileEntity( TileTurtle.class, "turtle" );
+        GameRegistry.registerTileEntity( TileTurtleExpanded.class, "turtleex" );
+        GameRegistry.registerTileEntity( TileTurtleAdvanced.class, "turtleadv" );
+    }
+    
+    private void registerForgeHandlers()
+    {
+        ForgeHandlers handlers = new ForgeHandlers();
+        MinecraftForge.EVENT_BUS.register( handlers );
+    }
+        
+    public class ForgeHandlers
+    {
+        private ForgeHandlers()
+        {
+        }
 
-		// Forge event responses 
-		@SubscribeEvent
-		public void onEntityLivingDrops( LivingDropsEvent event )
-		{
-			dispatchEntityDrops( event.getEntity(), event.getDrops() );
-		}
+        // Forge event responses 
+        @SubscribeEvent
+        public void onEntityLivingDrops( LivingDropsEvent event )
+        {
+            dispatchEntityDrops( event.getEntity(), event.getDrops() );
+        }
     }
     
     private void dispatchEntityDrops( Entity entity, java.util.List<EntityItem> drops )
     {
-		IEntityDropConsumer consumer = m_dropConsumers.get( entity );
-		if( consumer != null )
-		{
-			// All checks have passed, lets dispatch the drops
-			Iterator<EntityItem> it = drops.iterator();
-			while( it.hasNext() )
-			{
-				EntityItem entityItem = (EntityItem)it.next();
-				consumer.consumeDrop( entity, entityItem.getEntityItem() );
-			}
-			drops.clear();
-		}
+        IEntityDropConsumer consumer = m_dropConsumers.get( entity );
+        if( consumer != null )
+        {
+            // All checks have passed, lets dispatch the drops
+            Iterator<EntityItem> it = drops.iterator();
+            while( it.hasNext() )
+            {
+                EntityItem entityItem = (EntityItem)it.next();
+                consumer.consumeDrop( entity, entityItem.getEntityItem() );
+            }
+            drops.clear();
+        }
     }
 }

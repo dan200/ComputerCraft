@@ -122,22 +122,22 @@ public class FixedWidthFontRenderer
         // Draw background
         if( backgroundColour != null )
         {
-			// Bind the background texture
-			m_textureManager.bindTexture( background );
+            // Bind the background texture
+            m_textureManager.bindTexture( background );
 
             // Draw the quads
             drawStringBackgroundPart( x, y, backgroundColour, leftMarginSize, rightMarginSize, greyScale );
-		}
-	
-		// Draw text
+        }
+    
+        // Draw text
         if( s != null && textColour != null )
-		{
-			// Bind the font texture
+        {
+            // Bind the font texture
             m_textureManager.bindTexture( font );
-			
+            
             // Draw the quads
             drawStringTextPart( x, y, s, textColour, greyScale );
-		}
+        }
     }
 
     public int getStringWidth(String s)

@@ -27,7 +27,7 @@ public class TileComputer extends TileComputerBase
 
     public TileComputer()
     {
-	}
+    }
 
     @Override
     protected ServerComputer createComputer( int instanceID, int id )

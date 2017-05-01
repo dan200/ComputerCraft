@@ -48,7 +48,7 @@ public class GuiPrinter extends GuiContainer
         boolean printing = m_container.isPrinting();
         if( printing )
         {
-	        drawTexturedModalRect(startX + 34, startY + 21, 176, 0, 25, 45);
+            drawTexturedModalRect(startX + 34, startY + 21, 176, 0, 25, 45);
         }
     }
 }

@@ -12,16 +12,16 @@ import net.minecraft.inventory.Container;
 
 public class ContainerComputer extends Container
 {
-	private TileComputer m_computer;
-	
-	public ContainerComputer( TileComputer computer )
-	{
-		m_computer = computer;
-	}
-	
-	@Override
-	public boolean canInteractWith( EntityPlayer player )
-	{
+    private TileComputer m_computer;
+    
+    public ContainerComputer( TileComputer computer )
+    {
+        m_computer = computer;
+    }
+    
+    @Override
+    public boolean canInteractWith( EntityPlayer player )
+    {
         return m_computer.isUseableByPlayer( player );
-	}
+    }
 }

@@ -29,27 +29,27 @@ public class TurtleHoe extends TurtleTool
     }
 
     @Override
-	protected boolean canBreakBlock( World world, BlockPos pos )
-	{
-		if( super.canBreakBlock( world, pos ) )
-		{
+    protected boolean canBreakBlock( World world, BlockPos pos )
+    {
+        if( super.canBreakBlock( world, pos ) )
+        {
             IBlockState state = world.getBlockState( pos );
-			Block block = state.getBlock();
+            Block block = state.getBlock();
             Material material = block.getMaterial( state );
-			return
+            return
                 material == Material.PLANTS ||
                 material == Material.CACTUS ||
                 material == Material.GOURD ||
                 material == Material.LEAVES ||
                 material == Material.VINE;
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 
     @Override
-	public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction )
-	{
-		if( verb == TurtleVerb.Dig )
+    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction )
+    {
+        if( verb == TurtleVerb.Dig )
         {
             ItemStack hoe = m_item.copy();
             ItemStack remainder = TurtlePlaceCommand.deploy( hoe, turtle, direction, null, null );
@@ -57,7 +57,7 @@ public class TurtleHoe extends TurtleTool
             {
                 return TurtleCommandResult.success();
             }
-		}
-		return super.useTool( turtle, side, verb, direction );
-	}
+        }
+        return super.useTool( turtle, side, verb, direction );
+    }
 }

@@ -17,48 +17,48 @@ import net.minecraft.world.World;
 
 public class TurtleRecipe implements IRecipe
 {
-	private final Item[] m_recipe;
-	private final ComputerFamily m_family;
-	
+    private final Item[] m_recipe;
+    private final ComputerFamily m_family;
+    
     public TurtleRecipe( Item[] recipe, ComputerFamily family )
     {
-    	m_recipe = recipe;
+        m_recipe = recipe;
         m_family = family;
     }
 
-	@Override
-	public int getRecipeSize()
-	{
-		return 9;
-	}
-	
-	@Override
+    @Override
+    public int getRecipeSize()
+    {
+        return 9;
+    }
+    
+    @Override
     public ItemStack getRecipeOutput()
     {
         return TurtleItemFactory.create( -1, null, null, m_family, null, null, 0, null );
     }
 
-	@Override
+    @Override
     public boolean matches( InventoryCrafting _inventory, World world )
     {
-    	return (getCraftingResult( _inventory ) != null);
+        return (getCraftingResult( _inventory ) != null);
     }
 
-	@Override
+    @Override
     public ItemStack getCraftingResult( InventoryCrafting inventory )
     {
-    	// See if we match the recipe, and extract the input computercraft ID
-    	int computerID = -1;
+        // See if we match the recipe, and extract the input computercraft ID
+        int computerID = -1;
         String label = null;
-    	for( int y=0; y<3; ++y )
-    	{
-			for( int x=0; x<3; ++x )
-			{
-				ItemStack item = inventory.getStackInRowAndColumn(x, y);
-				if( item != null && item.getItem() == m_recipe[ x + y*3 ] )
-				{
-					if( item.getItem() instanceof IComputerItem )
-					{
+        for( int y=0; y<3; ++y )
+        {
+            for( int x=0; x<3; ++x )
+            {
+                ItemStack item = inventory.getStackInRowAndColumn(x, y);
+                if( item != null && item.getItem() == m_recipe[ x + y*3 ] )
+                {
+                    if( item.getItem() instanceof IComputerItem )
+                    {
                         IComputerItem itemComputer = (IComputerItem)item.getItem();
                         if( m_family == ComputerFamily.Beginners || itemComputer.getFamily( item ) == m_family )
                         {
@@ -69,17 +69,17 @@ public class TurtleRecipe implements IRecipe
                         {
                             return null;
                         }
-					}
-				}
-				else
-				{
-					return null;
-				}
-			}
-		}
-		
-		// Build a turtle with the same ID the computer had
-		// Construct the new stack
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        
+        // Build a turtle with the same ID the computer had
+        // Construct the new stack
         if( m_family != ComputerFamily.Beginners )
         {
             return TurtleItemFactory.create( computerID, label, null, m_family, null, null, 0, null );

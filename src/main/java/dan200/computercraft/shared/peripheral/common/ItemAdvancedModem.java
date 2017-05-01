@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ItemAdvancedModem extends ItemPeripheralBase
 {
-	public ItemAdvancedModem( Block block )
+    public ItemAdvancedModem( Block block )
     {
         super( block );
         setUnlocalizedName( "computercraft:advanced_modem" );
@@ -50,7 +50,7 @@ public class ItemAdvancedModem extends ItemPeripheralBase
     @Override
     public void getSubItems( Item itemID, CreativeTabs tabs, List list )
     {
-    	list.add( PeripheralItemFactory.create( PeripheralType.AdvancedModem, null, 1 ) );
+        list.add( PeripheralItemFactory.create( PeripheralType.AdvancedModem, null, 1 ) );
     }
 
     @Override

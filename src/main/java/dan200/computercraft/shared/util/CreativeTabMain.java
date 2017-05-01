@@ -26,6 +26,6 @@ public class CreativeTabMain extends CreativeTabs
     @Override
     public String getTranslatedTabLabel()
     {
-    	return getTabLabel();
+        return getTabLabel();
     }
 }

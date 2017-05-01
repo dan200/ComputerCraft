@@ -35,24 +35,24 @@ import java.io.File;
 import java.util.*;
 
 public class TileCable extends TileModemBase
-	implements INetwork
+    implements INetwork
 {
     // Statics
 
-	private static class Peripheral extends ModemPeripheral
-	{
-		private TileCable m_entity;
-		
-		public Peripheral( TileCable entity )
-		{
-			m_entity = entity;
-		}
+    private static class Peripheral extends ModemPeripheral
+    {
+        private TileCable m_entity;
+        
+        public Peripheral( TileCable entity )
+        {
+            m_entity = entity;
+        }
 
-	    @Override
-	    protected boolean isInterdimensional()
-	    {
-	    	return false;
-	    }
+        @Override
+        protected boolean isInterdimensional()
+        {
+            return false;
+        }
 
         @Override
         protected double getTransmitRange()
@@ -61,10 +61,10 @@ public class TileCable extends TileModemBase
         }
 
         @Override
-	    protected INetwork getNetwork()
-	    {
-	    	return m_entity;
-	    }
+        protected INetwork getNetwork()
+        {
+            return m_entity;
+        }
 
         @Override
         protected World getWorld()
@@ -72,13 +72,13 @@ public class TileCable extends TileModemBase
             return m_entity.getWorld();
         }
 
-	    @Override
-		protected Vec3d getPosition()
-		{
-			EnumFacing direction = m_entity.getDirection();
+        @Override
+        protected Vec3d getPosition()
+        {
+            EnumFacing direction = m_entity.getDirection();
             BlockPos pos = m_entity.getPos().offset( direction );
-			return new Vec3d( (double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5 );
-		}
+            return new Vec3d( (double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5 );
+        }
 
         @Override
         public String[] getMethodNames()
@@ -222,44 +222,44 @@ public class TileCable extends TileModemBase
 
     // Members
 
-	private Map<Integer, Set<IReceiver>> m_receivers;
-	private Queue<Packet> m_transmitQueue;
-	
+    private Map<Integer, Set<IReceiver>> m_receivers;
+    private Queue<Packet> m_transmitQueue;
+    
     private boolean m_peripheralAccessAllowed;
     private int m_attachedPeripheralID;
     
-	private Map<String, IPeripheral> m_peripheralsByName;
-	private Map<String, RemotePeripheralWrapper> m_peripheralWrappersByName;
-	private boolean m_peripheralsKnown;
+    private Map<String, IPeripheral> m_peripheralsByName;
+    private Map<String, RemotePeripheralWrapper> m_peripheralWrappersByName;
+    private boolean m_peripheralsKnown;
     private boolean m_destroyed;
     
     private int m_lastSearchID;
-	
+    
     public TileCable()
     {
-    	m_receivers = new HashMap<Integer, Set<IReceiver>>();
-    	m_transmitQueue = new LinkedList<Packet>();
-    	
-    	m_peripheralAccessAllowed = false;
-    	m_attachedPeripheralID = -1;
-    	
-    	m_peripheralsByName = new HashMap<String, IPeripheral>();
-    	m_peripheralWrappersByName = new HashMap<String, RemotePeripheralWrapper>();
-    	m_peripheralsKnown = false;
-    	m_destroyed = false;
-    	
-    	m_lastSearchID = 0;
+        m_receivers = new HashMap<Integer, Set<IReceiver>>();
+        m_transmitQueue = new LinkedList<Packet>();
+        
+        m_peripheralAccessAllowed = false;
+        m_attachedPeripheralID = -1;
+        
+        m_peripheralsByName = new HashMap<String, IPeripheral>();
+        m_peripheralWrappersByName = new HashMap<String, RemotePeripheralWrapper>();
+        m_peripheralsKnown = false;
+        m_destroyed = false;
+        
+        m_lastSearchID = 0;
     }
 
     @Override
     public void destroy()
     {
-    	if( !m_destroyed )
-    	{
-	    	m_destroyed = true;
-		    networkChanged();
-		}
-    	super.destroy();
+        if( !m_destroyed )
+        {
+            m_destroyed = true;
+            networkChanged();
+        }
+        super.destroy();
     }
 
     @Override
@@ -483,41 +483,41 @@ public class TileCable extends TileModemBase
     @Override
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
-		// Read properties
+        // Read properties
         super.readFromNBT(nbttagcompound);
-		m_peripheralAccessAllowed = nbttagcompound.getBoolean( "peripheralAccess" );
-		m_attachedPeripheralID = nbttagcompound.getInteger( "peripheralID" );
+        m_peripheralAccessAllowed = nbttagcompound.getBoolean( "peripheralAccess" );
+        m_attachedPeripheralID = nbttagcompound.getInteger( "peripheralID" );
     }
 
-	@Override	
+    @Override    
     public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
-		// Write properties
+        // Write properties
         nbttagcompound = super.writeToNBT(nbttagcompound);
-		nbttagcompound.setBoolean( "peripheralAccess", m_peripheralAccessAllowed );
-		nbttagcompound.setInteger( "peripheralID", m_attachedPeripheralID );
+        nbttagcompound.setBoolean( "peripheralAccess", m_peripheralAccessAllowed );
+        nbttagcompound.setInteger( "peripheralID", m_attachedPeripheralID );
         return nbttagcompound;
     }
     
     @Override
     protected ModemPeripheral createPeripheral()
     {
-    	return new Peripheral( this );
+        return new Peripheral( this );
     }
 
     @Override
-	protected void updateAnim()
-	{
-		int anim = 0;
-		if( m_modem.isActive() )
-		{
-			anim += 1;
-		}
-		if( m_peripheralAccessAllowed )
-		{
-			anim += 2;
-		}
-		setAnim( anim );
+    protected void updateAnim()
+    {
+        int anim = 0;
+        if( m_modem.isActive() )
+        {
+            anim += 1;
+        }
+        if( m_peripheralAccessAllowed )
+        {
+            anim += 2;
+        }
+        setAnim( anim );
     }
 
     // IPeripheralTile
@@ -535,283 +535,283 @@ public class TileCable extends TileModemBase
     @Override
     public void update()
     {
-    	super.update();
-    	if( !worldObj.isRemote )
-    	{    	
-			synchronized( m_peripheralsByName )
-			{
-				if( !m_peripheralsKnown )
-				{
-					findPeripherals();
-					m_peripheralsKnown = true;
-				}
-			}
-			synchronized( m_transmitQueue )
-			{
-				while( m_transmitQueue.peek() != null )
-				{
-					Packet p = m_transmitQueue.remove();
-					if( p != null )
-					{
-						dispatchPacket( p );
-					}
-				}
-			}
-		}
+        super.update();
+        if( !worldObj.isRemote )
+        {        
+            synchronized( m_peripheralsByName )
+            {
+                if( !m_peripheralsKnown )
+                {
+                    findPeripherals();
+                    m_peripheralsKnown = true;
+                }
+            }
+            synchronized( m_transmitQueue )
+            {
+                while( m_transmitQueue.peek() != null )
+                {
+                    Packet p = m_transmitQueue.remove();
+                    if( p != null )
+                    {
+                        dispatchPacket( p );
+                    }
+                }
+            }
+        }
     }
     
     // INetwork implementation
     
     @Override
-	public void addReceiver( IReceiver receiver )
-	{
-		synchronized( m_receivers )
-		{
-			int channel = receiver.getChannel();
-			Set<IReceiver> receivers = m_receivers.get( channel );
-			if( receivers == null )
-			{
-				receivers = new HashSet<IReceiver>();
-				m_receivers.put( channel, receivers );
-			}
-			receivers.add( receiver );
-		}
-	}
-	
+    public void addReceiver( IReceiver receiver )
+    {
+        synchronized( m_receivers )
+        {
+            int channel = receiver.getChannel();
+            Set<IReceiver> receivers = m_receivers.get( channel );
+            if( receivers == null )
+            {
+                receivers = new HashSet<IReceiver>();
+                m_receivers.put( channel, receivers );
+            }
+            receivers.add( receiver );
+        }
+    }
+    
     @Override
-	public void removeReceiver( IReceiver receiver )
-	{
-		synchronized( m_receivers )
-		{
-			int channel = receiver.getChannel();
-			Set<IReceiver> receivers = m_receivers.get( channel );
-			if( receivers != null )
-			{
-				receivers.remove( receiver );
-			}
-		}
-	}
-	
+    public void removeReceiver( IReceiver receiver )
+    {
+        synchronized( m_receivers )
+        {
+            int channel = receiver.getChannel();
+            Set<IReceiver> receivers = m_receivers.get( channel );
+            if( receivers != null )
+            {
+                receivers.remove( receiver );
+            }
+        }
+    }
+    
     @Override
-	public void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
-	{
-		Packet p = new Packet();
-		p.channel = channel;
-		p.replyChannel = replyChannel;
-		p.payload = payload;
-		p.senderObject = senderObject;
-		synchronized( m_transmitQueue )
-		{
-			m_transmitQueue.offer(p);
-		}
-	}
-	
+    public void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
+    {
+        Packet p = new Packet();
+        p.channel = channel;
+        p.replyChannel = replyChannel;
+        p.payload = payload;
+        p.senderObject = senderObject;
+        synchronized( m_transmitQueue )
+        {
+            m_transmitQueue.offer(p);
+        }
+    }
+    
     @Override
-	public boolean isWireless()
-	{
-		return false;
-	}
+    public boolean isWireless()
+    {
+        return false;
+    }
         
     private void attachPeripheral( String periphName, IPeripheral peripheral )
     {
-    	if( !m_peripheralWrappersByName.containsKey( periphName ) )
-    	{ 
-			RemotePeripheralWrapper wrapper = new RemotePeripheralWrapper( peripheral, m_modem.getComputer(), periphName );
-			m_peripheralWrappersByName.put( periphName, wrapper );
-			wrapper.attach();
-		}
+        if( !m_peripheralWrappersByName.containsKey( periphName ) )
+        { 
+            RemotePeripheralWrapper wrapper = new RemotePeripheralWrapper( peripheral, m_modem.getComputer(), periphName );
+            m_peripheralWrappersByName.put( periphName, wrapper );
+            wrapper.attach();
+        }
     }
 
     private void detachPeripheral( String periphName )
     {
-    	if( m_peripheralWrappersByName.containsKey( periphName ) )
-    	{ 
-	    	RemotePeripheralWrapper wrapper = m_peripheralWrappersByName.get( periphName );
-			m_peripheralWrappersByName.remove( periphName );
-    		wrapper.detach();
-    	}
+        if( m_peripheralWrappersByName.containsKey( periphName ) )
+        { 
+            RemotePeripheralWrapper wrapper = m_peripheralWrappersByName.get( periphName );
+            m_peripheralWrappersByName.remove( periphName );
+            wrapper.detach();
+        }
     }
 
     private String getTypeRemote( String remoteName )
     {
-    	synchronized( m_peripheralsByName )
-    	{
-	    	RemotePeripheralWrapper wrapper = m_peripheralWrappersByName.get( remoteName );
-	    	if( wrapper != null )
-	    	{
-	    		return wrapper.getType();
-	    	}
-	    }
-    	return null;
+        synchronized( m_peripheralsByName )
+        {
+            RemotePeripheralWrapper wrapper = m_peripheralWrappersByName.get( remoteName );
+            if( wrapper != null )
+            {
+                return wrapper.getType();
+            }
+        }
+        return null;
     }
     
     private String[] getMethodNamesRemote( String remoteName )
     {
-    	synchronized( m_peripheralsByName )
-    	{
-	    	RemotePeripheralWrapper wrapper = m_peripheralWrappersByName.get( remoteName );
-	    	if( wrapper != null )
-	    	{
-	    		return wrapper.getMethodNames();
-	    	}
-	    }
-    	return null;
+        synchronized( m_peripheralsByName )
+        {
+            RemotePeripheralWrapper wrapper = m_peripheralWrappersByName.get( remoteName );
+            if( wrapper != null )
+            {
+                return wrapper.getMethodNames();
+            }
+        }
+        return null;
     }
     
     private Object[] callMethodRemote( String remoteName, ILuaContext context, String method, Object[] arguments ) throws LuaException, InterruptedException
     {
-		RemotePeripheralWrapper wrapper;
-    	synchronized( m_peripheralsByName )
-    	{
-	    	wrapper = m_peripheralWrappersByName.get( remoteName );
-	    }
-		if( wrapper != null )
-		{
-			return wrapper.callMethod( context, method, arguments );
-		}
-		throw new LuaException( "No peripheral: "+remoteName );
-	}
+        RemotePeripheralWrapper wrapper;
+        synchronized( m_peripheralsByName )
+        {
+            wrapper = m_peripheralWrappersByName.get( remoteName );
+        }
+        if( wrapper != null )
+        {
+            return wrapper.callMethod( context, method, arguments );
+        }
+        throw new LuaException( "No peripheral: "+remoteName );
+    }
 
     public void networkChanged()
     {
-    	if( !worldObj.isRemote )
-    	{
-    		if( !m_destroyed )
-    		{
-    			// If this modem is alive, rebuild the network
-				searchNetwork( new ICableVisitor() {
-					public void visit( TileCable modem, int distance )
-					{
-						synchronized( modem.m_peripheralsByName )
-						{
-							modem.m_peripheralsKnown = false;
-						}
-					}
-				} );
-    		}
-    		else
-    		{
-    			// If this modem is dead, rebuild the neighbours' networks
-    			for( EnumFacing dir : EnumFacing.values() )
-    			{
+        if( !worldObj.isRemote )
+        {
+            if( !m_destroyed )
+            {
+                // If this modem is alive, rebuild the network
+                searchNetwork( new ICableVisitor() {
+                    public void visit( TileCable modem, int distance )
+                    {
+                        synchronized( modem.m_peripheralsByName )
+                        {
+                            modem.m_peripheralsKnown = false;
+                        }
+                    }
+                } );
+            }
+            else
+            {
+                // If this modem is dead, rebuild the neighbours' networks
+                for( EnumFacing dir : EnumFacing.values() )
+                {
                     BlockPos offset = getPos().offset( dir );
-					if( offset.getY() >= 0 && offset.getY() < worldObj.getHeight() && BlockCable.isCable( worldObj, offset ) )
-					{
-						TileEntity tile = worldObj.getTileEntity( offset );
-						if( tile != null && tile instanceof TileCable )
-						{
-							TileCable modem = (TileCable)tile;
-							modem.networkChanged();
-						}
-					}
-    			}
-    		}
-		}
+                    if( offset.getY() >= 0 && offset.getY() < worldObj.getHeight() && BlockCable.isCable( worldObj, offset ) )
+                    {
+                        TileEntity tile = worldObj.getTileEntity( offset );
+                        if( tile != null && tile instanceof TileCable )
+                        {
+                            TileCable modem = (TileCable)tile;
+                            modem.networkChanged();
+                        }
+                    }
+                }
+            }
+        }
     }
-    	
-	// private stuff
-		
-	// Packet sending
-	
+        
+    // private stuff
+        
+    // Packet sending
+    
     private class Packet
     {
-    	public int channel;
-    	public int replyChannel;
-    	public Object payload;
-    	public Object senderObject;
+        public int channel;
+        public int replyChannel;
+        public Object payload;
+        public Object senderObject;
     }
         
     private void dispatchPacket( final Packet packet )
     {
-    	searchNetwork( new ICableVisitor() {
-    		public void visit( TileCable modem, int distance )
-    		{
-    			modem.receivePacket( packet, distance );
-    		}
-    	} );
+        searchNetwork( new ICableVisitor() {
+            public void visit( TileCable modem, int distance )
+            {
+                modem.receivePacket( packet, distance );
+            }
+        } );
     }
     
     private void receivePacket( Packet packet, int distanceTravelled )
     {
-		synchronized( m_receivers )
-		{
-			Set<IReceiver> receivers = m_receivers.get( packet.channel );
-			if( receivers != null )
-			{
-				Iterator<IReceiver> it = receivers.iterator();
-				while( it.hasNext() )
-				{
-					IReceiver receiver = it.next();
-					receiver.receiveSameDimension( packet.replyChannel, packet.payload, (double)distanceTravelled, packet.senderObject );
-				}
-			}
-		}
+        synchronized( m_receivers )
+        {
+            Set<IReceiver> receivers = m_receivers.get( packet.channel );
+            if( receivers != null )
+            {
+                Iterator<IReceiver> it = receivers.iterator();
+                while( it.hasNext() )
+                {
+                    IReceiver receiver = it.next();
+                    receiver.receiveSameDimension( packet.replyChannel, packet.payload, (double)distanceTravelled, packet.senderObject );
+                }
+            }
+        }
     }
     
     // Remote peripheral control
     
-	private static class RemotePeripheralWrapper implements IComputerAccess
-	{
-		private IPeripheral m_peripheral;
-		private IComputerAccess m_computer;
-		private String m_name;
-		
-		private String m_type;
-		private String[] m_methods;
-		private Map<String, Integer> m_methodMap;
-				
-		public RemotePeripheralWrapper( IPeripheral peripheral, IComputerAccess computer, String name )
-		{
-			m_peripheral = peripheral;
-			m_computer = computer;
-			m_name = name;
+    private static class RemotePeripheralWrapper implements IComputerAccess
+    {
+        private IPeripheral m_peripheral;
+        private IComputerAccess m_computer;
+        private String m_name;
+        
+        private String m_type;
+        private String[] m_methods;
+        private Map<String, Integer> m_methodMap;
+                
+        public RemotePeripheralWrapper( IPeripheral peripheral, IComputerAccess computer, String name )
+        {
+            m_peripheral = peripheral;
+            m_computer = computer;
+            m_name = name;
 
-			m_type = peripheral.getType();
-			m_methods = peripheral.getMethodNames();
-			assert( m_type != null );
-			assert( m_methods != null );
-			
-			m_methodMap = new HashMap<String, Integer>();
-			for( int i=0; i<m_methods.length; ++i ) {
-				if( m_methods[i] != null ) {
-					m_methodMap.put( m_methods[i], i );
-				}
-			}
-		}
-		
-		public void attach()
-		{
-			m_peripheral.attach( this );
-			m_computer.queueEvent( "peripheral", new Object[] { getAttachmentName() } );
-		}
+            m_type = peripheral.getType();
+            m_methods = peripheral.getMethodNames();
+            assert( m_type != null );
+            assert( m_methods != null );
+            
+            m_methodMap = new HashMap<String, Integer>();
+            for( int i=0; i<m_methods.length; ++i ) {
+                if( m_methods[i] != null ) {
+                    m_methodMap.put( m_methods[i], i );
+                }
+            }
+        }
+        
+        public void attach()
+        {
+            m_peripheral.attach( this );
+            m_computer.queueEvent( "peripheral", new Object[] { getAttachmentName() } );
+        }
 
-		public void detach()
-		{
-			m_peripheral.detach( this );
-			m_computer.queueEvent( "peripheral_detach", new Object[] { getAttachmentName() } );
-		}
+        public void detach()
+        {
+            m_peripheral.detach( this );
+            m_computer.queueEvent( "peripheral_detach", new Object[] { getAttachmentName() } );
+        }
 
-		public String getType()
-		{
-			return m_type;
-		}
+        public String getType()
+        {
+            return m_type;
+        }
 
-		public String[] getMethodNames()
-		{
-			return m_methods;
-		}
+        public String[] getMethodNames()
+        {
+            return m_methods;
+        }
 
-		public Object[] callMethod( ILuaContext context, String methodName, Object[] arguments ) throws LuaException, InterruptedException
-		{
-			if( m_methodMap.containsKey( methodName ) )
-			{
-				int method = m_methodMap.get( methodName );
-				return m_peripheral.callMethod( this, context, method, arguments );
-			}
-			throw new LuaException( "No such method " + methodName );
-		}
+        public Object[] callMethod( ILuaContext context, String methodName, Object[] arguments ) throws LuaException, InterruptedException
+        {
+            if( m_methodMap.containsKey( methodName ) )
+            {
+                int method = m_methodMap.get( methodName );
+                return m_peripheral.callMethod( this, context, method, arguments );
+            }
+            throw new LuaException( "No such method " + methodName );
+        }
 
-		// IComputerAccess implementation
+        // IComputerAccess implementation
 
         @Override
         public String mount( String desiredLocation, IMount mount )
@@ -819,17 +819,17 @@ public class TileCable extends TileModemBase
             return m_computer.mount( desiredLocation, mount, m_name );
         }
 
-		@Override
-		public String mount( String desiredLocation, IMount mount, String driveName )
-		{
-			return m_computer.mount( desiredLocation, mount, driveName );
-		}
+        @Override
+        public String mount( String desiredLocation, IMount mount, String driveName )
+        {
+            return m_computer.mount( desiredLocation, mount, driveName );
+        }
 
-		@Override
-		public String mountWritable( String desiredLocation, IWritableMount mount )
-		{
-			return m_computer.mountWritable( desiredLocation, mount, m_name );
-		}
+        @Override
+        public String mountWritable( String desiredLocation, IWritableMount mount )
+        {
+            return m_computer.mountWritable( desiredLocation, mount, m_name );
+        }
 
         @Override
         public String mountWritable( String desiredLocation, IWritableMount mount, String driveName )
@@ -838,42 +838,42 @@ public class TileCable extends TileModemBase
         }
 
         @Override
-		public void unmount( String location )
-		{
-			m_computer.unmount( location );
-		}
-	
-		@Override
-		public int getID()
-		{
-			return m_computer.getID();
-		}
-		
-		@Override
-		public void queueEvent( String event, Object[] arguments )
-		{
-			m_computer.queueEvent( event, arguments );
-		}
-		
-		@Override
-		public String getAttachmentName()
-		{
-			return m_name;
-		}
-	}
+        public void unmount( String location )
+        {
+            m_computer.unmount( location );
+        }
+    
+        @Override
+        public int getID()
+        {
+            return m_computer.getID();
+        }
+        
+        @Override
+        public void queueEvent( String event, Object[] arguments )
+        {
+            m_computer.queueEvent( event, arguments );
+        }
+        
+        @Override
+        public String getAttachmentName()
+        {
+            return m_name;
+        }
+    }
 
     private void findPeripherals( )
     {
-    	final TileCable origin = this;
-    	synchronized( m_peripheralsByName )
-    	{
-    		// Collect the peripherals
-    		final Map<String, IPeripheral> newPeripheralsByName = new HashMap<String, IPeripheral>();
-			if( getPeripheralType() == PeripheralType.WiredModemWithCable )
-			{
-				searchNetwork( new ICableVisitor() {
-					public void visit( TileCable modem, int distance )
-					{
+        final TileCable origin = this;
+        synchronized( m_peripheralsByName )
+        {
+            // Collect the peripherals
+            final Map<String, IPeripheral> newPeripheralsByName = new HashMap<String, IPeripheral>();
+            if( getPeripheralType() == PeripheralType.WiredModemWithCable )
+            {
+                searchNetwork( new ICableVisitor() {
+                    public void visit( TileCable modem, int distance )
+                    {
                     if( modem != origin )
                     {
                         IPeripheral peripheral = modem.getConnectedPeripheral();
@@ -883,162 +883,162 @@ public class TileCable extends TileModemBase
                             newPeripheralsByName.put( periphName, peripheral );
                         }
                     }
-					}
-				} );
-			}
-	    	//System.out.println( newPeripheralsByName.size()+" peripherals discovered" );
+                    }
+                } );
+            }
+            //System.out.println( newPeripheralsByName.size()+" peripherals discovered" );
 
-			// Detach all the old peripherals
-			Iterator<String> it = m_peripheralsByName.keySet().iterator();
-			while( it.hasNext() )
-			{
-				String periphName = it.next();
-				if( !newPeripheralsByName.containsKey( periphName ) )
-				{					
-					detachPeripheral( periphName );
-					it.remove();
-				}
-			}
+            // Detach all the old peripherals
+            Iterator<String> it = m_peripheralsByName.keySet().iterator();
+            while( it.hasNext() )
+            {
+                String periphName = it.next();
+                if( !newPeripheralsByName.containsKey( periphName ) )
+                {                    
+                    detachPeripheral( periphName );
+                    it.remove();
+                }
+            }
 
-			// Attach all the new peripherals
-			Iterator<String> it2 = newPeripheralsByName.keySet().iterator();
-			while( it2.hasNext() )
-			{
-				String periphName = it2.next();
-				if( !m_peripheralsByName.containsKey( periphName ) )
-				{
-					IPeripheral peripheral = newPeripheralsByName.get( periphName );
-					if( peripheral != null )
-					{
-						m_peripheralsByName.put( periphName, peripheral );
-						if( isAttached() )
-						{
-							attachPeripheral( periphName, peripheral );
-						}
-					}
-				}
-			}
-			//System.out.println( m_peripheralsByName.size()+" connected" );
-	    }
+            // Attach all the new peripherals
+            Iterator<String> it2 = newPeripheralsByName.keySet().iterator();
+            while( it2.hasNext() )
+            {
+                String periphName = it2.next();
+                if( !m_peripheralsByName.containsKey( periphName ) )
+                {
+                    IPeripheral peripheral = newPeripheralsByName.get( periphName );
+                    if( peripheral != null )
+                    {
+                        m_peripheralsByName.put( periphName, peripheral );
+                        if( isAttached() )
+                        {
+                            attachPeripheral( periphName, peripheral );
+                        }
+                    }
+                }
+            }
+            //System.out.println( m_peripheralsByName.size()+" connected" );
+        }
     }
     
     public void togglePeripheralAccess()
     {
-    	if( !m_peripheralAccessAllowed )
-    	{
-    		m_peripheralAccessAllowed = true;
-    		if( getConnectedPeripheral() == null )
-    		{
-    			m_peripheralAccessAllowed = false;
-	    		return;
-    		}
-    	}
-    	else
-    	{
-	    	m_peripheralAccessAllowed = false;
-	    }
-    	updateAnim(); 
-	    networkChanged();
+        if( !m_peripheralAccessAllowed )
+        {
+            m_peripheralAccessAllowed = true;
+            if( getConnectedPeripheral() == null )
+            {
+                m_peripheralAccessAllowed = false;
+                return;
+            }
+        }
+        else
+        {
+            m_peripheralAccessAllowed = false;
+        }
+        updateAnim(); 
+        networkChanged();
     }
     
     public String getConnectedPeripheralName()
     {
-    	IPeripheral periph = getConnectedPeripheral();
-    	if( periph != null )
-    	{
-    		String type = periph.getType();
-    		if( m_attachedPeripheralID < 0 )
-    		{
-				m_attachedPeripheralID = IDAssigner.getNextIDFromFile(new File(
+        IPeripheral periph = getConnectedPeripheral();
+        if( periph != null )
+        {
+            String type = periph.getType();
+            if( m_attachedPeripheralID < 0 )
+            {
+                m_attachedPeripheralID = IDAssigner.getNextIDFromFile(new File(
                     ComputerCraft.getWorldDir(worldObj),
                     "computer/lastid_" + type + ".txt"
                 ));
-    		}
-    		return type + "_" + m_attachedPeripheralID;
-    	}
-    	return null;
+            }
+            return type + "_" + m_attachedPeripheralID;
+        }
+        return null;
     }
     
     private IPeripheral getConnectedPeripheral()
     {
-    	if( m_peripheralAccessAllowed )
-    	{
-			if( getPeripheralType() == PeripheralType.WiredModemWithCable )
-			{
-				EnumFacing facing = getDirection();
+        if( m_peripheralAccessAllowed )
+        {
+            if( getPeripheralType() == PeripheralType.WiredModemWithCable )
+            {
+                EnumFacing facing = getDirection();
                 BlockPos neighbour = getPos().offset( facing );
-				return PeripheralUtil.getPeripheral( worldObj, neighbour, facing.getOpposite() );
-			}
-		}
-		return null;
-	}
+                return PeripheralUtil.getPeripheral( worldObj, neighbour, facing.getOpposite() );
+            }
+        }
+        return null;
+    }
     
     // Generic network search stuff
     
     private static interface ICableVisitor
     {
-    	public void visit( TileCable modem, int distance );
+        public void visit( TileCable modem, int distance );
     }
     
     private static class SearchLoc
     {
-    	public World world;
-    	public BlockPos pos;
-    	public int distanceTravelled;
+        public World world;
+        public BlockPos pos;
+        public int distanceTravelled;
     }
     
     private static void enqueue( Queue<SearchLoc> queue, World world, BlockPos pos, int distanceTravelled )
     {
         int y = pos.getY();
-    	if( y >= 0 && y < world.getHeight() && BlockCable.isCable( world, pos ) )
-    	{
-			SearchLoc loc = new SearchLoc();
-			loc.world = world;
-			loc.pos = pos;
-			loc.distanceTravelled = distanceTravelled;
-			queue.offer( loc );
-		}
+        if( y >= 0 && y < world.getHeight() && BlockCable.isCable( world, pos ) )
+        {
+            SearchLoc loc = new SearchLoc();
+            loc.world = world;
+            loc.pos = pos;
+            loc.distanceTravelled = distanceTravelled;
+            queue.offer( loc );
+        }
     }
     
     private static void visitBlock( Queue<SearchLoc> queue, SearchLoc location, int searchID, ICableVisitor visitor )
     {
-    	if( location.distanceTravelled >= 256 )
-    	{
-    		return;
-    	}
-    	
-		TileEntity tile = location.world.getTileEntity( location.pos );
-		if( tile != null && tile instanceof TileCable )
-		{
-			TileCable modem = (TileCable)tile;
-			if( !modem.m_destroyed && modem.m_lastSearchID != searchID )
-			{
-				modem.m_lastSearchID = searchID;
-				visitor.visit( modem, location.distanceTravelled + 1 );
-				
-				enqueue( queue, location.world, location.pos.up(), location.distanceTravelled + 1 );
-				enqueue( queue, location.world, location.pos.down(), location.distanceTravelled + 1 );
-				enqueue( queue, location.world, location.pos.south(), location.distanceTravelled + 1 );
-				enqueue( queue, location.world, location.pos.north(), location.distanceTravelled + 1 );
-				enqueue( queue, location.world, location.pos.east(), location.distanceTravelled + 1 );
-				enqueue( queue, location.world, location.pos.west(), location.distanceTravelled + 1 );
-			}
-		}
+        if( location.distanceTravelled >= 256 )
+        {
+            return;
+        }
+        
+        TileEntity tile = location.world.getTileEntity( location.pos );
+        if( tile != null && tile instanceof TileCable )
+        {
+            TileCable modem = (TileCable)tile;
+            if( !modem.m_destroyed && modem.m_lastSearchID != searchID )
+            {
+                modem.m_lastSearchID = searchID;
+                visitor.visit( modem, location.distanceTravelled + 1 );
+                
+                enqueue( queue, location.world, location.pos.up(), location.distanceTravelled + 1 );
+                enqueue( queue, location.world, location.pos.down(), location.distanceTravelled + 1 );
+                enqueue( queue, location.world, location.pos.south(), location.distanceTravelled + 1 );
+                enqueue( queue, location.world, location.pos.north(), location.distanceTravelled + 1 );
+                enqueue( queue, location.world, location.pos.east(), location.distanceTravelled + 1 );
+                enqueue( queue, location.world, location.pos.west(), location.distanceTravelled + 1 );
+            }
+        }
     }
 
     private void searchNetwork( ICableVisitor visitor )
     {
-    	int searchID = ++s_nextUniqueSearchID;
-    	Queue<SearchLoc> queue = new LinkedList<SearchLoc>();
-    	enqueue( queue, worldObj, getPos(), 1 );
-    	
-    	int visited = 0;
-    	while( queue.peek() != null )
-    	{
-    		SearchLoc loc = queue.remove();
-	    	visitBlock( queue, loc, searchID, visitor );
-	    	visited++;
-	    }
-	    //System.out.println( "Visited "+visited+" common" );
+        int searchID = ++s_nextUniqueSearchID;
+        Queue<SearchLoc> queue = new LinkedList<SearchLoc>();
+        enqueue( queue, worldObj, getPos(), 1 );
+        
+        int visited = 0;
+        while( queue.peek() != null )
+        {
+            SearchLoc loc = queue.remove();
+            visitBlock( queue, loc, searchID, visitor );
+            visited++;
+        }
+        //System.out.println( "Visited "+visited+" common" );
     }
 }

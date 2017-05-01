@@ -27,15 +27,15 @@ public class ItemTurtleLegacy extends ItemTurtleBase
     }
 
     @Override
-	public ItemStack create( int id, String label, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay )
-	{
+    public ItemStack create( int id, String label, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay )
+    {
         // Legacy turtles only support pickaxes and modems
-		if( (leftUpgrade != null && leftUpgrade != ComputerCraft.Upgrades.diamondPickaxe ) ||
-		    (rightUpgrade != null && rightUpgrade != ComputerCraft.Upgrades.wirelessModem) ||
+        if( (leftUpgrade != null && leftUpgrade != ComputerCraft.Upgrades.diamondPickaxe ) ||
+            (rightUpgrade != null && rightUpgrade != ComputerCraft.Upgrades.wirelessModem) ||
             (colour != null) || (overlay != null) )
-		{
+        {
             return null;
-		}
+        }
 
         // Build the subtype
         int subType = 0;
@@ -77,7 +77,7 @@ public class ItemTurtleLegacy extends ItemTurtleBase
 
         // Return the stack
         return stack;
-	}
+    }
 
     // IComputerItem implementation
 

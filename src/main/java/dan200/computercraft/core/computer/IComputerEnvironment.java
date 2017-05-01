@@ -11,12 +11,12 @@ import dan200.computercraft.api.filesystem.IWritableMount;
 public interface IComputerEnvironment
 {
     public int getDay();
-	public double getTimeOfDay();
-	public boolean isColour();
-	public long getComputerSpaceLimit();
+    public double getTimeOfDay();
+    public boolean isColour();
+    public long getComputerSpaceLimit();
     public String getHostString();
 
     public int assignNewID();
     public IWritableMount createSaveDirMount( String subPath, long capacity );
-	public IMount createResourceMount( String domain, String subPath );
+    public IMount createResourceMount( String domain, String subPath );
 }

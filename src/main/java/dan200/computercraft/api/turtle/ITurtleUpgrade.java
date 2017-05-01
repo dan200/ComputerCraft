@@ -25,13 +25,13 @@ import javax.vecmath.Matrix4f;
  */
 public interface ITurtleUpgrade
 {
-	/**
-	 * Gets a unique identifier representing this type of turtle upgrade. eg: "computercraft:wireless_modem" or "my_mod:my_upgrade".
-	 * You should use a unique resource domain to ensure this upgrade is uniquely identified.
+    /**
+     * Gets a unique identifier representing this type of turtle upgrade. eg: "computercraft:wireless_modem" or "my_mod:my_upgrade".
+     * You should use a unique resource domain to ensure this upgrade is uniquely identified.
      * The turtle will fail registration if an already used ID is specified.
-	 * @see dan200.computercraft.api.ComputerCraftAPI#registerTurtleUpgrade( dan200.computercraft.api.turtle.ITurtleUpgrade )
-	 */
-	public ResourceLocation getUpgradeID();
+     * @see dan200.computercraft.api.ComputerCraftAPI#registerTurtleUpgrade( dan200.computercraft.api.turtle.ITurtleUpgrade )
+     */
+    public ResourceLocation getUpgradeID();
 
     /**
      * Gets a numerical identifier representing this type of turtle upgrade,
@@ -43,52 +43,52 @@ public interface ITurtleUpgrade
     public int getLegacyUpgradeID();
 
     /**
-	 * Return a String to describe this type of turtle in turtle item names.
-	 * Examples of built-in adjectives are "Wireless", "Mining" and "Crafty".
-	 */	
-	public String getUnlocalisedAdjective();
-
-	/**
-	 * Return whether this turtle adds a tool or a peripheral to the turtle.
-	 * @see TurtleUpgradeType for the differences between the two.
-	 */	
-	public TurtleUpgradeType getType();
-	
-	/**
-	 * Return an item stack representing the type of item that a turtle must be crafted
-	 * with to create a turtle which holds this upgrade. This item stack is also used
-     * to determine the upgrade given by turtle.equip()
-	 */
-	public ItemStack getCraftingItem();
+     * Return a String to describe this type of turtle in turtle item names.
+     * Examples of built-in adjectives are "Wireless", "Mining" and "Crafty".
+     */    
+    public String getUnlocalisedAdjective();
 
     /**
-	 * Will only be called for peripheral upgrades. Creates a peripheral for a turtle
-	 * being placed using this upgrade. The peripheral created will be stored
-	 * for the lifetime of the upgrade, will have update() called once-per-tick, and will be
-	 * attached, detached and have methods called in the same manner as a Computer peripheral.
-	 *
+     * Return whether this turtle adds a tool or a peripheral to the turtle.
+     * @see TurtleUpgradeType for the differences between the two.
+     */    
+    public TurtleUpgradeType getType();
+    
+    /**
+     * Return an item stack representing the type of item that a turtle must be crafted
+     * with to create a turtle which holds this upgrade. This item stack is also used
+     * to determine the upgrade given by turtle.equip()
+     */
+    public ItemStack getCraftingItem();
+
+    /**
+     * Will only be called for peripheral upgrades. Creates a peripheral for a turtle
+     * being placed using this upgrade. The peripheral created will be stored
+     * for the lifetime of the upgrade, will have update() called once-per-tick, and will be
+     * attached, detached and have methods called in the same manner as a Computer peripheral.
+     *
      * @param turtle Access to the turtle that the peripheral is being created for.
      * @param side Which side of the turtle (left or right) that the upgrade resides on.
      * @return The newly created peripheral. You may return null if this upgrade is a Tool
-	 * and this method is not expected to be called.
-	 */		
-	public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side );
+     * and this method is not expected to be called.
+     */        
+    public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side );
 
-	/**
-	 * Will only be called for Tool turtle. Called when turtle.dig() or turtle.attack() is called
-	 * by the turtle, and the tool is required to do some work.
-	 * @param turtle Access to the turtle that the tool resides on.
-	 * @param side Which side of the turtle (left or right) the tool resides on.
-	 * @param verb Which action (dig or attack) the turtle is being called on to perform.
-	 * @param direction Which world direction the action should be performed in, relative to the turtles
-	 * position. This will either be up, down, or the direction the turtle is facing, depending on
-	 * whether dig, digUp or digDown was called.
-	 * @return Whether the turtle was able to perform the action, and hence whether the turtle.dig()
-	 * or turtle.attack() lua method should return true. If true is returned, the tool will perform
-	 * a swinging animation. You may return null if this turtle is a Peripheral
-	 * and this method is not expected to be called.
-	 */
-	public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction );
+    /**
+     * Will only be called for Tool turtle. Called when turtle.dig() or turtle.attack() is called
+     * by the turtle, and the tool is required to do some work.
+     * @param turtle Access to the turtle that the tool resides on.
+     * @param side Which side of the turtle (left or right) the tool resides on.
+     * @param verb Which action (dig or attack) the turtle is being called on to perform.
+     * @param direction Which world direction the action should be performed in, relative to the turtles
+     * position. This will either be up, down, or the direction the turtle is facing, depending on
+     * whether dig, digUp or digDown was called.
+     * @return Whether the turtle was able to perform the action, and hence whether the turtle.dig()
+     * or turtle.attack() lua method should return true. If true is returned, the tool will perform
+     * a swinging animation. You may return null if this turtle is a Peripheral
+     * and this method is not expected to be called.
+     */
+    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction );
 
     /**
      * Called to obtain the model to be used when rendering a turtle peripheral.

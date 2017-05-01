@@ -16,20 +16,20 @@ import java.util.Arrays;
 
 public class ImpostorShapelessRecipe extends ShapelessRecipes
 {
-	public ImpostorShapelessRecipe( ItemStack result, Object[] ingredients )
-	{
-		super( result, new ArrayList(Arrays.asList( ingredients )));
-	}
+    public ImpostorShapelessRecipe( ItemStack result, Object[] ingredients )
+    {
+        super( result, new ArrayList(Arrays.asList( ingredients )));
+    }
 
-	@Override
-	public boolean matches( InventoryCrafting inv, World world )
-	{
-		return false;
-	}
+    @Override
+    public boolean matches( InventoryCrafting inv, World world )
+    {
+        return false;
+    }
 
-	@Override
+    @Override
     public ItemStack getCraftingResult( InventoryCrafting _inventory )
     {
-    	return null;
+        return null;
     }
 }

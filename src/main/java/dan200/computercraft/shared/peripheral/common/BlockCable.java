@@ -59,7 +59,7 @@ public class BlockCable extends BlockPeripheralBase
     public BlockCable()
     {
         setHardness( 1.5f );
-		setUnlocalizedName( "computercraft:cable" );
+        setUnlocalizedName( "computercraft:cable" );
         setCreativeTab( ComputerCraft.mainCreativeTab );
         setDefaultState( this.blockState.getBaseState()
             .withProperty( Properties.MODEM, BlockCableModemVariant.None )

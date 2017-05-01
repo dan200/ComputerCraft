@@ -22,41 +22,41 @@ import net.minecraft.world.World;
  */
 public interface ITurtleAccess
 {
-	/**
-	 * Returns the world in which the turtle resides.
-	 * @return the world in which the turtle resides.
-	 */
-	public World getWorld();
+    /**
+     * Returns the world in which the turtle resides.
+     * @return the world in which the turtle resides.
+     */
+    public World getWorld();
 
-	/**
-	 * Returns a vector containing the integer co-ordinates at which the turtle resides.
-	 * @return a vector containing the integer co-ordinates at which the turtle resides.
-	 */
-	public BlockPos getPosition();
+    /**
+     * Returns a vector containing the integer co-ordinates at which the turtle resides.
+     * @return a vector containing the integer co-ordinates at which the turtle resides.
+     */
+    public BlockPos getPosition();
 
     /**
      * TODO: Document me
      */
     public boolean teleportTo( World world, BlockPos pos );
 
-	/**
-	 * Returns a vector containing the floating point co-ordinates at which the turtle is rendered.
-	 * This will shift when the turtle is moving.
-	 * @param f The subframe fraction
-	 * @return a vector containing the floating point co-ordinates at which the turtle resides.
-	 */
-	public Vec3d getVisualPosition( float f );
+    /**
+     * Returns a vector containing the floating point co-ordinates at which the turtle is rendered.
+     * This will shift when the turtle is moving.
+     * @param f The subframe fraction
+     * @return a vector containing the floating point co-ordinates at which the turtle resides.
+     */
+    public Vec3d getVisualPosition( float f );
 
     /**
      * TODO: Document me
      */
     public float getVisualYaw( float f );
 
-	/**
-	 * Returns the world direction the turtle is currently facing.
-	 * @return the world direction the turtle is currently facing.
-	 */
-	public EnumFacing getDirection();
+    /**
+     * Returns the world direction the turtle is currently facing.
+     * @return the world direction the turtle is currently facing.
+     */
+    public EnumFacing getDirection();
 
     /**
      * TODO: Document me
@@ -66,7 +66,7 @@ public interface ITurtleAccess
     /**
      * TODO: Document me
      */
-	public int getSelectedSlot();
+    public int getSelectedSlot();
 
     /**
      * TODO: Document me
@@ -95,10 +95,10 @@ public interface ITurtleAccess
      */
     public boolean isFuelNeeded();
 
-	/**
-	 * TODO: Document me
-	 */
-	public int getFuelLevel();
+    /**
+     * TODO: Document me
+     */
+    public int getFuelLevel();
 
     /**
      * TODO: Document me
@@ -111,11 +111,11 @@ public interface ITurtleAccess
     public int getFuelLimit();
 
     /**
-	 * Removes some fuel from the turtles fuel supply. Negative numbers can be passed in to INCREASE the fuel level of the turtle.
-	 * @return Whether the turtle was able to consume the ammount of fuel specified. Will return false if you supply a number
-	 * greater than the current fuel level of the turtle.
-	 */
-	public boolean consumeFuel( int fuel );
+     * Removes some fuel from the turtles fuel supply. Negative numbers can be passed in to INCREASE the fuel level of the turtle.
+     * @return Whether the turtle was able to consume the ammount of fuel specified. Will return false if you supply a number
+     * greater than the current fuel level of the turtle.
+     */
+    public boolean consumeFuel( int fuel );
 
     /**
      * TODO: Document me
@@ -140,22 +140,22 @@ public interface ITurtleAccess
      */
     public void playAnimation( TurtleAnimation animation );
 
-	/**
-	 * Returns the turtle on the specified side of the turtle, if there is one.
-	 * @return the turtle on the specified side of the turtle, if there is one.
-	 */
-	public ITurtleUpgrade getUpgrade( TurtleSide side );
+    /**
+     * Returns the turtle on the specified side of the turtle, if there is one.
+     * @return the turtle on the specified side of the turtle, if there is one.
+     */
+    public ITurtleUpgrade getUpgrade( TurtleSide side );
 
     /**
      * TODO: Document me
      */
     public void setUpgrade( TurtleSide side, ITurtleUpgrade upgrade );
 
-	/**
-	 * Returns the peripheral created by the upgrade on the specified side of the turtle, if there is one.
-	 * @return the peripheral created by the upgrade on the specified side of the turtle, if there is one.
-	 */
-	public IPeripheral getPeripheral( TurtleSide side );
+    /**
+     * Returns the peripheral created by the upgrade on the specified side of the turtle, if there is one.
+     * @return the peripheral created by the upgrade on the specified side of the turtle, if there is one.
+     */
+    public IPeripheral getPeripheral( TurtleSide side );
 
     /**
      * TODO: Document me

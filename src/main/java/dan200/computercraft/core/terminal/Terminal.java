@@ -8,8 +8,8 @@ package dan200.computercraft.core.terminal;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class Terminal
-{	
-	private static final String base16 = "0123456789abcdef";
+{    
+    private static final String base16 = "0123456789abcdef";
 
     private int m_cursorX;
     private int m_cursorY;
@@ -26,30 +26,30 @@ public class Terminal
 
     private boolean m_changed;
 
-	public Terminal( int width, int height )
+    public Terminal( int width, int height )
     {
-		m_width = width;
-		m_height = height;
-		
-		m_cursorColour = 0;
-		m_cursorBackgroundColour = 15;
+        m_width = width;
+        m_height = height;
+        
+        m_cursorColour = 0;
+        m_cursorBackgroundColour = 15;
 
         m_text = new TextBuffer[ m_height ];
         m_textColour = new TextBuffer[ m_height ];
         m_backgroundColour = new TextBuffer[ m_height ];
-		for( int i=0; i<m_height; ++i )
+        for( int i=0; i<m_height; ++i )
         {
             m_text[i] = new TextBuffer( ' ', m_width );
             m_textColour[i] = new TextBuffer( base16.charAt( m_cursorColour ), m_width );
             m_backgroundColour[i] = new TextBuffer( base16.charAt( m_cursorBackgroundColour ), m_width );
-		}
-				
-		m_cursorX = 0;
-		m_cursorY = 0;
-		m_cursorBlink = false;
-		
-		m_changed = false;
-	}
+        }
+                
+        m_cursorX = 0;
+        m_cursorY = 0;
+        m_cursorBlink = false;
+        
+        m_changed = false;
+    }
 
     public void reset()
     {
@@ -61,30 +61,30 @@ public class Terminal
         clear();
         m_changed = true;
     }
-	
-	public int getWidth() {
-		return m_width;
-	}
-	
-	public int getHeight() {
-		return m_height;
-	}
-	
-	public void resize( int width, int height )
+    
+    public int getWidth() {
+        return m_width;
+    }
+    
+    public int getHeight() {
+        return m_height;
+    }
+    
+    public void resize( int width, int height )
     {
-		if( width == m_width && height == m_height ) 
-		{
-			return;
-		}
-		
-		int oldHeight = m_height;
-		int oldWidth = m_width;
-		TextBuffer[] oldText = m_text;
+        if( width == m_width && height == m_height ) 
+        {
+            return;
+        }
+        
+        int oldHeight = m_height;
+        int oldWidth = m_width;
+        TextBuffer[] oldText = m_text;
         TextBuffer[] oldTextColour = m_textColour;
         TextBuffer[] oldBackgroundColour = m_backgroundColour;
 
-		m_width = width;
-		m_height = height;
+        m_width = width;
+        m_height = height;
 
         m_text = new TextBuffer[ m_height ];
         m_textColour = new TextBuffer[ m_height ];
@@ -112,71 +112,71 @@ public class Terminal
                 m_textColour[ i ].write( oldTextColour[ i ] );
                 m_backgroundColour[ i ].write( oldBackgroundColour[ i ] );
             }
-		}
-		m_changed = true;
-	}
-	
-	public void setCursorPos( int x, int y )
+        }
+        m_changed = true;
+    }
+    
+    public void setCursorPos( int x, int y )
     {
-		if( m_cursorX != x || m_cursorY != y )
-		{
-			m_cursorX = x;
-			m_cursorY = y;
-			m_changed = true;
-		}
-	}
-	
-	public void setCursorBlink( boolean blink )
+        if( m_cursorX != x || m_cursorY != y )
+        {
+            m_cursorX = x;
+            m_cursorY = y;
+            m_changed = true;
+        }
+    }
+    
+    public void setCursorBlink( boolean blink )
     {
-		if( m_cursorBlink != blink )
-		{
-			m_cursorBlink = blink;
-			m_changed = true;
-		}
-	}
-	
-	public void setTextColour( int colour )
+        if( m_cursorBlink != blink )
+        {
+            m_cursorBlink = blink;
+            m_changed = true;
+        }
+    }
+    
+    public void setTextColour( int colour )
     {
-		if( m_cursorColour != colour )
-		{
-			m_cursorColour = colour;
-			m_changed = true;
-		}
-	}
-	
-	public void setBackgroundColour( int colour )
+        if( m_cursorColour != colour )
+        {
+            m_cursorColour = colour;
+            m_changed = true;
+        }
+    }
+    
+    public void setBackgroundColour( int colour )
     {
-		if( m_cursorBackgroundColour != colour )
-		{
-			m_cursorBackgroundColour = colour;
-			m_changed = true;
-		}
-	}
-	
-	public int getCursorX()
+        if( m_cursorBackgroundColour != colour )
+        {
+            m_cursorBackgroundColour = colour;
+            m_changed = true;
+        }
+    }
+    
+    public int getCursorX()
     {
-		return m_cursorX;
-	}
-	
-	public int getCursorY()
+        return m_cursorX;
+    }
+    
+    public int getCursorY()
     {
-		return m_cursorY;
-	}
-	
-	public boolean getCursorBlink()
+        return m_cursorY;
+    }
+    
+    public boolean getCursorBlink()
     {
-		return m_cursorBlink;
-	}
-	
-	public int getTextColour()
+        return m_cursorBlink;
+    }
+    
+    public int getTextColour()
     {
-		return m_cursorColour;
-	}
-	
-	public int getBackgroundColour()
+        return m_cursorColour;
+    }
+    
+    public int getBackgroundColour()
     {
-		return m_cursorBackgroundColour;
-	}
+        return m_cursorBackgroundColour;
+    }
 
     public void blit( String text, String textColour, String backgroundColour )
     {
@@ -191,7 +191,7 @@ public class Terminal
         }
     }
 
-	public void write( String text )
+    public void write( String text )
     {
         int x = m_cursorX;
         int y = m_cursorY;
@@ -202,9 +202,9 @@ public class Terminal
             m_backgroundColour[ y ].fill( base16.charAt( m_cursorBackgroundColour ), x, x + text.length() );
             m_changed = true;
         }
-	}
-	
-	public void scroll( int yDiff )
+    }
+    
+    public void scroll( int yDiff )
     {
         if( yDiff != 0 )
         {
@@ -232,9 +232,9 @@ public class Terminal
             m_backgroundColour = newBackgroundColour;
             m_changed = true;
         }
-	}
-	
-	public void clear()
+    }
+    
+    public void clear()
     {
         for( int y = 0; y < m_height; ++y )
         {
@@ -245,43 +245,43 @@ public class Terminal
         m_changed = true;
     }
 
-	public void clearLine()
+    public void clearLine()
     {
         int y = m_cursorY;
-		if( y >= 0 && y < m_height )
+        if( y >= 0 && y < m_height )
         {
             m_text[ y ].fill( ' ' );
             m_textColour[ y ].fill( base16.charAt( m_cursorColour ) );
             m_backgroundColour[ y ].fill( base16.charAt( m_cursorBackgroundColour ) );
             m_changed = true;
         }
-	}
-		
-	public TextBuffer getLine( int y )
+    }
+        
+    public TextBuffer getLine( int y )
     {
-		if( y >= 0 && y < m_height )
-		{
-			return m_text[ y ];
-		}
+        if( y >= 0 && y < m_height )
+        {
+            return m_text[ y ];
+        }
         return null;
-	}
+    }
 
-	public void setLine( int y, String text, String textColour, String backgroundColour )
+    public void setLine( int y, String text, String textColour, String backgroundColour )
     {
         m_text[y].write( text );
         m_textColour[y].write( textColour );
         m_backgroundColour[y].write( backgroundColour );
-		m_changed = true;
-	}
-	
-	public TextBuffer getTextColourLine( int y )
+        m_changed = true;
+    }
+    
+    public TextBuffer getTextColourLine( int y )
     {
-		if( y>=0 && y<m_height )
-		{
-			return m_textColour[ y ];
-		}
-		return null;
-	}
+        if( y>=0 && y<m_height )
+        {
+            return m_textColour[ y ];
+        }
+        return null;
+    }
 
     public TextBuffer getBackgroundColourLine( int y )
     {
@@ -294,13 +294,13 @@ public class Terminal
 
     public boolean getChanged()
     {
-		return m_changed;
-	}
-	
-	public void clearChanged()
+        return m_changed;
+    }
+    
+    public void clearChanged()
     {
         m_changed = false;
-	}
+    }
 
     public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {

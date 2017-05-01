@@ -9,8 +9,8 @@ package dan200.computercraft.core.filesystem;
 import java.io.IOException;
 
 public interface IMountedFileNormal extends IMountedFile {
-	public String readLine() throws IOException;
-	public void write(String s, int off, int len, boolean newLine) throws IOException;
-	public void close() throws IOException;
-	public void flush() throws IOException;
+    public String readLine() throws IOException;
+    public void write(String s, int off, int len, boolean newLine) throws IOException;
+    public void close() throws IOException;
+    public void flush() throws IOException;
 }

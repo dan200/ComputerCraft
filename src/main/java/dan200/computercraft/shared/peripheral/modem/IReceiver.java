@@ -10,11 +10,11 @@ import net.minecraft.world.World;
 
 public interface IReceiver
 {
-	public int getChannel();
+    public int getChannel();
     public World getWorld();
-	public Vec3d getWorldPosition();
+    public Vec3d getWorldPosition();
     public boolean isInterdimensional();
-	public double getReceiveRange();
-	public void receiveSameDimension( int replyChannel, Object payload, double distance, Object senderObject );
+    public double getReceiveRange();
+    public void receiveSameDimension( int replyChannel, Object payload, double distance, Object senderObject );
     public void receiveDifferentDimension( int replyChannel, Object payload, Object senderObject );
 }

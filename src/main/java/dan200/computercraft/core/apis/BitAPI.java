@@ -18,9 +18,9 @@ public class BitAPI implements ILuaAPI
     private static final int BAND                    = 1;
     private static final int BOR                     = 2;
     private static final int BXOR                    = 3;
-    private static final int BRSHIFT             	 = 4;
-    private static final int BLSHIFT             	 = 5;
-    private static final int BLOGIC_RSHIFT 			 = 6;
+    private static final int BRSHIFT                  = 4;
+    private static final int BLSHIFT                  = 5;
+    private static final int BLOGIC_RSHIFT              = 6;
  
     private static int checkInt( Object o, int count ) throws LuaException
     {
@@ -45,30 +45,30 @@ public class BitAPI implements ILuaAPI
     {
     }
     
-	@Override
+    @Override
     public String[] getNames()
     {
-    	return new String[] {
-    		"bit"
-    	};
+        return new String[] {
+            "bit"
+        };
     }
 
-	@Override
-	public void startup( )
-	{
-	}
+    @Override
+    public void startup( )
+    {
+    }
 
-	@Override
-	public void advance( double _dt )
-	{
-	}
-	
-	@Override
-	public void shutdown( )
-	{
-	}
-	
-	@Override
+    @Override
+    public void advance( double _dt )
+    {
+    }
+    
+    @Override
+    public void shutdown( )
+    {
+    }
+    
+    @Override
     public String[] getMethodNames() {
         return new String[] {
             "bnot", "band", "bor", "bxor",

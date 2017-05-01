@@ -26,6 +26,6 @@ public class CreativeTabTreasure extends CreativeTabs
     @Override
     public String getTranslatedTabLabel()
     {
-    	return getTabLabel();
+        return getTabLabel();
     }
 }

@@ -69,8 +69,8 @@ public abstract class BlockGeneric extends Block implements
     @Override
     public final boolean removedByPlayer( IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest )
     {
-    	if( !world.isRemote )
-    	{
+        if( !world.isRemote )
+        {
             // Drop items
             boolean creative = player.capabilities.isCreativeMode;
             dropAllItems( world, pos, creative );
@@ -117,11 +117,11 @@ public abstract class BlockGeneric extends Block implements
             TileGeneric generic = (TileGeneric)tile;
             generic.destroy();
         }
-    	super.breakBlock( world, pos, newState );
+        super.breakBlock( world, pos, newState );
         world.removeTileEntity( pos );
     }
 
-	@Override
+    @Override
     public final ItemStack getPickBlock( IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player )
     {
         TileEntity tile = world.getTileEntity( pos );

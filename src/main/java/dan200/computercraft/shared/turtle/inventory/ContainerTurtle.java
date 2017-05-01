@@ -24,7 +24,7 @@ public class ContainerTurtle extends Container
     public final int m_turtleInvStartX;
 
     protected ITurtleAccess m_turtle;
-	private int m_selectedSlot;
+    private int m_selectedSlot;
 
     protected ContainerTurtle( IInventory playerInventory, ITurtleAccess turtle, int playerInvStartY, int turtleInvStartX )
     {
@@ -67,33 +67,33 @@ public class ContainerTurtle extends Container
     }
 
     public ContainerTurtle( IInventory playerInventory, ITurtleAccess turtle )
-	{
+    {
         this( playerInventory, turtle, 134, 175 );
     }
 
     public int getSelectedSlot()
-	{
-		return m_selectedSlot;
-	}
-	
-	private void sendStateToPlayer( IContainerListener icrafting )
-	{
+    {
+        return m_selectedSlot;
+    }
+    
+    private void sendStateToPlayer( IContainerListener icrafting )
+    {
         int selectedSlot = m_turtle.getSelectedSlot();
         icrafting.sendProgressBarUpdate( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
-	}
-						
-	@Override
-	public void addListener( IContainerListener crafting )
-	{
-		super.addListener( crafting );
+    }
+                        
+    @Override
+    public void addListener( IContainerListener crafting )
+    {
+        super.addListener( crafting );
         sendStateToPlayer( crafting );
-	}
-	
-	@Override
+    }
+    
+    @Override
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
-		
+        
         int selectedSlot = m_turtle.getSelectedSlot();
         for( int i=0; i<listeners.size(); ++i )
         {
@@ -104,12 +104,12 @@ public class ContainerTurtle extends Container
             }
         }
         m_selectedSlot = selectedSlot;
-	}
-	
-	@Override
+    }
+    
+    @Override
     public void updateProgressBar( int id, int value )
     {
-    	super.updateProgressBar( id, value);
+        super.updateProgressBar( id, value);
         switch( id )
         {
             case PROGRESS_ID_SELECTED_SLOT:
@@ -119,7 +119,7 @@ public class ContainerTurtle extends Container
             }
         }
     }
-	
+    
     @Override
     public boolean canInteractWith( EntityPlayer player )
     {

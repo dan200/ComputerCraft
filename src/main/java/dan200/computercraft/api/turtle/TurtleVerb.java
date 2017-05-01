@@ -14,13 +14,13 @@ package dan200.computercraft.api.turtle;
  */
 public enum TurtleVerb
 {
-	/**
-	 * The turtle called turtle.dig(), turtle.digUp() or turtle.digDown()
-	 */
-	Dig,
-	
-	/**
-	 * The turtle called turtle.attack(), turtle.attackUp() or turtle.attackDown()
-	 */
-	Attack,
+    /**
+     * The turtle called turtle.dig(), turtle.digUp() or turtle.digDown()
+     */
+    Dig,
+    
+    /**
+     * The turtle called turtle.attack(), turtle.attackUp() or turtle.attackDown()
+     */
+    Attack,
 }

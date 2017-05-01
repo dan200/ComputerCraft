@@ -16,70 +16,70 @@ import java.util.Map;
 
 public class OSAPI implements ILuaAPI
 {
-	private IAPIEnvironment m_apiEnvironment;
+    private IAPIEnvironment m_apiEnvironment;
 
-	private final Map<Integer, Timer> m_timers;
-	private final Map<Integer, Alarm> m_alarms;
-	private int m_clock;
-	private double m_time;
+    private final Map<Integer, Timer> m_timers;
+    private final Map<Integer, Alarm> m_alarms;
+    private int m_clock;
+    private double m_time;
     private int m_day;
 
-	private int m_nextTimerToken;
-	private int m_nextAlarmToken;
-	
-	private static class Timer
+    private int m_nextTimerToken;
+    private int m_nextAlarmToken;
+    
+    private static class Timer
     {
         public int m_ticksLeft;
 
-		public Timer( int ticksLeft )
+        public Timer( int ticksLeft )
         {
             m_ticksLeft = ticksLeft;
-		}
-	}
-	
-	private class Alarm implements Comparable<Alarm>
+        }
+    }
+    
+    private class Alarm implements Comparable<Alarm>
     {
         public final double m_time;
         public final int m_day;
 
-		public Alarm( double time, int day )
+        public Alarm( double time, int day )
         {
-			m_time = time;
+            m_time = time;
             m_day = day;
-		}
+        }
 
         @Override
-		public int compareTo( Alarm o )
+        public int compareTo( Alarm o )
         {
-			double t = (double)m_day * 24.0 + m_time;
-			double ot = (double)m_day * 24.0 + m_time;
-			if( t < ot ) {
-				return -1;
-			} else if( t > ot ) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-	}
-	
-	public OSAPI( IAPIEnvironment environment )
-	{
-		m_apiEnvironment = environment;
-		m_nextTimerToken = 0;
-		m_nextAlarmToken = 0;
+            double t = (double)m_day * 24.0 + m_time;
+            double ot = (double)m_day * 24.0 + m_time;
+            if( t < ot ) {
+                return -1;
+            } else if( t > ot ) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    
+    public OSAPI( IAPIEnvironment environment )
+    {
+        m_apiEnvironment = environment;
+        m_nextTimerToken = 0;
+        m_nextAlarmToken = 0;
         m_timers = new HashMap<Integer, Timer>();
         m_alarms = new HashMap<Integer, Alarm>();
-	}
-	
-	// ILuaAPI implementation
-	
-	@Override
+    }
+    
+    // ILuaAPI implementation
+    
+    @Override
     public String[] getNames()
     {
-    	return new String[] {
-    		"os"
-    	};
+        return new String[] {
+            "os"
+        };
     }
     
     @Override
@@ -87,7 +87,7 @@ public class OSAPI implements ILuaAPI
     {
         m_time = m_apiEnvironment.getComputerEnvironment().getTimeOfDay();
         m_day = m_apiEnvironment.getComputerEnvironment().getDay();
-		m_clock = 0;
+        m_clock = 0;
 
         synchronized( m_timers )
         {
@@ -99,40 +99,40 @@ public class OSAPI implements ILuaAPI
             m_alarms.clear();
         }
     }
-	
-	@Override
-	public void advance( double dt )
-	{
-		synchronized( m_timers )
-		{
-			// Update the clock
-			m_clock++;
-			
-			// Countdown all of our active timers
-			Iterator<Map.Entry<Integer, Timer>> it = m_timers.entrySet().iterator();
-			while( it.hasNext() )
+    
+    @Override
+    public void advance( double dt )
+    {
+        synchronized( m_timers )
+        {
+            // Update the clock
+            m_clock++;
+            
+            // Countdown all of our active timers
+            Iterator<Map.Entry<Integer, Timer>> it = m_timers.entrySet().iterator();
+            while( it.hasNext() )
             {
                 Map.Entry<Integer, Timer> entry = it.next();
                 Timer timer = entry.getValue();
-				timer.m_ticksLeft = timer.m_ticksLeft - 1;
-				if( timer.m_ticksLeft <= 0 )
+                timer.m_ticksLeft = timer.m_ticksLeft - 1;
+                if( timer.m_ticksLeft <= 0 )
                 {
-					// Queue the "timer" event
-					queueLuaEvent( "timer", new Object[] { entry.getKey() } );
-					it.remove();
-				}
-			}
-		}
-		
-		// Wait for all of our alarms
-		synchronized( m_alarms )
-		{
-			double previousTime = m_time;
+                    // Queue the "timer" event
+                    queueLuaEvent( "timer", new Object[] { entry.getKey() } );
+                    it.remove();
+                }
+            }
+        }
+        
+        // Wait for all of our alarms
+        synchronized( m_alarms )
+        {
+            double previousTime = m_time;
             int previousDay = m_day;
-			double time = m_apiEnvironment.getComputerEnvironment().getTimeOfDay();
+            double time = m_apiEnvironment.getComputerEnvironment().getTimeOfDay();
             int day =  m_apiEnvironment.getComputerEnvironment().getDay();
-			
-			if( time > previousTime || day > previousDay )
+            
+            if( time > previousTime || day > previousDay )
             {
                 double now = (double)m_day * 24.0 + m_time;
                 Iterator<Map.Entry<Integer, Alarm>> it = m_alarms.entrySet().iterator();
@@ -149,167 +149,167 @@ public class OSAPI implements ILuaAPI
                 }
             }
 
-			m_time = time;
+            m_time = time;
             m_day = day;
-		}
-	}
-	
-	@Override
-	public void shutdown( )
-	{
-		synchronized( m_timers )
-		{
-			m_timers.clear();
-		}
-		
-		synchronized( m_alarms )
-		{
-			m_alarms.clear();
-		}
-	}
-
-	@Override
-    public String[] getMethodNames()
+        }
+    }
+    
+    @Override
+    public void shutdown( )
     {
-    	return new String[] {
-    		"queueEvent",
-			"startTimer",
-			"setAlarm",
-			"shutdown",
-			"reboot",
-			"computerID",
-			"getComputerID",
-			"setComputerLabel",
-			"computerLabel",
-			"getComputerLabel",
-			"clock",
-			"time",
-			"day",
-            "cancelTimer",
-            "cancelAlarm",
-    	};
+        synchronized( m_timers )
+        {
+            m_timers.clear();
+        }
+        
+        synchronized( m_alarms )
+        {
+            m_alarms.clear();
+        }
     }
 
-	@Override
+    @Override
+    public String[] getMethodNames()
+    {
+        return new String[] {
+            "queueEvent",
+            "startTimer",
+            "setAlarm",
+            "shutdown",
+            "reboot",
+            "computerID",
+            "getComputerID",
+            "setComputerLabel",
+            "computerLabel",
+            "getComputerLabel",
+            "clock",
+            "time",
+            "day",
+            "cancelTimer",
+            "cancelAlarm",
+        };
+    }
+
+    @Override
     public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
     {
-		switch( method )
-		{
-			case 0:
-			{
-				// queueEvent
-				if( args.length == 0 || args[0] == null || !(args[0] instanceof String) )
-				{
-					throw new LuaException( "Expected string" );
-				}
-				queueLuaEvent( (String)args[0], trimArray( args, 1 ) );
-				return null;
-			}
-			case 1:
-			{
-				// startTimer
-				if( args.length < 1 || args[0] == null || !(args[0] instanceof Number) )
-				{
-					throw new LuaException( "Expected number" );
-				}
-				double timer = ((Number)args[0]).doubleValue();
-				synchronized( m_timers )
-				{
-					m_timers.put( m_nextTimerToken, new Timer( (int)Math.round( timer / 0.05 ) ) );
+        switch( method )
+        {
+            case 0:
+            {
+                // queueEvent
+                if( args.length == 0 || args[0] == null || !(args[0] instanceof String) )
+                {
+                    throw new LuaException( "Expected string" );
+                }
+                queueLuaEvent( (String)args[0], trimArray( args, 1 ) );
+                return null;
+            }
+            case 1:
+            {
+                // startTimer
+                if( args.length < 1 || args[0] == null || !(args[0] instanceof Number) )
+                {
+                    throw new LuaException( "Expected number" );
+                }
+                double timer = ((Number)args[0]).doubleValue();
+                synchronized( m_timers )
+                {
+                    m_timers.put( m_nextTimerToken, new Timer( (int)Math.round( timer / 0.05 ) ) );
                     return new Object[] { m_nextTimerToken++ };
-				}
-			}
-			case 2:
-			{
-				// setAlarm
-				if( args.length < 1 || args[0] == null || !(args[0] instanceof Number) )
-				{
-					throw new LuaException( "Expected number" );
-				}
-				double time = ((Number)args[0]).doubleValue();
-				if( time < 0.0 || time >= 24.0 )
-				{
-					throw new LuaException( "Number out of range" );
-				}				
-				synchronized( m_alarms )
-				{
+                }
+            }
+            case 2:
+            {
+                // setAlarm
+                if( args.length < 1 || args[0] == null || !(args[0] instanceof Number) )
+                {
+                    throw new LuaException( "Expected number" );
+                }
+                double time = ((Number)args[0]).doubleValue();
+                if( time < 0.0 || time >= 24.0 )
+                {
+                    throw new LuaException( "Number out of range" );
+                }                
+                synchronized( m_alarms )
+                {
                     int day = (time > m_time) ? m_day : (m_day + 1);
-					m_alarms.put( m_nextAlarmToken, new Alarm( time, day ) );
+                    m_alarms.put( m_nextAlarmToken, new Alarm( time, day ) );
                     return new Object[] { m_nextAlarmToken++ };
-				}
-			}
-			case 3:
-			{
-				// shutdown
-				m_apiEnvironment.shutdown();
-				return null;
-			}
-			case 4:
-			{
-				// reboot
-				m_apiEnvironment.reboot();
-				return null;
-			}
-			case 5:
-			case 6:
-			{
-				// computerID/getComputerID
-				return new Object[] { getComputerID() };
-			}
-			case 7:
-			{
-				// setComputerLabel
-				String label = null;
-				if( args.length > 0 && args[0] != null )
-				{
-					if(!(args[0] instanceof String))
-					{
-						throw new LuaException( "Expected string or nil" );
-					}
-					label = (String)args[0];
+                }
+            }
+            case 3:
+            {
+                // shutdown
+                m_apiEnvironment.shutdown();
+                return null;
+            }
+            case 4:
+            {
+                // reboot
+                m_apiEnvironment.reboot();
+                return null;
+            }
+            case 5:
+            case 6:
+            {
+                // computerID/getComputerID
+                return new Object[] { getComputerID() };
+            }
+            case 7:
+            {
+                // setComputerLabel
+                String label = null;
+                if( args.length > 0 && args[0] != null )
+                {
+                    if(!(args[0] instanceof String))
+                    {
+                        throw new LuaException( "Expected string or nil" );
+                    }
+                    label = (String)args[0];
                     if( label.length() > 32 )
                     {
                         label = label.substring( 0, 32 );
                     }
-				}
+                }
                 m_apiEnvironment.setLabel( label );
-				return null;
-			}
-			case 8:
-			case 9:
-			{
-				// computerLabel/getComputerLabel
-				String label = m_apiEnvironment.getLabel();
-				if( label != null )
-				{
-					return new Object[] { label };
-				}
-				return null;
-			}
-			case 10:
-			{
-				// clock
-				synchronized( m_timers )
-				{
-					return new Object[] { (double)m_clock * 0.05 };
-				}
-			}
-			case 11:
-			{
-				// m_time
-				synchronized( m_alarms )
-				{
-					return new Object[] { m_time };
-				}
-			}
-			case 12:
-			{
-				// day
-				synchronized( m_alarms )
-				{
-					return new Object[] { m_day };
-				}
-			}
+                return null;
+            }
+            case 8:
+            case 9:
+            {
+                // computerLabel/getComputerLabel
+                String label = m_apiEnvironment.getLabel();
+                if( label != null )
+                {
+                    return new Object[] { label };
+                }
+                return null;
+            }
+            case 10:
+            {
+                // clock
+                synchronized( m_timers )
+                {
+                    return new Object[] { (double)m_clock * 0.05 };
+                }
+            }
+            case 11:
+            {
+                // m_time
+                synchronized( m_alarms )
+                {
+                    return new Object[] { m_time };
+                }
+            }
+            case 12:
+            {
+                // day
+                synchronized( m_alarms )
+                {
+                    return new Object[] { m_day };
+                }
+            }
             case 13:
             {
                 // cancelTimer
@@ -344,27 +344,27 @@ public class OSAPI implements ILuaAPI
                 }
                 return null;
             }
-			default:
-			{
-				return null;
-			}
-		}
-	}
+            default:
+            {
+                return null;
+            }
+        }
+    }
 
-	// Private methods
+    // Private methods
 
-	private void queueLuaEvent( String event, Object[] args )
-	{
-		m_apiEnvironment.queueEvent( event, args );
-	}
-	
-	private Object[] trimArray( Object[] array, int skip )
-	{
-		return Arrays.copyOfRange( array, skip, array.length );
-	}
-	
-	private int getComputerID()
-	{
-		return m_apiEnvironment.getComputerID();
-	}
+    private void queueLuaEvent( String event, Object[] args )
+    {
+        m_apiEnvironment.queueEvent( event, args );
+    }
+    
+    private Object[] trimArray( Object[] array, int skip )
+    {
+        return Arrays.copyOfRange( array, skip, array.length );
+    }
+    
+    private int getComputerID()
+    {
+        return m_apiEnvironment.getComputerID();
+    }
 }

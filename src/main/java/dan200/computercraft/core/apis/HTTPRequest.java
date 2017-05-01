@@ -16,9 +16,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 class HTTPRequestException extends Exception {
-	public HTTPRequestException( String s ) {
-		super( s );
-	}
+    public HTTPRequestException( String s ) {
+        super( s );
+    }
 }
 
 public class HTTPRequest
@@ -64,18 +64,18 @@ public class HTTPRequest
         return url;
     }
 
-	public HTTPRequest( String url, final String postText, final Map<String, String> headers ) throws HTTPRequestException
-	{
-		// Parse the URL
-		m_urlString = url;
+    public HTTPRequest( String url, final String postText, final Map<String, String> headers ) throws HTTPRequestException
+    {
+        // Parse the URL
+        m_urlString = url;
         m_url = checkURL( m_urlString );
 
         // Start the thread
-		m_cancelled = false;
-		m_complete = false;
-		m_success = false;
-		m_result = null;
-		m_responseCode = -1;
+        m_cancelled = false;
+        m_complete = false;
+        m_success = false;
+        m_result = null;
+        m_responseCode = -1;
 
         Thread thread = new Thread( new Runnable() {
             @Override
@@ -213,27 +213,27 @@ public class HTTPRequest
                 }
             }
         } );
-		
-		thread.start();
-	}
-	
-	public String getURL() {
-		return m_urlString;
-	}
-	
-	public void cancel()
-	{
-		synchronized(m_lock) {
-			m_cancelled = true;
-		}
-	}
-	
-	public boolean isComplete()
-	{
-		synchronized(m_lock) {
-			return m_complete;
-		}
-	}
+        
+        thread.start();
+    }
+    
+    public String getURL() {
+        return m_urlString;
+    }
+    
+    public void cancel()
+    {
+        synchronized(m_lock) {
+            m_cancelled = true;
+        }
+    }
+    
+    public boolean isComplete()
+    {
+        synchronized(m_lock) {
+            return m_complete;
+        }
+    }
 
     public int getResponseCode() {
         synchronized(m_lock) {
@@ -242,32 +242,32 @@ public class HTTPRequest
     }
 
     public boolean wasSuccessful()
-	{
-		synchronized(m_lock) {
-			return m_success;
-		}
-	}
-	
-	public BufferedReader getContents()
-	{
-		String result = null;
-		synchronized(m_lock) {
-			result = m_result;
-		}
-		
-		if( result != null ) {
-			return new BufferedReader( new StringReader( result ) );
-		}
-		return null;
-	}
-	
-	private Object m_lock = new Object();
-	private URL m_url;
+    {
+        synchronized(m_lock) {
+            return m_success;
+        }
+    }
+    
+    public BufferedReader getContents()
+    {
+        String result = null;
+        synchronized(m_lock) {
+            result = m_result;
+        }
+        
+        if( result != null ) {
+            return new BufferedReader( new StringReader( result ) );
+        }
+        return null;
+    }
+    
+    private Object m_lock = new Object();
+    private URL m_url;
     private final String m_urlString;
-	
-	private boolean m_complete;
-	private boolean m_cancelled;
-	private boolean m_success;
-	private String m_result;
-	private int m_responseCode;
+    
+    private boolean m_complete;
+    private boolean m_cancelled;
+    private boolean m_success;
+    private String m_result;
+    private int m_responseCode;
 }

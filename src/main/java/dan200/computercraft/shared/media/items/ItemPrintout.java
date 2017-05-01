@@ -20,74 +20,74 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class ItemPrintout extends Item
-{	
-	public static final int LINES_PER_PAGE = 21;
-	public static final int LINE_MAX_LENGTH = 25;
-	public static final int MAX_PAGES = 16;
-	
-	public enum Type
-	{
-		Single,
-		Multiple,
-		Book
-	}
+{    
+    public static final int LINES_PER_PAGE = 21;
+    public static final int LINE_MAX_LENGTH = 25;
+    public static final int MAX_PAGES = 16;
+    
+    public enum Type
+    {
+        Single,
+        Multiple,
+        Book
+    }
 
     public ItemPrintout()
     {
         setMaxStackSize( 1 );
-		setHasSubtypes( true );
-		setUnlocalizedName( "computercraft:page" );
+        setHasSubtypes( true );
+        setUnlocalizedName( "computercraft:page" );
         setCreativeTab( ComputerCraft.mainCreativeTab );
     }
-	
-	@Override
+    
+    @Override
     public void getSubItems( Item itemID, CreativeTabs tabs, List list )
     {
-    	list.add( createSingleFromTitleAndText( null, new String[ LINES_PER_PAGE ], new String[ LINES_PER_PAGE ] ) );
-    	list.add( createMultipleFromTitleAndText( null, new String[ 2*LINES_PER_PAGE ], new String[ 2*LINES_PER_PAGE ] ) );
-    	list.add( createBookFromTitleAndText( null, new String[ 2*LINES_PER_PAGE ], new String[ 2*LINES_PER_PAGE ] ) );
+        list.add( createSingleFromTitleAndText( null, new String[ LINES_PER_PAGE ], new String[ LINES_PER_PAGE ] ) );
+        list.add( createMultipleFromTitleAndText( null, new String[ 2*LINES_PER_PAGE ], new String[ 2*LINES_PER_PAGE ] ) );
+        list.add( createBookFromTitleAndText( null, new String[ 2*LINES_PER_PAGE ], new String[ 2*LINES_PER_PAGE ] ) );
     }
     
     @Override
     public void addInformation( ItemStack itemstack, EntityPlayer par2EntityPlayer, List list, boolean flag )
     {
-		String title = getTitle( itemstack );
-		if( title != null && title.length() > 0 )
-		{
-			list.add( title );
-		}
+        String title = getTitle( itemstack );
+        if( title != null && title.length() > 0 )
+        {
+            list.add( title );
+        }
     }
     
     @Override
     public String getUnlocalizedName( ItemStack stack )
     {
         Type type = getType( stack );
-		switch( type )
-		{
-			case Single:
+        switch( type )
+        {
+            case Single:
             default:
-			{
-				return "item.computercraft:page";
-			}
-			case Multiple:
-			{
-				return "item.computercraft:pages";
-			}
-			case Book:
-			{
+            {
+                return "item.computercraft:page";
+            }
+            case Multiple:
+            {
+                return "item.computercraft:pages";
+            }
+            case Book:
+            {
                 return "item.computercraft:book";
-			}
-		}
+            }
+        }
     }
     
     @Override
     public ActionResult<ItemStack> onItemRightClick( ItemStack stack, World world, EntityPlayer player, EnumHand hand )
     {
-    	if( !world.isRemote )
-    	{
-    		ComputerCraft.openPrintoutGUI( player );
+        if( !world.isRemote )
+        {
+            ComputerCraft.openPrintoutGUI( player );
             return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
-    	}
+        }
         return new ActionResult<ItemStack>( EnumActionResult.PASS, stack );
     }
     
@@ -116,14 +116,14 @@ public class ItemPrintout extends Item
         }
 
         // Create stack
-		ItemStack stack = new ItemStack( ComputerCraft.Items.printout, 1, damage );
+        ItemStack stack = new ItemStack( ComputerCraft.Items.printout, 1, damage );
 
         // Build NBT
-		NBTTagCompound nbt = new NBTTagCompound();
-		if( title != null )
-		{
-			nbt.setString( "title", title );
-		}
+        NBTTagCompound nbt = new NBTTagCompound();
+        if( title != null )
+        {
+            nbt.setString( "title", title );
+        }
         if( text != null )
         {
             nbt.setInteger( "pages", text.length / LINES_PER_PAGE );
@@ -151,20 +151,20 @@ public class ItemPrintout extends Item
         return stack;
     }
     
-	public static ItemStack createSingleFromTitleAndText( String title, String[] text, String[] colours )
-	{
-		return createFromTitleAndText( Type.Single, title, text, colours );
-	}
-	
-	public static ItemStack createMultipleFromTitleAndText( String title, String[] text, String[] colours )
-	{
-		return createFromTitleAndText( Type.Multiple, title, text, colours );
-	}
+    public static ItemStack createSingleFromTitleAndText( String title, String[] text, String[] colours )
+    {
+        return createFromTitleAndText( Type.Single, title, text, colours );
+    }
+    
+    public static ItemStack createMultipleFromTitleAndText( String title, String[] text, String[] colours )
+    {
+        return createFromTitleAndText( Type.Multiple, title, text, colours );
+    }
 
-	public static ItemStack createBookFromTitleAndText( String title, String[] text, String[] colours )
-	{
-		return createFromTitleAndText( Type.Book, title, text, colours );
-	}
+    public static ItemStack createBookFromTitleAndText( String title, String[] text, String[] colours )
+    {
+        return createFromTitleAndText( Type.Book, title, text, colours );
+    }
 
     public static Type getType( ItemStack stack )
     {
@@ -187,61 +187,61 @@ public class ItemPrintout extends Item
         }
     }
 
-	public static String getTitle( ItemStack stack )
-	{
-		NBTTagCompound nbt = stack.getTagCompound();
-		if( nbt != null && nbt.hasKey( "title" ) )
-		{
-			return nbt.getString( "title" );
-		}
-		return null;
-	}
-	
-	public static int getPageCount( ItemStack stack )
-	{
-		NBTTagCompound nbt = stack.getTagCompound();
-		if( nbt != null && nbt.hasKey( "pages" ) )
-		{
-			return nbt.getInteger( "pages" );
-		}
-		return 1;
-	}
-	
-	public static String[] getText( ItemStack stack )
-	{
-		NBTTagCompound nbt = stack.getTagCompound();
-		int numLines = getPageCount( stack ) * LINES_PER_PAGE;
-		String[] lines = new String[numLines];
-		for( int i=0; i<lines.length; ++i )
-		{
-			if( nbt != null )
-			{
-				lines[i] = nbt.getString( "line"+i );
-			}
-			else
-			{
-				lines[i] = "";
-			}
-		}
-		return lines;
-	}	
-	
-	public static String[] getColours( ItemStack stack )
-	{
-		NBTTagCompound nbt = stack.getTagCompound();
-		int numLines = getPageCount( stack ) * LINES_PER_PAGE;
-		String[] lines = new String[numLines];
-		for( int i=0; i<lines.length; ++i )
-		{
-			if( nbt != null )
-			{
-				lines[i] = nbt.getString( "colour"+i );
-			}
-			else
-			{
-				lines[i] = "";
-			}
-		}
-		return lines;
-	}
+    public static String getTitle( ItemStack stack )
+    {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if( nbt != null && nbt.hasKey( "title" ) )
+        {
+            return nbt.getString( "title" );
+        }
+        return null;
+    }
+    
+    public static int getPageCount( ItemStack stack )
+    {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if( nbt != null && nbt.hasKey( "pages" ) )
+        {
+            return nbt.getInteger( "pages" );
+        }
+        return 1;
+    }
+    
+    public static String[] getText( ItemStack stack )
+    {
+        NBTTagCompound nbt = stack.getTagCompound();
+        int numLines = getPageCount( stack ) * LINES_PER_PAGE;
+        String[] lines = new String[numLines];
+        for( int i=0; i<lines.length; ++i )
+        {
+            if( nbt != null )
+            {
+                lines[i] = nbt.getString( "line"+i );
+            }
+            else
+            {
+                lines[i] = "";
+            }
+        }
+        return lines;
+    }    
+    
+    public static String[] getColours( ItemStack stack )
+    {
+        NBTTagCompound nbt = stack.getTagCompound();
+        int numLines = getPageCount( stack ) * LINES_PER_PAGE;
+        String[] lines = new String[numLines];
+        for( int i=0; i<lines.length; ++i )
+        {
+            if( nbt != null )
+            {
+                lines[i] = nbt.getString( "colour"+i );
+            }
+            else
+            {
+                lines[i] = "";
+            }
+        }
+        return lines;
+    }
 }

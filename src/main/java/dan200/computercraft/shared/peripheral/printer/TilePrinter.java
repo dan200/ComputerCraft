@@ -43,7 +43,7 @@ public class TilePrinter extends TilePeripheralBase
     private final ItemStack[] m_inventory;
     private final Terminal m_page;
     private String m_pageTitle;
-	private boolean m_printing;
+    private boolean m_printing;
 
     public TilePrinter()
     {
@@ -77,60 +77,60 @@ public class TilePrinter extends TilePeripheralBase
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
-			
-		// Read page
-		synchronized( m_page )
-		{
-			m_printing = nbttagcompound.getBoolean( "printing" );
-			m_pageTitle = nbttagcompound.getString( "pageTitle" );
+            
+        // Read page
+        synchronized( m_page )
+        {
+            m_printing = nbttagcompound.getBoolean( "printing" );
+            m_pageTitle = nbttagcompound.getString( "pageTitle" );
             m_page.readFromNBT( nbttagcompound );
-		}
-		
-		// Read inventory
-		synchronized( m_inventory )
-		{
-			NBTTagList nbttaglist = nbttagcompound.getTagList( "Items", Constants.NBT.TAG_COMPOUND );
-			for( int i=0; i<nbttaglist.tagCount(); ++i )
-			{
-				NBTTagCompound itemTag = nbttaglist.getCompoundTagAt( i );
-				int j = itemTag.getByte("Slot") & 0xff;
-				if (j >= 0 && j < m_inventory.length)
-				{
-					m_inventory[j] = ItemStack.loadItemStackFromNBT(itemTag);
-				}
-			}
-		}
+        }
+        
+        // Read inventory
+        synchronized( m_inventory )
+        {
+            NBTTagList nbttaglist = nbttagcompound.getTagList( "Items", Constants.NBT.TAG_COMPOUND );
+            for( int i=0; i<nbttaglist.tagCount(); ++i )
+            {
+                NBTTagCompound itemTag = nbttaglist.getCompoundTagAt( i );
+                int j = itemTag.getByte("Slot") & 0xff;
+                if (j >= 0 && j < m_inventory.length)
+                {
+                    m_inventory[j] = ItemStack.loadItemStackFromNBT(itemTag);
+                }
+            }
+        }
     }
 
-	@Override	
+    @Override    
     public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
         nbttagcompound = super.writeToNBT(nbttagcompound);
 
-		// Write page
-		synchronized( m_page )
-		{
-			nbttagcompound.setBoolean( "printing", m_printing );
-			nbttagcompound.setString( "pageTitle", m_pageTitle );
+        // Write page
+        synchronized( m_page )
+        {
+            nbttagcompound.setBoolean( "printing", m_printing );
+            nbttagcompound.setString( "pageTitle", m_pageTitle );
             m_page.writeToNBT( nbttagcompound );
-		}
-		
-		// Write inventory
-		synchronized( m_inventory )
-		{
-			NBTTagList nbttaglist = new NBTTagList();
-			for(int i=0; i<m_inventory.length; ++i)
-			{
-				if (m_inventory[i] != null)
-				{
-					NBTTagCompound itemtag = new NBTTagCompound();
-					itemtag.setByte("Slot", (byte)i);
-					m_inventory[i].writeToNBT(itemtag);
-					nbttaglist.appendTag(itemtag);
-				}
-			}
-			nbttagcompound.setTag("Items", nbttaglist);
-		}
+        }
+        
+        // Write inventory
+        synchronized( m_inventory )
+        {
+            NBTTagList nbttaglist = new NBTTagList();
+            for(int i=0; i<m_inventory.length; ++i)
+            {
+                if (m_inventory[i] != null)
+                {
+                    NBTTagCompound itemtag = new NBTTagCompound();
+                    itemtag.setByte("Slot", (byte)i);
+                    m_inventory[i].writeToNBT(itemtag);
+                    nbttaglist.appendTag(itemtag);
+                }
+            }
+            nbttagcompound.setTag("Items", nbttaglist);
+        }
 
         return nbttagcompound;
     }
@@ -150,77 +150,77 @@ public class TilePrinter extends TilePeripheralBase
 
     public boolean isPrinting()
     {
-    	return m_printing;
+        return m_printing;
     }
 
     // IInventory implementation
     
-	@Override	
+    @Override    
     public int getSizeInventory()
     {
         return m_inventory.length;
     }
 
-	@Override	
+    @Override    
     public ItemStack getStackInSlot(int i)
     {
-		synchronized( m_inventory )
-		{
-	        return m_inventory[i];
-	    }
+        synchronized( m_inventory )
+        {
+            return m_inventory[i];
+        }
     }
 
-	@Override	
+    @Override    
     public ItemStack removeStackFromSlot(int i)
     {
-		synchronized( m_inventory )
-		{
-			ItemStack result = m_inventory[i];
-			m_inventory[i] = null;
-			updateAnim();
-			return result;
-		}
+        synchronized( m_inventory )
+        {
+            ItemStack result = m_inventory[i];
+            m_inventory[i] = null;
+            updateAnim();
+            return result;
+        }
     }
     
-	@Override	
+    @Override    
     public ItemStack decrStackSize(int i, int j)
     {
-		synchronized( m_inventory )
-		{
-			if( m_inventory[i] == null )
-			{
-				return null;
-			}
-			
-			if( m_inventory[i].stackSize <= j )
-			{
-				ItemStack itemstack = m_inventory[i];
-				m_inventory[i] = null;
-				markDirty();
-				updateAnim();
-				return itemstack;
-			}
-			
-			ItemStack part = m_inventory[i].splitStack(j);
-			if( m_inventory[i].stackSize == 0 )
-			{
-				m_inventory[i] = null;
-				updateAnim();
-			}
-			markDirty();
-			return part;
-		}
+        synchronized( m_inventory )
+        {
+            if( m_inventory[i] == null )
+            {
+                return null;
+            }
+            
+            if( m_inventory[i].stackSize <= j )
+            {
+                ItemStack itemstack = m_inventory[i];
+                m_inventory[i] = null;
+                markDirty();
+                updateAnim();
+                return itemstack;
+            }
+            
+            ItemStack part = m_inventory[i].splitStack(j);
+            if( m_inventory[i].stackSize == 0 )
+            {
+                m_inventory[i] = null;
+                updateAnim();
+            }
+            markDirty();
+            return part;
+        }
     }
 
-	@Override	
+    @Override    
     public void setInventorySlotContents( int i, ItemStack stack )
-    {					
-		synchronized( m_inventory )
-		{
-			m_inventory[i] = stack;
-			markDirty();
-			updateAnim();
-		}
+    {                    
+        synchronized( m_inventory )
+        {
+            m_inventory[i] = stack;
+            markDirty();
+            updateAnim();
+        }
     }
 
     @Override
@@ -270,21 +270,21 @@ public class TilePrinter extends TilePeripheralBase
         }
     }
 
-	@Override	
+    @Override    
     public int getInventoryStackLimit()
     {
         return 64;
     }
 
-	@Override	
-	public void openInventory( EntityPlayer player )
-	{
-	}
-	
-	@Override	
-	public void closeInventory( EntityPlayer player )
-	{
-	}
+    @Override    
+    public void openInventory( EntityPlayer player )
+    {
+    }
+    
+    @Override    
+    public void closeInventory( EntityPlayer player )
+    {
+    }
 
     @Override
     public boolean isItemValidForSlot( int slot, ItemStack itemstack )
@@ -316,31 +316,31 @@ public class TilePrinter extends TilePeripheralBase
     }
 
     // ISidedInventory implementation
-	
-	@Override	
-	public int[] getSlotsForFace( EnumFacing side )
-	{
-		switch( side )
-		{
-			case DOWN:	return bottomSlots;	// Bottom (Out tray)
-			case UP:	return topSlots; // Top (In tray)
-			default: return sideSlots; 	// Sides (Ink)
-		}
-	}
-	
-	@Override
-	public boolean canInsertItem( int slot, ItemStack itemstack, EnumFacing face )
-	{
-		return isItemValidForSlot( slot, itemstack );
-	}
+    
+    @Override    
+    public int[] getSlotsForFace( EnumFacing side )
+    {
+        switch( side )
+        {
+            case DOWN:    return bottomSlots;    // Bottom (Out tray)
+            case UP:    return topSlots; // Top (In tray)
+            default: return sideSlots;     // Sides (Ink)
+        }
+    }
+    
+    @Override
+    public boolean canInsertItem( int slot, ItemStack itemstack, EnumFacing face )
+    {
+        return isItemValidForSlot( slot, itemstack );
+    }
 
-	@Override
-	public boolean canExtractItem( int slot, ItemStack itemstack, EnumFacing face )
-	{
-		return true;
-	}
+    @Override
+    public boolean canExtractItem( int slot, ItemStack itemstack, EnumFacing face )
+    {
+        return true;
+    }
 
-	// IPeripheralTile implementation
+    // IPeripheralTile implementation
 
     @Override
     public IPeripheral getPeripheral( EnumFacing side )
@@ -425,177 +425,177 @@ public class TilePrinter extends TilePeripheralBase
             m_pageTitle = title;
         }
     }
-	
-	private boolean isInk( ItemStack stack )
-	{
-		return (stack.getItem() == Items.DYE);
-	}
+    
+    private boolean isInk( ItemStack stack )
+    {
+        return (stack.getItem() == Items.DYE);
+    }
 
-	private boolean isPaper( ItemStack stack )
-	{
-		Item item = stack.getItem();
-		return ( item == Items.PAPER || (item instanceof ItemPrintout && ItemPrintout.getType( stack ) == ItemPrintout.Type.Single) );
-	}
+    private boolean isPaper( ItemStack stack )
+    {
+        Item item = stack.getItem();
+        return ( item == Items.PAPER || (item instanceof ItemPrintout && ItemPrintout.getType( stack ) == ItemPrintout.Type.Single) );
+    }
 
-	private boolean canInputPage()
-	{
-		synchronized( m_inventory )
-		{
-			ItemStack inkStack = m_inventory[0];
-			if( inkStack == null || !isInk(inkStack) )
-			{
-				return false;
-			}
-			if( getPaperLevel() > 0 )
-			{
-				return true;
-			}
-			return false;
-		}
-	}
-	
-	private boolean inputPage()
-	{		
-		synchronized( m_inventory )
-		{
-			ItemStack inkStack = m_inventory[0];
-			if( inkStack == null || !isInk(inkStack) )
-			{
-				return false;
-			}
-			
-			for( int i=1; i<7; ++i )
-			{
-				ItemStack paperStack = m_inventory[i];
-				if( paperStack != null && isPaper(paperStack) )
-				{
-					// Decrement ink
-					inkStack.stackSize--;
-					if( inkStack.stackSize <= 0 )
-					{
-						m_inventory[0] = null;
-					}
-										
-					// Decrement paper
-					paperStack.stackSize--;
-					if( paperStack.stackSize <= 0 )
-					{
-						m_inventory[i] = null;
-						updateAnim();
-					}
-					
-					// Setup the new page
-					int colour = inkStack.getItemDamage();
-					if( colour >= 0 && colour < 16 ) {
-						m_page.setTextColour( 15 - colour );
-					} else {
-						m_page.setTextColour( 15 );
-					}
-					
-					m_page.clear();
-					if( paperStack.getItem() instanceof ItemPrintout )
-					{
-						m_pageTitle = ItemPrintout.getTitle( paperStack );
-						String[] text = ItemPrintout.getText( paperStack );
-						String[] textColour = ItemPrintout.getColours( paperStack );
-						for( int y=0; y<m_page.getHeight(); ++y )
-						{
-							m_page.setLine( y, text[y], textColour[y], "" );
-						}
-					}
-					else
-					{
-						m_pageTitle = "";
-					}
-					m_page.setCursorPos( 0, 0 );
-					
-					markDirty();
-					m_printing = true;
-					return true;
-				}
-			}
-			return false;
-		}
-	}
-	
-	private boolean outputPage()
-	{		
-		synchronized( m_page )
-		{
-			int height = m_page.getHeight();
-			String[] lines = new String[height];
-			String[] colours = new String[height];
-			for( int i=0; i<height; ++i )
-			{
-				lines[i] = m_page.getLine(i).toString();
-				colours[i] = m_page.getTextColourLine(i).toString();
-			}
-			
-			ItemStack stack = ItemPrintout.createSingleFromTitleAndText( m_pageTitle, lines, colours );
-			synchronized( m_inventory )
-			{
+    private boolean canInputPage()
+    {
+        synchronized( m_inventory )
+        {
+            ItemStack inkStack = m_inventory[0];
+            if( inkStack == null || !isInk(inkStack) )
+            {
+                return false;
+            }
+            if( getPaperLevel() > 0 )
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+    
+    private boolean inputPage()
+    {        
+        synchronized( m_inventory )
+        {
+            ItemStack inkStack = m_inventory[0];
+            if( inkStack == null || !isInk(inkStack) )
+            {
+                return false;
+            }
+            
+            for( int i=1; i<7; ++i )
+            {
+                ItemStack paperStack = m_inventory[i];
+                if( paperStack != null && isPaper(paperStack) )
+                {
+                    // Decrement ink
+                    inkStack.stackSize--;
+                    if( inkStack.stackSize <= 0 )
+                    {
+                        m_inventory[0] = null;
+                    }
+                                        
+                    // Decrement paper
+                    paperStack.stackSize--;
+                    if( paperStack.stackSize <= 0 )
+                    {
+                        m_inventory[i] = null;
+                        updateAnim();
+                    }
+                    
+                    // Setup the new page
+                    int colour = inkStack.getItemDamage();
+                    if( colour >= 0 && colour < 16 ) {
+                        m_page.setTextColour( 15 - colour );
+                    } else {
+                        m_page.setTextColour( 15 );
+                    }
+                    
+                    m_page.clear();
+                    if( paperStack.getItem() instanceof ItemPrintout )
+                    {
+                        m_pageTitle = ItemPrintout.getTitle( paperStack );
+                        String[] text = ItemPrintout.getText( paperStack );
+                        String[] textColour = ItemPrintout.getColours( paperStack );
+                        for( int y=0; y<m_page.getHeight(); ++y )
+                        {
+                            m_page.setLine( y, text[y], textColour[y], "" );
+                        }
+                    }
+                    else
+                    {
+                        m_pageTitle = "";
+                    }
+                    m_page.setCursorPos( 0, 0 );
+                    
+                    markDirty();
+                    m_printing = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+    
+    private boolean outputPage()
+    {        
+        synchronized( m_page )
+        {
+            int height = m_page.getHeight();
+            String[] lines = new String[height];
+            String[] colours = new String[height];
+            for( int i=0; i<height; ++i )
+            {
+                lines[i] = m_page.getLine(i).toString();
+                colours[i] = m_page.getTextColourLine(i).toString();
+            }
+            
+            ItemStack stack = ItemPrintout.createSingleFromTitleAndText( m_pageTitle, lines, colours );
+            synchronized( m_inventory )
+            {
                 ItemStack remainder = InventoryUtil.storeItems( stack, this, 7, 6, 7 );
                 if( remainder == null )
-				{
-					m_printing = false;
-					return true;
-				}
-			}
-			return false;
-		}
-	}
+                {
+                    m_printing = false;
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
     private void ejectContents()
     {
-    	synchronized( m_inventory )
-    	{
-			for( int i=0; i<13; ++i ) 
-			{
-				ItemStack stack = m_inventory[i];
-				if( stack != null )
-				{
-					// Remove the stack from the inventory
-					setInventorySlotContents( i, null );
-		
-					// Spawn the item in the world
+        synchronized( m_inventory )
+        {
+            for( int i=0; i<13; ++i ) 
+            {
+                ItemStack stack = m_inventory[i];
+                if( stack != null )
+                {
+                    // Remove the stack from the inventory
+                    setInventorySlotContents( i, null );
+        
+                    // Spawn the item in the world
                     BlockPos pos = getPos();
-					double x = (double)pos.getX() + 0.5;
-					double y = (double)pos.getY() + 0.75;
-					double z = (double)pos.getZ() + 0.5;
-					EntityItem entityitem = new EntityItem( worldObj, x, y, z, stack );
-					entityitem.motionX = worldObj.rand.nextFloat() * 0.2 - 0.1;
-					entityitem.motionY = worldObj.rand.nextFloat() * 0.2 - 0.1;
-					entityitem.motionZ = worldObj.rand.nextFloat() * 0.2 - 0.1;
-					worldObj.spawnEntityInWorld(entityitem);
-				}
-			}
-		}
+                    double x = (double)pos.getX() + 0.5;
+                    double y = (double)pos.getY() + 0.75;
+                    double z = (double)pos.getZ() + 0.5;
+                    EntityItem entityitem = new EntityItem( worldObj, x, y, z, stack );
+                    entityitem.motionX = worldObj.rand.nextFloat() * 0.2 - 0.1;
+                    entityitem.motionY = worldObj.rand.nextFloat() * 0.2 - 0.1;
+                    entityitem.motionZ = worldObj.rand.nextFloat() * 0.2 - 0.1;
+                    worldObj.spawnEntityInWorld(entityitem);
+                }
+            }
+        }
     }
     
     private void updateAnim()
     {
-    	synchronized( m_inventory )
-    	{
-			int anim = 0;
-			for( int i=1;i<7;++i )
-			{
-				ItemStack stack = m_inventory[i];
-				if( stack != null && isPaper(stack) )
-				{
-					anim += 1;
-					break;
-				}
-			}
-			for( int i=7;i<13;++i )
-			{
-				ItemStack stack = m_inventory[i];
-				if( stack != null && isPaper(stack) )
-				{
-					anim += 2;
-					break;
-				}
-			}
-			setAnim( anim );
-		}
+        synchronized( m_inventory )
+        {
+            int anim = 0;
+            for( int i=1;i<7;++i )
+            {
+                ItemStack stack = m_inventory[i];
+                if( stack != null && isPaper(stack) )
+                {
+                    anim += 1;
+                    break;
+                }
+            }
+            for( int i=7;i<13;++i )
+            {
+                ItemStack stack = m_inventory[i];
+                if( stack != null && isPaper(stack) )
+                {
+                    anim += 2;
+                    break;
+                }
+            }
+            setAnim( anim );
+        }
     }
 }

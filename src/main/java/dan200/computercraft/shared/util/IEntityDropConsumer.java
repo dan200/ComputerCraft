@@ -10,5 +10,5 @@ import net.minecraft.item.ItemStack;
 
 public interface IEntityDropConsumer
 {
-	public void consumeDrop( Entity dropper, ItemStack drop );
+    public void consumeDrop( Entity dropper, ItemStack drop );
 }

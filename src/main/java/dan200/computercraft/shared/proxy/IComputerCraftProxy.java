@@ -22,25 +22,25 @@ import java.io.File;
 
 public interface IComputerCraftProxy
 {
-	public void preInit();
-	public void init();
-	public boolean isClient();
+    public void preInit();
+    public void init();
+    public boolean isClient();
 
-	public boolean getGlobalCursorBlink();
+    public boolean getGlobalCursorBlink();
     public long getRenderFrame();
     public void deleteDisplayLists( int list, int range );
-	public Object getFixedWidthFontRenderer();
+    public Object getFixedWidthFontRenderer();
 
-	public String getRecordInfo( ItemStack item );
-	public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos );
+    public String getRecordInfo( ItemStack item );
+    public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos );
 
-	public Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive );
-	public Object getComputerGUI( TileComputer computer );
-	public Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer );
+    public Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive );
+    public Object getComputerGUI( TileComputer computer );
+    public Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer );
     public Object getTurtleGUI( InventoryPlayer inventory, TileTurtle turtle );
     public abstract Object getPrintoutGUI( InventoryPlayer inventory );
     public abstract Object getPocketComputerGUI( InventoryPlayer inventory );
 
-	public File getWorldDir( World world );
-	public void handlePacket( ComputerCraftPacket packet, EntityPlayer player );
+    public File getWorldDir( World world );
+    public void handlePacket( ComputerCraftPacket packet, EntityPlayer player );
 }

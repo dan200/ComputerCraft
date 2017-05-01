@@ -25,8 +25,8 @@ import java.util.List;
 
 public class ItemComputer extends ItemComputerBase
 {
-	public static int HIGHEST_DAMAGE_VALUE_ID = 16382;
-	
+    public static int HIGHEST_DAMAGE_VALUE_ID = 16382;
+    
     public ItemComputer( Block block )
     {
         super( block );
@@ -70,10 +70,10 @@ public class ItemComputer extends ItemComputerBase
         return result;
     }
 
-	@Override
+    @Override
     public void getSubItems( Item itemID, CreativeTabs tabs, List list )
     {
-	    list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Normal ) );
+        list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Normal ) );
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Advanced ) );
     }
 
@@ -93,8 +93,8 @@ public class ItemComputer extends ItemComputerBase
         return false;
     }
 
-	private void setupComputerAfterPlacement( ItemStack stack, IComputerTile computer )
-	{
+    private void setupComputerAfterPlacement( ItemStack stack, IComputerTile computer )
+    {
         // Set ID
         int id = getComputerID( stack );
         if( id >= 0 )
@@ -108,27 +108,27 @@ public class ItemComputer extends ItemComputerBase
         {
             computer.setLabel( label );
         }
-	}
+    }
 
     @Override
     public String getUnlocalizedName( ItemStack stack )
     {
-		switch( getFamily( stack ) )
-		{
-			case Normal:
+        switch( getFamily( stack ) )
+        {
+            case Normal:
             default:
-			{
-				return "tile.computercraft:computer";
-			}
-			case Advanced:
-			{
-				return "tile.computercraft:advanced_computer";
-			}
+            {
+                return "tile.computercraft:computer";
+            }
+            case Advanced:
+            {
+                return "tile.computercraft:advanced_computer";
+            }
             case Command:
             {
                 return "tile.computercraft:command_computer";
             }
-		}
+        }
     }
 
     // IComputerItem implementation

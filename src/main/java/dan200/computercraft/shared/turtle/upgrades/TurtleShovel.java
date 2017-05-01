@@ -21,14 +21,14 @@ public class TurtleShovel extends TurtleTool
     }
 
     @Override
-	protected boolean canBreakBlock( World world, BlockPos pos )
-	{
-		if( super.canBreakBlock( world, pos ) )
-		{
+    protected boolean canBreakBlock( World world, BlockPos pos )
+    {
+        if( super.canBreakBlock( world, pos ) )
+        {
             IBlockState state = world.getBlockState( pos );
-			Block block = state.getBlock();
+            Block block = state.getBlock();
             Material material = block.getMaterial( state );
-			return
+            return
                     material == Material.GROUND ||
                     material == Material.SAND ||
                     material == Material.SNOW ||
@@ -40,7 +40,7 @@ public class TurtleShovel extends TurtleTool
                     material == Material.GOURD ||
                     material == Material.LEAVES ||
                     material == Material.VINE;
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 }

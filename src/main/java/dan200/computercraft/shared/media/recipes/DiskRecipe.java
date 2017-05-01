@@ -45,28 +45,28 @@ public class DiskRecipe implements IRecipe
                 }
                 else if( var6.getItem() == Items.DYE )
                 {
-                	dyeFound = true;
+                    dyeFound = true;
                 }
                 else if( var6.getItem() == Items.PAPER )
                 {
-                	if(paperFound || diskFound)
-                	{
-                		return false;
-                	}
-                	paperFound = true;
+                    if(paperFound || diskFound)
+                    {
+                        return false;
+                    }
+                    paperFound = true;
                 }
                 else if (var6.getItem() == Items.REDSTONE)
                 {
-                	if (redstoneFound || diskFound)
-                	{
-                		return false;
-                	}
+                    if (redstoneFound || diskFound)
+                    {
+                        return false;
+                    }
                     
-                	redstoneFound = true;
+                    redstoneFound = true;
                 }
                 else
                 {
-                	return false;
+                    return false;
                 }
             }
         }
@@ -105,7 +105,7 @@ public class DiskRecipe implements IRecipe
                 }
                 else if (var8.getItem() == Items.DYE)
                 {
-                	dyeFound = true;
+                    dyeFound = true;
                     float[] var14 = Colour.values()[ var8.getItemDamage() & 0xf ].getRGB();
                     int var16 = (int)(var14[0] * 255.0F);
                     int var15 = (int)(var14[1] * 255.0F);
@@ -118,14 +118,14 @@ public class DiskRecipe implements IRecipe
                 }
                 else if (!(var8.getItem() != Items.PAPER || var8.getItem() != Items.REDSTONE))
                 {
-                	return null;
+                    return null;
                 }
             }
         }
         
         if( !dyeFound )
         {
-        	return ItemDiskLegacy.createFromIDAndColour( diskID, diskLabel, Colour.Blue.getHex() );
+            return ItemDiskLegacy.createFromIDAndColour( diskID, diskLabel, Colour.Blue.getHex() );
         }
         
         var7 = var3[0] / var5;

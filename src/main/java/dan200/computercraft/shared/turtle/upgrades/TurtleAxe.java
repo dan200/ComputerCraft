@@ -17,8 +17,8 @@ public class TurtleAxe extends TurtleTool
     }
 
     @Override
-	protected float getDamageMultiplier()
-	{
-		return 6.0f;
-	}
+    protected float getDamageMultiplier()
+    {
+        return 6.0f;
+    }
 }

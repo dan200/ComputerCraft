@@ -64,11 +64,11 @@ public class TileDiskDrive extends TilePeripheralBase
         m_computers = new HashMap<IComputerAccess, MountInfo>();
 
         m_diskStack = null;
-		m_diskMount = null;
+        m_diskMount = null;
         
         m_recordQueued = false;
         m_recordPlaying = false;
-		m_restartRecord = false;
+        m_restartRecord = false;
     }
 
     @Override
@@ -77,10 +77,10 @@ public class TileDiskDrive extends TilePeripheralBase
         ejectContents( true );
         synchronized( this )
         {
-        	if( m_recordPlaying )
-        	{
-        		sendBlockEvent( BLOCKEVENT_STOP_RECORD );
-        	}
+            if( m_recordPlaying )
+            {
+                sendBlockEvent( BLOCKEVENT_STOP_RECORD );
+            }
         }
     }
 
@@ -139,9 +139,9 @@ public class TileDiskDrive extends TilePeripheralBase
         super.readFromNBT(nbttagcompound);
         if( nbttagcompound.hasKey( "item" ) )
         {
-    		NBTTagCompound item = nbttagcompound.getCompoundTag( "item" );
-	    	m_diskStack = ItemStack.loadItemStackFromNBT( item );
-    		m_diskMount = null;
+            NBTTagCompound item = nbttagcompound.getCompoundTag( "item" );
+            m_diskStack = ItemStack.loadItemStackFromNBT( item );
+            m_diskMount = null;
         }
     }
 
@@ -149,10 +149,10 @@ public class TileDiskDrive extends TilePeripheralBase
     public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
         nbttagcompound = super.writeToNBT(nbttagcompound);
-		if( m_diskStack != null )
-		{
+        if( m_diskStack != null )
+        {
             NBTTagCompound item = new NBTTagCompound();
-			m_diskStack.writeToNBT( item );
+            m_diskStack.writeToNBT( item );
             nbttagcompound.setTag( "item", item );
         }
         return nbttagcompound;
@@ -163,43 +163,43 @@ public class TileDiskDrive extends TilePeripheralBase
     {
         super.update();
 
-		// Ejection
-		synchronized( this )
-		{
-			if( m_ejectQueued )
-			{
-				ejectContents( false );
-				m_ejectQueued = false;
-			}
-		}
-		
-		// Music
-		synchronized( this )
-		{
-			if( m_recordPlaying != m_recordQueued || m_restartRecord )
-			{
-				m_restartRecord = false;
-				if( m_recordQueued )
-				{
-					IMedia contents = getDiskMedia();
-					SoundEvent record = (contents != null) ? contents.getAudio( m_diskStack ) : null;
-					if( record != null )
-					{
-						m_recordPlaying = true;
+        // Ejection
+        synchronized( this )
+        {
+            if( m_ejectQueued )
+            {
+                ejectContents( false );
+                m_ejectQueued = false;
+            }
+        }
+        
+        // Music
+        synchronized( this )
+        {
+            if( m_recordPlaying != m_recordQueued || m_restartRecord )
+            {
+                m_restartRecord = false;
+                if( m_recordQueued )
+                {
+                    IMedia contents = getDiskMedia();
+                    SoundEvent record = (contents != null) ? contents.getAudio( m_diskStack ) : null;
+                    if( record != null )
+                    {
+                        m_recordPlaying = true;
                         sendBlockEvent( BLOCKEVENT_PLAY_RECORD );
-					}
-					else
-					{
-						m_recordQueued = false;
-					}
-				}
-				else
-				{
+                    }
+                    else
+                    {
+                        m_recordQueued = false;
+                    }
+                }
+                else
+                {
                     sendBlockEvent( BLOCKEVENT_STOP_RECORD );
-					m_recordPlaying = false;
-				}
-			}
-		}
+                    m_recordPlaying = false;
+                }
+            }
+        }
     }
 
     // IInventory implementation
@@ -219,10 +219,10 @@ public class TileDiskDrive extends TilePeripheralBase
     @Override
     public ItemStack removeStackFromSlot(int i)
     {
-    	ItemStack result = m_diskStack;
-    	m_diskStack = null;
+        ItemStack result = m_diskStack;
+        m_diskStack = null;
         m_diskMount = null;
-    	
+        
         return result;
     }
     
@@ -231,87 +231,87 @@ public class TileDiskDrive extends TilePeripheralBase
     {
         if (m_diskStack == null)
         {
-        	return null;
+            return null;
         }
         
-		if (m_diskStack.stackSize <= j)
-		{
-			ItemStack disk = m_diskStack;
-			setInventorySlotContents( 0, null );
-			return disk;
-		}
-		
-		ItemStack part = m_diskStack.splitStack(j);
-		if (m_diskStack.stackSize == 0)
-		{
-			setInventorySlotContents( 0, null );
-		}
-		else
-		{
-			setInventorySlotContents( 0, m_diskStack );
-		}
-		return part;
+        if (m_diskStack.stackSize <= j)
+        {
+            ItemStack disk = m_diskStack;
+            setInventorySlotContents( 0, null );
+            return disk;
+        }
+        
+        ItemStack part = m_diskStack.splitStack(j);
+        if (m_diskStack.stackSize == 0)
+        {
+            setInventorySlotContents( 0, null );
+        }
+        else
+        {
+            setInventorySlotContents( 0, m_diskStack );
+        }
+        return part;
     }
 
     @Override
     public void setInventorySlotContents( int i, ItemStack itemStack )
-    {					
-		if( worldObj.isRemote )
-		{
-			m_diskStack = itemStack;
+    {                    
+        if( worldObj.isRemote )
+        {
+            m_diskStack = itemStack;
             m_diskMount = null;
-			markDirty();
-			return;
-		}
+            markDirty();
+            return;
+        }
 
-		synchronized( this )
-		{
-			if( InventoryUtil.areItemsStackable( itemStack, m_diskStack ) )
-			{
-				m_diskStack = itemStack;
-				return;
-			}
-			
-			// Unmount old disk
-			if( m_diskStack != null )
-			{
-				Set<IComputerAccess> computers = m_computers.keySet();
-				Iterator<IComputerAccess> it = computers.iterator();
-				while( it.hasNext() )
-				{
-					IComputerAccess computer = it.next();
-					unmountDisk( computer );
-				}
-			}
-			
-			// Stop music
-			if( m_recordPlaying )
-			{
+        synchronized( this )
+        {
+            if( InventoryUtil.areItemsStackable( itemStack, m_diskStack ) )
+            {
+                m_diskStack = itemStack;
+                return;
+            }
+            
+            // Unmount old disk
+            if( m_diskStack != null )
+            {
+                Set<IComputerAccess> computers = m_computers.keySet();
+                Iterator<IComputerAccess> it = computers.iterator();
+                while( it.hasNext() )
+                {
+                    IComputerAccess computer = it.next();
+                    unmountDisk( computer );
+                }
+            }
+            
+            // Stop music
+            if( m_recordPlaying )
+            {
                 sendBlockEvent( BLOCKEVENT_STOP_RECORD );
-				m_recordPlaying = false;
-				m_recordQueued = false;
-			}
-				
-			// Swap disk over
-			m_diskStack = itemStack;
+                m_recordPlaying = false;
+                m_recordQueued = false;
+            }
+                
+            // Swap disk over
+            m_diskStack = itemStack;
             m_diskMount = null;
-			markDirty();
+            markDirty();
 
-			// Update contents
-			updateAnim();
+            // Update contents
+            updateAnim();
 
-			// Mount new disk
-			if( m_diskStack != null )
-			{
-				Set<IComputerAccess> computers = m_computers.keySet();
-				Iterator<IComputerAccess> it = computers.iterator();
-				while( it.hasNext() )
-				{
-					IComputerAccess computer = it.next();
-					mountDisk( computer );
-				}
-			}
-		}
+            // Mount new disk
+            if( m_diskStack != null )
+            {
+                Set<IComputerAccess> computers = m_computers.keySet();
+                Iterator<IComputerAccess> it = computers.iterator();
+                while( it.hasNext() )
+                {
+                    IComputerAccess computer = it.next();
+                    mountDisk( computer );
+                }
+            }
+        }
     }
 
     @Override
@@ -354,14 +354,14 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-	public void openInventory( EntityPlayer player )
-	{
-	}
-	
+    public void openInventory( EntityPlayer player )
+    {
+    }
+    
     @Override
-	public void closeInventory( EntityPlayer player )
-	{
-	}
+    public void closeInventory( EntityPlayer player )
+    {
+    }
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack)
@@ -401,7 +401,7 @@ public class TileDiskDrive extends TilePeripheralBase
     {
     }
 
-	// IPeripheralTile implementation
+    // IPeripheralTile implementation
 
     @Override
     public IPeripheral getPeripheral( EnumFacing side )
@@ -495,121 +495,121 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     // private methods
-	
-	private synchronized void mountDisk( IComputerAccess computer )
-	{
-		if( m_diskStack != null )
-		{
-			MountInfo info = m_computers.get( computer );
-			IMedia contents = getDiskMedia();
-			if( contents != null )
-			{
-				if( m_diskMount == null )
-				{
-					m_diskMount = contents.createDataMount( m_diskStack, worldObj );
-				}
-				if( m_diskMount != null )
-				{
-					if( m_diskMount instanceof IWritableMount)
-					{
-						// Try mounting at the lowest numbered "disk" name we can
-						int n = 1;
-						while( info.mountPath == null )
-						{
-							info.mountPath = computer.mountWritable( (n==1) ? "disk" : ("disk" + n), (IWritableMount)m_diskMount );
-							n++;	
-						}
-					}
-					else
-					{
-						// Try mounting at the lowest numbered "disk" name we can
-						int n = 1;
-						while( info.mountPath == null )
-						{
-							info.mountPath = computer.mount( (n==1) ? "disk" : ("disk" + n), m_diskMount );
-							n++;	
-						}
-					}
-				}
-				else
-				{
-					info.mountPath = null;
-				}
-			}
-			computer.queueEvent( "disk", new Object[] { computer.getAttachmentName() } );
-		}
-	}
+    
+    private synchronized void mountDisk( IComputerAccess computer )
+    {
+        if( m_diskStack != null )
+        {
+            MountInfo info = m_computers.get( computer );
+            IMedia contents = getDiskMedia();
+            if( contents != null )
+            {
+                if( m_diskMount == null )
+                {
+                    m_diskMount = contents.createDataMount( m_diskStack, worldObj );
+                }
+                if( m_diskMount != null )
+                {
+                    if( m_diskMount instanceof IWritableMount)
+                    {
+                        // Try mounting at the lowest numbered "disk" name we can
+                        int n = 1;
+                        while( info.mountPath == null )
+                        {
+                            info.mountPath = computer.mountWritable( (n==1) ? "disk" : ("disk" + n), (IWritableMount)m_diskMount );
+                            n++;    
+                        }
+                    }
+                    else
+                    {
+                        // Try mounting at the lowest numbered "disk" name we can
+                        int n = 1;
+                        while( info.mountPath == null )
+                        {
+                            info.mountPath = computer.mount( (n==1) ? "disk" : ("disk" + n), m_diskMount );
+                            n++;    
+                        }
+                    }
+                }
+                else
+                {
+                    info.mountPath = null;
+                }
+            }
+            computer.queueEvent( "disk", new Object[] { computer.getAttachmentName() } );
+        }
+    }
 
-	private synchronized void unmountDisk( IComputerAccess computer )
-	{
-		if( m_diskStack != null )
-		{
-			MountInfo info = m_computers.get( computer );
-			assert( info != null );
-			if( info.mountPath != null )
-			{
-				computer.unmount( info.mountPath );
-				info.mountPath = null;
-			}
-			computer.queueEvent( "disk_eject", new Object[] { computer.getAttachmentName() } );
-		}
-	}
+    private synchronized void unmountDisk( IComputerAccess computer )
+    {
+        if( m_diskStack != null )
+        {
+            MountInfo info = m_computers.get( computer );
+            assert( info != null );
+            if( info.mountPath != null )
+            {
+                computer.unmount( info.mountPath );
+                info.mountPath = null;
+            }
+            computer.queueEvent( "disk_eject", new Object[] { computer.getAttachmentName() } );
+        }
+    }
 
-	private synchronized void updateAnim()
-	{        	
-		if( m_diskStack != null )
-		{
-			IMedia contents = getDiskMedia();
-			if( contents != null ) {
-				setAnim( 2 );
-			} else {
-				setAnim( 1 );
-			}
-		}
-		else
-		{
-			setAnim( 0 );
-		}
-	}
-		
+    private synchronized void updateAnim()
+    {            
+        if( m_diskStack != null )
+        {
+            IMedia contents = getDiskMedia();
+            if( contents != null ) {
+                setAnim( 2 );
+            } else {
+                setAnim( 1 );
+            }
+        }
+        else
+        {
+            setAnim( 0 );
+        }
+    }
+        
     private synchronized void ejectContents( boolean destroyed )
     {
-		if( worldObj.isRemote )
-		{
-			return;
-		}
-		
-    	if( m_diskStack != null )
-    	{
-    		// Remove the disks from the inventory
-    		ItemStack disks = m_diskStack;
-			setInventorySlotContents( 0, null );
+        if( worldObj.isRemote )
+        {
+            return;
+        }
+        
+        if( m_diskStack != null )
+        {
+            // Remove the disks from the inventory
+            ItemStack disks = m_diskStack;
+            setInventorySlotContents( 0, null );
 
-			// Spawn the item in the world
-			int xOff = 0;
-			int zOff = 0;
-			if( !destroyed )
-			{
-				EnumFacing dir = getDirection();
+            // Spawn the item in the world
+            int xOff = 0;
+            int zOff = 0;
+            if( !destroyed )
+            {
+                EnumFacing dir = getDirection();
                 xOff = dir.getFrontOffsetX();
                 zOff = dir.getFrontOffsetZ();
-			}
+            }
 
             BlockPos pos = getPos();
-			double x = (double)pos.getX() + 0.5 + ((double)xOff * 0.5);
-			double y = (double)pos.getY() + 0.75;
-			double z = (double)pos.getZ() + 0.5 + ((double)zOff * 0.5);
-			EntityItem entityitem = new EntityItem( worldObj, x, y, z, disks );
-			entityitem.motionX = (double)xOff * 0.15;
-			entityitem.motionY = 0.0;
-			entityitem.motionZ = (double)zOff * 0.15;
-			
-			worldObj.spawnEntityInWorld(entityitem);
-			if( !destroyed )
-			{
-				worldObj.playBroadcastSound(1000, getPos(), 0);
-			}
-		}
+            double x = (double)pos.getX() + 0.5 + ((double)xOff * 0.5);
+            double y = (double)pos.getY() + 0.75;
+            double z = (double)pos.getZ() + 0.5 + ((double)zOff * 0.5);
+            EntityItem entityitem = new EntityItem( worldObj, x, y, z, disks );
+            entityitem.motionX = (double)xOff * 0.15;
+            entityitem.motionY = 0.0;
+            entityitem.motionZ = (double)zOff * 0.15;
+            
+            worldObj.spawnEntityInWorld(entityitem);
+            if( !destroyed )
+            {
+                worldObj.playBroadcastSound(1000, getPos(), 0);
+            }
+        }
     }
 
     @Override
@@ -666,8 +666,8 @@ public class TileDiskDrive extends TilePeripheralBase
 
     // Private methods
 
-	private void playRecord()
-	{
+    private void playRecord()
+    {
         IMedia contents = getDiskMedia();
         SoundEvent record = (contents != null) ? contents.getAudio( m_diskStack ) : null;
         if( record != null )
@@ -678,7 +678,7 @@ public class TileDiskDrive extends TilePeripheralBase
         {
             ComputerCraft.playRecord( null, null, worldObj, getPos() );
         }
-	}
+    }
 
     private void stopRecord()
     {

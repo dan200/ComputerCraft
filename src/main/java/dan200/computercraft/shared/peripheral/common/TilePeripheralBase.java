@@ -18,21 +18,21 @@ import net.minecraft.util.EnumFacing;
 import java.util.List;
 
 public abstract class TilePeripheralBase extends TileGeneric
-	implements IPeripheralTile, IDirectionalTile, ITickable
+    implements IPeripheralTile, IDirectionalTile, ITickable
 {
     // Statics
 
-	private EnumFacing m_dir;
-	private int m_anim;
-	private boolean m_changed;
+    private EnumFacing m_dir;
+    private int m_anim;
+    private boolean m_changed;
 
     private String m_label;
 
     public TilePeripheralBase()
     {
-    	m_dir = EnumFacing.NORTH;
-    	m_anim = 0;
-    	m_changed = false;
+        m_dir = EnumFacing.NORTH;
+        m_anim = 0;
+        m_changed = false;
 
         m_label = null;
     }
@@ -99,63 +99,63 @@ public abstract class TilePeripheralBase extends TileGeneric
     @Override
     public void setDirection( EnumFacing dir )
     {
-    	if( dir != m_dir )
-    	{
-			m_dir = dir;
-			m_changed = true;
-		}
+        if( dir != m_dir )
+        {
+            m_dir = dir;
+            m_changed = true;
+        }
     }
 
     public synchronized int getAnim()
     {
-		return m_anim;
+        return m_anim;
     }
     
     public synchronized void setAnim( int anim )
     {
-		if( anim != m_anim )
-		{
-			m_anim = anim;
-			m_changed = true;
-		}
+        if( anim != m_anim )
+        {
+            m_anim = anim;
+            m_changed = true;
+        }
     }
 
-	@Override	
+    @Override    
     public synchronized void update()
     {
-		if( m_changed )
-		{
+        if( m_changed )
+        {
             updateBlock();
-			m_changed = false;
-		}
+            m_changed = false;
+        }
     }
             
-	@Override	
+    @Override    
     public void readFromNBT( NBTTagCompound nbttagcompound )
     {
-		// Read properties
+        // Read properties
         super.readFromNBT(nbttagcompound);
         if( nbttagcompound.hasKey( "dir" ) )
         {
-			m_dir = EnumFacing.getFront( nbttagcompound.getInteger( "dir" ) );
-		}
+            m_dir = EnumFacing.getFront( nbttagcompound.getInteger( "dir" ) );
+        }
         if( nbttagcompound.hasKey( "anim" ) )
         {
-			m_anim = nbttagcompound.getInteger( "anim" );
-		}
+            m_anim = nbttagcompound.getInteger( "anim" );
+        }
         if( nbttagcompound.hasKey( "label" ) )
         {
             m_label = nbttagcompound.getString( "label" );
         }
     }
 
-	@Override	
+    @Override    
     public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
-		// Write properties
+        // Write properties
         nbttagcompound = super.writeToNBT( nbttagcompound );
-		nbttagcompound.setInteger( "dir", m_dir.getIndex() );
-		nbttagcompound.setInteger( "anim", m_anim );
+        nbttagcompound.setInteger( "dir", m_dir.getIndex() );
+        nbttagcompound.setInteger( "anim", m_anim );
         if( m_label != null )
         {
             nbttagcompound.setString( "label", m_label );

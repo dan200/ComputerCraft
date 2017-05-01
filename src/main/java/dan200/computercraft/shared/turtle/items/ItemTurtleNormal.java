@@ -27,13 +27,13 @@ public class ItemTurtleNormal extends ItemTurtleBase
     }
 
     @Override
-	public ItemStack create( int id, String label, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay )
-	{
+    public ItemStack create( int id, String label, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay )
+    {
         // Build the stack
-		ItemStack stack = new ItemStack( this, 1, 0 );
-		NBTTagCompound nbt = new NBTTagCompound();
-		if( leftUpgrade != null )
-		{
+        ItemStack stack = new ItemStack( this, 1, 0 );
+        NBTTagCompound nbt = new NBTTagCompound();
+        if( leftUpgrade != null )
+        {
             int leftUpgradeLegacyID = leftUpgrade.getLegacyUpgradeID();
             if( leftUpgradeLegacyID >= 0 )
             {
@@ -43,9 +43,9 @@ public class ItemTurtleNormal extends ItemTurtleBase
             {
                 nbt.setString( "leftUpgrade", leftUpgrade.getUpgradeID().toString() );
             }
-		}
-		if( rightUpgrade != null )
-		{
+        }
+        if( rightUpgrade != null )
+        {
             int rightUpgradeLegacyID = rightUpgrade.getLegacyUpgradeID();
             if( rightUpgradeLegacyID >= 0 )
             {
@@ -55,15 +55,15 @@ public class ItemTurtleNormal extends ItemTurtleBase
             {
                 nbt.setString( "rightUpgrade", rightUpgrade.getUpgradeID().toString() );
             }
-		}
-		if( id >= 0 )
-		{
-			nbt.setInteger( "computerID", id );
-		}
-		if( fuelLevel > 0 )
-		{
-			nbt.setInteger( "fuelLevel", fuelLevel );
-		}
+        }
+        if( id >= 0 )
+        {
+            nbt.setInteger( "computerID", id );
+        }
+        if( fuelLevel > 0 )
+        {
+            nbt.setInteger( "fuelLevel", fuelLevel );
+        }
         if( colour != null )
         {
             nbt.setInteger( "colourIndex", colour.ordinal() );
@@ -73,15 +73,15 @@ public class ItemTurtleNormal extends ItemTurtleBase
             nbt.setString( "overlay_mod", overlay.getResourceDomain() );
             nbt.setString( "overlay_path", overlay.getResourcePath() );
         }
-		stack.setTagCompound( nbt );
+        stack.setTagCompound( nbt );
 
         // Return the stack
         if( label != null )
         {
             stack.setStackDisplayName( label );
         }
-		return stack;
-	}
+        return stack;
+    }
 
     // IComputerItem implementation
 
@@ -96,8 +96,8 @@ public class ItemTurtleNormal extends ItemTurtleBase
                 return nbt.getInteger( "computerID" );
             }
         }
-		return -1;
-	}
+        return -1;
+    }
 
     @Override
     public ComputerFamily getFamily( int damage )

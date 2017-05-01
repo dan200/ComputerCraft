@@ -38,12 +38,12 @@ public class BlockComputer extends BlockComputerBase
     }
 
     // Members
-	
+    
     public BlockComputer()
     {
         super( Material.ROCK );
-		setHardness( 2.0f );
-		setUnlocalizedName( "computercraft:computer" );
+        setHardness( 2.0f );
+        setUnlocalizedName( "computercraft:computer" );
         setCreativeTab( ComputerCraft.mainCreativeTab );
         setDefaultState( this.blockState.getBaseState()
             .withProperty( Properties.FACING, EnumFacing.NORTH )

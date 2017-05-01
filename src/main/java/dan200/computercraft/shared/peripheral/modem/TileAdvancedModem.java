@@ -18,15 +18,15 @@ public class TileAdvancedModem extends TileModemBase
 {
     // Statics
 
-	private static class Peripheral extends WirelessModemPeripheral
-	{
-		private TileModemBase m_entity;
+    private static class Peripheral extends WirelessModemPeripheral
+    {
+        private TileModemBase m_entity;
 
-		public Peripheral( TileModemBase entity )
-		{
+        public Peripheral( TileModemBase entity )
+        {
             super( true );
-			m_entity = entity;
-		}
+            m_entity = entity;
+        }
 
         @Override
         public World getWorld()
@@ -34,12 +34,12 @@ public class TileAdvancedModem extends TileModemBase
             return m_entity.getWorld();
         }
 
-	    @Override
-		protected Vec3d getPosition()
-		{
+        @Override
+        protected Vec3d getPosition()
+        {
             BlockPos pos = m_entity.getPos().offset( m_entity.getDirection() );
-			return new Vec3d( (double)pos.getX(), (double)pos.getY(), (double)pos.getZ() );
-		}
+            return new Vec3d( (double)pos.getX(), (double)pos.getY(), (double)pos.getZ() );
+        }
 
         @Override
         public boolean equals( IPeripheral other )
@@ -79,6 +79,6 @@ public class TileAdvancedModem extends TileModemBase
     @Override
     protected ModemPeripheral createPeripheral()
     {
-    	return new Peripheral( this );
+        return new Peripheral( this );
     }
 }

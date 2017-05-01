@@ -15,7 +15,7 @@ import net.minecraft.util.EnumFacing;
 
 public abstract class TileModemBase extends TilePeripheralBase
 {
-	protected ModemPeripheral m_modem;
+    protected ModemPeripheral m_modem;
 
     protected TileModemBase()
     {
@@ -27,11 +27,11 @@ public abstract class TileModemBase extends TilePeripheralBase
     @Override
     public synchronized void destroy()
     {
-    	if( m_modem != null )
-    	{
-			m_modem.destroy();
-			m_modem = null;
-		}
+        if( m_modem != null )
+        {
+            m_modem.destroy();
+            m_modem = null;
+        }
     }
 
     @Override
@@ -91,23 +91,23 @@ public abstract class TileModemBase extends TilePeripheralBase
     @Override
     public void update()
     {
-    	super.update();
-		if( !worldObj.isRemote && m_modem.pollChanged() )
-		{
-			updateAnim();
-		}
-	}
-	
-	protected void updateAnim()
-	{
-		if( m_modem.isActive() )
-		{
-			setAnim(1);
-		}
-		else
-		{
-			setAnim(0);
-		}
+        super.update();
+        if( !worldObj.isRemote && m_modem.pollChanged() )
+        {
+            updateAnim();
+        }
+    }
+    
+    protected void updateAnim()
+    {
+        if( m_modem.isActive() )
+        {
+            setAnim(1);
+        }
+        else
+        {
+            setAnim(0);
+        }
     }
 
     @Override
@@ -131,6 +131,6 @@ public abstract class TileModemBase extends TilePeripheralBase
 
     protected boolean isAttached()
     {
-    	return (m_modem != null) && (m_modem.getComputer() != null);
+        return (m_modem != null) && (m_modem.getComputer() != null);
     }
 }

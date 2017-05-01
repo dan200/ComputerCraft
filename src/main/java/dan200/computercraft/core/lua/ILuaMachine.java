@@ -12,17 +12,17 @@ import java.io.OutputStream;
 
 public interface ILuaMachine
 {
-	public void addAPI( ILuaAPI api );
-	
-	public void loadBios( InputStream bios );
-	public void handleEvent( String eventName, Object[] arguments );
-	public void softAbort( String abortMessage );
-	public void hardAbort( String abortMessage );
-	
-	public boolean saveState( OutputStream output );
-	public boolean restoreState( InputStream input );
-	
-	public boolean isFinished();
-	
-	public void unload();
+    public void addAPI( ILuaAPI api );
+    
+    public void loadBios( InputStream bios );
+    public void handleEvent( String eventName, Object[] arguments );
+    public void softAbort( String abortMessage );
+    public void hardAbort( String abortMessage );
+    
+    public boolean saveState( OutputStream output );
+    public boolean restoreState( InputStream input );
+    
+    public boolean isFinished();
+    
+    public void unload();
 }

@@ -27,43 +27,43 @@ public class TurtlePlayer extends FakePlayer
         "ComputerCraft"
     );
 
-	public TurtlePlayer( WorldServer world )
-	{
-		super( world, s_profile );
-	}
+    public TurtlePlayer( WorldServer world )
+    {
+        super( world, s_profile );
+    }
 
-	public void loadInventory( ItemStack currentStack )
-	{
-		// Load up the fake inventory
-		inventory.currentItem = 0;
-		inventory.setInventorySlotContents( 0, currentStack );
-	}
+    public void loadInventory( ItemStack currentStack )
+    {
+        // Load up the fake inventory
+        inventory.currentItem = 0;
+        inventory.setInventorySlotContents( 0, currentStack );
+    }
 
-	public ItemStack unloadInventory( ITurtleAccess turtle )
-	{
-		// Get the item we placed with
-		ItemStack results = inventory.getStackInSlot( 0 );
-		inventory.setInventorySlotContents( 0, null );
+    public ItemStack unloadInventory( ITurtleAccess turtle )
+    {
+        // Get the item we placed with
+        ItemStack results = inventory.getStackInSlot( 0 );
+        inventory.setInventorySlotContents( 0, null );
 
-		// Store (or drop) anything else we found
+        // Store (or drop) anything else we found
         BlockPos dropPosition = turtle.getPosition();
         EnumFacing dropDirection = turtle.getDirection().getOpposite();
-		for( int i=0; i<inventory.getSizeInventory(); ++i )
-		{
-			ItemStack stack = inventory.getStackInSlot( i );
-			if( stack != null )
-			{
+        for( int i=0; i<inventory.getSizeInventory(); ++i )
+        {
+            ItemStack stack = inventory.getStackInSlot( i );
+            if( stack != null )
+            {
                 ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
                 if( remainder != null )
                 {
                     WorldUtil.dropItemStack( remainder, turtle.getWorld(), dropPosition, dropDirection );
                 }
-				inventory.setInventorySlotContents( i, null );
-			}
-		}
+                inventory.setInventorySlotContents( i, null );
+            }
+        }
         inventory.markDirty();
-		return results;
-	}
+        return results;
+    }
 
     @Override
     public float getEyeHeight()

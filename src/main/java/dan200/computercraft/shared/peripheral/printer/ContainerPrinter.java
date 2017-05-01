@@ -26,20 +26,20 @@ public class ContainerPrinter extends Container
         
         // Ink slot
         addSlotToContainer(new Slot( m_printer, 0, 13, 35));
-		
-		// In-tray
+        
+        // In-tray
         for( int i = 0; i < 6; ++i )
         {
-	        addSlotToContainer(new Slot( m_printer, i + 1, 61 + i * 18, 22));
+            addSlotToContainer(new Slot( m_printer, i + 1, 61 + i * 18, 22));
         }
         
-		// Out-tray
+        // Out-tray
         for( int i = 0; i < 6; ++i )
         {
-	        addSlotToContainer(new Slot( m_printer, i + 7, 61 + i * 18, 49));
+            addSlotToContainer(new Slot( m_printer, i + 7, 61 + i * 18, 49));
         }
         
-		// Player inv
+        // Player inv
         for(int j = 0; j < 3; j++)
         {
             for(int i1 = 0; i1 < 9; i1++)
@@ -57,53 +57,53 @@ public class ContainerPrinter extends Container
     
     public boolean isPrinting()
     {
-    	return m_lastPrinting;
+        return m_lastPrinting;
     }
 
-	@Override
-	public void addListener( IContainerListener crafting )
-	{
-		super.addListener( crafting );
+    @Override
+    public void addListener( IContainerListener crafting )
+    {
+        super.addListener( crafting );
         crafting.sendProgressBarUpdate( this, 0, m_printer.isPrinting() ? 1 : 0 );
-	}
-	
-	@Override
+    }
+    
+    @Override
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
-		
-		if( !m_printer.getWorld().isRemote )
-		{
-			boolean printing = m_printer.isPrinting();
-			for (int i=0; i<listeners.size(); ++i)
-			{
-				IContainerListener icrafting = (IContainerListener)listeners.get(i);
-				if( printing != m_lastPrinting )
-				{
-					icrafting.sendProgressBarUpdate( this, 0, printing ? 1 : 0 );
-				}
-			}
-			m_lastPrinting = printing;
-		}
-	}
-	
-	@Override
+        
+        if( !m_printer.getWorld().isRemote )
+        {
+            boolean printing = m_printer.isPrinting();
+            for (int i=0; i<listeners.size(); ++i)
+            {
+                IContainerListener icrafting = (IContainerListener)listeners.get(i);
+                if( printing != m_lastPrinting )
+                {
+                    icrafting.sendProgressBarUpdate( this, 0, printing ? 1 : 0 );
+                }
+            }
+            m_lastPrinting = printing;
+        }
+    }
+    
+    @Override
     public void updateProgressBar(int i, int j)
     {
-		if( m_printer.getWorld().isRemote )
-		{
-			m_lastPrinting = (j > 0);
-		}
+        if( m_printer.getWorld().isRemote )
+        {
+            m_lastPrinting = (j > 0);
+        }
     }
 
-	@Override
+    @Override
     public boolean canInteractWith( EntityPlayer player )
     {
         return m_printer.isUseableByPlayer( player );
     }
 
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
         ItemStack itemstack = null;
         Slot slot = (Slot)inventorySlots.get(i);
@@ -113,7 +113,7 @@ public class ContainerPrinter extends Container
             itemstack = itemstack1.copy();
             if( i < 13 )
             {
-            	// Transfer from printer to inventory
+                // Transfer from printer to inventory
                 if(!mergeItemStack(itemstack1, 13, 49, true))
                 {
                     return null;
@@ -121,22 +121,22 @@ public class ContainerPrinter extends Container
             }
             else 
             {
-            	// Transfer from inventory to printer
-            	if( itemstack1.getItem() == Items.DYE )
-            	{
-					if( !mergeItemStack(itemstack1, 0, 1, false) )
-					{
-						return null;
-					}
-				}
-				else //if is paper
-				{
-					if( !mergeItemStack(itemstack1, 1, 13, false) )
-					{
-						return null;
-					}
-				}
-			}
+                // Transfer from inventory to printer
+                if( itemstack1.getItem() == Items.DYE )
+                {
+                    if( !mergeItemStack(itemstack1, 0, 1, false) )
+                    {
+                        return null;
+                    }
+                }
+                else //if is paper
+                {
+                    if( !mergeItemStack(itemstack1, 1, 13, false) )
+                    {
+                        return null;
+                    }
+                }
+            }
             
             if(itemstack1.stackSize == 0)
             {

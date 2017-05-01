@@ -28,55 +28,55 @@ public class WirelessNetwork implements INetwork
     {
         s_universalNetwork = null;
     }
-	
-	private Map<Integer, Set<IReceiver>> m_receivers;
-	
+    
+    private Map<Integer, Set<IReceiver>> m_receivers;
+    
     private WirelessNetwork()
     {
-    	m_receivers = new HashMap<Integer, Set<IReceiver>>();
+        m_receivers = new HashMap<Integer, Set<IReceiver>>();
     }
 
-	@Override
-	public synchronized void addReceiver( IReceiver receiver )
-	{
-		int channel = receiver.getChannel();
-		Set<IReceiver> receivers = m_receivers.get( channel );
-		if( receivers == null )
-		{
-			receivers = new HashSet<IReceiver>();
-			m_receivers.put( channel, receivers );
-		}
-		receivers.add( receiver );
-	}
-	
-	@Override
-	public synchronized void removeReceiver( IReceiver receiver )
-	{
-		int channel = receiver.getChannel();
-		Set<IReceiver> receivers = m_receivers.get( channel );
-		if( receivers != null )
-		{
-			receivers.remove( receiver );
-		}
-	}
-	
-	@Override
-	public synchronized void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
-	{
-		Set<IReceiver> receivers = m_receivers.get( channel );
-		if( receivers != null )
-		{
-			Iterator<IReceiver> it = receivers.iterator();
-			while( it.hasNext() )
-			{
-				IReceiver receiver = it.next();
-				tryTransmit( receiver, replyChannel, payload, world, pos, range, interdimensional, senderObject );
-			}
-		}
-	}
-		
-	private void tryTransmit( IReceiver receiver, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
-	{
+    @Override
+    public synchronized void addReceiver( IReceiver receiver )
+    {
+        int channel = receiver.getChannel();
+        Set<IReceiver> receivers = m_receivers.get( channel );
+        if( receivers == null )
+        {
+            receivers = new HashSet<IReceiver>();
+            m_receivers.put( channel, receivers );
+        }
+        receivers.add( receiver );
+    }
+    
+    @Override
+    public synchronized void removeReceiver( IReceiver receiver )
+    {
+        int channel = receiver.getChannel();
+        Set<IReceiver> receivers = m_receivers.get( channel );
+        if( receivers != null )
+        {
+            receivers.remove( receiver );
+        }
+    }
+    
+    @Override
+    public synchronized void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
+    {
+        Set<IReceiver> receivers = m_receivers.get( channel );
+        if( receivers != null )
+        {
+            Iterator<IReceiver> it = receivers.iterator();
+            while( it.hasNext() )
+            {
+                IReceiver receiver = it.next();
+                tryTransmit( receiver, replyChannel, payload, world, pos, range, interdimensional, senderObject );
+            }
+        }
+    }
+        
+    private void tryTransmit( IReceiver receiver, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
+    {
         if( receiver.getWorld() == world )
         {
             Vec3d position = receiver.getWorldPosition();
@@ -94,11 +94,11 @@ public class WirelessNetwork implements INetwork
                 receiver.receiveDifferentDimension( replyChannel, payload, senderObject );
             }
         }
-	}
+    }
 
-	@Override
-	public boolean isWireless()
-	{
-		return true;
-	}
+    @Override
+    public boolean isWireless()
+    {
+        return true;
+    }
 }

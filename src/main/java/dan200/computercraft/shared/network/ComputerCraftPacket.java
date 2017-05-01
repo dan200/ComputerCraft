@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
  
 public class ComputerCraftPacket
 {
-	// Packet types
+    // Packet types
     // To server
     public static final byte TurnOn = 1;
     public static final byte Reboot = 2;
@@ -32,21 +32,21 @@ public class ComputerCraftPacket
     public static final byte ComputerChanged = 7;
     public static final byte ComputerDeleted = 8;
 
-	// Packet class
-	public byte m_packetType;
-	public String[] m_dataString;
-	public int[] m_dataInt;
-	public byte[][] m_dataByte;
+    // Packet class
+    public byte m_packetType;
+    public String[] m_dataString;
+    public int[] m_dataInt;
+    public byte[][] m_dataByte;
     public NBTTagCompound m_dataNBT;
 
-	public ComputerCraftPacket()
-	{
-		m_packetType = 0;
-		m_dataString = null;
-		m_dataInt = null;
-		m_dataByte = null;
+    public ComputerCraftPacket()
+    {
+        m_packetType = 0;
+        m_dataString = null;
+        m_dataInt = null;
+        m_dataByte = null;
         m_dataNBT = null;
-	}
+    }
 
     public void toBytes( PacketBuffer buffer )
     {

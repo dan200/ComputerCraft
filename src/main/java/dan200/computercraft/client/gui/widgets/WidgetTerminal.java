@@ -34,9 +34,9 @@ public class WidgetTerminal extends Widget
     private float m_rebootTimer;
     private float m_shutdownTimer;
 
-	private int m_lastClickButton;
-	private int m_lastClickX;
-	private int m_lastClickY;
+    private int m_lastClickButton;
+    private int m_lastClickX;
+    private int m_lastClickY;
 
     private boolean m_focus;
     private boolean m_allowFocusLoss;
@@ -167,9 +167,9 @@ public class WidgetTerminal extends Widget
     @Override
     public void mouseClicked( int mouseX, int mouseY, int button )
     {
-    	if( mouseX >= getXPosition() && mouseX < getXPosition() + getWidth() &&
-    	    mouseY >= getYPosition() && mouseY < getYPosition() + getHeight() )
-    	{
+        if( mouseX >= getXPosition() && mouseX < getXPosition() + getWidth() &&
+            mouseY >= getYPosition() && mouseY < getYPosition() + getHeight() )
+        {
             if( !m_focus && button == 0)
             {
                 m_focus = true;
@@ -198,7 +198,7 @@ public class WidgetTerminal extends Widget
                     }
                 }
             }
-    	}
+        }
         else
         {
             if( m_focus && button == 0 && m_allowFocusLoss )
@@ -229,8 +229,8 @@ public class WidgetTerminal extends Widget
     }
 
     @Override
-	public void handleMouseInput( int mouseX, int mouseY )
-	{
+    public void handleMouseInput( int mouseX, int mouseY )
+    {
         IComputer computer = m_computer.getComputer();
         if( mouseX >= getXPosition() && mouseX < getXPosition() + getWidth() &&
             mouseY >= getYPosition() && mouseY < getYPosition() + getHeight() &&
@@ -287,110 +287,110 @@ public class WidgetTerminal extends Widget
                 }
             }
         }
-	}
+    }
 
     @Override
     public void update()
-	{                
+    {                
         // Handle special keys
-		if( m_focus && !m_locked && (Keyboard.isKeyDown( 29 ) || Keyboard.isKeyDown( 157 )) )
-		{			
-			// Ctrl+T for terminate
-			if( Keyboard.isKeyDown( 20 ) )
-			{
-				if( m_terminateTimer < TERMINATE_TIME )
-				{
-					m_terminateTimer = m_terminateTimer + 0.05f;
-					if( m_terminateTimer >= TERMINATE_TIME )
-					{
+        if( m_focus && !m_locked && (Keyboard.isKeyDown( 29 ) || Keyboard.isKeyDown( 157 )) )
+        {            
+            // Ctrl+T for terminate
+            if( Keyboard.isKeyDown( 20 ) )
+            {
+                if( m_terminateTimer < TERMINATE_TIME )
+                {
+                    m_terminateTimer = m_terminateTimer + 0.05f;
+                    if( m_terminateTimer >= TERMINATE_TIME )
+                    {
                         queueEvent( "terminate" );
-					}
-				}
-			}
-			else
-			{
-				m_terminateTimer = 0.0f;
-			}
-			
-			// Ctrl+R for reboot
-			if( Keyboard.isKeyDown(19) )
-			{
-				if( m_rebootTimer < TERMINATE_TIME )
-				{
-					m_rebootTimer = m_rebootTimer + 0.05f;
-					if( m_rebootTimer >= TERMINATE_TIME )
-					{
+                    }
+                }
+            }
+            else
+            {
+                m_terminateTimer = 0.0f;
+            }
+            
+            // Ctrl+R for reboot
+            if( Keyboard.isKeyDown(19) )
+            {
+                if( m_rebootTimer < TERMINATE_TIME )
+                {
+                    m_rebootTimer = m_rebootTimer + 0.05f;
+                    if( m_rebootTimer >= TERMINATE_TIME )
+                    {
                         IComputer computer = m_computer.getComputer();
-						if( computer != null )
-						{
+                        if( computer != null )
+                        {
                             computer.reboot();
-						}
-					}
-				}
-			}
-			else
-			{
-				m_rebootTimer = 0.0f;
-			}
+                        }
+                    }
+                }
+            }
+            else
+            {
+                m_rebootTimer = 0.0f;
+            }
 
-			// Ctrl+S for shutdown
-			if( Keyboard.isKeyDown(31) )
-			{
-				if( m_shutdownTimer < TERMINATE_TIME )
-				{
-					m_shutdownTimer = m_shutdownTimer + 0.05f;
-					if( m_shutdownTimer >= TERMINATE_TIME )
-					{
+            // Ctrl+S for shutdown
+            if( Keyboard.isKeyDown(31) )
+            {
+                if( m_shutdownTimer < TERMINATE_TIME )
+                {
+                    m_shutdownTimer = m_shutdownTimer + 0.05f;
+                    if( m_shutdownTimer >= TERMINATE_TIME )
+                    {
                         IComputer computer = m_computer.getComputer();
                         if( computer != null )
                         {
                             computer.shutdown();
-						}
-					}
-				}
-			}
-			else
-			{
-				m_shutdownTimer = 0.0f;
-			}
-		}
-		else
-		{
-			m_terminateTimer = 0.0f;
-			m_rebootTimer = 0.0f;
-			m_shutdownTimer = 0.0f;
-		}
-	}
+                        }
+                    }
+                }
+            }
+            else
+            {
+                m_shutdownTimer = 0.0f;
+            }
+        }
+        else
+        {
+            m_terminateTimer = 0.0f;
+            m_rebootTimer = 0.0f;
+            m_shutdownTimer = 0.0f;
+        }
+    }
 
     @Override
     public void draw( Minecraft mc, int xOrigin, int yOrigin, int mouseX, int mouseY )
     {
-		int startX = xOrigin + getXPosition();
-		int startY = yOrigin + getYPosition();
+        int startX = xOrigin + getXPosition();
+        int startY = yOrigin + getYPosition();
 
-		// Draw the screen contents
+        // Draw the screen contents
         IComputer computer = m_computer.getComputer();
-		Terminal terminal = (computer != null) ? computer.getTerminal() : null;
-		if( terminal != null )
-		{
+        Terminal terminal = (computer != null) ? computer.getTerminal() : null;
+        if( terminal != null )
+        {
             // Draw the terminal
             boolean greyscale = !computer.isColour();
-			synchronized( terminal )
-			{
-				// Get the data from the terminal first
-				// Unfortunately we have to keep the lock for the whole of drawing, so the text doesn't change under us.
-				FixedWidthFontRenderer fontRenderer = (FixedWidthFontRenderer)ComputerCraft.getFixedWidthFontRenderer();
-				boolean tblink = m_focus && terminal.getCursorBlink() && ComputerCraft.getGlobalCursorBlink();
-				int tw = terminal.getWidth();
-				int th = terminal.getHeight();
-				int tx = terminal.getCursorX();
-				int ty = terminal.getCursorY();
-				
-				int x = startX + m_leftMargin;
-				int y = startY + m_topMargin;
+            synchronized( terminal )
+            {
+                // Get the data from the terminal first
+                // Unfortunately we have to keep the lock for the whole of drawing, so the text doesn't change under us.
+                FixedWidthFontRenderer fontRenderer = (FixedWidthFontRenderer)ComputerCraft.getFixedWidthFontRenderer();
+                boolean tblink = m_focus && terminal.getCursorBlink() && ComputerCraft.getGlobalCursorBlink();
+                int tw = terminal.getWidth();
+                int th = terminal.getHeight();
+                int tx = terminal.getCursorX();
+                int ty = terminal.getCursorY();
+                
+                int x = startX + m_leftMargin;
+                int y = startY + m_topMargin;
 
                 // Draw margins
-				TextBuffer emptyLine = new TextBuffer( ' ', tw );
+                TextBuffer emptyLine = new TextBuffer( ' ', tw );
                 if( m_topMargin > 0 )
                 {
                     fontRenderer.drawString( emptyLine, x, startY, terminal.getTextColourLine( 0 ), terminal.getBackgroundColourLine( 0 ), m_leftMargin, m_rightMargin, greyscale );
@@ -401,32 +401,32 @@ public class WidgetTerminal extends Widget
                 }
 
                 // Draw lines
-				for( int line=0; line<th; ++line )
-				{
-					TextBuffer text = terminal.getLine(line);
+                for( int line=0; line<th; ++line )
+                {
+                    TextBuffer text = terminal.getLine(line);
                     TextBuffer colour = terminal.getTextColourLine( line );
                     TextBuffer backgroundColour = terminal.getBackgroundColourLine( line );
-					fontRenderer.drawString( text, x, y, colour, backgroundColour, m_leftMargin, m_rightMargin, greyscale );
-					if( tblink && ty == line )
+                    fontRenderer.drawString( text, x, y, colour, backgroundColour, m_leftMargin, m_rightMargin, greyscale );
+                    if( tblink && ty == line )
                     {
-						if( tx >= 0 && tx < tw )
+                        if( tx >= 0 && tx < tw )
                         {
                             TextBuffer cursor = new TextBuffer( '_', 1 );
                             TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
-							fontRenderer.drawString(
+                            fontRenderer.drawString(
                                 cursor,
-								x + FixedWidthFontRenderer.FONT_WIDTH * tx,
-								y,
-								cursorColour, null,
+                                x + FixedWidthFontRenderer.FONT_WIDTH * tx,
+                                y,
+                                cursorColour, null,
                                 0, 0,
                                 greyscale
                             );
-						}
-					}
-					y = y + FixedWidthFontRenderer.FONT_HEIGHT;
-				}
-			}
-		}
+                        }
+                    }
+                    y = y + FixedWidthFontRenderer.FONT_HEIGHT;
+                }
+            }
+        }
         else
         {
             // Draw a black background

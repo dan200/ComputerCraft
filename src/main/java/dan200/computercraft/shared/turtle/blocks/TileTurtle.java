@@ -41,7 +41,7 @@ public class TileTurtle extends TileComputerBase
 {
     // Statics
 
-	public static final int INVENTORY_SIZE = 16;
+    public static final int INVENTORY_SIZE = 16;
     public static final int INVENTORY_WIDTH = 4;
     public static final int INVENTORY_HEIGHT = 4;
 
@@ -55,7 +55,7 @@ public class TileTurtle extends TileComputerBase
 
     public TileTurtle()
     {
-    	m_inventory = new ItemStack[ INVENTORY_SIZE ];
+        m_inventory = new ItemStack[ INVENTORY_SIZE ];
         m_previousInventory =  new ItemStack[ getSizeInventory() ];
         m_inventoryChanged = false;
         m_brain = createBrain();
@@ -424,12 +424,12 @@ public class TileTurtle extends TileComputerBase
     @Override
     public ItemStack removeStackFromSlot( int slot )
     {
-		synchronized( m_inventory )
-		{
-			ItemStack result = getStackInSlot( slot );
-			setInventorySlotContents( slot, null );
-	        return result;
-	    }
+        synchronized( m_inventory )
+        {
+            ItemStack result = getStackInSlot( slot );
+            setInventorySlotContents( slot, null );
+            return result;
+        }
     }
     
     @Override
@@ -440,29 +440,29 @@ public class TileTurtle extends TileComputerBase
             return null;
         }
 
-		synchronized( m_inventory )
-		{
+        synchronized( m_inventory )
+        {
             ItemStack stack = getStackInSlot( slot );
-			if( stack == null )
-			{
-				return null;
-			}
-			
-			if( stack.stackSize <= count )
-			{
-				setInventorySlotContents( slot, null );
-				return stack;
-			}
-			
-			ItemStack part = stack.splitStack( count );
+            if( stack == null )
+            {
+                return null;
+            }
+            
+            if( stack.stackSize <= count )
+            {
+                setInventorySlotContents( slot, null );
+                return stack;
+            }
+            
+            ItemStack part = stack.splitStack( count );
             onInventoryDefinitelyChanged();
-			return part;
-		}
+            return part;
+        }
     }
 
     @Override
-	public void setInventorySlotContents( int i, ItemStack stack )
-	{
+    public void setInventorySlotContents( int i, ItemStack stack )
+    {
         if( i >= 0 && i < INVENTORY_SIZE )
         {
             synchronized( m_inventory )
@@ -474,7 +474,7 @@ public class TileTurtle extends TileComputerBase
                 }
             }
         }
-	}
+    }
 
     @Override
     public void clear()
@@ -496,7 +496,7 @@ public class TileTurtle extends TileComputerBase
             }
         }
     }
-	
+    
     @Override
     public String getName()
     {
@@ -547,24 +547,24 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-	public void openInventory( EntityPlayer player )
+    public void openInventory( EntityPlayer player )
     {
     }
-	
+    
     @Override
-	public void closeInventory( EntityPlayer player )
-	{
-	}
+    public void closeInventory( EntityPlayer player )
+    {
+    }
 
-	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack stack )
-	{
-		return true;
-	}
-	
-	@Override
-	public void markDirty()
-	{
+    @Override
+    public boolean isItemValidForSlot( int slot, ItemStack stack )
+    {
+        return true;
+    }
+    
+    @Override
+    public void markDirty()
+    {
         super.markDirty();
         synchronized( m_inventory )
         {
@@ -580,7 +580,7 @@ public class TileTurtle extends TileComputerBase
                 }
             }
         }
-	}
+    }
 
     @Override
     public boolean isUseableByPlayer( EntityPlayer player )
@@ -645,8 +645,8 @@ public class TileTurtle extends TileComputerBase
         ITurtleUpgrade upgrade;
         switch( side )
         {
-            case 4:	upgrade = getUpgrade( TurtleSide.Right ); break;
-            case 5:	upgrade = getUpgrade( TurtleSide.Left ); break;
+            case 4:    upgrade = getUpgrade( TurtleSide.Right ); break;
+            case 5:    upgrade = getUpgrade( TurtleSide.Left ); break;
             default: return false;
         }
         if( upgrade != null && upgrade.getType() == TurtleUpgradeType.Peripheral )

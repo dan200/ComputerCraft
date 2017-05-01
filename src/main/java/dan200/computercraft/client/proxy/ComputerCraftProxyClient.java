@@ -55,26 +55,26 @@ import java.util.List;
 
 public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 {
-	private long m_tick;
+    private long m_tick;
     private long m_renderFrame;
-	private FixedWidthFontRenderer m_fixedWidthFontRenderer;
+    private FixedWidthFontRenderer m_fixedWidthFontRenderer;
 
-	public ComputerCraftProxyClient()
-	{
-	}
-	
-	// IComputerCraftProxy implementation
-	
-	@Override
-	public void init()
-	{		
-		super.init();
-		m_tick = 0;
+    public ComputerCraftProxyClient()
+    {
+    }
+    
+    // IComputerCraftProxy implementation
+    
+    @Override
+    public void init()
+    {        
+        super.init();
+        m_tick = 0;
         m_renderFrame = 0;
 
-		// Load textures
-		Minecraft mc = Minecraft.getMinecraft();
-		m_fixedWidthFontRenderer = new FixedWidthFontRenderer( mc.getTextureManager() );
+        // Load textures
+        Minecraft mc = Minecraft.getMinecraft();
+        m_fixedWidthFontRenderer = new FixedWidthFontRenderer( mc.getTextureManager() );
 
         // Register item models
         registerItemModel( ComputerCraft.Blocks.computer, new ItemMeshDefinition()
@@ -175,9 +175,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         // Setup renderers
         ClientRegistry.bindTileEntitySpecialRenderer( TileMonitor.class, new TileEntityMonitorRenderer() );
 
-		// Setup client forge handlers
-		registerForgeHandlers();
-	}
+        // Setup client forge handlers
+        registerForgeHandlers();
+    }
 
     private void registerItemModel( Block block, int damage, String name )
     {
@@ -225,18 +225,18 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         ModelBakery.registerItemVariants( item, resources );
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, definition );
     }
-	
-	@Override
-	public boolean isClient()
-	{
-		return true;
-	}
+    
+    @Override
+    public boolean isClient()
+    {
+        return true;
+    }
 
-	@Override
-	public boolean getGlobalCursorBlink()
-	{
-		return ( m_tick / 8) % 2 == 0;
-	}
+    @Override
+    public boolean getGlobalCursorBlink()
+    {
+        return ( m_tick / 8) % 2 == 0;
+    }
 
     @Override
     public long getRenderFrame()
@@ -251,51 +251,51 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     }
 
     @Override
-	public Object getFixedWidthFontRenderer()
-	{
-		return m_fixedWidthFontRenderer;
-	}
-			
-	@Override
-	public String getRecordInfo( ItemStack recordStack )
-	{
-		List info = new ArrayList(1);
-		recordStack.getItem().addInformation( recordStack, null, info, false );
-		if( info.size() > 0 ) {
-			return info.get(0).toString();
-		} else {
-			return super.getRecordInfo( recordStack );
-		}
-	}
-	
-	@Override
-	public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
-	{
-		Minecraft mc = FMLClientHandler.instance().getClient();
-		world.playRecord( pos, record );
-		if( record != null )
-		{
-			mc.ingameGUI.setRecordPlayingMessage( recordInfo );
-		}
-	}
-	
-	@Override
-	public Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive )
-	{
-		return new GuiDiskDrive( inventory, drive );
-	}
-	
-	@Override
-	public Object getComputerGUI( TileComputer computer )
-	{
-		return new GuiComputer( computer );
-	}
-	
-	@Override
-	public Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer )
-	{
-		return new GuiPrinter( inventory, printer );
-	}
+    public Object getFixedWidthFontRenderer()
+    {
+        return m_fixedWidthFontRenderer;
+    }
+            
+    @Override
+    public String getRecordInfo( ItemStack recordStack )
+    {
+        List info = new ArrayList(1);
+        recordStack.getItem().addInformation( recordStack, null, info, false );
+        if( info.size() > 0 ) {
+            return info.get(0).toString();
+        } else {
+            return super.getRecordInfo( recordStack );
+        }
+    }
+    
+    @Override
+    public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
+    {
+        Minecraft mc = FMLClientHandler.instance().getClient();
+        world.playRecord( pos, record );
+        if( record != null )
+        {
+            mc.ingameGUI.setRecordPlayingMessage( recordInfo );
+        }
+    }
+    
+    @Override
+    public Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive )
+    {
+        return new GuiDiskDrive( inventory, drive );
+    }
+    
+    @Override
+    public Object getComputerGUI( TileComputer computer )
+    {
+        return new GuiComputer( computer );
+    }
+    
+    @Override
+    public Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer )
+    {
+        return new GuiPrinter( inventory, printer );
+    }
 
     @Override
     public Object getTurtleGUI( InventoryPlayer inventory, TileTurtle turtle )
@@ -304,15 +304,15 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     }
 
     @Override
-	public Object getPrintoutGUI( InventoryPlayer inventory )
-	{
+    public Object getPrintoutGUI( InventoryPlayer inventory )
+    {
         ContainerHeldItem container = new ContainerHeldItem( inventory );
         if( container.getStack() != null && container.getStack().getItem() instanceof ItemPrintout )
         {
-    	    return new GuiPrintout( container );
+            return new GuiPrintout( container );
         }
         return null;
-	}
+    }
 
     @Override
     public Object getPocketComputerGUI( InventoryPlayer inventory )
@@ -325,11 +325,11 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         return null;
     }
 
-	@Override
-	public File getWorldDir( World world )
-	{
+    @Override
+    public File getWorldDir( World world )
+    {
         return world.getSaveHandler().getWorldDirectory();
-	}
+    }
 
     @Override
     public void handlePacket( final ComputerCraftPacket packet, final EntityPlayer player )
@@ -399,18 +399,18 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         }
     }
 
-	private void registerForgeHandlers()
-	{
-		ForgeHandlers handlers = new ForgeHandlers();
+    private void registerForgeHandlers()
+    {
+        ForgeHandlers handlers = new ForgeHandlers();
         FMLCommonHandler.instance().bus().register( handlers );
         MinecraftForge.EVENT_BUS.register( handlers );
-	}
-				
-	public class ForgeHandlers
-	{
-		public ForgeHandlers()
-		{
-		}
+    }
+                
+    public class ForgeHandlers
+    {
+        public ForgeHandlers()
+        {
+        }
 
         @SubscribeEvent
         public void onRenderHand( RenderHandEvent event )
@@ -490,5 +490,5 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                 m_renderFrame++;
             }
         }
-	}
+    }
 }

@@ -25,7 +25,7 @@ public abstract class WirelessModemPeripheral extends ModemPeripheral
         return m_advanced;
     }
     
-	@Override
+    @Override
     protected double getTransmitRange()
     {
         if( m_advanced )
@@ -54,8 +54,8 @@ public abstract class WirelessModemPeripheral extends ModemPeripheral
             return 0.0;
         }
     }
-	
-	@Override
+    
+    @Override
     protected INetwork getNetwork()
     {
         return WirelessNetwork.getUniversal();

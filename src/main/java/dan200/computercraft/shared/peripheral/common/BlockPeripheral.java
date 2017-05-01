@@ -539,34 +539,34 @@ public class BlockPeripheral extends BlockPeripheralBase
 
         switch( getPeripheralType( state ) )
         {
-        	case DiskDrive:
+            case DiskDrive:
             case Printer:
-        	{
-        		EnumFacing dir = DirectionUtil.fromEntityRot( player );
+            {
+                EnumFacing dir = DirectionUtil.fromEntityRot( player );
                 setDirection( world, pos, dir );
                 if( stack.hasDisplayName() && tile != null && tile instanceof TilePeripheralBase )
                 {
                     TilePeripheralBase peripheral = (TilePeripheralBase)tile;
                     peripheral.setLabel( stack.getDisplayName() );
                 }
-				break;
-			}
-        	case Monitor:
-        	case AdvancedMonitor:
-        	{
-				if( tile != null && tile instanceof TileMonitor )
-				{
-					int direction = DirectionUtil.fromEntityRot( player ).getIndex();
-					if( player.rotationPitch > 66.5F )
-					{
+                break;
+            }
+            case Monitor:
+            case AdvancedMonitor:
+            {
+                if( tile != null && tile instanceof TileMonitor )
+                {
+                    int direction = DirectionUtil.fromEntityRot( player ).getIndex();
+                    if( player.rotationPitch > 66.5F )
+                    {
                         direction += 12;
-					}
-					else if( player.rotationPitch < -66.5F )
-					{
+                    }
+                    else if( player.rotationPitch < -66.5F )
+                    {
                         direction += 6;
-					}
+                    }
 
-					TileMonitor monitor = (TileMonitor)tile;
+                    TileMonitor monitor = (TileMonitor)tile;
                     if( world.isRemote )
                     {
                         monitor.setDir( direction );
@@ -578,9 +578,9 @@ public class BlockPeripheral extends BlockPeripheralBase
                         monitor.contract();
                         monitor.expand();
                     }
-				}
-				break;
-			}
-		}
+                }
+                break;
+            }
+        }
     }
 }

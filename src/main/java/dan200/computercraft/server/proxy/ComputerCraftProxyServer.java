@@ -22,17 +22,17 @@ import java.io.File;
 
 public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
 {
-	public ComputerCraftProxyServer()
-	{
-	}
-	
-	// IComputerCraftProxy implementation
-	
-	@Override
-	public void init()
-	{
-		super.init();
-	}
+    public ComputerCraftProxyServer()
+    {
+    }
+    
+    // IComputerCraftProxy implementation
+    
+    @Override
+    public void init()
+    {
+        super.init();
+    }
 
     @Override
     public Object getTurtleGUI( InventoryPlayer inventory, TileTurtle turtle )
@@ -41,16 +41,16 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
     }
 
     @Override
-	public boolean isClient()
-	{
-		return false;
-	}
+    public boolean isClient()
+    {
+        return false;
+    }
 
-	@Override
-	public boolean getGlobalCursorBlink()
-	{
-		return false;
-	}
+    @Override
+    public boolean getGlobalCursorBlink()
+    {
+        return false;
+    }
 
     @Override
     public long getRenderFrame()
@@ -59,33 +59,33 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
     }
 
     @Override
-	public Object getFixedWidthFontRenderer()
-	{
-		return null;
-	}
-	
-	@Override
-	public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
-	{
-	}
+    public Object getFixedWidthFontRenderer()
+    {
+        return null;
+    }
+    
+    @Override
+    public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
+    {
+    }
 
-	@Override
-	public Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive )
-	{
-		return null;
-	}
-	
-	@Override
-	public Object getComputerGUI( TileComputer computer )
-	{
-		return null;
-	}
+    @Override
+    public Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive )
+    {
+        return null;
+    }
+    
+    @Override
+    public Object getComputerGUI( TileComputer computer )
+    {
+        return null;
+    }
 
-	@Override
-	public Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer )
-	{
-		return null;
-	}
+    @Override
+    public Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer )
+    {
+        return null;
+    }
 
     @Override
     public Object getPrintoutGUI( InventoryPlayer inventory )
@@ -99,9 +99,9 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
         return null;
     }
 
-	@Override
-	public File getWorldDir( World world )
-	{
+    @Override
+    public File getWorldDir( World world )
+    {
         return DimensionManager.getWorld( 0 ).getSaveHandler().getWorldDirectory();
-	}
+    }
 }

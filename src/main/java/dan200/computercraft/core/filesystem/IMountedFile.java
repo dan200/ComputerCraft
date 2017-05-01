@@ -9,5 +9,5 @@ package dan200.computercraft.core.filesystem;
 import java.io.IOException;
 
 public interface IMountedFile {
-	public void close() throws IOException;
+    public void close() throws IOException;
 }

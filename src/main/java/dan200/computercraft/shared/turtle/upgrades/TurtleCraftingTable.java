@@ -53,35 +53,35 @@ public class TurtleCraftingTable implements ITurtleUpgrade
         return m_legacyID;
     }
 
-	@Override
-	public String getUnlocalisedAdjective()
-	{
-		return "upgrade.minecraft:crafting_table.adjective";
-	}
-	
-	@Override
-	public TurtleUpgradeType getType()
-	{
-		return TurtleUpgradeType.Peripheral;
-	}
-	
-	@Override
-	public ItemStack getCraftingItem()
-	{
-		return m_item;
-	}
+    @Override
+    public String getUnlocalisedAdjective()
+    {
+        return "upgrade.minecraft:crafting_table.adjective";
+    }
+    
+    @Override
+    public TurtleUpgradeType getType()
+    {
+        return TurtleUpgradeType.Peripheral;
+    }
+    
+    @Override
+    public ItemStack getCraftingItem()
+    {
+        return m_item;
+    }
 
-	@Override
-	public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
-	{
-		return new CraftingTablePeripheral( turtle );
-	}
+    @Override
+    public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
+    {
+        return new CraftingTablePeripheral( turtle );
+    }
 
-	@Override
-	public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing dir )
-	{
-		return null;
-	}
+    @Override
+    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing dir )
+    {
+        return null;
+    }
 
     @SideOnly( Side.CLIENT )
     private void loadModelLocations()

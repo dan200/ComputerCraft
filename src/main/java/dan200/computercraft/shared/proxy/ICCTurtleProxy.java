@@ -15,15 +15,15 @@ import java.util.List;
 
 public interface ICCTurtleProxy
 {
-	public void preInit();
-	public void init();
+    public void preInit();
+    public void init();
 
-	public void registerTurtleUpgrade( ITurtleUpgrade upgrade );
+    public void registerTurtleUpgrade( ITurtleUpgrade upgrade );
     public ITurtleUpgrade getTurtleUpgrade( String id );
-	public ITurtleUpgrade getTurtleUpgrade( int legacyId );
-	public ITurtleUpgrade getTurtleUpgrade( ItemStack item );
-	public void addAllUpgradedTurtles( List<ItemStack> list );
+    public ITurtleUpgrade getTurtleUpgrade( int legacyId );
+    public ITurtleUpgrade getTurtleUpgrade( ItemStack item );
+    public void addAllUpgradedTurtles( List<ItemStack> list );
 
-	public void setEntityDropConsumer( Entity entity, IEntityDropConsumer consumer );
-	public void clearEntityDropConsumer( Entity entity );
+    public void setEntityDropConsumer( Entity entity, IEntityDropConsumer consumer );
+    public void clearEntityDropConsumer( Entity entity );
 }

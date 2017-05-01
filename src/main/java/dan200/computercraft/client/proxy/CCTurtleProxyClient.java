@@ -40,16 +40,16 @@ import java.io.IOException;
 
 public class CCTurtleProxyClient extends CCTurtleProxyCommon
 {
-	public CCTurtleProxyClient()
-	{
-	}
-	
-	// IComputerCraftProxy implementation
-	
-	@Override		
-	public void init()
-	{	
-		super.init();
+    public CCTurtleProxyClient()
+    {
+    }
+    
+    // IComputerCraftProxy implementation
+    
+    @Override        
+    public void init()
+    {    
+        super.init();
 
         // Register item models
         ItemMeshDefinition turtleMeshDefinition = new ItemMeshDefinition()
@@ -78,9 +78,9 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         // Setup renderers
         ClientRegistry.bindTileEntitySpecialRenderer( TileTurtle.class, new TileEntityTurtleRenderer() );
 
-		// Setup client forge handlers
-		registerForgeHandlers();
-	}
+        // Setup client forge handlers
+        registerForgeHandlers();
+    }
 
     private void registerItemModel( Block block, ItemMeshDefinition definition, String[] names )
     {
@@ -98,11 +98,11 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, definition );
     }
 
-	private void registerForgeHandlers()
-	{
+    private void registerForgeHandlers()
+    {
         ForgeHandlers handlers = new ForgeHandlers();
         MinecraftForge.EVENT_BUS.register( handlers );
-	}
+    }
 
     public class ForgeHandlers
     {

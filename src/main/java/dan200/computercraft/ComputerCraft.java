@@ -84,22 +84,22 @@ import java.util.List;
 @Mod( modid = "ComputerCraft", name = "ComputerCraft", version = "${version}" )
 public class ComputerCraft
 {
-	// GUI IDs
-	public static final int diskDriveGUIID = 100;
-	public static final int computerGUIID = 101;
-	public static final int printerGUIID = 102;
+    // GUI IDs
+    public static final int diskDriveGUIID = 100;
+    public static final int computerGUIID = 101;
+    public static final int printerGUIID = 102;
     public static final int turtleGUIID = 103;
-	// ComputerCraftEdu uses ID 104
+    // ComputerCraftEdu uses ID 104
     public static final int printoutGUIID = 105;
     public static final int pocketComputerGUIID = 106;
 
-	// Configuration options
-	public static boolean http_enable = true;
+    // Configuration options
+    public static boolean http_enable = true;
     public static String http_whitelist = "*";
     public static boolean disable_lua51_features = false;
     public static String default_computer_settings = "";
 
-	public static boolean enableCommandBlock = false;
+    public static boolean enableCommandBlock = false;
     public static boolean turtlesNeedFuel = true;
     public static int turtleFuelLimit = 20000;
     public static int advancedTurtleFuelLimit = 100000;
@@ -107,7 +107,7 @@ public class ComputerCraft
     public static boolean turtlesCanPush = true;
 
     public static final int terminalWidth_computer = 51;
-	public static final int terminalHeight_computer = 19;
+    public static final int terminalHeight_computer = 19;
 
     public static final int terminalWidth_turtle = 39;
     public static final int terminalHeight_turtle = 13;
@@ -116,19 +116,19 @@ public class ComputerCraft
     public static final int terminalHeight_pocketComputer = 20;
 
     public static int modem_range = 64;
-	public static int modem_highAltitudeRange = 384;
-	public static int modem_rangeDuringStorm = 64;
-	public static int modem_highAltitudeRangeDuringStorm = 384;
+    public static int modem_highAltitudeRange = 384;
+    public static int modem_rangeDuringStorm = 64;
+    public static int modem_highAltitudeRangeDuringStorm = 384;
 
-	public static int computerSpaceLimit = 1000 * 1000;
-	public static int floppySpaceLimit = 125 * 1000;
+    public static int computerSpaceLimit = 1000 * 1000;
+    public static int floppySpaceLimit = 125 * 1000;
 
     // Blocks and Items
-	public static class Blocks
-	{
-		public static BlockComputer computer;
-		public static BlockPeripheral peripheral;
-		public static BlockCable cable;
+    public static class Blocks
+    {
+        public static BlockComputer computer;
+        public static BlockPeripheral peripheral;
+        public static BlockCable cable;
         public static BlockTurtle turtle;
         public static BlockTurtle turtleExpanded;
         public static BlockTurtle turtleAdvanced;
@@ -136,14 +136,14 @@ public class ComputerCraft
         public static BlockAdvancedModem advancedModem;
     }
 
-	public static class Items
-	{
-		public static ItemDiskLegacy disk;
-		public static ItemDiskExpanded diskExpanded;
-		public static ItemPrintout printout;
-		public static ItemTreasureDisk treasureDisk;
+    public static class Items
+    {
+        public static ItemDiskLegacy disk;
+        public static ItemDiskExpanded diskExpanded;
+        public static ItemPrintout printout;
+        public static ItemTreasureDisk treasureDisk;
         public static ItemPocketComputer pocketComputer;
-	}
+    }
 
     public static class Upgrades
     {
@@ -164,40 +164,40 @@ public class ComputerCraft
     // Networking
     public static FMLEventChannel networkEventChannel;
 
-	// Creative
-	public static CreativeTabMain mainCreativeTab;
+    // Creative
+    public static CreativeTabMain mainCreativeTab;
 
     // API users
-	private static List<IPeripheralProvider> peripheralProviders = new ArrayList<IPeripheralProvider>();
+    private static List<IPeripheralProvider> peripheralProviders = new ArrayList<IPeripheralProvider>();
     private static List<IBundledRedstoneProvider> bundledRedstoneProviders = new ArrayList<IBundledRedstoneProvider>();
     private static List<IMediaProvider> mediaProviders = new ArrayList<IMediaProvider>();
     private static List<ITurtlePermissionProvider> permissionProviders = new ArrayList<ITurtlePermissionProvider>();
 
     // Implementation
-	@Mod.Instance( value = "ComputerCraft" )
-	public static ComputerCraft instance;
+    @Mod.Instance( value = "ComputerCraft" )
+    public static ComputerCraft instance;
 
-	@SidedProxy( clientSide = "dan200.computercraft.client.proxy.ComputerCraftProxyClient", serverSide = "dan200.computercraft.server.proxy.ComputerCraftProxyServer" )
-	public static IComputerCraftProxy proxy;
+    @SidedProxy( clientSide = "dan200.computercraft.client.proxy.ComputerCraftProxyClient", serverSide = "dan200.computercraft.server.proxy.ComputerCraftProxyServer" )
+    public static IComputerCraftProxy proxy;
 
     @SidedProxy( clientSide = "dan200.computercraft.client.proxy.CCTurtleProxyClient", serverSide = "dan200.computercraft.server.proxy.CCTurtleProxyServer" )
     public static ICCTurtleProxy turtleProxy;
 
-	public ComputerCraft()
-	{
-	}
+    public ComputerCraft()
+    {
+    }
 
-	@Mod.EventHandler
-	public void preInit( FMLPreInitializationEvent event )
-	{
+    @Mod.EventHandler
+    public void preInit( FMLPreInitializationEvent event )
+    {
         // Load config
-		Configuration config = new Configuration( event.getSuggestedConfigurationFile() );
-		config.load();
+        Configuration config = new Configuration( event.getSuggestedConfigurationFile() );
+        config.load();
 
         // Setup general
 
-		Property prop = config.get(Configuration.CATEGORY_GENERAL, "http_enable", http_enable);
-		prop.setComment( "Enable the \"http\" API on Computers (see \"http_whitelist\" for more fine grained control than this)" );
+        Property prop = config.get(Configuration.CATEGORY_GENERAL, "http_enable", http_enable);
+        prop.setComment( "Enable the \"http\" API on Computers (see \"http_whitelist\" for more fine grained control than this)" );
         http_enable = prop.getBoolean(http_enable);
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "http_whitelist", http_whitelist );
@@ -213,32 +213,32 @@ public class ComputerCraft
         default_computer_settings = prop.getString();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "enableCommandBlock", enableCommandBlock);
-		prop.setComment( "Enable Command Block peripheral support" );
-		enableCommandBlock = prop.getBoolean(enableCommandBlock);
+        prop.setComment( "Enable Command Block peripheral support" );
+        enableCommandBlock = prop.getBoolean(enableCommandBlock);
 
-		prop = config.get(Configuration.CATEGORY_GENERAL, "modem_range", modem_range);
-		prop.setComment( "The range of Wireless Modems at low altitude in clear weather, in meters" );
-		modem_range = Math.min( prop.getInt(), 100000 );
+        prop = config.get(Configuration.CATEGORY_GENERAL, "modem_range", modem_range);
+        prop.setComment( "The range of Wireless Modems at low altitude in clear weather, in meters" );
+        modem_range = Math.min( prop.getInt(), 100000 );
 
-		prop = config.get(Configuration.CATEGORY_GENERAL, "modem_highAltitudeRange", modem_highAltitudeRange);
-		prop.setComment( "The range of Wireless Modems at maximum altitude in clear weather, in meters" );
-		modem_highAltitudeRange = Math.min( prop.getInt(), 100000 );
+        prop = config.get(Configuration.CATEGORY_GENERAL, "modem_highAltitudeRange", modem_highAltitudeRange);
+        prop.setComment( "The range of Wireless Modems at maximum altitude in clear weather, in meters" );
+        modem_highAltitudeRange = Math.min( prop.getInt(), 100000 );
 
-		prop = config.get(Configuration.CATEGORY_GENERAL, "modem_rangeDuringStorm", modem_rangeDuringStorm);
-		prop.setComment( "The range of Wireless Modems at low altitude in stormy weather, in meters" );
-		modem_rangeDuringStorm = Math.min( prop.getInt(), 100000 );
+        prop = config.get(Configuration.CATEGORY_GENERAL, "modem_rangeDuringStorm", modem_rangeDuringStorm);
+        prop.setComment( "The range of Wireless Modems at low altitude in stormy weather, in meters" );
+        modem_rangeDuringStorm = Math.min( prop.getInt(), 100000 );
 
-		prop = config.get(Configuration.CATEGORY_GENERAL, "modem_highAltitudeRangeDuringStorm", modem_highAltitudeRangeDuringStorm);
-		prop.setComment( "The range of Wireless Modems at maximum altitude in stormy weather, in meters" );
-		modem_highAltitudeRangeDuringStorm = Math.min( prop.getInt(), 100000 );
+        prop = config.get(Configuration.CATEGORY_GENERAL, "modem_highAltitudeRangeDuringStorm", modem_highAltitudeRangeDuringStorm);
+        prop.setComment( "The range of Wireless Modems at maximum altitude in stormy weather, in meters" );
+        modem_highAltitudeRangeDuringStorm = Math.min( prop.getInt(), 100000 );
 
-		prop = config.get(Configuration.CATEGORY_GENERAL, "computerSpaceLimit", computerSpaceLimit);
-		prop.setComment( "The disk space limit for computers and turtles, in bytes" );
-		computerSpaceLimit = prop.getInt();
+        prop = config.get(Configuration.CATEGORY_GENERAL, "computerSpaceLimit", computerSpaceLimit);
+        prop.setComment( "The disk space limit for computers and turtles, in bytes" );
+        computerSpaceLimit = prop.getInt();
 
-		prop = config.get(Configuration.CATEGORY_GENERAL, "floppySpaceLimit", floppySpaceLimit);
-		prop.setComment( "The disk space limit for floppy disks, in bytes" );
-		floppySpaceLimit = prop.getInt();
+        prop = config.get(Configuration.CATEGORY_GENERAL, "floppySpaceLimit", floppySpaceLimit);
+        prop.setComment( "The disk space limit for floppy disks, in bytes" );
+        floppySpaceLimit = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "turtlesNeedFuel", turtlesNeedFuel);
         prop.setComment( "Set whether Turtles require fuel to move" );
@@ -266,16 +266,16 @@ public class ComputerCraft
         networkEventChannel = NetworkRegistry.INSTANCE.newEventDrivenChannel( "CC" );
         networkEventChannel.register( new PacketHandler() );
 
-		proxy.preInit();
+        proxy.preInit();
         turtleProxy.preInit();
-	}
+    }
 
-	@Mod.EventHandler
-	public void init( FMLInitializationEvent event )
-	{
-		proxy.init();
+    @Mod.EventHandler
+    public void init( FMLInitializationEvent event )
+    {
+        proxy.init();
         turtleProxy.init();
-	}
+    }
 
     @Mod.EventHandler
     public void onServerStarting( FMLServerStartingEvent event )
@@ -308,14 +308,14 @@ public class ComputerCraft
     }
 
     public static boolean isClient()
-	{
-		return proxy.isClient();
-	}
+    {
+        return proxy.isClient();
+    }
 
-	public static boolean getGlobalCursorBlink()
-	{
-		return proxy.getGlobalCursorBlink();
-	}
+    public static boolean getGlobalCursorBlink()
+    {
+        return proxy.getGlobalCursorBlink();
+    }
 
     public static long getRenderFrame()
     {
@@ -328,37 +328,37 @@ public class ComputerCraft
     }
 
     public static Object getFixedWidthFontRenderer()
-	{
-		return proxy.getFixedWidthFontRenderer();
-	}
+    {
+        return proxy.getFixedWidthFontRenderer();
+    }
 
-	public static void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
-	{
-		proxy.playRecord( record, recordInfo, world, pos );
-	}
+    public static void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
+    {
+        proxy.playRecord( record, recordInfo, world, pos );
+    }
 
-	public static String getRecordInfo( ItemStack recordStack )
-	{
-		return proxy.getRecordInfo( recordStack );
-	}
+    public static String getRecordInfo( ItemStack recordStack )
+    {
+        return proxy.getRecordInfo( recordStack );
+    }
 
-	public static void openDiskDriveGUI( EntityPlayer player, TileDiskDrive drive )
-	{
+    public static void openDiskDriveGUI( EntityPlayer player, TileDiskDrive drive )
+    {
         BlockPos pos = drive.getPos();
-		player.openGui( ComputerCraft.instance, ComputerCraft.diskDriveGUIID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ() );
-	}
+        player.openGui( ComputerCraft.instance, ComputerCraft.diskDriveGUIID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ() );
+    }
 
-	public static void openComputerGUI( EntityPlayer player, TileComputer computer )
-	{
+    public static void openComputerGUI( EntityPlayer player, TileComputer computer )
+    {
         BlockPos pos = computer.getPos();
-		player.openGui( ComputerCraft.instance, ComputerCraft.computerGUIID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ() );
-	}
+        player.openGui( ComputerCraft.instance, ComputerCraft.computerGUIID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ() );
+    }
 
-	public static void openPrinterGUI( EntityPlayer player, TilePrinter printer )
-	{
+    public static void openPrinterGUI( EntityPlayer player, TilePrinter printer )
+    {
         BlockPos pos = printer.getPos();
-		player.openGui( ComputerCraft.instance, ComputerCraft.printerGUIID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ() );
-	}
+        player.openGui( ComputerCraft.instance, ComputerCraft.printerGUIID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ() );
+    }
 
     public static void openTurtleGUI( EntityPlayer player, TileTurtle turtle )
     {
@@ -366,8 +366,8 @@ public class ComputerCraft
         player.openGui( instance, ComputerCraft.turtleGUIID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ() );
     }
 
-	public static void openPrintoutGUI( EntityPlayer player )
-	{
+    public static void openPrintoutGUI( EntityPlayer player )
+    {
         player.openGui( ComputerCraft.instance, ComputerCraft.printoutGUIID, player.getEntityWorld(), 0, 0, 0 );
     }
 
@@ -377,19 +377,19 @@ public class ComputerCraft
     }
 
     public static File getBaseDir()
-	{
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getFile(".");
-	}
+    {
+        return FMLCommonHandler.instance().getMinecraftServerInstance().getFile(".");
+    }
 
-	public static File getResourcePackDir()
-	{
-		return new File( getBaseDir(), "resourcepacks" );
-	}
+    public static File getResourcePackDir()
+    {
+        return new File( getBaseDir(), "resourcepacks" );
+    }
 
-	public static File getWorldDir( World world )
-	{
-		return proxy.getWorldDir( world );
-	}
+    public static File getWorldDir( World world )
+    {
+        return proxy.getWorldDir( world );
+    }
 
     private static FMLProxyPacket encode( ComputerCraftPacket packet )
     {
@@ -398,25 +398,25 @@ public class ComputerCraft
         return new FMLProxyPacket( buffer, "CC" );
     }
 
-	public static void sendToPlayer( EntityPlayer player, ComputerCraftPacket packet )
-	{
+    public static void sendToPlayer( EntityPlayer player, ComputerCraftPacket packet )
+    {
         networkEventChannel.sendTo( encode( packet ), (EntityPlayerMP)player );
-	}
+    }
 
-	public static void sendToAllPlayers( ComputerCraftPacket packet )
-	{
+    public static void sendToAllPlayers( ComputerCraftPacket packet )
+    {
         networkEventChannel.sendToAll( encode( packet ) );
-	}
+    }
 
-	public static void sendToServer( ComputerCraftPacket packet )
-	{
+    public static void sendToServer( ComputerCraftPacket packet )
+    {
         networkEventChannel.sendToServer( encode( packet ) );
-	}
+    }
 
-	public static void handlePacket( ComputerCraftPacket packet, EntityPlayer player )
-	{
-		proxy.handlePacket( packet, player );
-	}
+    public static void handlePacket( ComputerCraftPacket packet, EntityPlayer player )
+    {
+        proxy.handlePacket( packet, player );
+    }
 
     public static boolean canPlayerUseCommands( EntityPlayer player )
     {
@@ -491,12 +491,12 @@ public class ComputerCraft
     }
 
     public static void registerPeripheralProvider( IPeripheralProvider provider )
-	{
+    {
         if( provider != null && !peripheralProviders.contains( provider ) )
         {
             peripheralProviders.add( provider );
         }
-	}
+    }
 
     public static void registerBundledRedstoneProvider( IBundledRedstoneProvider provider )
     {
@@ -515,11 +515,11 @@ public class ComputerCraft
     }
 
     public static IPeripheral getPeripheralAt( World world, BlockPos pos, EnumFacing side )
-	{
-		// Try the handlers in order:
-	    Iterator<IPeripheralProvider> it = peripheralProviders.iterator();
-	    while( it.hasNext() )
-	    {
+    {
+        // Try the handlers in order:
+        Iterator<IPeripheralProvider> it = peripheralProviders.iterator();
+        while( it.hasNext() )
+        {
             try
             {
                 IPeripheralProvider handler = it.next();
@@ -533,9 +533,9 @@ public class ComputerCraft
             {
                 // mod misbehaved, ignore it
             }
-	    }
-	    return null;
-	}
+        }
+        return null;
+    }
 
     public static int getDefaultBundledRedstoneOutput( World world, BlockPos pos, EnumFacing side )
     {
@@ -610,25 +610,25 @@ public class ComputerCraft
         return null;
     }
 
-	public static int createUniqueNumberedSaveDir( World world, String parentSubPath )
-	{
-		return IDAssigner.getNextIDFromDirectory(new File(getWorldDir(world), parentSubPath));
-	}
+    public static int createUniqueNumberedSaveDir( World world, String parentSubPath )
+    {
+        return IDAssigner.getNextIDFromDirectory(new File(getWorldDir(world), parentSubPath));
+    }
 
-	public static IWritableMount createSaveDirMount( World world, String subPath, long capacity )
-	{
-		try
-		{
-			return new FileMount( new File( getWorldDir( world ), subPath ), capacity );
-		}
-		catch( Exception e )
-		{
-			return null;
-		}
-	}
+    public static IWritableMount createSaveDirMount( World world, String subPath, long capacity )
+    {
+        try
+        {
+            return new FileMount( new File( getWorldDir( world ), subPath ), capacity );
+        }
+        catch( Exception e )
+        {
+            return null;
+        }
+    }
 
-	public static IMount createResourceMount( Class modClass, String domain, String subPath )
-	{
+    public static IMount createResourceMount( Class modClass, String domain, String subPath )
+    {
         // Start building list of mounts
         List<IMount> mounts = new ArrayList<IMount>();
         subPath = "assets/" + domain + "/" + subPath;
@@ -709,32 +709,32 @@ public class ComputerCraft
         {
             return null;
         }
-	}
+    }
 
-	private static File getContainingJar( Class modClass )
-	{
-		String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
-		int bangIndex = path.indexOf( "!" );
-		if( bangIndex >= 0 )
-		{
-			path = path.substring( 0, bangIndex );
-		}
+    private static File getContainingJar( Class modClass )
+    {
+        String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
+        int bangIndex = path.indexOf( "!" );
+        if( bangIndex >= 0 )
+        {
+            path = path.substring( 0, bangIndex );
+        }
 
-		URL url;
-		try {
-			url = new URL( path );
-		} catch (MalformedURLException e1) {
-			return null;
-		}
+        URL url;
+        try {
+            url = new URL( path );
+        } catch (MalformedURLException e1) {
+            return null;
+        }
 
-		File file;
-		try {
-			file = new File( url.toURI() );
-		} catch(URISyntaxException e) {
-			file = new File( url.getPath() );
-		}
-		return file;
-	}
+        File file;
+        try {
+            file = new File( url.toURI() );
+        } catch(URISyntaxException e) {
+            file = new File( url.getPath() );
+        }
+        return file;
+    }
 
     private static File getDebugCodeDir( Class modClass )
     {

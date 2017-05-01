@@ -15,32 +15,32 @@ import net.minecraft.world.World;
 
 public class TurtleSword extends TurtleTool
 {
-	public TurtleSword( ResourceLocation id, int legacyId, String adjective, Item item )
-	{
-		super( id, legacyId, adjective, item );
-	}
+    public TurtleSword( ResourceLocation id, int legacyId, String adjective, Item item )
+    {
+        super( id, legacyId, adjective, item );
+    }
 
     @Override
-	protected boolean canBreakBlock( World world, BlockPos pos )
-	{
-		if( super.canBreakBlock( world, pos ) )
-		{
+    protected boolean canBreakBlock( World world, BlockPos pos )
+    {
+        if( super.canBreakBlock( world, pos ) )
+        {
             IBlockState state = world.getBlockState( pos );
-			Block block = state.getBlock();
+            Block block = state.getBlock();
             Material material = block.getMaterial( state );
-			return
+            return
                     material == Material.PLANTS ||
                     material == Material.LEAVES ||
                     material == Material.VINE ||
                     material == Material.CLOTH ||
                     material == Material.WEB;
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 
     @Override
-	protected float getDamageMultiplier()
-	{
-		return 9.0f;
-	}
+    protected float getDamageMultiplier()
+    {
+        return 9.0f;
+    }
 }
