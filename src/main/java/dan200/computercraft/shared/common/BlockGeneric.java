@@ -204,7 +204,7 @@ public abstract class BlockGeneric extends Block implements
             TileGeneric generic = (TileGeneric)tile;
             return generic.getBounds();
         }
-        return NULL_AABB;
+        return FULL_BLOCK_AABB;
     }
 
     @Override
@@ -237,7 +237,7 @@ public abstract class BlockGeneric extends Block implements
                 return aabb;
             }
         }
-        return NULL_AABB;
+        return FULL_BLOCK_AABB;
     }
 
     @Override
