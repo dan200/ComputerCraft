@@ -6,8 +6,6 @@
 
 package dan200.computercraft.client.gui.widgets;
 
-import dan200.computercraftedu.client.gui.widgets.MousePos;
-import dan200.computercraftedu.client.gui.widgets.WidgetContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
