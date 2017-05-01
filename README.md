@@ -1,5 +1,6 @@
 ComputerCraft
 =============
+[![Build Status](https://travis-ci.org/dan200/ComputerCraft.svg?branch=master)](https://travis-ci.org/dan200/ComputerCraft)
 
 ComputerCraft is a Minecraft modification which adds programmable Robots and Computers to the world of Minecraft.
 If you're not familiar with ComputerCraft, visit the [Website](http://www.computercraft.info/download) or the [Wiki](http://www.computercraft.info/wiki) to find out more.
