@@ -21,6 +21,7 @@ import org.squiddev.cobalt.compiler.LoadState;
 import org.squiddev.cobalt.debug.DebugFrame;
 import org.squiddev.cobalt.debug.DebugHandler;
 import org.squiddev.cobalt.debug.DebugState;
+import org.squiddev.cobalt.function.LibFunction;
 import org.squiddev.cobalt.function.LuaFunction;
 import org.squiddev.cobalt.function.VarArgFunction;
 import org.squiddev.cobalt.lib.*;
@@ -120,6 +121,9 @@ public class CobaltLuaMachine implements ILuaMachine
         m_globals.load( state, new StringLib() );
         m_globals.load( state, new MathLib() );
         m_globals.load( state, new CoroutineLib() );
+
+        // Register custom load/loadstring provider which automatically adds prefixes.
+        LibFunction.bind( state, m_globals, PrefixLoader.class, new String[]{ "load", "loadstring" } );
 
         // Remove globals we don't want to expose
         m_globals.rawset( "collectgarbage", Constants.NIL );
@@ -640,5 +644,93 @@ public class CobaltLuaMachine implements ILuaMachine
             objects[ i ] = toObject( value, null );
         }
         return objects;
+    }
+
+    private static class PrefixLoader extends VarArgFunction
+    {
+        private static final LuaString FUNCTION_STR = valueOf( "function" );
+        private static final LuaString EQ_STR = valueOf( "=" );
+
+        @Override
+        public Varargs invoke( LuaState state, Varargs args ) throws LuaError
+        {
+            switch (opcode)
+            {
+                case 0: // "load", // ( func [,chunkname] ) -> chunk | nil, msg
+                {
+                    LuaValue func = args.arg( 1 ).checkFunction();
+                    LuaString chunkname = args.arg( 2 ).optLuaString( FUNCTION_STR );
+                    if( !chunkname.startsWith( '@' ) && !chunkname.startsWith( '=' ) )
+                    {
+                        chunkname = OperationHelper.concat( EQ_STR, chunkname );
+                    }
+                    return BaseLib.loadStream( state, new StringInputStream( state, func ), chunkname );
+                }
+                case 1: // "loadstring", // ( string [,chunkname] ) -> chunk | nil, msg
+                {
+                    LuaString script = args.arg( 1 ).checkLuaString();
+                    LuaString chunkname = args.arg( 2 ).optLuaString( script );
+                    if( !chunkname.startsWith( '@' ) && !chunkname.startsWith( '=' ) )
+                    {
+                        chunkname = OperationHelper.concat( EQ_STR, chunkname );
+                    }
+                    return BaseLib.loadStream( state, script.toInputStream(), chunkname );
+                }
+            }
+
+            return NONE;
+        }
+    }
+
+    private static class StringInputStream extends InputStream
+    {
+        private final LuaState state;
+        private final LuaValue func;
+        private byte[] bytes;
+        private int offset, remaining = 0;
+
+        public StringInputStream( LuaState state, LuaValue func )
+        {
+            this.state = state;
+            this.func = func;
+        }
+
+        @Override
+        public int read() throws IOException
+        {
+            if( remaining <= 0 )
+            {
+                LuaValue s;
+                try
+                {
+                    s = OperationHelper.call( state, func );
+                } catch (LuaError e)
+                {
+                    throw new IOException( e );
+                }
+
+                if( s.isNil() )
+                {
+                    return -1;
+                }
+                LuaString ls;
+                try
+                {
+                    ls = s.strvalue();
+                } catch (LuaError e)
+                {
+                    throw new IOException( e );
+                }
+                bytes = ls.bytes;
+                offset = ls.offset;
+                remaining = ls.length;
+                if( remaining <= 0 )
+                {
+                    return -1;
+                }
+            }
+            --remaining;
+            return bytes[offset++];
+        }
     }
 }
