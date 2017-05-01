@@ -14,6 +14,7 @@ import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ItemComputer;
 import dan200.computercraft.shared.media.inventory.ContainerHeldItem;
+import dan200.computercraft.shared.media.items.ItemDiskLegacy;
 import dan200.computercraft.shared.media.items.ItemPrintout;
 import dan200.computercraft.shared.network.ComputerCraftPacket;
 import dan200.computercraft.shared.peripheral.diskdrive.TileDiskDrive;
@@ -28,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
@@ -47,6 +49,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
@@ -62,12 +66,12 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     public ComputerCraftProxyClient()
     {
     }
-    
+
     // IComputerCraftProxy implementation
-    
+
     @Override
     public void init()
-    {        
+    {
         super.init();
         m_tick = 0;
         m_renderFrame = 0;
@@ -172,6 +176,10 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             "advanced_pocket_computer_off", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking", "advanced_pocket_computer_on_modem_on", "advanced_pocket_computer_blinking_modem_on",
         } );
 
+        // Setup item colours
+		mc.getItemColors().registerItemColorHandler(new DiskColorHandler(ComputerCraft.Items.disk), ComputerCraft.Items.disk);
+		mc.getItemColors().registerItemColorHandler(new DiskColorHandler(ComputerCraft.Items.diskExpanded), ComputerCraft.Items.diskExpanded);
+
         // Setup renderers
         ClientRegistry.bindTileEntitySpecialRenderer( TileMonitor.class, new TileEntityMonitorRenderer() );
 
@@ -225,7 +233,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         ModelBakery.registerItemVariants( item, resources );
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, definition );
     }
-    
+
     @Override
     public boolean isClient()
     {
@@ -255,7 +263,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     {
         return m_fixedWidthFontRenderer;
     }
-            
+
     @Override
     public String getRecordInfo( ItemStack recordStack )
     {
@@ -267,7 +275,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             return super.getRecordInfo( recordStack );
         }
     }
-    
+
     @Override
     public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
     {
@@ -278,19 +286,19 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             mc.ingameGUI.setRecordPlayingMessage( recordInfo );
         }
     }
-    
+
     @Override
     public Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive )
     {
         return new GuiDiskDrive( inventory, drive );
     }
-    
+
     @Override
     public Object getComputerGUI( TileComputer computer )
     {
         return new GuiComputer( computer );
     }
-    
+
     @Override
     public Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer )
     {
@@ -405,7 +413,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         FMLCommonHandler.instance().bus().register( handlers );
         MinecraftForge.EVENT_BUS.register( handlers );
     }
-                
+
     public class ForgeHandlers
     {
         public ForgeHandlers()
@@ -491,4 +499,21 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             }
         }
     }
+
+	@SideOnly(Side.CLIENT)
+	private static class DiskColorHandler implements IItemColor
+	{
+		private final ItemDiskLegacy disk;
+
+		private DiskColorHandler(ItemDiskLegacy disk)
+		{
+			this.disk = disk;
+		}
+
+		@Override
+		public int getColorFromItemstack(ItemStack stack, int layer)
+		{
+			return layer == 0 ? 0xFFFFFF : disk.getColor(stack);
+		}
+	}
 }

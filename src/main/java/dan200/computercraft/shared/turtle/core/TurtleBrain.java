@@ -505,7 +505,7 @@ public class TurtleBrain implements ITurtleAccess
         }
 
         // Create a new turtle
-        if( world.isBlockLoaded( pos ) && world.setBlockState( pos, oldBlock.getDefaultState(), 3 ) )
+        if( world.isBlockLoaded( pos ) && world.setBlockState( pos, oldBlock.getDefaultState(), 0 ) )
         {
             Block block = world.getBlockState( pos ).getBlock();
             if( block == oldBlock )
@@ -525,6 +525,7 @@ public class TurtleBrain implements ITurtleAccess
                     oldWorld.setBlockToAir( oldPos );
 
                     // Make sure everybody knows about it
+                    newTurtle.updateBlock();
                     newTurtle.updateInput();
                     newTurtle.updateOutput();
                     return true;

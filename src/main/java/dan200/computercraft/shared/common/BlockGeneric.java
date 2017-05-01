@@ -152,7 +152,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final void onNeighborChange( IBlockAccess world, BlockPos pos, BlockPos neighborPos )
+    public final void neighborChanged( IBlockState state, World world, BlockPos pos, Block block )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
