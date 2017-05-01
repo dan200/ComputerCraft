@@ -67,6 +67,7 @@ public class CobaltLuaMachine implements ILuaMachine
         state.debug = new DebugHandler( state )
         {
             private int count = 0;
+            private boolean hasSoftAbort;
 
             @Override
             public void onInstruction( DebugState ds, DebugFrame di, int pc, Varargs extras, int top ) throws LuaError
@@ -77,6 +78,10 @@ public class CobaltLuaMachine implements ILuaMachine
                     if( m_hardAbortMessage != null ) LuaThread.yield( state, NONE );
                     this.count = 0;
                 }
+                else
+                {
+                    handleSoftAbort();
+                }
 
                 super.onInstruction( ds, di, pc, extras, top );
             }
@@ -85,6 +90,24 @@ public class CobaltLuaMachine implements ILuaMachine
             public void poll() throws LuaError
             {
                 if( m_hardAbortMessage != null ) LuaThread.yield( state, NONE );
+                handleSoftAbort();
+            }
+
+            private void handleSoftAbort() throws LuaError {
+                // If the soft abort has been cleared then we can reset our flags and continue.
+                String message = m_softAbortMessage;
+                if (message == null) {
+                    hasSoftAbort = false;
+                    return;
+                }
+
+                if (hasSoftAbort && m_hardAbortMessage == null) {
+                    // If we have fired our soft abort, but we haven't been hard aborted then everything is OK.
+                    return;
+                }
+
+                hasSoftAbort = true;
+                throw new LuaError(message);
             }
         };
 
@@ -269,17 +292,6 @@ public class CobaltLuaMachine implements ILuaMachine
         }
     }
 
-    private void tryAbort() throws LuaError
-    {
-        String abortMessage = m_softAbortMessage;
-        if( abortMessage != null )
-        {
-            m_softAbortMessage = null;
-            m_hardAbortMessage = null;
-            throw new LuaError( abortMessage );
-        }
-    }
-
     private LuaTable wrapLuaObject( ILuaObject object )
     {
         LuaTable table = new LuaTable();
@@ -296,7 +308,6 @@ public class CobaltLuaMachine implements ILuaMachine
                     @Override
                     public Varargs invoke( final LuaState state, Varargs _args ) throws LuaError
                     {
-                        tryAbort();
                         Object[] arguments = toObjects( _args, 1 );
                         Object[] results;
                         try
