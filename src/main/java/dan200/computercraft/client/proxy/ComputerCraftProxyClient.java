@@ -34,11 +34,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -176,7 +176,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             "advanced_pocket_computer_off", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking", "advanced_pocket_computer_on_modem_on", "advanced_pocket_computer_blinking_modem_on",
         } );
 
-        // Setup item colours
+        // Setup
 		mc.getItemColors().registerItemColorHandler(new DiskColorHandler(ComputerCraft.Items.disk), ComputerCraft.Items.disk);
 		mc.getItemColors().registerItemColorHandler(new DiskColorHandler(ComputerCraft.Items.diskExpanded), ComputerCraft.Items.diskExpanded);
 
@@ -312,9 +312,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     }
 
     @Override
-    public Object getPrintoutGUI( InventoryPlayer inventory )
+    public Object getPrintoutGUI( EntityPlayer player, EnumHand hand )
     {
-        ContainerHeldItem container = new ContainerHeldItem( inventory );
+        ContainerHeldItem container = new ContainerHeldItem( player, hand );
         if( container.getStack() != null && container.getStack().getItem() instanceof ItemPrintout )
         {
             return new GuiPrintout( container );
@@ -323,9 +323,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     }
 
     @Override
-    public Object getPocketComputerGUI( InventoryPlayer inventory )
+    public Object getPocketComputerGUI( EntityPlayer player, EnumHand hand )
     {
-        ContainerHeldItem container = new ContainerHeldItem( inventory );
+        ContainerHeldItem container = new ContainerHeldItem( player, hand );
         if( container.getStack() != null && container.getStack().getItem() instanceof ItemPocketComputer )
         {
             return new GuiPocketComputer( container );

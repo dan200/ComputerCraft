@@ -240,6 +240,10 @@ public class TurtlePlaceCommand implements ITurtleCommand
             placed = true;
             turtlePlayer.loadInventory( stackCopy );
         }
+        else if( hitEntity.processInitialInteract( turtlePlayer, stackCopy, EnumHand.MAIN_HAND ) )
+        {
+            placed = true;
+        }
         else if( hitEntity instanceof EntityLivingBase )
         {
             placed = item.itemInteractionForEntity( stackCopy, turtlePlayer, (EntityLivingBase)hitEntity, EnumHand.MAIN_HAND );

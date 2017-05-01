@@ -14,6 +14,7 @@ import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -38,8 +39,8 @@ public interface IComputerCraftProxy
     public Object getComputerGUI( TileComputer computer );
     public Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer );
     public Object getTurtleGUI( InventoryPlayer inventory, TileTurtle turtle );
-    public abstract Object getPrintoutGUI( InventoryPlayer inventory );
-    public abstract Object getPocketComputerGUI( InventoryPlayer inventory );
+    public abstract Object getPrintoutGUI( EntityPlayer player, EnumHand hand );
+    public abstract Object getPocketComputerGUI( EntityPlayer player, EnumHand hand );
 
     public File getWorldDir( World world );
     public void handlePacket( ComputerCraftPacket packet, EntityPlayer player );

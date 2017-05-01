@@ -30,10 +30,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.translation.I18n;;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import java.util.List;
+
+;
 
 public class ItemPocketComputer extends Item implements IComputerItem, IMedia
 {
@@ -169,10 +171,9 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
             {
                 computer.turnOn();
             }
-            ComputerCraft.openPocketComputerGUI( player );
-            return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
+            ComputerCraft.openPocketComputerGUI( player, hand );
         }
-        return new ActionResult<ItemStack>( EnumActionResult.PASS, stack );
+        return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
     }
 
     @Override

@@ -12,7 +12,9 @@ import dan200.computercraft.shared.peripheral.diskdrive.TileDiskDrive;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
 import dan200.computercraft.shared.proxy.ComputerCraftProxyCommon;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -88,13 +90,13 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
     }
 
     @Override
-    public Object getPrintoutGUI( InventoryPlayer inventory )
+    public Object getPrintoutGUI( EntityPlayer player, EnumHand hand )
     {
         return null;
     }
 
     @Override
-    public Object getPocketComputerGUI( InventoryPlayer inventory )
+    public Object getPocketComputerGUI( EntityPlayer player, EnumHand hand )
     {
         return null;
     }
