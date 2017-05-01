@@ -1,0 +1,6 @@
+org.luaj.vm2
+org.luaj.vm2.compiler
+org.luaj.vm2.lib
+org.luaj.vm2.lib.jme
+org.luaj.vm2.lib.jse
+org.luaj.vm2.luajc

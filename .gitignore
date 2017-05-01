@@ -1,0 +1,8 @@
+build
+out
+run
+deploy
+*.ipr
+*.iws
+*.iml
+.gradle

@@ -1,0 +1,20 @@
+{
+    "parent": "computercraft:block/wireless_modem_off",
+    "display": {
+        "thirdperson": {
+            "rotation": [ -10, 180, 170 ],
+            "translation": [ 0, 1.5, -2.75 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "firstperson": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 3.2, 0, 0 ],
+            "scale" : [ 1.33, 1.33, 1.33 ]
+        },
+        "gui": {
+        	"rotation": [ 0, 90, 0 ],
+            "translation": [ 3.2, 0, 0 ],
+            "scale" : [ 1.33, 1.33, 1.33 ]
+        }
+    }
+}

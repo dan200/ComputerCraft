@@ -1,0 +1,242 @@
+Archive:  luaj2.0-tests.zip
+  inflating: baselib.out             
+  inflating: coroutinelib.out        
+  inflating: debuglib.out            
+  inflating: errors.out              
+  inflating: functions.out           
+  inflating: iolib.out               
+  inflating: manyupvals.out          
+  inflating: mathlib.out             
+  inflating: metatags.out            
+  inflating: oslib.out               
+  inflating: stringlib.out           
+  inflating: tablelib.out            
+  inflating: tailcalls.out           
+  inflating: tmp1.out                
+  inflating: tmp2.out                
+  inflating: upvalues.out            
+  inflating: vm.out                  
+  inflating: lua5.1-tests/all.lc     
+  inflating: lua5.1-tests/api.lc     
+  inflating: lua5.1-tests/attrib.lc  
+  inflating: lua5.1-tests/big.lc     
+  inflating: lua5.1-tests/calls.lc   
+  inflating: lua5.1-tests/checktable.lc  
+  inflating: lua5.1-tests/closure.lc  
+  inflating: lua5.1-tests/code.lc    
+  inflating: lua5.1-tests/constructs.lc  
+  inflating: lua5.1-tests/db.lc      
+  inflating: lua5.1-tests/errors.lc  
+  inflating: lua5.1-tests/events.lc  
+  inflating: lua5.1-tests/files.lc   
+  inflating: lua5.1-tests/gc.lc      
+  inflating: lua5.1-tests/literals.lc  
+  inflating: lua5.1-tests/locals.lc  
+  inflating: lua5.1-tests/main.lc    
+  inflating: lua5.1-tests/math.lc    
+  inflating: lua5.1-tests/nextvar.lc  
+  inflating: lua5.1-tests/pm.lc      
+  inflating: lua5.1-tests/sort.lc    
+  inflating: lua5.1-tests/strings.lc  
+  inflating: lua5.1-tests/vararg.lc  
+  inflating: lua5.1-tests/verybig.lc  
+  inflating: regressions/bigattr.lc  
+  inflating: regressions/comparators.lc  
+  inflating: regressions/construct.lc  
+  inflating: regressions/controlchars.lc  
+  inflating: regressions/mathrandomseed.lc  
+  inflating: regressions/modulo.lc   
+  inflating: regressions/varargs.lc  
+ extracting: errors/args.out         
+  inflating: errors/baselibargs.out  
+  inflating: errors/coroutinelibargs.out  
+  inflating: errors/iolibargs.out    
+  inflating: errors/mathlibargs.out  
+  inflating: errors/modulelibargs.out  
+  inflating: errors/operators.out    
+  inflating: errors/stringlibargs.out  
+  inflating: errors/tablelibargs.out  
+  inflating: perf/binarytrees.out    
+ extracting: perf/fannkuch.out       
+  inflating: perf/nbody.out          
+  inflating: perf/nsieve.out         
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests all
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests api
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests attrib
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests big
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests calls
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests checktable
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests closure
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests code
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests constructs
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests db
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests errors
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests events
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests files
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests gc
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests literals
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests locals
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests main
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests math
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests nextvar
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests pm
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests sort
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests strings
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests vararg
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/lua5.1-tests verybig
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/regressions bigattr
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/regressions comparators
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/regressions construct
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/regressions controlchars
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/regressions mathrandomseed
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/regressions modulo
+compiling /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/regressions varargs
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/errors args
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/errors baselibargs
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/errors coroutinelibargs
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/errors iolibargs
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/errors mathlibargs
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/errors modulelibargs
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/errors operators
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/errors stringlibargs
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/errors tablelibargs
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/perf binarytrees
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/perf fannkuch
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/perf nbody
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua/perf nsieve
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua baselib
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua coroutinelib
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua debuglib
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua errors
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua functions
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua iolib
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua manyupvals
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua mathlib
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua metatags
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua oslib
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua stringlib
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua tablelib
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua tailcalls
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua upvalues
+executing /Users/jrosebor/Workspaces/luaj3/luaj-vm-2.0/test/lua vm
+	zip warning: name not matched: *.lc
+  adding: baselib.lua (deflated 81%)
+  adding: coroutinelib.lua (deflated 74%)
+  adding: debuglib.lua (deflated 72%)
+  adding: errors.lua (deflated 80%)
+  adding: functions.lua (deflated 74%)
+  adding: iolib.lua (deflated 73%)
+  adding: manyupvals.lua (deflated 51%)
+  adding: mathlib.lua (deflated 69%)
+  adding: metatags.lua (deflated 86%)
+  adding: oslib.lua (deflated 65%)
+  adding: stringlib.lua (deflated 71%)
+  adding: tablelib.lua (deflated 75%)
+  adding: tailcalls.lua (deflated 65%)
+  adding: upvalues.lua (deflated 66%)
+  adding: vm.lua (deflated 76%)
+  adding: baselib.out (deflated 83%)
+  adding: coroutinelib.out (deflated 83%)
+  adding: debuglib.out (deflated 84%)
+  adding: errors.out (deflated 81%)
+  adding: functions.out (deflated 75%)
+  adding: iolib.out (deflated 70%)
+  adding: manyupvals.out (deflated 91%)
+  adding: mathlib.out (deflated 80%)
+  adding: metatags.out (deflated 91%)
+  adding: oslib.out (deflated 55%)
+  adding: stringlib.out (deflated 86%)
+  adding: tablelib.out (deflated 83%)
+  adding: tailcalls.out (deflated 89%)
+  adding: tmp1.out (deflated 33%)
+  adding: tmp2.out (deflated 33%)
+  adding: upvalues.out (deflated 48%)
+  adding: vm.out (deflated 79%)
+  adding: errors/args.lua (deflated 71%)
+  adding: errors/baselibargs.lua (deflated 78%)
+  adding: errors/coroutinelibargs.lua (deflated 73%)
+  adding: errors/iolibargs.lua (deflated 77%)
+  adding: errors/mathlibargs.lua (deflated 78%)
+  adding: errors/modulelibargs.lua (deflated 70%)
+  adding: errors/operators.lua (deflated 82%)
+  adding: errors/stringlibargs.lua (deflated 81%)
+  adding: errors/tablelibargs.lua (deflated 76%)
+  adding: lua5.1-tests/all.lua (deflated 61%)
+  adding: lua5.1-tests/api.lua (deflated 71%)
+  adding: lua5.1-tests/attrib.lua (deflated 67%)
+  adding: lua5.1-tests/big.lua (deflated 66%)
+  adding: lua5.1-tests/calls.lua (deflated 66%)
+  adding: lua5.1-tests/checktable.lua (deflated 64%)
+  adding: lua5.1-tests/closure.lua (deflated 70%)
+  adding: lua5.1-tests/code.lua (deflated 66%)
+  adding: lua5.1-tests/constructs.lua (deflated 65%)
+  adding: lua5.1-tests/db.lua (deflated 70%)
+  adding: lua5.1-tests/errors.lua (deflated 66%)
+  adding: lua5.1-tests/events.lua (deflated 73%)
+  adding: lua5.1-tests/files.lua (deflated 72%)
+  adding: lua5.1-tests/gc.lua (deflated 69%)
+  adding: lua5.1-tests/literals.lua (deflated 81%)
+  adding: lua5.1-tests/locals.lua (deflated 64%)
+  adding: lua5.1-tests/main.lua (deflated 64%)
+  adding: lua5.1-tests/math.lua (deflated 68%)
+  adding: lua5.1-tests/nextvar.lua (deflated 70%)
+  adding: lua5.1-tests/pm.lua (deflated 69%)
+  adding: lua5.1-tests/sort.lua (deflated 61%)
+  adding: lua5.1-tests/strings.lua (deflated 73%)
+  adding: lua5.1-tests/vararg.lua (deflated 63%)
+  adding: lua5.1-tests/verybig.lua (deflated 55%)
+  adding: perf/binarytrees.lua (deflated 61%)
+  adding: perf/fannkuch.lua (deflated 51%)
+  adding: perf/nbody.lua (deflated 62%)
+  adding: perf/nsieve.lua (deflated 56%)
+  adding: regressions/bigattr.lua (deflated 31%)
+  adding: regressions/comparators.lua (stored 0%)
+  adding: regressions/construct.lua (stored 0%)
+  adding: regressions/controlchars.lua (deflated 11%)
+  adding: regressions/mathrandomseed.lua (stored 0%)
+  adding: regressions/modulo.lua (deflated 28%)
+  adding: regressions/varargs.lua (deflated 79%)
+  adding: lua5.1-tests/all.lc (deflated 64%)
+  adding: lua5.1-tests/api.lc (deflated 73%)
+  adding: lua5.1-tests/attrib.lc (deflated 71%)
+  adding: lua5.1-tests/big.lc (deflated 70%)
+  adding: lua5.1-tests/calls.lc (deflated 71%)
+  adding: lua5.1-tests/checktable.lc (deflated 64%)
+  adding: lua5.1-tests/closure.lc (deflated 71%)
+  adding: lua5.1-tests/code.lc (deflated 70%)
+  adding: lua5.1-tests/constructs.lc (deflated 71%)
+  adding: lua5.1-tests/db.lc (deflated 70%)
+  adding: lua5.1-tests/errors.lc (deflated 66%)
+  adding: lua5.1-tests/events.lc (deflated 76%)
+  adding: lua5.1-tests/files.lc (deflated 72%)
+  adding: lua5.1-tests/gc.lc (deflated 68%)
+  adding: lua5.1-tests/literals.lc (deflated 78%)
+  adding: lua5.1-tests/locals.lc (deflated 67%)
+  adding: lua5.1-tests/main.lc (deflated 65%)
+  adding: lua5.1-tests/math.lc (deflated 73%)
+  adding: lua5.1-tests/nextvar.lc (deflated 73%)
+  adding: lua5.1-tests/pm.lc (deflated 74%)
+  adding: lua5.1-tests/sort.lc (deflated 68%)
+  adding: lua5.1-tests/strings.lc (deflated 78%)
+  adding: lua5.1-tests/vararg.lc (deflated 69%)
+  adding: lua5.1-tests/verybig.lc (deflated 62%)
+  adding: regressions/bigattr.lc (deflated 50%)
+  adding: regressions/comparators.lc (deflated 47%)
+  adding: regressions/construct.lc (deflated 46%)
+  adding: regressions/controlchars.lc (deflated 34%)
+  adding: regressions/mathrandomseed.lc (deflated 46%)
+  adding: regressions/modulo.lc (deflated 51%)
+  adding: regressions/varargs.lc (deflated 73%)
+  adding: errors/args.out (stored 0%)
+  adding: errors/baselibargs.out (deflated 88%)
+  adding: errors/coroutinelibargs.out (deflated 83%)
+  adding: errors/iolibargs.out (deflated 88%)
+  adding: errors/mathlibargs.out (deflated 89%)
+  adding: errors/modulelibargs.out (deflated 85%)
+  adding: errors/operators.out (deflated 90%)
+  adding: errors/stringlibargs.out (deflated 92%)
+  adding: errors/tablelibargs.out (deflated 89%)
+  adding: perf/binarytrees.out (deflated 46%)
+  adding: perf/fannkuch.out (stored 0%)
+  adding: perf/nbody.out (deflated 12%)
+  adding: perf/nsieve.out (deflated 49%)

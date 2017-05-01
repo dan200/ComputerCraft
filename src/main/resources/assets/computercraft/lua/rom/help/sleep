@@ -1,0 +1,4 @@
+sleep makes the computer idle for a specific number of seconds.
+
+ex:
+"sleep 10" puts the computer to sleep for 10 seconds

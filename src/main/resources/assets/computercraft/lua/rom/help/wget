@@ -1,0 +1,5 @@
+wget is a program for downloading files from the internet. This is useful for downloading programs created by other players.
+The HTTP API must be enabled in ComputerCraft.cfg to use this program.
+
+ex:
+"wget http://pastebin.com/raw/CxaWmPrX test" will download the file from the URL http://pastebin.com/raw/CxaWmPrX, and save it as "test".

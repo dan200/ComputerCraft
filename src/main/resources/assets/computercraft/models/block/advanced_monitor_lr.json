@@ -1,0 +1,9 @@
+{
+    "parent": "computercraft:block/monitor_base",
+    "textures": {
+        "front": "computercraft:blocks/advMonitor18",
+        "side": "computercraft:blocks/advMonitor4",
+        "top": "computercraft:blocks/advMonitor2",
+        "back": "computercraft:blocks/advMonitor34"
+    }
+}

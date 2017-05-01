@@ -1,0 +1,4 @@
+equip is a program for Turtles. equip will equip an item from the Turtle's inventory for use as a tool of peripheral.
+
+ex:
+"equip 5 left" will equip the item from slot 5 of the turtle onto the left side of the turtle

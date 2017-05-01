@@ -1,0 +1,192 @@
+{
+    "forge_marker": 1,
+    "variants": {
+        "cable": {
+            "true": {
+                "submodel": {
+                    "cable": { "model": "computercraft:cable_core" }
+                }
+            },
+            "false": {
+            }
+        },
+        "up": {
+            "true": {
+                "submodel": {
+                    "up": { "model": "computercraft:cable_arm", "x": 90 }
+                }
+            },
+            "false": {
+            }
+        },
+        "down": {
+            "true": {
+                "submodel": {
+                    "down": { "model": "computercraft:cable_arm", "x": 270 }
+                }
+            },
+            "false": {
+            }
+        },
+        "north": {
+            "true": {
+                "submodel": {
+                    "north": { "model": "computercraft:cable_arm", "y": 180 }
+                }
+            },
+            "false": {
+            }
+        },
+        "south": {
+            "true": {
+                "submodel": {
+                    "south": { "model": "computercraft:cable_arm" }
+                }
+            },
+            "false": {
+            }
+        },
+        "west": {
+            "true": {
+                "submodel": {
+                    "west": { "model": "computercraft:cable_arm", "y": 90 }
+                }
+            },
+            "false": {
+            }
+        },
+        "east": {
+            "true": {
+                "submodel": {
+                    "east": { "model": "computercraft:cable_arm", "y": 270 }
+                }
+            },
+            "false": {
+            }
+        },
+        "modem": {
+            "none": {
+            },
+            "up_off": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off", "x": 270 }
+                }
+            },
+            "down_off": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off", "x": 90 }
+                }
+            },
+            "north_off": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off" }
+                }
+            },
+            "south_off": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off", "y": 180 }
+                }
+            },
+            "west_off": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off", "y": 270 }
+                }
+            },
+            "east_off": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off", "y": 90 }
+                }
+            },
+            "up_on": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on", "x": 270 }
+                }
+            },
+            "down_on": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on", "x": 90 }
+                }
+            },
+            "north_on": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on" }
+                }
+            },
+            "south_on": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on", "y": 180 }
+                }
+            },
+            "west_on": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on", "y": 270 }
+                }
+            },
+            "east_on": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on", "y": 90 }
+                }
+            },
+            "up_off_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off_peripheral", "x": 270 }
+                }
+            },
+            "down_off_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off_peripheral", "x": 90 }
+                }
+            },
+            "north_off_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off_peripheral" }
+                }
+            },
+            "south_off_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off_peripheral", "y": 180 }
+                }
+            },
+            "west_off_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off_peripheral", "y": 270 }
+                }
+            },
+            "east_off_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_off_peripheral", "y": 90 }
+                }
+            },
+            "up_on_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on_peripheral", "x": 270 }
+                }
+            },
+            "down_on_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on_peripheral", "x": 90 }
+                }
+            },
+            "north_on_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on_peripheral" }
+                }
+            },
+            "south_on_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on_peripheral", "y": 180 }
+                }
+            },
+            "west_on_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on_peripheral", "y": 270 }
+                }
+            },
+            "east_on_peripheral": {
+                "submodel": {
+                    "modem": { "model": "computercraft:wired_modem_on_peripheral", "y": 90 }
+                }
+            }
+        }
+    }
+}

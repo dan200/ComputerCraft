@@ -1,0 +1,8 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "front": "computercraft:blocks/printerFrontBothTrays",
+        "side": "computercraft:blocks/printerSide",
+        "top": "computercraft:blocks/printerTop"
+    }
+}

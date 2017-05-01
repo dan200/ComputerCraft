@@ -1,0 +1,8 @@
+Functions in the Settings API:
+settings.get( name, [default] )
+settings.set( name, value )
+settings.unset( name )
+settings.load( path )
+settings.save( path )
+settings.clear()
+settings.getNames()
