@@ -7,6 +7,8 @@
 package dan200.computercraft.shared.turtle.inventory;
 
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import dan200.computercraft.shared.computer.core.IComputer;
+import dan200.computercraft.shared.computer.core.IContainerComputer;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +18,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nullable;
+
 public class ContainerTurtle extends Container
+    implements IContainerComputer
 {
     private static final int PROGRESS_ID_SELECTED_SLOT = 0;
 
@@ -24,6 +29,7 @@ public class ContainerTurtle extends Container
     public final int m_turtleInvStartX;
 
     protected ITurtleAccess m_turtle;
+    private IComputer m_computer;
     private int m_selectedSlot;
 
     protected ContainerTurtle( IInventory playerInventory, ITurtleAccess turtle, int playerInvStartY, int turtleInvStartX )
@@ -69,6 +75,12 @@ public class ContainerTurtle extends Container
     public ContainerTurtle( IInventory playerInventory, ITurtleAccess turtle )
     {
         this( playerInventory, turtle, 134, 175 );
+    }
+
+    public ContainerTurtle( IInventory playerInventory, ITurtleAccess turtle, IComputer computer )
+    {
+        this( playerInventory, turtle );
+        m_computer = computer;
     }
 
     public int getSelectedSlot()
@@ -177,5 +189,12 @@ public class ContainerTurtle extends Container
             return tryItemMerge( player, slotNum, 0, 16, false );
         }
         return null;
+    }
+
+    @Nullable
+    @Override
+    public IComputer getComputer()
+    {
+        return m_computer;
     }
 }

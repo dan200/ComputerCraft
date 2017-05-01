@@ -20,6 +20,7 @@ import dan200.computercraft.shared.network.ComputerCraftPacket;
 import dan200.computercraft.shared.network.INetworkedThing;
 import dan200.computercraft.shared.util.NBTUtil;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -351,6 +352,17 @@ public class ServerComputer extends ServerTerminal
     @Override
     public void handlePacket( ComputerCraftPacket packet, EntityPlayer sender )
     {
+        // Allow Computer/Tile updates as they may happen at any time.
+        if (packet.requiresContainer()) {
+            if (sender == null) return;
+
+            Container container = sender.openContainer;
+            if (!(container instanceof IContainerComputer)) return;
+
+            IComputer computer = ((IContainerComputer) container).getComputer();
+            if (computer != this) return;
+        }
+
         // Receive packets sent from the client to the server
         switch( packet.m_packetType )
         {
