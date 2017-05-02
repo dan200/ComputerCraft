@@ -99,14 +99,14 @@ public class ContainerPrinter extends Container
     @Override
     public boolean canInteractWith( EntityPlayer player )
     {
-        return m_printer.isUseableByPlayer( player );
+        return m_printer.isUsableByPlayer( player );
     }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot)inventorySlots.get(i);
+        Slot slot = inventorySlots.get(i);
         if( slot != null && slot.getHasStack() )
         {
             ItemStack itemstack1 = slot.getStack();
@@ -116,7 +116,7 @@ public class ContainerPrinter extends Container
                 // Transfer from printer to inventory
                 if(!mergeItemStack(itemstack1, 13, 49, true))
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else 
@@ -126,34 +126,34 @@ public class ContainerPrinter extends Container
                 {
                     if( !mergeItemStack(itemstack1, 0, 1, false) )
                     {
-                        return null;
+                        return ItemStack.EMPTY;
                     }
                 }
                 else //if is paper
                 {
                     if( !mergeItemStack(itemstack1, 1, 13, false) )
                     {
-                        return null;
+                        return ItemStack.EMPTY;
                     }
                 }
             }
             
-            if(itemstack1.stackSize == 0)
+            if(itemstack1.getCount() == 0)
             {
-                slot.putStack(null);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {
                 slot.onSlotChanged();
             }
             
-            if(itemstack1.stackSize != itemstack.stackSize)
+            if(itemstack1.getCount() != itemstack.getCount())
             {
-                slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
+                slot.onTake(par1EntityPlayer, itemstack1);
             }
             else
             {
-                return null;
+                return ItemStack.EMPTY;
             }
         }
         return itemstack;

@@ -17,8 +17,10 @@ import dan200.computercraft.shared.util.Colour;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class TurtleUpgradeRecipe implements IRecipe
 {
@@ -48,53 +50,53 @@ public class TurtleUpgradeRecipe implements IRecipe
     public ItemStack getCraftingResult( InventoryCrafting inventory )
     {
         // Scan the grid for a row containing a turtle and 1 or 2 items
-        ItemStack leftItem = null;
-        ItemStack turtle = null;
-        ItemStack rightItem = null;
+        ItemStack leftItem = ItemStack.EMPTY;
+        ItemStack turtle = ItemStack.EMPTY;
+        ItemStack rightItem = ItemStack.EMPTY;
 
         for( int y=0; y<inventory.getHeight(); ++y )
         {
-            if( turtle == null )
+            if( turtle == ItemStack.EMPTY )
             {
                 // Search this row for potential turtles
                 boolean finishedRow = false;
                 for( int x=0; x<inventory.getWidth(); ++x )
                 {
                     ItemStack item = inventory.getStackInRowAndColumn(x, y);
-                    if( item != null ) {
+                    if( !item.isEmpty() ) {
                         if( finishedRow ) {
-                            return null;
+                            return ItemStack.EMPTY;
                         }
                         
                         if( item.getItem() instanceof ITurtleItem ) {
                             // Item is a turtle
-                            if( turtle == null ) {
+                            if( turtle == ItemStack.EMPTY ) {
                                 turtle = item;
                             } else {
-                                return null;
+                                return ItemStack.EMPTY;
                             }
                         } else {
                             // Item is not a turtle
-                            if( turtle == null && leftItem == null ) {
+                            if( turtle == ItemStack.EMPTY && leftItem == ItemStack.EMPTY ) {
                                 leftItem = item;
-                            } else if( turtle != null && rightItem == null ) {
+                            } else if( turtle != ItemStack.EMPTY && rightItem == ItemStack.EMPTY ) {
                                 rightItem = item;
                             } else {
-                                return null;
+                                return ItemStack.EMPTY;
                             }
                         }
                     } else {
                         // Item is empty
-                        if( leftItem != null || turtle != null ) {
+                        if( leftItem != ItemStack.EMPTY || turtle != ItemStack.EMPTY ) {
                             finishedRow = true;
                         }
                     }
                 }
                 
                 // If we found anything, check we found a turtle too
-                if( turtle == null && (leftItem != null || rightItem != null) )
+                if( turtle == ItemStack.EMPTY && (leftItem != ItemStack.EMPTY || !rightItem.isEmpty()) )
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else
@@ -103,17 +105,17 @@ public class TurtleUpgradeRecipe implements IRecipe
                 for( int x=0; x<inventory.getWidth(); ++x )
                 {
                     ItemStack item = inventory.getStackInRowAndColumn(x, y);
-                    if( item != null ) {
-                        return null;
+                    if( !item.isEmpty() ) {
+                        return ItemStack.EMPTY;
                     }
                 }
             }
         }
         
         // See if we found a turtle + one or more items
-        if( turtle == null || (leftItem == null && rightItem == null))
+        if( turtle == ItemStack.EMPTY || (leftItem == ItemStack.EMPTY && rightItem == ItemStack.EMPTY))
         {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         // At this point we have a turtle + 1 or 2 items
@@ -134,15 +136,15 @@ public class TurtleUpgradeRecipe implements IRecipe
                 ITurtleUpgrade itemUpgrade = ComputerCraft.getTurtleUpgrade( items[ i ] );
                 if( itemUpgrade == null )
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
                 if( upgrades[i] != null )
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
                 if( !CCTurtleProxyCommon.isUpgradeSuitableForFamily( family, itemUpgrade ) )
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
                 upgrades[i] = itemUpgrade;
             }
@@ -158,14 +160,14 @@ public class TurtleUpgradeRecipe implements IRecipe
     }
 
     @Override
-    public ItemStack[] getRemainingItems( InventoryCrafting inventoryCrafting )
+    public NonNullList<ItemStack> getRemainingItems( InventoryCrafting inventoryCrafting )
     {
-        ItemStack[] results = new ItemStack[ inventoryCrafting.getSizeInventory() ];
-        for (int i = 0; i < results.length; ++i)
+        NonNullList<ItemStack> list = NonNullList.create();
+        for (int i = 0; i < inventoryCrafting.getSizeInventory(); ++i)
         {
             ItemStack stack = inventoryCrafting.getStackInSlot(i);
-            results[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(stack);
+            list.add( ForgeHooks.getContainerItem(stack) );
         }
-        return results;
+        return list;
     }
 }

@@ -22,6 +22,6 @@ public class ContainerComputer extends Container
     @Override
     public boolean canInteractWith( EntityPlayer player )
     {
-        return m_computer.isUseableByPlayer( player );
+        return m_computer.isUsableByPlayer( player );
     }
 }

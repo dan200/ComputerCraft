@@ -8,3 +8,5 @@ deploy
 .gradle
 luaj-2.0.3/lib
 luaj-2.0.3/*.jar
+.idea
+classes

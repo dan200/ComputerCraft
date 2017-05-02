@@ -44,14 +44,14 @@ public abstract class TileModemBase extends TilePeripheralBase
     public void onNeighbourChange()
     {
         EnumFacing dir = getDirection();
-        if( !worldObj.isSideSolid(
+        if( !getWorld().isSideSolid(
             getPos().offset( dir ),
             dir.getOpposite()
         ) )
         {
             // Drop everything and remove block
-            ((BlockGeneric)getBlockType()).dropAllItems( worldObj, getPos(), false );
-            worldObj.setBlockToAir( getPos() );
+            ((BlockGeneric)getBlockType()).dropAllItems( getWorld(), getPos(), false );
+            getWorld().setBlockToAir( getPos() );
         }
     }
 
@@ -92,7 +92,7 @@ public abstract class TileModemBase extends TilePeripheralBase
     public void update()
     {
         super.update();
-        if( !worldObj.isRemote && m_modem.pollChanged() )
+        if( !getWorld().isRemote && m_modem.pollChanged() )
         {
             updateAnim();
         }

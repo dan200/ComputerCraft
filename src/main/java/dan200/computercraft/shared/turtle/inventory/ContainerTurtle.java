@@ -97,7 +97,7 @@ public class ContainerTurtle extends Container
         int selectedSlot = m_turtle.getSelectedSlot();
         for( int i=0; i<listeners.size(); ++i )
         {
-            IContainerListener icrafting = (IContainerListener)listeners.get(i);
+            IContainerListener icrafting = listeners.get(i);
             if( m_selectedSlot != selectedSlot )
             {
                 icrafting.sendProgressBarUpdate( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
@@ -126,14 +126,14 @@ public class ContainerTurtle extends Container
         TileTurtle turtle = ((TurtleBrain)m_turtle).getOwner();
         if( turtle != null )
         {
-            return turtle.isUseableByPlayer( player );
+            return turtle.isUsableByPlayer( player );
         }
         return false;
     }
 
     protected ItemStack tryItemMerge( EntityPlayer player, int slotNum, int firstSlot, int lastSlot, boolean reverse )
     {
-        Slot slot = (Slot)inventorySlots.get( slotNum );
+        Slot slot = inventorySlots.get( slotNum );
         ItemStack originalStack = null;
         if( slot != null && slot.getHasStack() )
         {
@@ -144,7 +144,7 @@ public class ContainerTurtle extends Container
                 return null;
             }
 
-            if( clickedStack.stackSize == 0 )
+            if( clickedStack.getCount() == 0 )
             {
                 slot.putStack( null );
             }
@@ -153,9 +153,9 @@ public class ContainerTurtle extends Container
                 slot.onSlotChanged();
             }
 
-            if( clickedStack.stackSize != originalStack.stackSize )
+            if( clickedStack.getCount() != originalStack.getCount() )
             {
-                slot.onPickupFromSlot( player, clickedStack );
+                slot.onTake( player, clickedStack );
             }
             else
             {

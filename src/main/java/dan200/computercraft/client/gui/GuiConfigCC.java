@@ -47,6 +47,18 @@ public class GuiConfigCC extends GuiConfig
         }
 
         @Override
+        public boolean hasConfigGui()
+        {
+            return true;
+        }
+
+        @Override
+        public GuiScreen createConfigGui( GuiScreen parentScreen )
+        {
+            return new GuiConfigCC( parentScreen );
+        }
+
+        @Override
         public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
         {
             return null;

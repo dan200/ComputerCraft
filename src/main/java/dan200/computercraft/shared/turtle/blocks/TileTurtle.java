@@ -75,7 +75,7 @@ public class TileTurtle extends TileComputerBase
     protected final ServerComputer createComputer( int instanceID, int id, int termWidth, int termHeight )
     {
         ServerComputer computer = new ServerComputer(
-            worldObj,
+            getWorld(),
             id,
             m_label,
             instanceID,
@@ -104,7 +104,7 @@ public class TileTurtle extends TileComputerBase
             super.destroy();
 
             // Drop contents
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 int size = getSizeInventory();
                 for( int i=0; i<size; ++i )
@@ -112,7 +112,7 @@ public class TileTurtle extends TileComputerBase
                     ItemStack stack = getStackInSlot( i );
                     if( stack != null )
                     {
-                        WorldUtil.dropItemStack( stack, worldObj, getPos() );
+                        WorldUtil.dropItemStack( stack, getWorld(), getPos() );
                     }
                 }
             }
@@ -122,7 +122,7 @@ public class TileTurtle extends TileComputerBase
             // Just turn off any redstone we had on
             for( EnumFacing dir : EnumFacing.VALUES )
             {
-                RedstoneUtil.propogateRedstoneOutput( worldObj, getPos(), dir );
+                RedstoneUtil.propogateRedstoneOutput( getWorld(), getPos(), dir );
             }
         }
     }
@@ -160,12 +160,12 @@ public class TileTurtle extends TileComputerBase
 
         // Apply dye
         ItemStack currentItem = player.getHeldItem( EnumHand.MAIN_HAND );
-        if( currentItem != null )
+        if( !currentItem.isEmpty() )
         {
             if( currentItem.getItem() == Items.DYE )
             {
                 // Dye to change turtle colour
-                if( !worldObj.isRemote )
+                if( !getWorld().isRemote )
                 {
                     int dye = (currentItem.getItemDamage() & 0xf);
                     if( m_brain.getDyeColour() != dye )
@@ -173,7 +173,7 @@ public class TileTurtle extends TileComputerBase
                         m_brain.setDyeColour( dye );
                         if( !player.capabilities.isCreativeMode )
                         {
-                            currentItem.stackSize--;
+                            currentItem.shrink( 1 );
                         }
                     }
                 }
@@ -182,14 +182,14 @@ public class TileTurtle extends TileComputerBase
             else if( currentItem.getItem() == Items.WATER_BUCKET && m_brain.getDyeColour() != -1 )
             {
                 // Water to remove turtle colour
-                if( !worldObj.isRemote )
+                if( !getWorld().isRemote )
                 {
                     if( m_brain.getDyeColour() != -1 )
                     {
                         m_brain.setDyeColour( -1 );
                         if( !player.capabilities.isCreativeMode )
                         {
-                            currentItem.setItem( Items.BUCKET );
+                            player.setHeldItem( EnumHand.MAIN_HAND,new ItemStack( Items.BUCKET ) );
                         }
                     }
                 }
@@ -259,7 +259,7 @@ public class TileTurtle extends TileComputerBase
         m_brain.update();
         synchronized( m_inventory )
         {
-            if( !worldObj.isRemote && m_inventoryChanged )
+            if( !getWorld().isRemote && m_inventoryChanged )
             {
                 IComputer computer = getComputer();
                 if( computer != null )
@@ -291,7 +291,7 @@ public class TileTurtle extends TileComputerBase
             int slot = itemtag.getByte("Slot") & 0xff;
             if( slot >= 0 && slot < getSizeInventory() )
             {
-                m_inventory[slot] = ItemStack.loadItemStackFromNBT( itemtag );
+                m_inventory[slot] = new ItemStack( itemtag );
                 m_previousInventory[slot] = InventoryUtil.copyItem( m_inventory[slot] );
             }
         }
@@ -448,7 +448,7 @@ public class TileTurtle extends TileComputerBase
                 return null;
             }
             
-            if( stack.stackSize <= count )
+            if( stack.getCount() <= count )
             {
                 setInventorySlotContents( slot, null );
                 return stack;
@@ -583,7 +583,13 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public boolean isUseableByPlayer( EntityPlayer player )
+    public boolean isEmpty()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isUsableByPlayer( EntityPlayer player )
     {
         return isUsable( player, false );
     }

@@ -165,6 +165,6 @@ public class WorldUtil
         entityItem.motionY = yDir * 0.7 + world.rand.nextFloat() * 0.2 - 0.1;
         entityItem.motionZ = zDir * 0.7 + world.rand.nextFloat() * 0.2 - 0.1;
         entityItem.setDefaultPickupDelay();
-        world.spawnEntityInWorld( entityItem );
+        world.spawnEntity( entityItem );
     }
 }

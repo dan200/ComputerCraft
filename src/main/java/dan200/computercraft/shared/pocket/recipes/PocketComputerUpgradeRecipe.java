@@ -14,7 +14,9 @@ import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class PocketComputerUpgradeRecipe implements IRecipe
 {
@@ -124,14 +126,14 @@ public class PocketComputerUpgradeRecipe implements IRecipe
     }
 
     @Override
-    public ItemStack[] getRemainingItems( InventoryCrafting inventoryCrafting )
+    public NonNullList<ItemStack> getRemainingItems( InventoryCrafting inventoryCrafting )
     {
-        ItemStack[] results = new ItemStack[ inventoryCrafting.getSizeInventory() ];
-        for (int i = 0; i < results.length; ++i)
+        NonNullList<ItemStack> list = NonNullList.create();
+        for (int i = 0; i < inventoryCrafting.getSizeInventory(); ++i)
         {
             ItemStack stack = inventoryCrafting.getStackInSlot(i);
-            results[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(stack);
+            list.add( ForgeHooks.getContainerItem(stack) );
         }
-        return results;
+        return list;
     }
 }

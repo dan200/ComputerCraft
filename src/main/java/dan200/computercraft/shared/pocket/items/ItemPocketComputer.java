@@ -26,10 +26,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
@@ -79,7 +76,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     }
 
     @Override
-    public void getSubItems( Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list )
     {
         list.add( PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, false ) );
         list.add( PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, true ) );
@@ -162,8 +159,9 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick( ItemStack stack, World world, EntityPlayer player, EnumHand hand )
+    public ActionResult<ItemStack> onItemRightClick( World world, EntityPlayer player, EnumHand hand )
     {
+        ItemStack stack = player.getHeldItem( hand );
         if( !world.isRemote )
         {
             ServerComputer computer = createServerComputer( world, player.inventory, stack );

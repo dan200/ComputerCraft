@@ -38,7 +38,7 @@ public class RedstoneUtil
             {
                 if( side != EnumFacing.UP )
                 {
-                    power = ((Integer)state.getValue( BlockRedstoneWire.POWER )).intValue();
+                    power = state.getValue( BlockRedstoneWire.POWER );
                 }
                 else
                 {
@@ -86,7 +86,7 @@ public class RedstoneUtil
         Block neighbour = getBlock( world, neighbourPos );
         if( neighbour != null && neighbour != Blocks.AIR )
         {
-            world.notifyBlockOfStateChange( neighbourPos, block );
+            world.notifyNeighborsOfStateChange( neighbourPos, block, true);
             if( neighbour.isNormalCube( world.getBlockState( neighbourPos ), world, neighbourPos ) )
             {
                 world.notifyNeighborsOfStateExcept( neighbourPos, neighbour, side.getOpposite() );

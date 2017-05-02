@@ -23,6 +23,7 @@ import dan200.computercraft.shared.util.HolidayUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -515,7 +516,7 @@ public class TurtleBrain implements ITurtleAccess
                 {
                     // Copy the old turtle state into the new turtle
                     TileTurtle newTurtle = (TileTurtle)newTile;
-                    newTurtle.setWorldObj( world );
+                    newTurtle.setWorld( world );
                     newTurtle.setPos( pos );
                     newTurtle.transferStateFrom( m_owner );
                     newTurtle.createServerComputer().setWorld( world );
@@ -1130,7 +1131,7 @@ public class TurtleBrain implements ITurtleAccess
                         for( int i = 0; i < list.size(); ++i )
                         {
                             Entity entity = (Entity) list.get( i );
-                            entity.moveEntity(
+                            entity.move( MoverType.PISTON,
                                 pushStepX, pushStepY, pushStepZ
                             );
                         }

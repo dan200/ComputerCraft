@@ -11,6 +11,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class TurtleMultiModel implements IBakedModel
 {
     private IBakedModel m_baseModel;
