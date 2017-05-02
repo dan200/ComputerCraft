@@ -4,14 +4,18 @@ public class StringUtil
 {
     public static String normaliseLabel( String label )
     {
-        StringBuilder builder = new StringBuilder();
-
-        for (int i = 0; i < label.length() && builder.length() < 32; i++)
+        int length = Math.min( 32, label.length() );
+        StringBuilder builder = new StringBuilder( length );
+        for (int i = 0; i < length; i++)
         {
             char c = label.charAt( i );
             if( (c >= ' ' && c <= '~') || (c >= 161 && c <= 172) || (c >= 174 && c <= 255) )
             {
                 builder.append( c );
+            }
+            else
+            {
+                builder.append( '?' );
             }
         }
 
