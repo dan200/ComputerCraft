@@ -113,6 +113,7 @@ public class ComputerThread
                                 } );
                                 
                                 // Run the task
+                                worker.setDaemon(true);
                                 worker.start();
                                 worker.join( 7000 );
                                 
@@ -173,7 +174,8 @@ public class ComputerThread
                     }
                 }
             }, "Computer Dispatch Thread" );
-                
+
+            m_thread.setDaemon(true);
             m_thread.start();
             m_running = true;
         }

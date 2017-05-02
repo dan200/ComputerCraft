@@ -231,7 +231,7 @@ public class HTTPRequest
                 }
             }
         } );
-        
+        thread.setDaemon(true);
         thread.start();
     }
     
