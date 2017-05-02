@@ -1,9 +1,9 @@
 {
     "parent": "block/block",
     "textures": {
-        "particle": "computercraft:blocks/cableCore",
-        "side": "computercraft:blocks/cableSide",
-        "end": "computercraft:blocks/cableCore"
+        "particle": "computercraft:blocks/cable_core",
+        "side": "computercraft:blocks/cable_side",
+        "end": "computercraft:blocks/cable_core"
     },
     "elements": [
         {   
