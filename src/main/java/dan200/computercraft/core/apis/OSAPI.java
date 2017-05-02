@@ -8,6 +8,7 @@ package dan200.computercraft.core.apis;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.shared.util.StringUtil;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -266,11 +267,7 @@ public class OSAPI implements ILuaAPI
                     {
                         throw new LuaException( "Expected string or nil" );
                     }
-                    label = (String)args[0];
-                    if( label.length() > 32 )
-                    {
-                        label = label.substring( 0, 32 );
-                    }
+                    label = StringUtil.normaliseLabel( (String) args[0] );
                 }
                 m_apiEnvironment.setLabel( label );
                 return null;
