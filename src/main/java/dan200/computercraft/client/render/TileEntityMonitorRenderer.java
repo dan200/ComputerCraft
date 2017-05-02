@@ -128,106 +128,91 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
 
                         // Draw background
                         mc.getTextureManager().bindTexture( FixedWidthFontRenderer.background );
-                        if( redraw )
+
+                        double marginXSize = TileMonitor.RENDER_MARGIN / xScale;
+                        double marginYSize = TileMonitor.RENDER_MARGIN / yScale;
+                        double marginSquash = marginYSize / (double) FixedWidthFontRenderer.FONT_HEIGHT;
+
+                        // Top and bottom margins
+                        GlStateManager.pushMatrix();
+                        try
                         {
-                            // Build background display list
-                            GL11.glNewList( origin.m_renderDisplayList, GL11.GL_COMPILE );
-                            try
-                            {
-                                double marginXSize = TileMonitor.RENDER_MARGIN / xScale;
-                                double marginYSize = TileMonitor.RENDER_MARGIN / yScale;
-                                double marginSquash = marginYSize / (double) FixedWidthFontRenderer.FONT_HEIGHT;
+                            renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
 
-                                // Top and bottom margins
-                                GlStateManager.pushMatrix();
-                                try
-                                {
-                                    GlStateManager.scale( 1.0, marginSquash, 1.0 );
-                                    GlStateManager.translate( 0.0, -marginYSize / marginSquash, 0.0 );
-                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( 0 ), marginXSize, marginXSize, greyscale );
-                                    GlStateManager.translate( 0.0, ( marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT ) / marginSquash, 0.0 );
-                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( height - 1 ), marginXSize, marginXSize, greyscale );
-                                }
-                                finally
-                                {
-                                    GlStateManager.popMatrix();
-                                }
+                            fontRenderer.drawStringBackgroundPart(
+                                    renderer, 0, (int) (-marginYSize / marginSquash),
+                                    terminal.getBackgroundColourLine( 0 ),
+                                    marginXSize, marginXSize,
+                                    greyscale
+                            );
 
-                                // Backgrounds
-                                for( int y = 0; y < height; ++y )
-                                {
-                                    fontRenderer.drawStringBackgroundPart(
-                                            0, FixedWidthFontRenderer.FONT_HEIGHT * y,
-                                            terminal.getBackgroundColourLine( y ),
-                                            marginXSize, marginXSize,
-                                            greyscale
-                                    );
-                                }
-                            }
-                            finally
-                            {
-                                GL11.glEndList();
-                            }
+                            fontRenderer.drawStringBackgroundPart(
+                                    renderer, 0, (int) ((-marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT) / marginSquash),
+                                    terminal.getBackgroundColourLine( height - 1 ),
+                                    marginXSize, marginXSize,
+                                    greyscale
+                            );
+
+                            GlStateManager.scale( 1.0, marginSquash, 1.0 );
+                            tessellator.draw();
                         }
-                        GlStateManager.callList( origin.m_renderDisplayList );
+                        finally
+                        {
+                            GlStateManager.popMatrix();
+                        }
+
+                        // Backgrounds
+                        renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+
+                        for( int y = 0; y < height; ++y )
+                        {
+                            fontRenderer.drawStringBackgroundPart(
+                                    renderer,
+                                    0, FixedWidthFontRenderer.FONT_HEIGHT * y,
+                                    terminal.getBackgroundColourLine( y ),
+                                    marginXSize, marginXSize,
+                                    greyscale
+                            );
+                        }
+
+                        tessellator.draw();
 
                         // Draw text
                         mc.getTextureManager().bindTexture( FixedWidthFontRenderer.font );
-                        if( redraw )
+
+                        renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+
+                        // Lines
+                        for( int y = 0; y < height; ++y )
                         {
-                            // Build text display list
-                            GL11.glNewList( origin.m_renderDisplayList + 1, GL11.GL_COMPILE );
-                            try
-                            {
-                                // Lines
-                                for( int y = 0; y < height; ++y )
-                                {
-                                    fontRenderer.drawStringTextPart(
-                                            0, FixedWidthFontRenderer.FONT_HEIGHT * y,
-                                            terminal.getLine( y ),
-                                            terminal.getTextColourLine( y ),
-                                            greyscale
-                                    );
-                                }
-                            }
-                            finally
-                            {
-                                GL11.glEndList();
-                            }
+                            fontRenderer.drawStringTextPart(
+                                    renderer,
+                                    0, FixedWidthFontRenderer.FONT_HEIGHT * y,
+                                    terminal.getLine( y ),
+                                    terminal.getTextColourLine( y ),
+                                    greyscale
+                            );
                         }
-                        GlStateManager.callList( origin.m_renderDisplayList + 1 );
+
+                        tessellator.draw();
 
                         // Draw cursor
                         mc.getTextureManager().bindTexture( FixedWidthFontRenderer.font );
-                        if( redraw )
+
+                        // Cursor
+                        if( ComputerCraft.getGlobalCursorBlink() && terminal.getCursorBlink() && cursorX >= 0 && cursorX < width && cursorY >= 0 && cursorY < height )
                         {
-                            // Build cursor display list
-                            GL11.glNewList( origin.m_renderDisplayList + 2, GL11.GL_COMPILE );
-                            try
-                            {
-                                // Cursor
-                                if( terminal.getCursorBlink() && cursorX >= 0 && cursorX < width && cursorY >= 0 && cursorY < height )
-                                {
-                                    TextBuffer cursor = new TextBuffer( "_" );
-                                    TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
-                                    fontRenderer.drawString(
-                                            cursor,
-                                            FixedWidthFontRenderer.FONT_WIDTH * cursorX,
-                                            FixedWidthFontRenderer.FONT_HEIGHT * cursorY,
-                                            cursorColour, null,
-                                            0, 0,
-                                            greyscale
-                                    );
-                                }
-                            }
-                            finally
-                            {
-                                GL11.glEndList();
-                            }
-                        }
-                        if( ComputerCraft.getGlobalCursorBlink() )
-                        {
-                            GlStateManager.callList( origin.m_renderDisplayList + 2 );
+                            TextBuffer cursor = new TextBuffer( "_" );
+                            TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
+
+                            fontRenderer.drawString(
+                                    cursor,
+                                    FixedWidthFontRenderer.FONT_WIDTH * cursorX,
+                                    FixedWidthFontRenderer.FONT_HEIGHT * cursorY,
+                                    cursorColour, null,
+                                    0, 0,
+                                    greyscale
+                            );
                         }
                     }
                     finally

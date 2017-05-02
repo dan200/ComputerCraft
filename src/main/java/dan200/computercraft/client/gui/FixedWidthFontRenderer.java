@@ -57,10 +57,16 @@ public class FixedWidthFontRenderer
 
     public void drawStringBackgroundPart( int x, int y, TextBuffer backgroundColour, double leftMarginSize, double rightMarginSize, boolean greyScale )
     {
-        // Draw the quads
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer renderer = tessellator.getBuffer();
         renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+        drawStringBackgroundPart( renderer, x, y, backgroundColour, leftMarginSize, rightMarginSize, greyScale );
+        tessellator.draw();
+    }
+
+    public void drawStringBackgroundPart( VertexBuffer renderer, int x, int y, TextBuffer backgroundColour, double leftMarginSize, double rightMarginSize, boolean greyScale )
+    {
+        // Draw the quads
         if( leftMarginSize > 0.0 )
         {
             int colour1 = "0123456789abcdef".indexOf( backgroundColour.charAt( 0 ) );
@@ -88,15 +94,20 @@ public class FixedWidthFontRenderer
             }
             drawQuad( renderer, x + i * FONT_WIDTH, y, colour, FONT_WIDTH );
         }
-        tessellator.draw();
     }
 
     public void drawStringTextPart( int x, int y, TextBuffer s, TextBuffer textColour, boolean greyScale )
     {
-        // Draw the quads
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer renderer = tessellator.getBuffer();
         renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+        drawStringTextPart(renderer, x, y, s, textColour, greyScale);
+        tessellator.draw();
+    }
+
+    public void drawStringTextPart( VertexBuffer renderer, int x, int y, TextBuffer s, TextBuffer textColour, boolean greyScale )
+    {
+        // Draw the quads
         for( int i = 0; i < s.length(); i++ )
         {
             // Switch colour
@@ -114,11 +125,13 @@ public class FixedWidthFontRenderer
             }
             drawChar( renderer, x + i * FONT_WIDTH, y, index, colour );
         }
-        tessellator.draw();
     }
 
     public void drawString( TextBuffer s, int x, int y, TextBuffer textColour, TextBuffer backgroundColour, double leftMarginSize, double rightMarginSize, boolean greyScale )
     {
+        Tessellator tess = Tessellator.getInstance();
+        VertexBuffer renderer = tess.getBuffer();
+
         // Draw background
         if( backgroundColour != null )
         {
@@ -126,7 +139,9 @@ public class FixedWidthFontRenderer
             m_textureManager.bindTexture( background );
 
             // Draw the quads
-            drawStringBackgroundPart( x, y, backgroundColour, leftMarginSize, rightMarginSize, greyScale );
+            renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+            drawStringBackgroundPart( renderer, x, y, backgroundColour, leftMarginSize, rightMarginSize, greyScale );
+            tess.draw();
         }
     
         // Draw text
@@ -136,7 +151,9 @@ public class FixedWidthFontRenderer
             m_textureManager.bindTexture( font );
             
             // Draw the quads
-            drawStringTextPart( x, y, s, textColour, greyScale );
+            renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+            drawStringTextPart( renderer, x, y, s, textColour, greyScale );
+            tess.draw();
         }
     }
 
