@@ -104,13 +104,6 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             {
                 if( terminal != null )
                 {
-                    // Allocate display lists
-                    if( origin.m_renderDisplayList < 0 )
-                    {
-                        origin.m_renderDisplayList = GL11.glGenLists( 3 );
-                        redraw = true;
-                    }
-
                     // Draw a terminal
                     boolean greyscale = !clientTerminal.isColour();
                     int width = terminal.getWidth();
