@@ -14,6 +14,7 @@ import dan200.computercraft.api.media.IMediaProvider;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.api.permissions.ITurtlePermissionProvider;
+import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.core.filesystem.ComboMount;
@@ -38,15 +39,13 @@ import dan200.computercraft.shared.peripheral.modem.BlockAdvancedModem;
 import dan200.computercraft.shared.peripheral.modem.WirelessNetwork;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
+import dan200.computercraft.shared.pocket.peripherals.PocketModem;
 import dan200.computercraft.shared.proxy.ICCTurtleProxy;
 import dan200.computercraft.shared.proxy.IComputerCraftProxy;
 import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.upgrades.*;
-import dan200.computercraft.shared.util.CreativeTabMain;
-import dan200.computercraft.shared.util.IDAssigner;
-import dan200.computercraft.shared.util.IEntityDropConsumer;
-import dan200.computercraft.shared.util.WorldUtil;
+import dan200.computercraft.shared.util.*;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -75,9 +74,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 ///////////////
 // UNIVERSAL //
@@ -163,6 +160,12 @@ public class ComputerCraft
         public static TurtleModem advancedModem;
     }
 
+    public static class PocketUpgrades
+    {
+        public static PocketModem wirelessModem;
+        public static PocketModem advancedModem;
+    }
+
     public static class Config {
         public static Configuration config;
 
@@ -186,7 +189,6 @@ public class ComputerCraft
         public static Property computerSpaceLimit;
         public static Property floppySpaceLimit;
         public static Property maximumFilesOpen;
-
     }
 
     // Registries
@@ -204,6 +206,7 @@ public class ComputerCraft
     private static List<IBundledRedstoneProvider> bundledRedstoneProviders = new ArrayList<IBundledRedstoneProvider>();
     private static List<IMediaProvider> mediaProviders = new ArrayList<IMediaProvider>();
     private static List<ITurtlePermissionProvider> permissionProviders = new ArrayList<ITurtlePermissionProvider>();
+    private static final Map<String, IPocketUpgrade> pocketUpgrades = new HashMap<String, IPocketUpgrade>();
 
     // Implementation
     @Mod.Instance( value = "ComputerCraft" )
@@ -539,6 +542,18 @@ public class ComputerCraft
         return true;
     }
 
+    public static void registerPocketUpgrade( IPocketUpgrade upgrade )
+    {
+        String id = upgrade.getUpgradeID().toString();
+        IPocketUpgrade existing = pocketUpgrades.get( id );
+        if( existing != null )
+        {
+            throw new RuntimeException( "Error registering '" + upgrade.getUnlocalisedAdjective() + " pocket computer'. UpgradeID '" + id + "' is already registered by '" + existing.getUnlocalisedAdjective() + " pocket computer'" );
+        }
+
+        pocketUpgrades.put( id, upgrade );
+    }
+
     public static void registerPeripheralProvider( IPeripheralProvider provider )
     {
         if( provider != null && !peripheralProviders.contains( provider ) )
@@ -657,6 +672,37 @@ public class ComputerCraft
             return null;
         }
         return null;
+    }
+
+    public static IPocketUpgrade getPocketUpgrade(String id) {
+        return pocketUpgrades.get( id );
+    }
+
+    public static IPocketUpgrade getPocketUpgrade( ItemStack stack )
+    {
+        if( stack == null ) return null;
+
+        for (IPocketUpgrade upgrade : pocketUpgrades.values())
+        {
+            ItemStack craftingStack = upgrade.getCraftingItem();
+            if( craftingStack != null && InventoryUtil.areItemsStackable( stack, craftingStack ) )
+            {
+                return upgrade;
+            }
+        }
+
+        return null;
+    }
+
+    public static Iterable<IPocketUpgrade> getVanillaPocketUpgrades() {
+        List<IPocketUpgrade> upgrades = new ArrayList<IPocketUpgrade>();
+        for(IPocketUpgrade upgrade : pocketUpgrades.values()) {
+            if(upgrade instanceof PocketModem) {
+                upgrades.add( upgrade );
+            }
+        }
+
+        return upgrades;
     }
 
     public static int createUniqueNumberedSaveDir( World world, String parentSubPath )

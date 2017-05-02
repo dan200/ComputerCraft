@@ -129,7 +129,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             public ModelResourceLocation getModelLocation( ItemStack stack )
             {
                 ItemPocketComputer itemPocketComputer = (ItemPocketComputer)stack.getItem();
-                boolean modemOn = itemPocketComputer.getModemState( stack );
+                boolean modemOn = itemPocketComputer.getLightState( stack );
                 switch( itemPocketComputer.getFamily( stack ) )
                 {
                     case Advanced:

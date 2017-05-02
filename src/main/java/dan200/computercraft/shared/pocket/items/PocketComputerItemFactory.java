@@ -7,12 +7,13 @@
 package dan200.computercraft.shared.pocket.items;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import net.minecraft.item.ItemStack;
 
 public class PocketComputerItemFactory
 {
-    public static ItemStack create( int id, String label, ComputerFamily family, boolean modem )
+    public static ItemStack create( int id, String label, ComputerFamily family, IPocketUpgrade upgrade )
     {
         ItemPocketComputer computer = ComputerCraft.Items.pocketComputer;
         switch( family )
@@ -20,7 +21,7 @@ public class PocketComputerItemFactory
             case Normal:
             case Advanced:
             {
-                return computer.create( id, label, family, modem );
+                return computer.create( id, label, family, upgrade );
             }
         }
         return null;

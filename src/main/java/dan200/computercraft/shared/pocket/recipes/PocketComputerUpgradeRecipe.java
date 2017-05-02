@@ -6,9 +6,9 @@
 
 package dan200.computercraft.shared.pocket.recipes;
 
+import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
-import dan200.computercraft.shared.peripheral.PeripheralType;
-import dan200.computercraft.shared.peripheral.common.IPeripheralItem;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -31,7 +31,7 @@ public class PocketComputerUpgradeRecipe implements IRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, true );
+        return PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, null );
     }
 
     @Override
@@ -47,9 +47,9 @@ public class PocketComputerUpgradeRecipe implements IRecipe
         ItemStack computer = null;
         int computerX = -1;
         int computerY = -1;
-        for( int y=0; y<inventory.getHeight(); ++y )
+        for (int y = 0; y < inventory.getHeight(); ++y)
         {
-            for( int x=0; x<inventory.getWidth(); ++x )
+            for (int x = 0; x < inventory.getWidth(); ++x)
             {
                 ItemStack item = inventory.getStackInRowAndColumn( x, y );
                 if( item != null && item.getItem() instanceof ItemPocketComputer )
@@ -71,11 +71,17 @@ public class PocketComputerUpgradeRecipe implements IRecipe
             return null;
         }
 
-        // Check for upgrades around the item
-        ItemStack upgrade = null;
-        for( int y=0; y<inventory.getHeight(); ++y )
+        ItemPocketComputer itemComputer = (ItemPocketComputer)computer.getItem();
+        if( itemComputer.getUpgrade( computer ) != null )
         {
-            for( int x=0; x<inventory.getWidth(); ++x )
+            return null;
+        }
+
+        // Check for upgrades around the item
+        IPocketUpgrade upgrade = null;
+        for (int y = 0; y < inventory.getHeight(); ++y)
+        {
+            for (int x = 0; x < inventory.getWidth(); ++x)
             {
                 ItemStack item = inventory.getStackInRowAndColumn( x, y );
                 if( x == computerX && y == computerY )
@@ -84,22 +90,12 @@ public class PocketComputerUpgradeRecipe implements IRecipe
                 }
                 else if( x == computerX && y == computerY - 1 )
                 {
-                    if( item != null && item.getItem() instanceof IPeripheralItem &&
-                        ((IPeripheralItem)item.getItem()).getPeripheralType( item ) == PeripheralType.WirelessModem )
-                    {
-                        upgrade = item;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    upgrade = ComputerCraft.getPocketUpgrade( item );
+                    if( upgrade == null ) return null;
                 }
-                else
+                else if( item != null )
                 {
-                    if( item != null )
-                    {
-                        return null;
-                    }
+                    return null;
                 }
             }
         }
@@ -109,18 +105,11 @@ public class PocketComputerUpgradeRecipe implements IRecipe
             return null;
         }
 
-        // At this point we have a computer + 1 upgrade
-        ItemPocketComputer itemComputer = (ItemPocketComputer)computer.getItem();
-        if( itemComputer.getHasModem( computer ) )
-        {
-            return null;
-        }
-
         // Construct the new stack
         ComputerFamily family = itemComputer.getFamily( computer );
         int computerID = itemComputer.getComputerID( computer );
         String label = itemComputer.getLabel( computer );
-        return PocketComputerItemFactory.create( computerID, label, family, true );
+        return PocketComputerItemFactory.create( computerID, label, family, upgrade );
     }
 
     @Override
