@@ -48,11 +48,8 @@ configurations {
     compile.extendsFrom shade
 }
 
-task luaj(dependsOn: ':luaj:jar-jse')
-compileJava.dependsOn('luaj')
-
 dependencies {
-	shade files('luaj/luaj-jse-2.0.3.jar')
+	shade project(':luaj')
 }
 
 processResources {

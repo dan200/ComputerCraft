@@ -1,1 +1,20 @@
-ant.importBuild('build.xml')
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+eclipse.project {
+    natures 'org.eclipse.buildship.core.gradleprojectnature'
+    natures 'org.springsource.ide.eclipse.gradle.core.nature'
+}
+
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ['src/core', 'src/jse']
+		}
+	}
+}
