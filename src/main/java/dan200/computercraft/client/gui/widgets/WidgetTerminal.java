@@ -16,6 +16,8 @@ import dan200.computercraft.shared.util.Colour;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
@@ -391,6 +393,7 @@ public class WidgetTerminal extends Widget
 
                 // Draw margins
                 TextBuffer emptyLine = new TextBuffer( ' ', tw );
+
                 if( m_topMargin > 0 )
                 {
                     fontRenderer.drawString( emptyLine, x, startY, terminal.getTextColourLine( 0 ), terminal.getBackgroundColourLine( 0 ), m_leftMargin, m_rightMargin, greyscale );
@@ -407,23 +410,23 @@ public class WidgetTerminal extends Widget
                     TextBuffer colour = terminal.getTextColourLine( line );
                     TextBuffer backgroundColour = terminal.getBackgroundColourLine( line );
                     fontRenderer.drawString( text, x, y, colour, backgroundColour, m_leftMargin, m_rightMargin, greyscale );
-                    if( tblink && ty == line )
-                    {
-                        if( tx >= 0 && tx < tw )
-                        {
-                            TextBuffer cursor = new TextBuffer( '_', 1 );
-                            TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
-                            fontRenderer.drawString(
-                                cursor,
-                                x + FixedWidthFontRenderer.FONT_WIDTH * tx,
-                                y,
-                                cursorColour, null,
-                                0, 0,
-                                greyscale
-                            );
-                        }
-                    }
-                    y = y + FixedWidthFontRenderer.FONT_HEIGHT;
+
+                    y += FixedWidthFontRenderer.FONT_HEIGHT;
+                }
+
+                if( tblink )
+                {
+                    TextBuffer cursor = new TextBuffer( '_', 1 );
+                    TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
+
+                    fontRenderer.drawString(
+                            cursor,
+                            x + FixedWidthFontRenderer.FONT_WIDTH * tx,
+                            startY + m_topMargin + FixedWidthFontRenderer.FONT_HEIGHT * ty,
+                            cursorColour, null,
+                            0, 0,
+                            greyscale
+                    );
                 }
             }
         }
@@ -433,14 +436,7 @@ public class WidgetTerminal extends Widget
             mc.getTextureManager().bindTexture( background );
             Colour black = Colour.Black;
             GlStateManager.color( black.getR(), black.getG(), black.getB(), 1.0f );
-            try
-            {
-                drawTexturedModalRect( startX, startY, 0, 0, getWidth(), getHeight() );
-            }
-            finally
-            {
-                GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
-            }
+            drawTexturedModalRect( startX, startY, 0, 0, getWidth(), getHeight() );
         }
     }
 

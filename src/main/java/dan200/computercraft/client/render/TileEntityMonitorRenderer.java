@@ -140,7 +140,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                             );
 
                             fontRenderer.drawStringBackgroundPart(
-                                    renderer, 0, (int) ((-marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT) / marginSquash),
+                                    renderer, 0, (int) ((height * FixedWidthFontRenderer.FONT_HEIGHT) / marginSquash),
                                     terminal.getBackgroundColourLine( height - 1 ),
                                     marginXSize, marginXSize,
                                     greyscale
@@ -264,7 +264,6 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
         }
         finally
         {
-            GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
             GlStateManager.popMatrix();
         }
     }
