@@ -18,7 +18,7 @@ public class GuiConfigCC extends GuiConfig
 {
     public GuiConfigCC( GuiScreen parentScreen )
     {
-        super( parentScreen, getConfigElements(), "ComputerCraft", false, false, "ComputerCraft" );
+        super( parentScreen, getConfigElements(), "computercraft", false, false, "ComputerCraft" );
     }
 
     private static List<IConfigElement> getConfigElements()
