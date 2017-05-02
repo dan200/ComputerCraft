@@ -12,6 +12,7 @@ import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.media.items.ItemDiskLegacy;
+import dan200.computercraft.shared.util.StringUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -87,6 +88,7 @@ public class DiskDrivePeripheral implements IPeripheral
                 if( media != null )
                 {
                     ItemStack disk = m_diskDrive.getDiskStack();
+                    label = StringUtil.normaliseLabel( label );
                     if( media.setLabel( disk, label ) )
                     {
                         m_diskDrive.setDiskStack( disk );
