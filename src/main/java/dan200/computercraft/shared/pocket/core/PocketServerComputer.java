@@ -117,6 +117,14 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
         }
     }
 
+    public ItemStack getStack() {
+        return m_stack;
+    }
+
+    public IPocketUpgrade getUpgrade() {
+        return m_upgrade;
+    }
+
     public void update( Entity entity, ItemStack stack )
     {
         if( m_entity != null ) setPosition( entity.getPosition() );

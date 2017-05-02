@@ -260,7 +260,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
                 stack,
                 entity
             );
-            computer.addAPI( new PocketAPI() );
+            computer.addAPI( new PocketAPI( computer ) );
             computer.setUpgrade( getUpgrade( stack ) );
             ComputerCraft.serverComputerRegistry.add( instanceID, computer );
             if( inventory != null )
@@ -478,5 +478,22 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         }
 
         return null;
+    }
+
+    public static void setUpgrade( ItemStack stack, IPocketUpgrade upgrade )
+    {
+        NBTTagCompound compound = stack.getTagCompound();
+        if( compound == null ) stack.setTagCompound( compound = new NBTTagCompound() );
+
+        if( upgrade == null )
+        {
+            compound.removeTag( "upgrade" );
+        }
+        else
+        {
+            compound.setString( "upgrade", upgrade.getUpgradeID().toString() );
+        }
+
+        compound.removeTag( "upgrade_info" );
     }
 }
