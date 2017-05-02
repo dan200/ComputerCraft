@@ -4,6 +4,8 @@ public class StringUtil
 {
     public static String normaliseLabel( String label )
     {
+        if( label == null ) return null;
+
         int length = Math.min( 32, label.length() );
         StringBuilder builder = new StringBuilder( length );
         for (int i = 0; i < length; i++)
