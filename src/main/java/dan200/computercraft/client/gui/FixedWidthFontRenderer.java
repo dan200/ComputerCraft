@@ -20,8 +20,8 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class FixedWidthFontRenderer
 {
-    public static ResourceLocation font = new ResourceLocation( "computercraft", "textures/gui/termFont.png" );
-    public static ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/termBackground.png" );
+    public static ResourceLocation font = new ResourceLocation( "computercraft", "textures/gui/termfont.png" );
+    public static ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/term_background.png" );
 
     public static int FONT_HEIGHT = 9;
     public static int FONT_WIDTH = 6;
