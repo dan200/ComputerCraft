@@ -15,7 +15,7 @@ The code in this repository will always represent the "bleeding edge" of the Com
 Contributing
 ============
 
-While ComputerCraft will no longer be actively developed by Daniel Ratcliffe, you may still contribute pull requests which will be reviewed and incorporated into releases periodically. A pull requests is more likely to be accepted if it meets the following criteria:
+While ComputerCraft will no longer be actively developed by Daniel Ratcliffe, you may still contribute pull requests which will be reviewed and incorporated into releases periodically. A pull request is more likely to be accepted if it meets the following criteria:
 
 * It does not add any new dependencies for compiling, running or using the mod.
 * It does not break compatibility with world saves or programs created with previous versions of the mod.
