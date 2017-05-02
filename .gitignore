@@ -6,5 +6,11 @@ deploy
 *.iws
 *.iml
 .gradle
-luaj-2.0.3/lib
-luaj-2.0.3/*.jar
+luaj/lib
+luaj/*.jar
+/bin/
+ComputerCraft_Client.launch
+ComputerCraft_Server.launch
+.classpath
+.project
+.settings/
