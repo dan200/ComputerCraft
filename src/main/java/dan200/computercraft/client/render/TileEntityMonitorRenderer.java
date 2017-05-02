@@ -130,7 +130,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         GlStateManager.pushMatrix();
                         try
                         {
-                            renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+                            renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR );
 
                             fontRenderer.drawStringBackgroundPart(
                                     renderer, 0, (int) (-marginYSize / marginSquash),
@@ -155,7 +155,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         }
 
                         // Backgrounds
-                        renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+                        renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR );
 
                         for( int y = 0; y < height; ++y )
                         {
@@ -173,7 +173,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         // Draw text
                         mc.getTextureManager().bindTexture( FixedWidthFontRenderer.font );
 
-                        renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+                        renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR );
 
                         // Lines
                         for( int y = 0; y < height; ++y )

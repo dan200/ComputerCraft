@@ -35,19 +35,42 @@ public class FixedWidthFontRenderer
         int column = index % 16;
         int row = index / 16;
         Colour colour = Colour.values()[ 15 - color ];
-        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Top left triangle
+        // Top left
         renderer.pos( x, y, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT ) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Bottom left
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Top right
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+
+        // Bottom right triangle
+        // Top right
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Bottom left
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Bottom right
+        renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+
     }
 
     private void drawQuad( VertexBuffer renderer, double x, double y, int color, double width )
     {
         Colour colour = Colour.values()[ 15 - color ];
-        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( 0.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-        renderer.pos( x + width, y + FONT_HEIGHT, 0.0 ).tex( 1.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-        renderer.pos( x + width, y, 0.0 ).tex( 1.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Top left triangle
+        // Top left
         renderer.pos( x, y, 0.0 ).tex( 0.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Bottom left
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( 0.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Top right
+        renderer.pos( x + width, y, 0.0 ).tex( 1.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+
+        // Bottom right triangle
+        // Top right
+        renderer.pos( x + width, y, 0.0 ).tex( 1.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Bottom left
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( 0.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        // Bottom right
+        renderer.pos( x + width, y + FONT_HEIGHT, 0.0 ).tex( 1.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
     }
 
     private boolean isGreyScale( int colour )
@@ -59,7 +82,7 @@ public class FixedWidthFontRenderer
     {
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer renderer = tessellator.getBuffer();
-        renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+        renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR );
         drawStringBackgroundPart( renderer, x, y, backgroundColour, leftMarginSize, rightMarginSize, greyScale );
         tessellator.draw();
     }
@@ -100,7 +123,7 @@ public class FixedWidthFontRenderer
     {
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer renderer = tessellator.getBuffer();
-        renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+        renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR );
         drawStringTextPart(renderer, x, y, s, textColour, greyScale);
         tessellator.draw();
     }
@@ -139,7 +162,7 @@ public class FixedWidthFontRenderer
             m_textureManager.bindTexture( background );
 
             // Draw the quads
-            renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+            renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR );
             drawStringBackgroundPart( renderer, x, y, backgroundColour, leftMarginSize, rightMarginSize, greyScale );
             tess.draw();
         }
@@ -151,7 +174,7 @@ public class FixedWidthFontRenderer
             m_textureManager.bindTexture( font );
             
             // Draw the quads
-            renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+            renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR );
             drawStringTextPart( renderer, x, y, s, textColour, greyScale );
             tess.draw();
         }
