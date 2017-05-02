@@ -1,0 +1,58 @@
+tile.computercraft:computer.name=Computer
+tile.computercraft:advanced_computer.name=Erweiteter Computer
+tile.computercraft:drive.name=Diskettenlaufwerk
+tile.computercraft:printer.name=Drucker
+tile.computercraft:monitor.name=Monitor
+tile.computercraft:advanced_monitor.name=Erweiterter Monitor
+tile.computercraft:wireless_modem.name=Drathlosmodem
+tile.computercraft:wired_modem.name=Kabelmodem
+tile.computercraft:cable.name=Netzwerkkabel
+tile.computercraft:command_computer.name=Befehlscomputer
+tile.computercraft:advanced_modem.name=Endermodem
+
+tile.computercraft:turtle.name=Turtle
+tile.computercraft:turtle.upgraded.name=%sturtle
+tile.computercraft:turtle.upgraded_twice.name=%s - und %sturtle
+tile.computercraft:advanced_turtle.name=Erweiterter Turtle
+tile.computercraft:advanced_turtle.upgraded.name=Erweiteter %sturtle
+tile.computercraft:advanced_turtle.upgraded_twice.name=Erweiteter %s- und %turtle
+
+item.computercraft:disk.name=Diskette
+item.computercraft:treasure_disk.name=Diskette
+item.computercraft:page.name=Gedruckte Seite
+item.computercraft:pages.name=Gedruckte Seiten
+item.computercraft:book.name=Gedrucktes Buch
+
+item.computercraft:pocket_computer.name=Taschencomputer
+item.computercraft:pocket_computer.upgraded.name=%s Taschencomputer
+item.computercraft:advanced_pocket_computer.name=Erweiterter Taschencomputer
+item.computercraft:advanced_pocket_computer.upgraded.name=Erweiteter %s Taschencomputer
+
+upgrade.minecraft:diamond_sword.adjective=Nahkampf
+upgrade.minecraft:diamond_shovel.adjective=Schaufel
+upgrade.minecraft:diamond_pickaxe.adjective=Minen
+upgrade.minecraft:diamond_axe.adjective=Fäller
+upgrade.minecraft:diamond_hoe.adjective=Gärtner
+upgrade.computercraft:wireless_modem.adjective=Drathlos
+upgrade.minecraft:crafting_table.adjective=Werks
+upgrade.computercraft:advanced_modem.adjective=Ender
+
+gui.computercraft:wired_modem.peripheral_connected=Zusatzgerät "%s" mit Netzwerk verbunden
+gui.computercraft:wired_modem.peripheral_disconnected=Zusatzgerät "%s" von Netzwerk getrennt
+
+gui.computercraft:config.http_enable=Aktiviere die HTTP-API
+gui.computercraft:config.http_whitelist=HTTP whitelist
+gui.computercraft:config.disable_lua51_features=Lua 5.1 funktionen deaktivieren
+gui.computercraft:config.default_computer_settings=Standardcomputereinstellungen
+gui.computercraft:config.enable_command_block=Befehlsblock aktivieren
+gui.computercraft:config.modem_range=Modem Standardreichweite
+gui.computercraft:config.modem_high_altitude_range=Modemreichweite (Hohe Reichweite)
+gui.computercraft:config.modem_range_during_storm=Modemreichweite (Schlechtes Wetter)
+gui.computercraft:config.modem_high_altitude_range_during_storm=Modemreichweite (Hohe Reichweite bei schlechtem Wetter)
+gui.computercraft:config.computer_space_limit=Computerspeicherlimit (bytes)
+gui.computercraft:config.floppy_space_limit=Diskettenspeicherlimit (bytes)
+gui.computercraft:config.turtles_need_fuel=Triebstoff aktivieren
+gui.computercraft:config.turtle_fuel_limit=Turtle Treibstofflimit
+gui.computercraft:config.advanced_turtle_fuel_limit=Treibstofflimit des Erweiterterten Turtles
+gui.computercraft:config.turtles_obey_block_protection=Turtle sollen Blockschutz beachten
+gui.computercraft:config.turtles_can_push=Turtles können Lebewesen bewegen
