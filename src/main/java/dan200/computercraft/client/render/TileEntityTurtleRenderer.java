@@ -43,8 +43,8 @@ import java.util.List;
 
 public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurtle>
 {
-    private static ModelResourceLocation NORMAL_TURTLE_MODEL = new ModelResourceLocation( "computercraft:CC-Turtle", "inventory" );
-    private static ModelResourceLocation ADVANCED_TURTLE_MODEL = new ModelResourceLocation( "computercraft:CC-TurtleAdvanced", "inventory" );
+    private static ModelResourceLocation NORMAL_TURTLE_MODEL = new ModelResourceLocation( "computercraft:turtle", "inventory" );
+    private static ModelResourceLocation ADVANCED_TURTLE_MODEL = new ModelResourceLocation( "computercraft:turtle_advanced", "inventory" );
     private static ModelResourceLocation[] COLOUR_TURTLE_MODELS = new ModelResourceLocation[] {
         new ModelResourceLocation( "computercraft:turtle_black", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_red", "inventory" ),
@@ -53,12 +53,12 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
         new ModelResourceLocation( "computercraft:turtle_blue", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_purple", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_cyan", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_lightGrey", "inventory" ),
+        new ModelResourceLocation( "computercraft:turtle_light_grey", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_grey", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_pink", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_lime", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_yellow", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_lightBlue", "inventory" ),
+        new ModelResourceLocation( "computercraft:turtle_light_blue", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_magenta", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_orange", "inventory" ),
         new ModelResourceLocation( "computercraft:turtle_white", "inventory" ),
