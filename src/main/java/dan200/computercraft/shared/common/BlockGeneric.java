@@ -46,7 +46,7 @@ public abstract class BlockGeneric extends Block implements
     public final void dropBlockAsItemWithChance( World world, BlockPos pos, IBlockState state, float chance, int fortune )
     {
     }
-        
+
     @Override
     public final List<ItemStack> getDrops( IBlockAccess world, BlockPos pos, IBlockState state, int fortune )
     {
@@ -107,7 +107,7 @@ public abstract class BlockGeneric extends Block implements
     {
         Block.spawnAsEntity( world, pos, stack );
     }
-    
+
     @Override
     public final void breakBlock( World world, BlockPos pos, IBlockState newState )
     {
@@ -159,6 +159,17 @@ public abstract class BlockGeneric extends Block implements
         {
             TileGeneric generic = (TileGeneric)tile;
             generic.onNeighbourChange();
+        }
+    }
+
+    @Override
+    public final void onNeighborChange( IBlockAccess world, BlockPos pos, BlockPos neighbour )
+    {
+        TileEntity tile = world.getTileEntity( pos );
+        if( tile instanceof TileGeneric )
+        {
+            TileGeneric generic = (TileGeneric)tile;
+            generic.onNeighbourTileEntityChange( neighbour );
         }
     }
 
