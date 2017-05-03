@@ -649,7 +649,7 @@ public class TileTurtle extends TileComputerBase
             case 5:    upgrade = getUpgrade( TurtleSide.Left ); break;
             default: return false;
         }
-        if( upgrade != null && upgrade.getType() == TurtleUpgradeType.Peripheral )
+        if( upgrade != null && upgrade.getType().isPeripheral() )
         {
             return true;
         }
