@@ -615,6 +615,7 @@ public class Computer
         m_apis.add( new PeripheralAPI( m_apiEnvironment ) );
         m_apis.add( new OSAPI( m_apiEnvironment ) );
         m_apis.add( new BitAPI( m_apiEnvironment ) );
+        m_apis.add( new TimeAPI() );
         //m_apis.add( new BufferAPI( m_apiEnvironment ) );
         if( ComputerCraft.http_enable )
         {
