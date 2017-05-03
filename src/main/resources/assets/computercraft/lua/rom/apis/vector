@@ -76,9 +76,9 @@ local vmetatable = {
 
 function new( x, y, z )
 	local v = {
-		x = x or 0,
-		y = y or 0,
-		z = z or 0
+		x = type(x) == "number" and x or 0,
+		y = type(y) == "number" and y or 0,
+		z = type(z) == "number" and z or 0
 	}
 	setmetatable( v, vmetatable )
 	return v
