@@ -6,6 +6,8 @@ New Features in ComputerCraft 1.80:
 * os.time() and os.day() now accept parameters to give the real world time.
 * Added os.epoch()
 * Monitor text now glows in the dark.
+* Added a "Pocket Computer upgrde API" so mod developers can add their own pocket upgrades.
+* Added pocket.equipBack()/pocket.unequipBack() to add/remove pocket upgrades.
 
 New Features in ComputerCraft 1.79:
 
