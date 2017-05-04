@@ -1,0 +1,2 @@
+-- Import foo.lua:
+local foo = require("foo")
