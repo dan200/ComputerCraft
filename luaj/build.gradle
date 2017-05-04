@@ -15,6 +15,13 @@ sourceSets {
 	main {
 		java {
 			srcDirs = ['src/core', 'src/jse']
+			
+			// exclude stuff that's not needed by CC
+			exclude '/*.java'
+			exclude '/org/luaj/vm2/ast/*.java'
+			exclude '/org/luaj/vm2/lua2java/*.java'
+			exclude '/org/luaj/vm2/luajc/*.java'
+			exclude '/org/luaj/vm2/parser/*.java'
 		}
 	}
 }
