@@ -228,55 +228,70 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
     private void registerItems()
     {
         // Creative tab
-        ComputerCraft.mainCreativeTab = new CreativeTabMain( CreativeTabs.getNextID() );
+        ComputerCraft.mainCreativeTab = new CreativeTabMain(CreativeTabs.getNextID());
 
         // Blocks
         // Computer
         ComputerCraft.Blocks.computer = new BlockComputer();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.computer, ItemComputer.class, "CC-Computer" );
+        ComputerCraft.Blocks.computer.setRegistryName("computer");
+        GameRegistry.register(ComputerCraft.Blocks.computer);
+        GameRegistry.register(new ItemComputer(ComputerCraft.Blocks.computer).setRegistryName("computer"));
 
         // Peripheral
         ComputerCraft.Blocks.peripheral = new BlockPeripheral();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.peripheral, ItemPeripheral.class, "CC-Peripheral" );
+        ComputerCraft.Blocks.peripheral.setRegistryName("peripheral");
+        GameRegistry.register(ComputerCraft.Blocks.peripheral);
+        GameRegistry.register(new ItemPeripheral(ComputerCraft.Blocks.peripheral).setRegistryName("peripheral"));
 
         // Cable
         ComputerCraft.Blocks.cable = new BlockCable();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.cable, ItemCable.class, "CC-Cable" );
+        ComputerCraft.Blocks.cable.setRegistryName("cable");
+        GameRegistry.register(ComputerCraft.Blocks.cable);
+        GameRegistry.register(new ItemCable(ComputerCraft.Blocks.cable).setRegistryName("cable"));
 
         // Command Computer
         ComputerCraft.Blocks.commandComputer = new BlockCommandComputer();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.commandComputer, ItemCommandComputer.class, "command_computer" );
+        ComputerCraft.Blocks.commandComputer.setRegistryName("command_computer");
+        GameRegistry.register(ComputerCraft.Blocks.commandComputer);
+        GameRegistry.register(new ItemCommandComputer(ComputerCraft.Blocks.commandComputer).setRegistryName("command_computer"));
 
         // Command Computer
         ComputerCraft.Blocks.advancedModem = new BlockAdvancedModem();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.advancedModem, ItemAdvancedModem.class, "advanced_modem" );
+        ComputerCraft.Blocks.advancedModem.setRegistryName("advanced_modem");
+        GameRegistry.register(ComputerCraft.Blocks.advancedModem);
+        GameRegistry.register(new ItemAdvancedModem(ComputerCraft.Blocks.advancedModem).setRegistryName("advanced_modem"));
 
         // Items
         // Floppy Disk
         ComputerCraft.Items.disk = new ItemDiskLegacy();
-        GameRegistry.registerItem( ComputerCraft.Items.disk, "disk" );
+        ComputerCraft.Items.disk.setRegistryName("disk");
+        GameRegistry.register(ComputerCraft.Items.disk);
 
         ComputerCraft.Items.diskExpanded = new ItemDiskExpanded();
-        GameRegistry.registerItem( ComputerCraft.Items.diskExpanded, "diskExpanded" );
+        ComputerCraft.Items.diskExpanded.setRegistryName("disk_expanded");
+        GameRegistry.register(ComputerCraft.Items.diskExpanded);
 
         // Treasure Disk
         ComputerCraft.Items.treasureDisk = new ItemTreasureDisk();
-        GameRegistry.registerItem( ComputerCraft.Items.treasureDisk, "treasureDisk" );
+        ComputerCraft.Items.treasureDisk.setRegistryName("disk_treasure");
+        GameRegistry.register(ComputerCraft.Items.treasureDisk);
 
         // Printout
         ComputerCraft.Items.printout = new ItemPrintout();
-        GameRegistry.registerItem( ComputerCraft.Items.printout, "printout" );
+        ComputerCraft.Items.printout.setRegistryName("printout");
+        GameRegistry.register(ComputerCraft.Items.printout);
 
         // Pocket computer
         ComputerCraft.Items.pocketComputer = new ItemPocketComputer();
-        GameRegistry.registerItem( ComputerCraft.Items.pocketComputer, "pocketComputer" );
+        ComputerCraft.Items.pocketComputer.setRegistryName("pocket_computer");
+        GameRegistry.register(ComputerCraft.Items.pocketComputer);
 
         // Recipe types
-        RecipeSorter.register( "computercraft:impostor", ImpostorRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
-        RecipeSorter.register( "computercraft:impostor_shapeless", ImpostorShapelessRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless" );
-        RecipeSorter.register( "computercraft:disk", DiskRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless" );
-        RecipeSorter.register( "computercraft:printout", PrintoutRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless" );
-        RecipeSorter.register( "computercraft:pocket_computer_upgrade", PocketComputerUpgradeRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless" );
+        RecipeSorter.register("computercraft:impostor", ImpostorRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless");
+        RecipeSorter.register("computercraft:impostor_shapeless", ImpostorShapelessRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+        RecipeSorter.register("computercraft:disk", DiskRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+        RecipeSorter.register("computercraft:printout", PrintoutRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+        RecipeSorter.register("computercraft:pocket_computer_upgrade", PocketComputerUpgradeRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 
         // Recipes
         // Computer

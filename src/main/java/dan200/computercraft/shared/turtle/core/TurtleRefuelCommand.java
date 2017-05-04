@@ -30,7 +30,7 @@ public class TurtleRefuelCommand implements ITurtleCommand
         {
             // If limit is zero, just check the item is combustible
             ItemStack dummyStack = turtle.getInventory().getStackInSlot( turtle.getSelectedSlot() );
-            if( dummyStack != null )
+            if( !dummyStack.isEmpty() )
             {
                 return refuel( turtle, dummyStack, true );
             }
@@ -71,14 +71,14 @@ public class TurtleRefuelCommand implements ITurtleCommand
         if( !testOnly )
         {
             // Determine fuel to give and replacement item to leave behind
-            int fuelToGive = fuelPerItem * stack.stackSize;
+            int fuelToGive = fuelPerItem * stack.getCount();
             ItemStack replacementStack = stack.getItem().getContainerItem( stack );
 
             // Update fuel level
             turtle.addFuel( fuelToGive );
 
             // Store the replacement item in the inventory
-            if( replacementStack != null )
+            if( !replacementStack.isEmpty() )
             {
                 InventoryUtil.storeItems( replacementStack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
             }

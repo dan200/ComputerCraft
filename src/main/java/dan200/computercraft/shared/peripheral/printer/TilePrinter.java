@@ -23,12 +23,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+//TODO: rewrite IInventory to IItemHandler
 public class TilePrinter extends TilePeripheralBase
     implements IInventory, ISidedInventory
 {
@@ -64,7 +67,7 @@ public class TilePrinter extends TilePeripheralBase
     {
         if( !player.isSneaking() )
         {
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 ComputerCraft.openPrinterGUI( player, this );
             }
@@ -96,7 +99,7 @@ public class TilePrinter extends TilePeripheralBase
                 int j = itemTag.getByte("Slot") & 0xff;
                 if (j >= 0 && j < m_inventory.length)
                 {
-                    m_inventory[j] = ItemStack.loadItemStackFromNBT(itemTag);
+                    m_inventory[j] = new ItemStack(itemTag);
                 }
             }
         }
@@ -192,7 +195,7 @@ public class TilePrinter extends TilePeripheralBase
                 return null;
             }
             
-            if( m_inventory[i].stackSize <= j )
+            if( m_inventory[i].getCount() <= j )
             {
                 ItemStack itemstack = m_inventory[i];
                 m_inventory[i] = null;
@@ -202,7 +205,7 @@ public class TilePrinter extends TilePeripheralBase
             }
             
             ItemStack part = m_inventory[i].splitStack(j);
-            if( m_inventory[i].stackSize == 0 )
+            if( m_inventory[i].getCount() == 0 )
             {
                 m_inventory[i] = null;
                 updateAnim();
@@ -258,6 +261,12 @@ public class TilePrinter extends TilePeripheralBase
     }
 
     @Override
+    public boolean isEmpty()
+    {
+        return false;
+    }
+
+    @Override
     public ITextComponent getDisplayName()
     {
         if( hasCustomName() )
@@ -293,7 +302,7 @@ public class TilePrinter extends TilePeripheralBase
     }
 
     @Override
-    public boolean isUseableByPlayer( EntityPlayer player )
+    public boolean isUsableByPlayer( EntityPlayer player )
     {
         return isUsable( player, false );
     }
@@ -395,7 +404,7 @@ public class TilePrinter extends TilePeripheralBase
             ItemStack inkStack = m_inventory[0];
             if( inkStack != null && isInk(inkStack) )
             {
-                return inkStack.stackSize;
+                return inkStack.getCount();
             }
         }
         return 0;
@@ -411,7 +420,7 @@ public class TilePrinter extends TilePeripheralBase
                 ItemStack paperStack = m_inventory[i];
                 if( paperStack != null && isPaper(paperStack) )
                 {
-                    count += paperStack.stackSize;
+                    count += paperStack.getCount();
                 }
             }
         }
@@ -470,15 +479,15 @@ public class TilePrinter extends TilePeripheralBase
                 if( paperStack != null && isPaper(paperStack) )
                 {
                     // Decrement ink
-                    inkStack.stackSize--;
-                    if( inkStack.stackSize <= 0 )
+                    inkStack.shrink( 1 );
+                    if( inkStack.getCount() <= 0 )
                     {
                         m_inventory[0] = null;
                     }
                                         
                     // Decrement paper
-                    paperStack.stackSize--;
-                    if( paperStack.stackSize <= 0 )
+                    paperStack.shrink( 1 );
+                    if( paperStack.getCount() <= 0 )
                     {
                         m_inventory[i] = null;
                         updateAnim();
@@ -562,11 +571,11 @@ public class TilePrinter extends TilePeripheralBase
                     double x = (double)pos.getX() + 0.5;
                     double y = (double)pos.getY() + 0.75;
                     double z = (double)pos.getZ() + 0.5;
-                    EntityItem entityitem = new EntityItem( worldObj, x, y, z, stack );
-                    entityitem.motionX = worldObj.rand.nextFloat() * 0.2 - 0.1;
-                    entityitem.motionY = worldObj.rand.nextFloat() * 0.2 - 0.1;
-                    entityitem.motionZ = worldObj.rand.nextFloat() * 0.2 - 0.1;
-                    worldObj.spawnEntityInWorld(entityitem);
+                    EntityItem entityitem = new EntityItem( getWorld(), x, y, z, stack );
+                    entityitem.motionX = getWorld().rand.nextFloat() * 0.2 - 0.1;
+                    entityitem.motionY = getWorld().rand.nextFloat() * 0.2 - 0.1;
+                    entityitem.motionZ = getWorld().rand.nextFloat() * 0.2 - 0.1;
+                    getWorld().spawnEntity(entityitem);
                 }
             }
         }

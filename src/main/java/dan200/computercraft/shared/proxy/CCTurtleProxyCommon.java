@@ -326,18 +326,24 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         // Blocks
         // Turtle
         ComputerCraft.Blocks.turtle = BlockTurtle.createTurtleBlock();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.turtle, ItemTurtleLegacy.class, "CC-Turtle" );
+        ComputerCraft.Blocks.turtle.setRegistryName("turtle");
+        GameRegistry.register(ComputerCraft.Blocks.turtle);
+        GameRegistry.register(new ItemTurtleLegacy(ComputerCraft.Blocks.turtle).setRegistryName("turtle"));
 
         ComputerCraft.Blocks.turtleExpanded = BlockTurtle.createTurtleBlock();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.turtleExpanded, ItemTurtleNormal.class, "CC-TurtleExpanded" );
+        ComputerCraft.Blocks.turtleExpanded.setRegistryName("turtle_expanded");
+        GameRegistry.register(ComputerCraft.Blocks.turtleExpanded);
+        GameRegistry.register(new ItemTurtleNormal(ComputerCraft.Blocks.turtleExpanded).setRegistryName("turtle_expanded"));
 
         // Advanced Turtle
         ComputerCraft.Blocks.turtleAdvanced = BlockTurtle.createTurtleBlock();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.turtleAdvanced, ItemTurtleAdvanced.class, "CC-TurtleAdvanced" );
+        ComputerCraft.Blocks.turtleAdvanced.setRegistryName("turtle_advanced");
+        GameRegistry.register(ComputerCraft.Blocks.turtleAdvanced);
+        GameRegistry.register(new ItemTurtleAdvanced(ComputerCraft.Blocks.turtleAdvanced).setRegistryName("turtle_advanced"));
 
         // Recipe types
-        RecipeSorter.register( "computercraft:turtle", TurtleRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
-        RecipeSorter.register( "computercraft:turtle_upgrade", TurtleUpgradeRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
+        RecipeSorter.register("computercraft:turtle", TurtleRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless");
+        RecipeSorter.register("computercraft:turtle_upgrade", TurtleUpgradeRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless");
 
         // Recipes
         // Turtle

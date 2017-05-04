@@ -6,6 +6,7 @@
 
 package dan200.computercraft.shared.turtle.upgrades;
 
+import com.google.common.collect.Lists;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.core.TurtlePlayer;
@@ -13,11 +14,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class TurtleInventoryCrafting extends InventoryCrafting
@@ -34,6 +37,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
         m_yStart = 0;
     }
 
+    @Nonnull
     private ItemStack tryCrafting( int xStart, int yStart )
     {
         m_xStart = xStart;
@@ -47,9 +51,9 @@ public class TurtleInventoryCrafting extends InventoryCrafting
                 if( x < m_xStart || x >= m_xStart + 3 ||
                     y < m_yStart || y >= m_yStart + 3 )
                 {
-                    if( m_turtle.getInventory().getStackInSlot( x + y * TileTurtle.INVENTORY_WIDTH ) != null )
+                    if( m_turtle.getInventory().getStackInSlot( x + y * TileTurtle.INVENTORY_WIDTH ) != ItemStack.EMPTY )
                     {
-                        return null;
+                        return ItemStack.EMPTY;
                     }
                 }
             }
@@ -63,26 +67,26 @@ public class TurtleInventoryCrafting extends InventoryCrafting
     {
         if( world.isRemote || !(world instanceof WorldServer) )
         {
-            return null;
+            return Lists.newArrayList(ItemStack.EMPTY);
         }
 
         // Find out what we can craft
         ItemStack result = tryCrafting( 0, 0 );
-        if( result == null )
+        if( result == ItemStack.EMPTY )
         {
             result = tryCrafting( 0, 1 );
         }
-        if( result == null )
+        if( result == ItemStack.EMPTY )
         {
             result = tryCrafting( 1, 0 );
         }
-        if( result == null )
+        if( result == ItemStack.EMPTY )
         {
             result = tryCrafting( 1, 1 );
         }
 
         // Craft it
-        if( result != null )
+        if( result != ItemStack.EMPTY )
         {
             // Special case: craft(0) just returns an empty list if crafting was possible
             ArrayList<ItemStack> results = new ArrayList<ItemStack>();
@@ -100,17 +104,17 @@ public class TurtleInventoryCrafting extends InventoryCrafting
                 for( int n=0; n<size; ++n )
                 {
                     ItemStack stack = getStackInSlot( n );
-                    if( stack != null && (minStackSize == 0 || minStackSize > stack.stackSize) )
+                    if( stack != ItemStack.EMPTY && (minStackSize == 0 || minStackSize > stack.getCount()) )
                     {
-                        minStackSize = stack.stackSize;
+                        minStackSize = stack.getCount();
                     }
                 }
                 
                 if( minStackSize > 1 )
                 {            
-                    numToCraft = Math.min( minStackSize, result.getMaxStackSize() / result.stackSize );
+                    numToCraft = Math.min( minStackSize, result.getMaxStackSize() / result.getCount() );
                     numToCraft = Math.min( numToCraft, maxCount );
-                    result.stackSize = result.stackSize * numToCraft;
+                    result.setCount( result.getCount()*numToCraft );
                 }
             }
 
@@ -120,21 +124,21 @@ public class TurtleInventoryCrafting extends InventoryCrafting
             results.add( result );
 
             // Consume resources from the inventory
-            ItemStack[] remainingItems = CraftingManager.getInstance().getRemainingItems( this, world );
+            NonNullList<ItemStack> remainingItems = CraftingManager.getInstance().getRemainingItems( this, world );
             for( int n=0; n<size; ++n )
             {
                 ItemStack stack = getStackInSlot( n );
-                if( stack != null )
+                if( stack != ItemStack.EMPTY )
                 {
                     decrStackSize( n, numToCraft );
 
-                    ItemStack replacement = remainingItems[n];
-                    if( replacement != null )
+                    ItemStack replacement = remainingItems.get( n );
+                    if( replacement != ItemStack.EMPTY )
                     {
                         if( !(replacement.isItemStackDamageable() && replacement.getItemDamage() >= replacement.getMaxDamage()) )
                         {
-                            replacement.stackSize = Math.min( numToCraft, replacement.getMaxStackSize() );
-                            if( getStackInSlot( n ) == null )
+                            replacement.setCount( Math.min( numToCraft, replacement.getMaxStackSize()) );
+                            if( getStackInSlot( n ) == ItemStack.EMPTY )
                             {
                                 setInventorySlotContents( n, replacement );
                             }
@@ -253,7 +257,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
     }
 
     @Override
-    public boolean isUseableByPlayer( EntityPlayer player )
+    public boolean isUsableByPlayer( EntityPlayer player )
     {
         return true;
     }

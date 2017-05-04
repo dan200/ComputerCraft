@@ -18,7 +18,7 @@ public class GuiConfigCC extends GuiConfig
 {
     public GuiConfigCC( GuiScreen parentScreen )
     {
-        super( parentScreen, getConfigElements(), "ComputerCraft", false, false, "ComputerCraft" );
+        super( parentScreen, getConfigElements(), "computercraft", false, false, "ComputerCraft" );
     }
 
     private static List<IConfigElement> getConfigElements()
@@ -44,6 +44,18 @@ public class GuiConfigCC extends GuiConfig
         public Class<? extends GuiScreen> mainConfigGuiClass()
         {
             return GuiConfigCC.class;
+        }
+
+        @Override
+        public boolean hasConfigGui()
+        {
+            return true;
+        }
+
+        @Override
+        public GuiScreen createConfigGui( GuiScreen parentScreen )
+        {
+            return new GuiConfigCC( parentScreen );
         }
 
         @Override

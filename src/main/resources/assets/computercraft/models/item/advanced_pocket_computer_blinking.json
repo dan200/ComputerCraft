@@ -1,6 +1,6 @@
 {
     "parent": "builtin/generated",
     "textures": {
-        "layer0": "computercraft:items/pocketComputerBlinkAdvanced"
+        "layer0": "computercraft:items/pocket_computer_blink_advanced"
     }
 }

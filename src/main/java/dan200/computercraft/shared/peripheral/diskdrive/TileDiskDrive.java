@@ -28,6 +28,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,9 +52,9 @@ public class TileDiskDrive extends TilePeripheralBase
 
     private final Map<IComputerAccess, MountInfo> m_computers;
 
-    private ItemStack m_diskStack;
+    private ItemStackHandler inventory;
     private IMount m_diskMount;
-    
+
     private boolean m_recordQueued;
     private boolean m_recordPlaying;
     private boolean m_restartRecord;
@@ -63,9 +64,9 @@ public class TileDiskDrive extends TilePeripheralBase
     {
         m_computers = new HashMap<IComputerAccess, MountInfo>();
 
-        m_diskStack = null;
+        inventory = new ItemStackHandler( 1 );
         m_diskMount = null;
-        
+
         m_recordQueued = false;
         m_recordPlaying = false;
         m_restartRecord = false;
@@ -90,7 +91,7 @@ public class TileDiskDrive extends TilePeripheralBase
         if( player.isSneaking() )
         {
             // Try to put a disk into the drive
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 ItemStack disk = player.getHeldItem( EnumHand.MAIN_HAND );
                 if( disk != null && getStackInSlot(0) == null )
@@ -107,7 +108,7 @@ public class TileDiskDrive extends TilePeripheralBase
         else
         {
             // Open the GUI
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 ComputerCraft.openDiskDriveGUI( player, this );
             }
@@ -136,28 +137,24 @@ public class TileDiskDrive extends TilePeripheralBase
     @Override
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
-        super.readFromNBT(nbttagcompound);
-        if( nbttagcompound.hasKey( "item" ) )
+        super.readFromNBT( nbttagcompound );
+        if (nbttagcompound.hasKey( "inventory" ))
         {
-            NBTTagCompound item = nbttagcompound.getCompoundTag( "item" );
-            m_diskStack = ItemStack.loadItemStackFromNBT( item );
-            m_diskMount = null;
+            inventory.deserializeNBT( nbttagcompound.getCompoundTag( "inventory" ) );
         }
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
-        nbttagcompound = super.writeToNBT(nbttagcompound);
-        if( m_diskStack != null )
+        nbttagcompound = super.writeToNBT( nbttagcompound );
+        if (inventory != null)
         {
-            NBTTagCompound item = new NBTTagCompound();
-            m_diskStack.writeToNBT( item );
-            nbttagcompound.setTag( "item", item );
+            nbttagcompound.setTag( "inventory", inventory.serializeNBT() );
         }
         return nbttagcompound;
     }
-    
+
     @Override
     public void update()
     {
@@ -172,7 +169,7 @@ public class TileDiskDrive extends TilePeripheralBase
                 m_ejectQueued = false;
             }
         }
-        
+
         // Music
         synchronized( this )
         {
@@ -182,7 +179,7 @@ public class TileDiskDrive extends TilePeripheralBase
                 if( m_recordQueued )
                 {
                     IMedia contents = getDiskMedia();
-                    SoundEvent record = (contents != null) ? contents.getAudio( m_diskStack ) : null;
+                    SoundEvent record = (contents != null) ? contents.getAudio( inventory.getStackInSlot( 0 ) ) : null;
                     if( record != null )
                     {
                         m_recordPlaying = true;
@@ -203,62 +200,62 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     // IInventory implementation
-    
+
     @Override
     public int getSizeInventory()
     {
-        return 1;
+        return inventory.getSlots();
     }
 
     @Override
     public ItemStack getStackInSlot(int i)
     {
-        return m_diskStack;
+        return inventory.getStackInSlot( i );
     }
 
     @Override
     public ItemStack removeStackFromSlot(int i)
     {
-        ItemStack result = m_diskStack;
-        m_diskStack = null;
+        ItemStack result = inventory.getStackInSlot( i );
+        inventory.setStackInSlot( i,ItemStack.EMPTY );
         m_diskMount = null;
-        
+
         return result;
     }
-    
+
     @Override
     public ItemStack decrStackSize(int i, int j)
     {
-        if (m_diskStack == null)
+        if (inventory.getStackInSlot( 0 ) == ItemStack.EMPTY)
         {
-            return null;
+            return ItemStack.EMPTY;
         }
-        
-        if (m_diskStack.stackSize <= j)
+
+        if (inventory.getStackInSlot( 0 ).getCount() <= j)
         {
-            ItemStack disk = m_diskStack;
+            ItemStack disk = inventory.getStackInSlot( 0 );
             setInventorySlotContents( 0, null );
             return disk;
         }
-        
-        ItemStack part = m_diskStack.splitStack(j);
-        if (m_diskStack.stackSize == 0)
+
+        ItemStack part = inventory.getStackInSlot( 0 ).splitStack(j);
+        if (inventory.getStackInSlot( 0 ).getCount() == 0)
         {
             setInventorySlotContents( 0, null );
         }
         else
         {
-            setInventorySlotContents( 0, m_diskStack );
+            setInventorySlotContents( 0, inventory.getStackInSlot( 0 ) );
         }
         return part;
     }
 
     @Override
     public void setInventorySlotContents( int i, ItemStack itemStack )
-    {                    
-        if( worldObj.isRemote )
+    {
+        if( getWorld().isRemote )
         {
-            m_diskStack = itemStack;
+            inventory.setStackInSlot( i,itemStack );
             m_diskMount = null;
             markDirty();
             return;
@@ -266,14 +263,14 @@ public class TileDiskDrive extends TilePeripheralBase
 
         synchronized( this )
         {
-            if( InventoryUtil.areItemsStackable( itemStack, m_diskStack ) )
+            if( InventoryUtil.areItemsStackable( itemStack, inventory.getStackInSlot( 0 ) ) )
             {
-                m_diskStack = itemStack;
+                inventory.setStackInSlot( i,itemStack );
                 return;
             }
-            
+
             // Unmount old disk
-            if( m_diskStack != null )
+            if( !inventory.getStackInSlot( 0 ).isEmpty() )
             {
                 Set<IComputerAccess> computers = m_computers.keySet();
                 Iterator<IComputerAccess> it = computers.iterator();
@@ -283,7 +280,7 @@ public class TileDiskDrive extends TilePeripheralBase
                     unmountDisk( computer );
                 }
             }
-            
+
             // Stop music
             if( m_recordPlaying )
             {
@@ -291,9 +288,9 @@ public class TileDiskDrive extends TilePeripheralBase
                 m_recordPlaying = false;
                 m_recordQueued = false;
             }
-                
+
             // Swap disk over
-            m_diskStack = itemStack;
+            inventory.setStackInSlot( i,itemStack );
             m_diskMount = null;
             markDirty();
 
@@ -301,13 +298,11 @@ public class TileDiskDrive extends TilePeripheralBase
             updateAnim();
 
             // Mount new disk
-            if( m_diskStack != null )
+            if( !inventory.getStackInSlot( 0 ).isEmpty() )
             {
                 Set<IComputerAccess> computers = m_computers.keySet();
-                Iterator<IComputerAccess> it = computers.iterator();
-                while( it.hasNext() )
+                for (IComputerAccess computer : computers)
                 {
-                    IComputerAccess computer = it.next();
                     mountDisk( computer );
                 }
             }
@@ -357,7 +352,7 @@ public class TileDiskDrive extends TilePeripheralBase
     public void openInventory( EntityPlayer player )
     {
     }
-    
+
     @Override
     public void closeInventory( EntityPlayer player )
     {
@@ -370,7 +365,7 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public boolean isUseableByPlayer( EntityPlayer player )
+    public boolean isUsableByPlayer( EntityPlayer player )
     {
         return isUsable( player, false );
     }
@@ -380,7 +375,7 @@ public class TileDiskDrive extends TilePeripheralBase
     {
         synchronized( this )
         {
-            setInventorySlotContents( 0, null );
+            setInventorySlotContents( 0, ItemStack.EMPTY );
         }
     }
 
@@ -401,6 +396,11 @@ public class TileDiskDrive extends TilePeripheralBase
     {
     }
 
+    @Override
+    public boolean isEmpty()
+    {
+        return inventory.getStackInSlot( 0 ).isEmpty();
+    }
     // IPeripheralTile implementation
 
     @Override
@@ -466,7 +466,7 @@ public class TileDiskDrive extends TilePeripheralBase
         synchronized( this )
         {
             IMedia media = getDiskMedia();
-            if( media != null && media.getAudioTitle( m_diskStack ) != null )
+            if( media != null && media.getAudioTitle( inventory.getStackInSlot( 0 ) ) != null )
             {
                 m_recordQueued = true;
                 m_restartRecord = m_recordPlaying;
@@ -495,10 +495,10 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     // private methods
-    
+
     private synchronized void mountDisk( IComputerAccess computer )
     {
-        if( m_diskStack != null )
+        if( !inventory.getStackInSlot( 0 ).isEmpty() )
         {
             MountInfo info = m_computers.get( computer );
             IMedia contents = getDiskMedia();
@@ -506,7 +506,7 @@ public class TileDiskDrive extends TilePeripheralBase
             {
                 if( m_diskMount == null )
                 {
-                    m_diskMount = contents.createDataMount( m_diskStack, worldObj );
+                    m_diskMount = contents.createDataMount( inventory.getStackInSlot( 0 ), getWorld() );
                 }
                 if( m_diskMount != null )
                 {
@@ -517,7 +517,7 @@ public class TileDiskDrive extends TilePeripheralBase
                         while( info.mountPath == null )
                         {
                             info.mountPath = computer.mountWritable( (n==1) ? "disk" : ("disk" + n), (IWritableMount)m_diskMount );
-                            n++;    
+                            n++;
                         }
                     }
                     else
@@ -527,7 +527,7 @@ public class TileDiskDrive extends TilePeripheralBase
                         while( info.mountPath == null )
                         {
                             info.mountPath = computer.mount( (n==1) ? "disk" : ("disk" + n), m_diskMount );
-                            n++;    
+                            n++;
                         }
                     }
                 }
@@ -542,7 +542,7 @@ public class TileDiskDrive extends TilePeripheralBase
 
     private synchronized void unmountDisk( IComputerAccess computer )
     {
-        if( m_diskStack != null )
+        if( !inventory.getStackInSlot( 0 ).isEmpty() )
         {
             MountInfo info = m_computers.get( computer );
             assert( info != null );
@@ -556,8 +556,8 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     private synchronized void updateAnim()
-    {            
-        if( m_diskStack != null )
+    {
+        if( !inventory.getStackInSlot( 0 ).isEmpty() )
         {
             IMedia contents = getDiskMedia();
             if( contents != null ) {
@@ -571,18 +571,18 @@ public class TileDiskDrive extends TilePeripheralBase
             setAnim( 0 );
         }
     }
-        
+
     private synchronized void ejectContents( boolean destroyed )
     {
-        if( worldObj.isRemote )
+        if( getWorld().isRemote )
         {
             return;
         }
-        
-        if( m_diskStack != null )
+
+        if( !inventory.getStackInSlot( 0 ).isEmpty() )
         {
             // Remove the disks from the inventory
-            ItemStack disks = m_diskStack;
+            ItemStack disks = inventory.getStackInSlot( 0 );
             setInventorySlotContents( 0, null );
 
             // Spawn the item in the world
@@ -599,15 +599,15 @@ public class TileDiskDrive extends TilePeripheralBase
             double x = (double)pos.getX() + 0.5 + ((double)xOff * 0.5);
             double y = (double)pos.getY() + 0.75;
             double z = (double)pos.getZ() + 0.5 + ((double)zOff * 0.5);
-            EntityItem entityitem = new EntityItem( worldObj, x, y, z, disks );
+            EntityItem entityitem = new EntityItem( getWorld(), x, y, z, disks );
             entityitem.motionX = (double)xOff * 0.15;
             entityitem.motionY = 0.0;
             entityitem.motionZ = (double)zOff * 0.15;
-            
-            worldObj.spawnEntityInWorld(entityitem);
+
+            getWorld().spawnEntity(entityitem);
             if( !destroyed )
             {
-                worldObj.playBroadcastSound(1000, getPos(), 0);
+                getWorld().playBroadcastSound(1000, getPos(), 0);
             }
         }
     }
@@ -616,13 +616,13 @@ public class TileDiskDrive extends TilePeripheralBase
     public final void readDescription( NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
-        if( nbttagcompound.hasKey( "item" ) )
+        if( nbttagcompound.hasKey( "inventory" ) )
         {
-            m_diskStack = ItemStack.loadItemStackFromNBT( nbttagcompound.getCompoundTag( "item" ) );
+            inventory.deserializeNBT( nbttagcompound.getCompoundTag( "inventory" ) );
         }
         else
         {
-            m_diskStack = null;
+            inventory.setStackInSlot( 0, ItemStack.EMPTY);
         }
         updateBlock();
     }
@@ -631,11 +631,9 @@ public class TileDiskDrive extends TilePeripheralBase
     public void writeDescription( NBTTagCompound nbttagcompound )
     {
         super.writeDescription( nbttagcompound );
-        if( m_diskStack != null )
+        if( !inventory.getStackInSlot( 0 ).isEmpty() )
         {
-            NBTTagCompound item = new NBTTagCompound();
-            m_diskStack.writeToNBT( item );
-            nbttagcompound.setTag( "item", item );
+            nbttagcompound.setTag( "inventory",inventory.serializeNBT() );
         }
     }
 
@@ -669,19 +667,19 @@ public class TileDiskDrive extends TilePeripheralBase
     private void playRecord()
     {
         IMedia contents = getDiskMedia();
-        SoundEvent record = (contents != null) ? contents.getAudio( m_diskStack ) : null;
+        SoundEvent record = (contents != null) ? contents.getAudio( inventory.getStackInSlot( 0 ) ) : null;
         if( record != null )
         {
-            ComputerCraft.playRecord( record, contents.getAudioTitle( m_diskStack ), worldObj, getPos() );
+            ComputerCraft.playRecord( record, contents.getAudioTitle( inventory.getStackInSlot( 0 ) ), getWorld(), getPos() );
         }
         else
         {
-            ComputerCraft.playRecord( null, null, worldObj, getPos() );
+            ComputerCraft.playRecord( null, null, getWorld(), getPos() );
         }
     }
 
     private void stopRecord()
     {
-        ComputerCraft.playRecord( null, null, worldObj, getPos() );
+        ComputerCraft.playRecord( null, null, getWorld(), getPos() );
     }
 }

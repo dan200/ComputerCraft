@@ -34,7 +34,7 @@ public class TileComputer extends TileComputerBase
     {
         ComputerFamily family = getFamily();
         ServerComputer computer = new ServerComputer(
-            worldObj,
+            getWorld(),
             id,
             m_label,
             instanceID,
@@ -75,7 +75,7 @@ public class TileComputer extends TileComputerBase
         updateBlock();
     }
 
-    public boolean isUseableByPlayer( EntityPlayer player )
+    public boolean isUsableByPlayer( EntityPlayer player )
     {
         return isUsable( player, false );
     }

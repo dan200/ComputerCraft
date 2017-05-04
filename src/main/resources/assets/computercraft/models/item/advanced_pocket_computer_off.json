@@ -1,6 +1,6 @@
 {
     "parent": "builtin/generated",
     "textures": {
-        "layer0": "computercraft:items/pocketComputerAdvanced"
+        "layer0": "computercraft:items/pocket_computer_advanced"
     }
 }

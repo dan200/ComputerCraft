@@ -84,7 +84,7 @@ import java.util.List;
 ///////////////
 
 @Mod(
-    modid = "ComputerCraft", name = "ComputerCraft", version = "${version}",
+    modid = "computercraft", name = "ComputerCraft", version = "${version}",
     guiFactory = "dan200.computercraft.client.gui.GuiConfigCC$Factory"
 )
 public class ComputerCraft
@@ -204,7 +204,7 @@ public class ComputerCraft
     private static List<ITurtlePermissionProvider> permissionProviders = new ArrayList<ITurtlePermissionProvider>();
 
     // Implementation
-    @Mod.Instance( value = "ComputerCraft" )
+    @Mod.Instance( value = "computercraft" )
     public static ComputerCraft instance;
 
     @SidedProxy( clientSide = "dan200.computercraft.client.proxy.ComputerCraftProxyClient", serverSide = "dan200.computercraft.server.proxy.ComputerCraftProxyServer" )

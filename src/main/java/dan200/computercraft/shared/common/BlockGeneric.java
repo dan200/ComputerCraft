@@ -25,6 +25,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -61,9 +62,8 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final IBlockState onBlockPlaced( World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int damage, EntityLivingBase placer )
-    {
-        return getDefaultBlockState( damage, side );
+    public IBlockState getStateForPlacement( World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer ) {
+        return getDefaultBlockState( meta, facing );
     }
 
     @Override
@@ -134,25 +134,20 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    protected final ItemStack createStackedBlock( IBlockState state )
+    public boolean onBlockActivated( World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ )
     {
-        return null;
-    }
 
-    @Override
-    public final boolean onBlockActivated( World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ )
-    {
-        TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof TileGeneric )
+        TileEntity tile = worldIn.getTileEntity( pos );
+        if (tile != null && tile instanceof TileGeneric)
         {
-            TileGeneric generic = (TileGeneric)tile;
-            return generic.onActivate( player, side, hitX, hitY, hitZ );
+            TileGeneric generic = (TileGeneric) tile;
+            return generic.onActivate( playerIn, facing, hitX, hitY, hitZ );
         }
         return false;
     }
 
     @Override
-    public final void neighborChanged( IBlockState state, World world, BlockPos pos, Block block )
+    public final void neighborChanged( IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
@@ -184,7 +179,7 @@ public abstract class BlockGeneric extends Block implements
     public float getExplosionResistance( World world, BlockPos pos, Entity exploder, Explosion explosion )
     {
         TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
+        if( tile != null && tile instanceof TileGeneric && tile.hasWorld() )
         {
             TileGeneric generic = (TileGeneric)tile;
             if( generic.isImmuneToExplosion( exploder ) )
@@ -199,7 +194,7 @@ public abstract class BlockGeneric extends Block implements
     public final AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
+        if( tile != null && tile instanceof TileGeneric && tile.hasWorld() )
         {
             TileGeneric generic = (TileGeneric)tile;
             return generic.getBounds();
@@ -214,10 +209,10 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final AxisAlignedBB getCollisionBoundingBox( IBlockState state, World world, BlockPos pos )
+    public final AxisAlignedBB getCollisionBoundingBox( IBlockState state, IBlockAccess world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
+        if( tile != null && tile instanceof TileGeneric && tile.hasWorld() )
         {
             TileGeneric generic = (TileGeneric)tile;
 
@@ -241,10 +236,10 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final void addCollisionBoxToList( IBlockState state, World world, BlockPos pos, AxisAlignedBB bigBox, List<AxisAlignedBB> list, Entity entity )
+    public final void addCollisionBoxToList( IBlockState state, World world, BlockPos pos, AxisAlignedBB bigBox, List<AxisAlignedBB> list, Entity entity, boolean p_185477_7_ )
     {
         TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
+        if( tile != null && tile instanceof TileGeneric && tile.hasWorld() )
         {
             TileGeneric generic = (TileGeneric)tile;
 
@@ -287,7 +282,7 @@ public abstract class BlockGeneric extends Block implements
     public final int getStrongPower( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing oppositeSide )
     {
         TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
+        if( tile != null && tile instanceof TileGeneric && tile.hasWorld() )
         {
             TileGeneric generic = (TileGeneric)tile;
             return generic.getRedstoneOutput( oppositeSide.getOpposite() );
@@ -315,7 +310,7 @@ public abstract class BlockGeneric extends Block implements
     public int getBundledRedstoneOutput( World world, BlockPos pos, EnumFacing side )
     {
         TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
+        if( tile != null && tile instanceof TileGeneric && tile.hasWorld() )
         {
             TileGeneric generic = (TileGeneric)tile;
             return generic.getBundledRedstoneOutput( side );
