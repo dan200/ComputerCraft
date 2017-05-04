@@ -8,7 +8,7 @@ package dan200.computercraft.shared.util;
 
 public enum Colour
 {
-    Black( 0x191919 ),
+    Black( 0x111111 ),
     Red( 0xcc4c4c ),
     Green( 0x57A64E ),
     Brown( 0x7f664c ),
