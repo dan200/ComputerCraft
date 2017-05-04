@@ -25,6 +25,11 @@ eclipse.project {
     natures 'org.springsource.ide.eclipse.gradle.core.nature'
 }
 
+// Enable incremental compilation
+tasks.withType(JavaCompile) {
+   options.incremental = true
+}
+
 version = "1.80pr0"
 group = "dan200.computercraft"
 archivesBaseName = "ComputerCraft"
