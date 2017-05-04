@@ -127,6 +127,7 @@ public class ComputerCraft
 
     public static int computerSpaceLimit = 1000 * 1000;
     public static int floppySpaceLimit = 125 * 1000;
+    public static int maximumFilesOpen = 128;
 
     // Blocks and Items
     public static class Blocks
@@ -184,6 +185,7 @@ public class ComputerCraft
 
         public static Property computerSpaceLimit;
         public static Property floppySpaceLimit;
+        public static Property maximumFilesOpen;
 
     }
 
@@ -260,6 +262,9 @@ public class ComputerCraft
         Config.turtlesNeedFuel = Config.config.get( Configuration.CATEGORY_GENERAL, "turtlesNeedFuel", turtlesNeedFuel );
         Config.turtlesNeedFuel.setComment( "Set whether Turtles require fuel to move" );
 
+        Config.maximumFilesOpen = Config.config.get(Configuration.CATEGORY_GENERAL, "maximumFilesOpen", maximumFilesOpen);
+        Config.maximumFilesOpen.setComment( "How many files a computer can have open at the same time" );
+
         Config.turtleFuelLimit = Config.config.get( Configuration.CATEGORY_GENERAL, "turtleFuelLimit", turtleFuelLimit );
         Config.turtleFuelLimit.setComment( "The fuel limit for Turtles" );
 
@@ -303,6 +308,7 @@ public class ComputerCraft
 
         computerSpaceLimit = Config.computerSpaceLimit.getInt();
         floppySpaceLimit = Config.floppySpaceLimit.getInt();
+        maximumFilesOpen = Math.max( 0, Config.maximumFilesOpen.getInt() );
 
         turtlesNeedFuel = Config.turtlesNeedFuel.getBoolean();
         turtleFuelLimit = Config.turtleFuelLimit.getInt();
