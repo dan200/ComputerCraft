@@ -55,8 +55,8 @@ public class PocketAPI implements ILuaAPI
     public String[] getMethodNames()
     {
         return new String[] {
-            "equip",
-            "unequip"
+            "equipBack",
+            "unequipBack"
         };
     }
 
@@ -67,7 +67,7 @@ public class PocketAPI implements ILuaAPI
         {
             case 0:
             {
-                // equip
+                // equipBack
                 if( !(m_computer.getEntity() instanceof EntityPlayer) )
                 {
                     throw new LuaException( "Cannot find player" );
@@ -78,28 +78,11 @@ public class PocketAPI implements ILuaAPI
                 InventoryPlayer inventory = player.inventory;
 
                 IPocketUpgrade previousUpgrade = m_computer.getUpgrade();
-                IPocketUpgrade newUpgrade = null;
 
-                int size = inventory.getSizeInventory(), held = inventory.currentItem;
-                for (int i = 0; i < size; i++)
-                {
-                    ItemStack invStack = inventory.getStackInSlot( (i + held) % size );
-                    if( invStack != null )
-                    {
-                        newUpgrade = ComputerCraft.getPocketUpgrade( invStack );
-
-                        if( newUpgrade != null && newUpgrade != previousUpgrade )
-                        {
-                            // Consume an item from this stack and exit the loop
-                            invStack = invStack.copy();
-                            invStack.stackSize--;
-                            inventory.setInventorySlotContents( (i + held) % size, invStack.stackSize <= 0 ? null : invStack );
-
-                            break;
-                        }
-                    }
-                }
-
+                // Attempt to find the upgrade, starting in the main segment, and then looking in the opposite
+                // one. We start from the position the item is currently in and loop round to the start.
+                IPocketUpgrade newUpgrade = findUpgrade( inventory.mainInventory, inventory.currentItem, previousUpgrade );
+                if( newUpgrade == null ) newUpgrade = findUpgrade( inventory.offHandInventory, 0, previousUpgrade );
                 if( newUpgrade == null ) throw new LuaException( "Cannot find a valid upgrade" );
 
                 // Remove the current upgrade
@@ -120,12 +103,14 @@ public class PocketAPI implements ILuaAPI
                 ItemPocketComputer.setUpgrade( pocketStack, newUpgrade );
                 m_computer.setUpgrade( newUpgrade );
 
+                inventory.markDirty();
+
                 return null;
             }
 
             case 1:
             {
-                // unequip
+                // unequipBack
                 if( !(m_computer.getEntity() instanceof EntityPlayer) )
                 {
                     throw new LuaException( "Cannot find player" );
@@ -157,5 +142,29 @@ public class PocketAPI implements ILuaAPI
             default:
                 return null;
         }
+    }
+
+    private static IPocketUpgrade findUpgrade( ItemStack[] inv, int start, IPocketUpgrade previous )
+    {
+        for (int i = 0; i < inv.length; i++)
+        {
+            ItemStack invStack = inv[ (i + start) % inv.length ];
+            if( invStack != null )
+            {
+                IPocketUpgrade newUpgrade = ComputerCraft.getPocketUpgrade( invStack );
+
+                if( newUpgrade != null && newUpgrade != previous )
+                {
+                    // Consume an item from this stack and exit the loop
+                    invStack = invStack.copy();
+                    invStack.stackSize--;
+                    inv[ (i + start) % inv.length ] = invStack.stackSize <= 0 ? null : invStack;
+
+                    return newUpgrade;
+                }
+            }
+        }
+
+        return null;
     }
 }
