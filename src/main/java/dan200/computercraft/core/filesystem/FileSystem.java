@@ -11,6 +11,7 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 
 import java.io.*;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -291,7 +292,7 @@ public class FileSystem
     }
 
     private final Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
-    private final Set<IMountedFile> m_openFiles = new HashSet<IMountedFile>();
+    private final WeakHashMap<IMountedFile, Object> m_openFiles = new WeakHashMap<IMountedFile, Object>();
     
     public FileSystem( String rootLabel, IMount rootMount ) throws FileSystemException
     {
@@ -308,18 +309,15 @@ public class FileSystem
         // Close all dangling open files
         synchronized( m_openFiles )
         {
-            while( m_openFiles.size() > 0 )
+            for(IMountedFile file : m_openFiles.keySet())
             {
-                IMountedFile file = m_openFiles.iterator().next();
-                try
-                {
+                try {
                     file.close();
-                }
-                catch( IOException e )
-                {
-                    m_openFiles.remove( file );
+                } catch (IOException e) {
+                    // Ignore
                 }
             }
+            m_openFiles.clear();
         }
     }
     
@@ -669,7 +667,7 @@ public class FileSystem
                 throw new FileSystemException("Too many files already open");
             }
 
-            m_openFiles.add( file );
+            m_openFiles.put( file, null );
             return file;
         }
     }
@@ -679,7 +677,6 @@ public class FileSystem
         synchronized( m_openFiles )
         {
             m_openFiles.remove( file );
-
             if( handle != null )
             {
                 handle.close();
