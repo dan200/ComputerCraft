@@ -655,7 +655,8 @@ public class FileSystem
     {
         synchronized( m_openFiles )
         {
-            if( m_openFiles.size() >= ComputerCraft.maximumFilesOpen )
+            if( ComputerCraft.maximumFilesOpen > 0 &&
+                m_openFiles.size() >= ComputerCraft.maximumFilesOpen )
             {
                 if( handle != null )
                 {
