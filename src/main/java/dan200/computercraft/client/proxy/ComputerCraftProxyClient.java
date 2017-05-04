@@ -27,6 +27,7 @@ import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.entity.TurtleVisionCamera;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -256,7 +257,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     @Override
     public void deleteDisplayLists( int list, int range )
     {
-        GL11.glDeleteLists( list, range );
+        GlStateManager.glDeleteLists( list, range );
     }
 
     @Override
