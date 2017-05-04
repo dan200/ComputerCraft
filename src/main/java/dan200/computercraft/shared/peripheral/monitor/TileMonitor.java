@@ -47,7 +47,6 @@ public class TileMonitor extends TilePeripheralBase
     private final Set<IComputerAccess> m_computers;
 
     public long m_lastRenderFrame = -1; // For rendering use only
-    public int m_renderDisplayList = -1; // For rendering use only
 
     private boolean m_destroyed;
     private boolean m_ignoreMe;
@@ -89,11 +88,6 @@ public class TileMonitor extends TilePeripheralBase
             {
                 contractNeighbours();
             }
-        }
-        if( m_renderDisplayList >= 0 )
-        {
-            ComputerCraft.deleteDisplayLists( m_renderDisplayList, 3 );
-            m_renderDisplayList = -1;
         }
     }
 
