@@ -285,7 +285,7 @@ public class Computer
     {
         synchronized( this )
         {
-            if( m_state == State.Running )
+            if( m_state != State.Off && m_machine != null )
             {
                 if( hard ) 
                 {

@@ -20,6 +20,7 @@ import dan200.computercraft.shared.network.ComputerCraftPacket;
 import dan200.computercraft.shared.peripheral.diskdrive.TileDiskDrive;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
+import dan200.computercraft.shared.pocket.inventory.ContainerPocketComputer;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.proxy.ComputerCraftProxyCommon;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
@@ -325,7 +326,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     @Override
     public Object getPocketComputerGUI( EntityPlayer player, EnumHand hand )
     {
-        ContainerHeldItem container = new ContainerHeldItem( player, hand );
+        ContainerPocketComputer container = new ContainerPocketComputer( player, hand );
         if( container.getStack() != null && container.getStack().getItem() instanceof ItemPocketComputer )
         {
             return new GuiPocketComputer( container );

@@ -47,7 +47,7 @@ local function resumeProcess( nProcess, sEvent, ... )
 end
 
 local function launchProcess( tProgramEnv, sProgramPath, ... )
-    local tProgramArgs = { ... }
+    local tProgramArgs = table.pack( ... )
     local nProcess = #tProcesses + 1
     local tProcess = {}
     tProcess.sTitle = fs.getName( sProgramPath )
@@ -57,7 +57,7 @@ local function launchProcess( tProgramEnv, sProgramPath, ... )
         tProcess.window = window.create( parentTerm, 1, 1, w, h, false )
     end
     tProcess.co = coroutine.create( function()
-        os.run( tProgramEnv, sProgramPath, table.unpack( tProgramArgs ) )
+        os.run( tProgramEnv, sProgramPath, table.unpack( tProgramArgs, 1, tProgramArgs.n ) )
         if not tProcess.bInteracted then
             term.setCursorBlink( false )
             print( "Press any key to continue" )
@@ -222,7 +222,7 @@ redrawMenu()
 -- Run processes
 while #tProcesses > 0 do
     -- Get the event
-    local tEventData = { os.pullEventRaw() }
+    local tEventData = table.pack( os.pullEventRaw() )
     local sEvent = tEventData[1]
     if sEvent == "term_resize" then
         -- Resize event
@@ -233,7 +233,7 @@ while #tProcesses > 0 do
     elseif sEvent == "char" or sEvent == "key" or sEvent == "key_up" or sEvent == "paste" or sEvent == "terminate" then
         -- Keyboard event
         -- Passthrough to current process
-        resumeProcess( nCurrentProcess, table.unpack( tEventData ) )
+        resumeProcess( nCurrentProcess, table.unpack( tEventData, 1, tEventData.n ) )
         if cullProcess( nCurrentProcess ) then
             setMenuVisible( #tProcesses >= 2 )
             redrawMenu()
@@ -280,7 +280,7 @@ while #tProcesses > 0 do
         -- Passthrough to all processes
         local nLimit = #tProcesses -- Storing this ensures any new things spawned don't get the event
         for n=1,nLimit do
-            resumeProcess( n, table.unpack( tEventData ) )
+            resumeProcess( n, table.unpack( tEventData, 1, tEventData.n ) )
         end
         if cullProcesses() then
             setMenuVisible( #tProcesses >= 2 )

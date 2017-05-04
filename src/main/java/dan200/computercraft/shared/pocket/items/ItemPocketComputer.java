@@ -279,6 +279,16 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         return computer;
     }
 
+    public ServerComputer getServerComputer( ItemStack stack )
+    {
+        int instanceID = getInstanceID( stack );
+        if( instanceID >= 0 )
+        {
+            return ComputerCraft.serverComputerRegistry.get( instanceID );
+        }
+        return null;
+    }
+
     public ClientComputer createClientComputer( ItemStack stack )
     {
         int instanceID = getInstanceID( stack );

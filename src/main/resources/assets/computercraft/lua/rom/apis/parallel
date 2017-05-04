@@ -14,13 +14,13 @@ local function runUntilLimit( _routines, _limit )
     local living = count
     
     local tFilters = {}
-    local eventData = {}
+    local eventData = { n = 0 }
     while true do
     	for n=1,count do
     		local r = _routines[n]
     		if r then
     			if tFilters[r] == nil or tFilters[r] == eventData[1] or eventData[1] == "terminate" then
-	    			local ok, param = coroutine.resume( r, table.unpack(eventData) )
+	    			local ok, param = coroutine.resume( r, table.unpack( eventData, 1, eventData.n ) )
 					if not ok then
 						error( param, 0 )
 					else
@@ -46,7 +46,7 @@ local function runUntilLimit( _routines, _limit )
 				end
 			end
 		end
-    	eventData = { os.pullEventRaw() }
+    	eventData = table.pack( os.pullEventRaw() )
     end
 end
 
