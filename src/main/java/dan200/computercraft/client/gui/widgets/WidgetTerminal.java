@@ -410,7 +410,7 @@ public class WidgetTerminal extends Widget
                     y += FixedWidthFontRenderer.FONT_HEIGHT;
                 }
 
-                if( tblink )
+                if( tblink && tx >= 0 && ty >= 0 && tx < tw && ty < th )
                 {
                     TextBuffer cursor = new TextBuffer( '_', 1 );
                     TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
