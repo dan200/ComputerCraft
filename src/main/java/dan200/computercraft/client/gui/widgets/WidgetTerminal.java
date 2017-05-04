@@ -407,23 +407,22 @@ public class WidgetTerminal extends Widget
                     TextBuffer colour = terminal.getTextColourLine( line );
                     TextBuffer backgroundColour = terminal.getBackgroundColourLine( line );
                     fontRenderer.drawString( text, x, y, colour, backgroundColour, m_leftMargin, m_rightMargin, greyscale );
-                    if( tblink && ty == line )
-                    {
-                        if( tx >= 0 && tx < tw )
-                        {
-                            TextBuffer cursor = new TextBuffer( '_', 1 );
-                            TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
-                            fontRenderer.drawString(
-                                cursor,
-                                x + FixedWidthFontRenderer.FONT_WIDTH * tx,
-                                y,
-                                cursorColour, null,
-                                0, 0,
-                                greyscale
-                            );
-                        }
-                    }
-                    y = y + FixedWidthFontRenderer.FONT_HEIGHT;
+                    y += FixedWidthFontRenderer.FONT_HEIGHT;
+                }
+
+                if( tblink )
+                {
+                    TextBuffer cursor = new TextBuffer( '_', 1 );
+                    TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
+
+                    fontRenderer.drawString(
+                            cursor,
+                            x + FixedWidthFontRenderer.FONT_WIDTH * tx,
+                            startY + m_topMargin + FixedWidthFontRenderer.FONT_HEIGHT * ty,
+                            cursorColour, null,
+                            0, 0,
+                            greyscale
+                    );
                 }
             }
         }
