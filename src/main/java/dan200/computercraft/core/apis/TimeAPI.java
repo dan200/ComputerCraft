@@ -1,94 +1,36 @@
 package dan200.computercraft.core.apis;
 
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
+import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.TimeZone;
 
 
-public class TimeAPI implements ILuaAPI{
+public class TimeAPI extends LuaTable {
 
-    private static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private TimeZone timeZone;
+    private Calendar calendarInstance;
 
-    private String formatDate(String pattern, Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        return sdf.format(date);
+    public TimeAPI() {
+        timeZone = TimeZone.getDefault();
+        calendarInstance = Calendar.getInstance( timeZone );
     }
 
-    private long parseDate(String pattern, String value) throws LuaException {
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        long timestamp;
-        try {
-            timestamp = sdf.parse(value).getTime();
-        } catch (ParseException parseException) {
-            throw new LuaException("Date can't parsed");
-        }
-        return timestamp;
+    public void setTimeZone(String timeZoneId) {
+        timeZone = TimeZone.getTimeZone(timeZoneId);
+        calendarInstance = Calendar.getInstance( timeZone );
     }
 
-    @Override
-    public String[] getNames() {
-        return new String[]{
-                "time",
-        };
-    }
-
-    @Override
-    public void startup() {}
-
-    @Override
-    public void advance(double _dt) {}
-
-    @Override
-    public void shutdown() {}
-
-    @Override
-    public String[] getMethodNames() {
-        return new String[] {
-                "format",
-                "getDay",
-                "getMonth",
-                "getYear",
-                "getHour",
-                "getMinute",
-                "getSecound",
-                "getTime",
-                "parse"
-        };
-    }
-
-    @Override
-    public Object[] callMethod(ILuaContext context, int method, Object[] args) throws LuaException, InterruptedException {
+    public LuaValue getResult(int method) {
 
         //timestamp like PHP without mills!
 
-        Calendar cal = Calendar.getInstance();
-
-        //If timestamp is given
-        if (args.length > 0 && args[0] != null && args[0] instanceof Double) {
-            long argTime = ((Double)args[0]).longValue()*1000;
-            cal.setTimeInMillis(argTime);
-        }
-
-        Object[] returnArray = new Object[1];
+        Object returnValue = null;
         int calendarValue = -1;
         int addValue = 0;
 
         switch (method) {
-            case 0:
-                //format()
-                String format = DEFAULT_TIME_FORMAT;
-                if (args.length == 1 && args[0] instanceof String) {
-                    format = (String) args[0];
-                }
-                else if (args.length == 2 && args[1] instanceof String) {
-                    format = (String) args[1];
-                }
-                returnArray[0] = formatDate(format, cal.getTime());
-                break;
             case 1:
                 //getDay()
                 calendarValue = Calendar.DAY_OF_MONTH;
@@ -116,21 +58,54 @@ public class TimeAPI implements ILuaAPI{
                 break;
             case 7:
                 //getTime()
-                returnArray[0] = cal.getTimeInMillis() / 1000;
-                break;
-            case 8:
-                //parse(String pattern, String input)
-                if (args.length < 2 || args[0] == null || args[1] == null || !(args[0] instanceof String) || !(args[1] instanceof String)) {
-                    throw new LuaException("String expected!");
-                }
-                String  pattern = (String) args[0],
-                        input   = (String) args[1];
-                returnArray[0] = parseDate(pattern, input) / 1000;
+                return wrap( Math.floor( calendarInstance.getTimeInMillis() / 1000 ) );
         }
 
-        if (calendarValue != -1 && returnArray[0] == null) {
-            returnArray[0] = cal.get(calendarValue)+addValue;
+        if (calendarValue != -1 && returnValue == null) {
+            return wrap( calendarInstance.get(calendarValue)+addValue );
         }
-        return returnArray;
+        else
+            return LuaValue.NIL;
+    }
+
+    @Override
+    public LuaValue get(LuaValue luaValue) {
+
+        String searched = luaValue.toString();
+
+        if (searched.equals("day"))
+            return getResult(1);
+        else if (searched.equals("month"))
+            return getResult(2);
+        else if (searched.equals("year"))
+            return getResult(3);
+        else if (searched.equals("hour"))
+            return getResult(4);
+        else if (searched.equals("minute"))
+            return getResult(5);
+        else if (searched.equals("second"))
+            return getResult(6);
+        else if (searched.equals("timezone"))
+            return wrap(timeZone.getID());
+        else
+            return super.get(luaValue);
+    }
+
+    @Override
+    public void set(LuaValue key, LuaValue value) {
+        if (key.toString().equals("timezone")) {
+            setTimeZone( value.toString() );
+        }
+        else {
+            super.set(key, value);
+        }
+    }
+
+    private LuaValue wrap(double number) {
+        return LuaValue.valueOf(number);
+    }
+
+    private LuaValue wrap(String value) {
+        return LuaValue.valueOf(value);
     }
 }
