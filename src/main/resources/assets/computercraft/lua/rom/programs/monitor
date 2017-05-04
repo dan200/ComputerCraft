@@ -43,13 +43,13 @@ end
 local ok, param = pcall( function()
 	local sFilter = resume()
 	while coroutine.status( co ) ~= "dead" do
-		local tEvent = { os.pullEventRaw() }
+		local tEvent = table.pack( os.pullEventRaw() )
 		if sFilter == nil or tEvent[1] == sFilter or tEvent[1] == "terminate" then
-			sFilter = resume( table.unpack( tEvent ) )
+			sFilter = resume( table.unpack( tEvent, 1, tEvent.n ) )
 		end
 		if coroutine.status( co ) ~= "dead" and (sFilter == nil or sFilter == "mouse_click") then
 			if tEvent[1] == "monitor_touch" and tEvent[2] == sName then
-				sFilter = resume( "mouse_click", 1, table.unpack( tEvent, 3 ) )
+				sFilter = resume( "mouse_click", 1, table.unpack( tEvent, 3, tEvent.n ) )
 			end
 		end
 		if coroutine.status( co ) ~= "dead" and (sFilter == nil or sFilter == "term_resize") then
