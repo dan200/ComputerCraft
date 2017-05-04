@@ -495,6 +495,7 @@ public class TurtleBrain implements ITurtleAccess
 
         // Cache info about the old turtle (so we don't access this after we delete ourselves)
         World oldWorld = getWorld();
+        TileTurtle oldOwner = m_owner;
         BlockPos oldPos = m_owner.getPos();
         Block oldBlock = m_owner.getBlock();
 
@@ -504,36 +505,51 @@ public class TurtleBrain implements ITurtleAccess
             return true;
         }
 
-        // Create a new turtle
-        if( world.isBlockLoaded( pos ) && world.setBlockState( pos, oldBlock.getDefaultState(), 0 ) )
+        if ( !world.isBlockLoaded( pos ) )
         {
-            Block block = world.getBlockState( pos ).getBlock();
-            if( block == oldBlock )
+            return false;
+        }
+
+        oldOwner.notifyMoveStart();
+
+        try
+        {
+            // Create a new turtle
+            if( world.setBlockState( pos, oldBlock.getDefaultState(), 0 ) )
             {
-                TileEntity newTile = world.getTileEntity( pos );
-                if( newTile != null && newTile instanceof TileTurtle )
+                Block block = world.getBlockState( pos ).getBlock();
+                if( block == oldBlock )
                 {
-                    // Copy the old turtle state into the new turtle
-                    TileTurtle newTurtle = (TileTurtle)newTile;
-                    newTurtle.setWorldObj( world );
-                    newTurtle.setPos( pos );
-                    newTurtle.transferStateFrom( m_owner );
-                    newTurtle.createServerComputer().setWorld( world );
-                    newTurtle.createServerComputer().setPosition( pos );
+                    TileEntity newTile = world.getTileEntity( pos );
+                    if( newTile != null && newTile instanceof TileTurtle )
+                    {
+                        // Copy the old turtle state into the new turtle
+                        TileTurtle newTurtle = (TileTurtle)newTile;
+                        newTurtle.setWorldObj( world );
+                        newTurtle.setPos( pos );
+                        newTurtle.transferStateFrom( oldOwner );
+                        newTurtle.createServerComputer().setWorld( world );
+                        newTurtle.createServerComputer().setPosition( pos );
 
-                    // Remove the old turtle
-                    oldWorld.setBlockToAir( oldPos );
+                        // Remove the old turtle
+                        oldWorld.setBlockToAir( oldPos );
 
-                    // Make sure everybody knows about it
-                    newTurtle.updateBlock();
-                    newTurtle.updateInput();
-                    newTurtle.updateOutput();
-                    return true;
+                        // Make sure everybody knows about it
+                        newTurtle.updateBlock();
+                        newTurtle.updateInput();
+                        newTurtle.updateOutput();
+                        return true;
+                    }
                 }
-            }
 
-            // Something went wrong, remove the newly created turtle
-            world.setBlockToAir( pos );
+                // Something went wrong, remove the newly created turtle
+                world.setBlockToAir( pos );
+            }
+        }
+        finally
+        {
+            // whatever happens, unblock old turtle in case it's still in world
+            oldOwner.notifyMoveEnd();
         }
 
         return false;

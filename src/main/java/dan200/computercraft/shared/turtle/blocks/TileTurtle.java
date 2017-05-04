@@ -46,12 +46,19 @@ public class TileTurtle extends TileComputerBase
     public static final int INVENTORY_HEIGHT = 4;
 
     // Members
-    
+
+    enum MoveState
+    {
+        NOT_MOVED,
+        IN_PROGRESS,
+        MOVED
+    }
+
     private ItemStack[] m_inventory;
     private ItemStack[] m_previousInventory;
     private boolean m_inventoryChanged;
     private TurtleBrain m_brain;
-    private boolean m_moved;
+    private MoveState m_moveState;
 
     public TileTurtle()
     {
@@ -59,12 +66,12 @@ public class TileTurtle extends TileComputerBase
         m_previousInventory =  new ItemStack[ getSizeInventory() ];
         m_inventoryChanged = false;
         m_brain = createBrain();
-        m_moved = false;
+        m_moveState = MoveState.NOT_MOVED;
     }
 
     public boolean hasMoved()
     {
-        return m_moved;
+        return m_moveState == MoveState.MOVED;
     }
 
     protected TurtleBrain createBrain()
@@ -277,6 +284,41 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
+    public void onNeighbourChange()
+    {
+        if ( m_moveState == MoveState.NOT_MOVED )
+        {
+            super.onNeighbourChange();
+        }
+    }
+
+    @Override
+    public void onNeighbourTileEntityChange(BlockPos neighbour)
+    {
+        if ( m_moveState == MoveState.NOT_MOVED )
+        {
+            super.onNeighbourTileEntityChange( neighbour );
+        }
+    }
+
+    public void notifyMoveStart()
+    {
+        if (m_moveState == MoveState.NOT_MOVED)
+        {
+            m_moveState = MoveState.IN_PROGRESS;
+        }
+    }
+
+    public void notifyMoveEnd()
+    {
+        // MoveState.MOVED is final
+        if (m_moveState == MoveState.IN_PROGRESS)
+        {
+            m_moveState = MoveState.NOT_MOVED;
+        }
+    }
+
+    @Override
     public void readFromNBT( NBTTagCompound nbttagcompound )
     {
         super.readFromNBT(nbttagcompound);
@@ -401,7 +443,7 @@ public class TileTurtle extends TileComputerBase
     }
 
     // IInventory
-    
+
     @Override
     public int getSizeInventory()
     {
@@ -431,7 +473,7 @@ public class TileTurtle extends TileComputerBase
             return result;
         }
     }
-    
+
     @Override
     public ItemStack decrStackSize( int slot, int count )
     {
@@ -447,13 +489,13 @@ public class TileTurtle extends TileComputerBase
             {
                 return null;
             }
-            
+
             if( stack.stackSize <= count )
             {
                 setInventorySlotContents( slot, null );
                 return stack;
             }
-            
+
             ItemStack part = stack.splitStack( count );
             onInventoryDefinitelyChanged();
             return part;
@@ -496,7 +538,7 @@ public class TileTurtle extends TileComputerBase
             }
         }
     }
-    
+
     @Override
     public String getName()
     {
@@ -550,7 +592,7 @@ public class TileTurtle extends TileComputerBase
     public void openInventory( EntityPlayer player )
     {
     }
-    
+
     @Override
     public void closeInventory( EntityPlayer player )
     {
@@ -561,7 +603,7 @@ public class TileTurtle extends TileComputerBase
     {
         return true;
     }
-    
+
     @Override
     public void markDirty()
     {
@@ -664,6 +706,6 @@ public class TileTurtle extends TileComputerBase
         m_inventoryChanged = copy.m_inventoryChanged;
         m_brain = copy.m_brain;
         m_brain.setOwner( this );
-        copy.m_moved = true;
+        copy.m_moveState = MoveState.MOVED;
     }
 }

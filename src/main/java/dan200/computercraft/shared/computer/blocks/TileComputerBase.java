@@ -198,6 +198,12 @@ public abstract class TileComputerBase extends TileGeneric
     }
 
     @Override
+    public void onNeighbourTileEntityChange( BlockPos neighbour )
+    {
+        updateInput( neighbour );
+    }
+
+    @Override
     public void update()
     {
         if( !worldObj.isRemote )
@@ -308,6 +314,21 @@ public abstract class TileComputerBase extends TileGeneric
         return localSide;
     }
 
+    private void updateSideInput( ServerComputer computer, EnumFacing dir, BlockPos offset )
+    {
+        EnumFacing offsetSide = dir.getOpposite();
+        int localDir = remapLocalSide( DirectionUtil.toLocal( this, dir ) );
+        if( !isRedstoneBlockedOnSide( localDir ) )
+        {
+            computer.setRedstoneInput( localDir, RedstoneUtil.getRedstoneOutput( worldObj, offset, offsetSide ) );
+            computer.setBundledRedstoneInput( localDir, RedstoneUtil.getBundledRedstoneOutput( worldObj, offset, offsetSide ) );
+        }
+        if( !isPeripheralBlockedOnSide( localDir ) )
+        {
+            computer.setPeripheral( localDir, PeripheralUtil.getPeripheral( worldObj, offset, offsetSide ) );
+        }
+    }
+
     public void updateInput()
     {
         if( worldObj == null || worldObj.isRemote )
@@ -322,17 +343,29 @@ public abstract class TileComputerBase extends TileGeneric
             BlockPos pos = computer.getPosition();
             for( EnumFacing dir : EnumFacing.VALUES )
             {
+                updateSideInput( computer, dir, pos.offset( dir ) );
+            }
+        }
+    }
+
+    public void updateInput( BlockPos neighbour )
+    {
+        if( worldObj == null || worldObj.isRemote )
+        {
+            return;
+        }
+
+        ServerComputer computer = getServerComputer();
+        if( computer != null )
+        {
+            BlockPos pos = computer.getPosition();
+            for( EnumFacing dir : EnumFacing.VALUES )
+            {
                 BlockPos offset = pos.offset( dir );
-                EnumFacing offsetSide = dir.getOpposite();
-                int localDir = remapLocalSide( DirectionUtil.toLocal( this, dir ) );
-                if( !isRedstoneBlockedOnSide( localDir ) )
+                if ( offset.equals( neighbour ) )
                 {
-                    computer.setRedstoneInput( localDir, RedstoneUtil.getRedstoneOutput( worldObj, offset, offsetSide ) );
-                    computer.setBundledRedstoneInput( localDir, RedstoneUtil.getBundledRedstoneOutput( worldObj, offset, offsetSide ) );
-                }
-                if( !isPeripheralBlockedOnSide( localDir ) )
-                {
-                    computer.setPeripheral( localDir, PeripheralUtil.getPeripheral( worldObj, offset, offsetSide ) );
+                    updateSideInput( computer, dir, offset );
+                    break;
                 }
             }
         }
