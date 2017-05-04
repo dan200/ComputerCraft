@@ -40,18 +40,21 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
     }
 
     @Override
-    public boolean getModemLight()
+    public int getLight()
     {
-        return getUserData().getBoolean( "modemLight" );
+        int value = getUserData().getInteger( "modemLight" );
+        return value >= 0 && value <= 15 ? value : 0;
     }
 
     @Override
-    public void setModemLight( boolean value )
+    public void setLight( int value )
     {
+        if( value < 0 || value > 15 ) throw new IllegalArgumentException( "Colour out of bounds" );
+
         NBTTagCompound tag = getUserData();
-        if( tag.getBoolean( "modemLight" ) != value )
+        if( tag.getInteger( "modemLight" ) != value )
         {
-            tag.setBoolean( "modemLight", value );
+            tag.setInteger( "modemLight", value );
             updateUserData();
         }
     }
@@ -117,11 +120,13 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
         }
     }
 
-    public ItemStack getStack() {
+    public ItemStack getStack()
+    {
         return m_stack;
     }
 
-    public IPocketUpgrade getUpgrade() {
+    public IPocketUpgrade getUpgrade()
+    {
         return m_upgrade;
     }
 

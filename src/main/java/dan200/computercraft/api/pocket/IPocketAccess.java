@@ -23,29 +23,40 @@ public interface IPocketAccess
     Entity getEntity();
 
     /**
-     * Get if the modem light is turned on
+     * Get the colour of the modem light.
      *
-     * @return If the modem light is turned on
+     * See {@link #setLight(int)} for the values this may return.
+     *
+     * @return The colour of the modem light.
+     * @see #setLight(int)
      */
-    boolean getModemLight();
+    int getLight();
 
     /**
-     * Turn on/off the modem light
+     * Set the colour of the modem light. Use {@link 0} to turn it off.
      *
-     * @param value If the light should be on
+     * Colours take the form of an integer between 0 and 15, using the opposite order to those in
+     * {@link <a href="http://www.computercraft.info/wiki/Colors_(API)#Colors">The colors API</a>}  - so 0 being black,
+     * 1 representing red, 2 representing green all the way up to 15 for white.
+     *
+     * @param value The colour the light should have.
+     * @see #getLight()
      */
-    void setModemLight( boolean value );
+    void setLight( int value );
 
     /**
      * Get the upgrade specific NBT
      *
      * @return The upgrade's NBT
+     * @see #updateUpgradeNBTData()
      */
     @Nonnull
     NBTTagCompound getUpgradeNBTData();
 
     /**
      * Mark the upgrade specific NBT as dirty
+     *
+     * @see #getUpgradeNBTData()
      */
     void updateUpgradeNBTData();
 

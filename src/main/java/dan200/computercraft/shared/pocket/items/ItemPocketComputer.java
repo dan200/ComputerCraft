@@ -32,6 +32,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -433,6 +435,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         stack.getTagCompound().setInteger( "sessionID", sessionID );
     }
 
+    @SideOnly(Side.CLIENT)
     public ComputerState getState( ItemStack stack )
     {
         ClientComputer computer = getClientComputer( stack );
@@ -443,18 +446,19 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         return ComputerState.Off;
     }
 
-    public boolean getLightState( ItemStack stack )
+    @SideOnly(Side.CLIENT)
+    public int getLightState( ItemStack stack )
     {
         ClientComputer computer = getClientComputer( stack );
         if( computer != null && computer.isOn() )
         {
             NBTTagCompound computerNBT = computer.getUserData();
-            if( computerNBT != null && computerNBT.getBoolean( "modemLight" ) )
+            if( computerNBT != null )
             {
-                return true;
+                return computerNBT.getInteger( "modemLight" );
             }
         }
-        return false;
+        return 0;
     }
 
     public static IPocketUpgrade getUpgrade( ItemStack stack )

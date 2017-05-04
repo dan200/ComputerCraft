@@ -25,6 +25,7 @@ import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.proxy.ComputerCraftProxyCommon;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.entity.TurtleVisionCamera;
+import dan200.computercraft.shared.util.Colour;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -53,7 +54,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -117,19 +117,14 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             private ModelResourceLocation pocket_computer_off = new ModelResourceLocation( "computercraft:pocketComputer", "inventory" );
             private ModelResourceLocation pocket_computer_on = new ModelResourceLocation( "computercraft:pocket_computer_on", "inventory" );
             private ModelResourceLocation pocket_computer_blinking = new ModelResourceLocation( "computercraft:pocket_computer_blinking", "inventory" );
-            private ModelResourceLocation pocket_computer_on_modem_on = new ModelResourceLocation( "computercraft:pocket_computer_on_modem_on", "inventory" );
-            private ModelResourceLocation pocket_computer_blinking_modem_on = new ModelResourceLocation( "computercraft:pocket_computer_blinking_modem_on", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_off = new ModelResourceLocation( "computercraft:advanced_pocket_computer_off", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_on = new ModelResourceLocation( "computercraft:advanced_pocket_computer_on", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_blinking = new ModelResourceLocation( "computercraft:advanced_pocket_computer_blinking", "inventory" );
-            private ModelResourceLocation advanced_pocket_computer_on_modem_on = new ModelResourceLocation( "computercraft:advanced_pocket_computer_on_modem_on", "inventory" );
-            private ModelResourceLocation advanced_pocket_computer_blinking_modem_on = new ModelResourceLocation( "computercraft:advanced_pocket_computer_blinking_modem_on", "inventory" );
 
             @Override
             public ModelResourceLocation getModelLocation( ItemStack stack )
             {
                 ItemPocketComputer itemPocketComputer = (ItemPocketComputer)stack.getItem();
-                boolean modemOn = itemPocketComputer.getLightState( stack );
                 switch( itemPocketComputer.getFamily( stack ) )
                 {
                     case Advanced:
@@ -143,11 +138,11 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                             }
                             case On:
                             {
-                                return modemOn ? advanced_pocket_computer_on_modem_on : advanced_pocket_computer_on;
+                                return advanced_pocket_computer_on;
                             }
                             case Blinking:
                             {
-                                return modemOn ? advanced_pocket_computer_blinking_modem_on : advanced_pocket_computer_blinking;
+                                return advanced_pocket_computer_blinking;
                             }
                         }
                     }
@@ -163,24 +158,36 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                             }
                             case On:
                             {
-                                return modemOn ? pocket_computer_on_modem_on : pocket_computer_on;
+                                return pocket_computer_on;
                             }
                             case Blinking:
                             {
-                                return modemOn ? pocket_computer_blinking_modem_on : pocket_computer_blinking;
+                                return pocket_computer_blinking;
                             }
                         }
                     }
                 }
             }
         }, new String[] {
-            "pocketComputer", "pocket_computer_on", "pocket_computer_blinking", "pocket_computer_on_modem_on", "pocket_computer_blinking_modem_on",
-            "advanced_pocket_computer_off", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking", "advanced_pocket_computer_on_modem_on", "advanced_pocket_computer_blinking_modem_on",
+            "pocketComputer", "pocket_computer_on", "pocket_computer_blinking",
+            "advanced_pocket_computer_off", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking",
         } );
 
         // Setup
-		mc.getItemColors().registerItemColorHandler(new DiskColorHandler(ComputerCraft.Items.disk), ComputerCraft.Items.disk);
-		mc.getItemColors().registerItemColorHandler(new DiskColorHandler(ComputerCraft.Items.diskExpanded), ComputerCraft.Items.diskExpanded);
+        mc.getItemColors().registerItemColorHandler( new DiskColorHandler( ComputerCraft.Items.disk ), ComputerCraft.Items.disk );
+        mc.getItemColors().registerItemColorHandler( new DiskColorHandler( ComputerCraft.Items.diskExpanded ), ComputerCraft.Items.diskExpanded );
+
+        mc.getItemColors().registerItemColorHandler( new IItemColor()
+        {
+            @Override
+            public int getColorFromItemstack( ItemStack stack, int layout )
+            {
+                if( layout != 1 ) return 0xFFFFFF;
+
+                Colour colour = Colour.fromInt( ComputerCraft.Items.pocketComputer.getLightState( stack ) );
+                return colour == null ? Colour.Black.getHex() : colour.getHex();
+            }
+        }, ComputerCraft.Items.pocketComputer );
 
         // Setup renderers
         ClientRegistry.bindTileEntitySpecialRenderer( TileMonitor.class, new TileEntityMonitorRenderer() );
