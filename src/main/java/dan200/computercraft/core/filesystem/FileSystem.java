@@ -10,7 +10,6 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -441,6 +440,7 @@ public class FileSystem
         // Return list
         String[] array = new String[ list.size() ];
         list.toArray(array);
+        Arrays.sort( array );
         return array;
     }
 
