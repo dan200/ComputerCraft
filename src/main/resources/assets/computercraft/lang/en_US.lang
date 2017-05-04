@@ -55,4 +55,5 @@ gui.computercraft:config.turtles_need_fuel=Enable fuel
 gui.computercraft:config.turtle_fuel_limit=Turtle fuel limit
 gui.computercraft:config.advanced_turtle_fuel_limit=Advanced Turtle fuel limit
 gui.computercraft:config.turtles_obey_block_protection=Turtles obey block protection
-gui.computercraft:config.turtles_can_push=Turtles can push entities
+gui.computercraft:config.monitor_light=Monitor light intensity
+gui.computercraft:config.advanced_monitor_light=Advanced monitor light intensity

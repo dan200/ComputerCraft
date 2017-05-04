@@ -591,9 +591,9 @@ public class BlockPeripheral extends BlockPeripheralBase
         switch( getPeripheralType( world, pos ) )
         {
             case Monitor:
-                return 7;
+                return ComputerCraft.monitorLight;
             case AdvancedMonitor:
-                return 10;
+                return ComputerCraft.advancedMonitorLight;
             default:
                 return 0;
         }
