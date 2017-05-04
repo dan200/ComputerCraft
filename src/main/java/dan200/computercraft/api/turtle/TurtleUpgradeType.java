@@ -24,4 +24,22 @@ public enum TurtleUpgradeType
      * and can be interacted with the peripheral API (Such as the modem on Wireless Turtles).
      */
     Peripheral,
+
+    /**
+     * An upgrade which provides both a tool and a peripheral. This can be used when you wish
+     * your upgrade to also provide methods. For example, a pickaxe could provide methods
+     * determining whether it can break the given block or not.
+     */
+    Both,
+    ;
+
+    public boolean isTool()
+    {
+        return this == Tool || this == Both;
+    }
+
+    public boolean isPeripheral()
+    {
+        return this == Peripheral || this == Both;
+    }
 }
