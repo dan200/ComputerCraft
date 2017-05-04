@@ -3,6 +3,7 @@ New Features in ComputerCraft 1.80:
 * Added .getResponseHeaders() to HTTP responses.
 * Return a HTTP response when a HTTP error occurs.
 * Added a GUI to change ComputerCraft config options
+* Monitor text now glows in the dark
 
 New Features in ComputerCraft 1.79:
 
