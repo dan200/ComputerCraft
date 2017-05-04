@@ -42,6 +42,7 @@ import dan200.computercraft.shared.peripheral.modem.TileWirelessModem;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.ContainerPrinter;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
+import dan200.computercraft.shared.pocket.inventory.ContainerPocketComputer;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
 import dan200.computercraft.shared.pocket.recipes.PocketComputerUpgradeRecipe;
@@ -541,7 +542,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
                     if (tile != null && tile instanceof TileTurtle)
                     {
                         TileTurtle turtle = (TileTurtle) tile;
-                        return new ContainerTurtle( player.inventory, turtle.getAccess() );
+                        return new ContainerTurtle( player.inventory, turtle.getAccess(), turtle.getServerComputer() );
                     }
                     break;
                 }
@@ -551,7 +552,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
                 }
                 case ComputerCraft.pocketComputerGUIID:
                 {
-                    return new ContainerHeldItem( player, x == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND );
+                    return new ContainerPocketComputer( player, x == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND );
                 }
             }
             return null;

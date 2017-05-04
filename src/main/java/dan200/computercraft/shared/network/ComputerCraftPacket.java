@@ -224,4 +224,12 @@ public class ComputerCraftPacket
             }
         }
     }
+
+    /**
+     * Determine whether this packet requires the player to be interacting with the
+     * target.
+     */
+    public boolean requiresContainer() {
+        return m_packetType != RequestComputerUpdate && m_packetType != RequestTileEntityUpdate;
+    }
 }
