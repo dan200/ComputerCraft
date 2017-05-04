@@ -376,7 +376,7 @@ public class TileTurtle extends TileComputerBase
     @Override
     protected boolean isRedstoneBlockedOnSide( int localSide )
     {
-        return hasPeripheralUpgradeOnSide( localSide );
+        return false;
     }
 
     // IDirectionalTile
