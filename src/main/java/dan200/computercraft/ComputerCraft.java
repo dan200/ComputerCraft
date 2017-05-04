@@ -128,6 +128,9 @@ public class ComputerCraft
     public static int computerSpaceLimit = 1000 * 1000;
     public static int floppySpaceLimit = 125 * 1000;
 
+    public static int monitorLight = 7;
+    public static int advancedMonitorLight = 10;
+
     // Blocks and Items
     public static class Blocks
     {
@@ -184,6 +187,9 @@ public class ComputerCraft
 
         public static Property computerSpaceLimit;
         public static Property floppySpaceLimit;
+
+        public static Property monitorLight;
+        public static Property advancedMonitorLight;
 
     }
 
@@ -272,6 +278,16 @@ public class ComputerCraft
         Config.turtlesCanPush = Config.config.get( Configuration.CATEGORY_GENERAL, "turtlesCanPush", turtlesCanPush );
         Config.turtlesCanPush.setComment( "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so" );
 
+        Config.monitorLight = Config.config.get( Configuration.CATEGORY_GENERAL, "monitorLight", monitorLight );
+        Config.monitorLight
+            .setMinValue( 0 ).setMaxValue( 15 )
+            .setComment( "The light intensity given off by normal monitors." );
+
+        Config.advancedMonitorLight = Config.config.get( Configuration.CATEGORY_GENERAL, "advancedMonitorLight", advancedMonitorLight );
+        Config.advancedMonitorLight
+            .setMinValue( 0 ).setMaxValue( 15 )
+            .setComment( "The light intensity given off by advanced monitors." );
+
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
             property.setLanguageKey( "gui.computercraft:config." + CaseFormat.LOWER_CAMEL.to( CaseFormat.LOWER_UNDERSCORE, property.getName() ) );
@@ -309,6 +325,9 @@ public class ComputerCraft
         advancedTurtleFuelLimit = Config.advancedTurtleFuelLimit.getInt();
         turtlesObeyBlockProtection = Config.turtlesObeyBlockProtection.getBoolean();
         turtlesCanPush = Config.turtlesCanPush.getBoolean();
+
+        monitorLight = Config.monitorLight.getInt();
+        advancedMonitorLight = Config.advancedMonitorLight.getInt();
 
         Config.config.save();
     }

@@ -583,4 +583,19 @@ public class BlockPeripheral extends BlockPeripheralBase
             }
         }
     }
+
+    @Override
+    public int getLightValue( IBlockState state, IBlockAccess world, BlockPos pos )
+    {
+        if( state.getBlock() != this ) return 0;
+        switch( getPeripheralType( world, pos ) )
+        {
+            case Monitor:
+                return ComputerCraft.monitorLight;
+            case AdvancedMonitor:
+                return ComputerCraft.advancedMonitorLight;
+            default:
+                return 0;
+        }
+    }
 }
