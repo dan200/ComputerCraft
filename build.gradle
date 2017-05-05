@@ -79,3 +79,36 @@ processResources {
 jar {
     from configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
 }
+
+// utility tasks
+task deploy {
+	group = 'build'
+	description = 'Generates a jar and a source jar for release'
+	
+	dependsOn jar
+	dependsOn sourceJar
+}
+
+task setupIdes {
+	group = 'ide'
+	description = 'Sets up project for IDE use'
+	
+	dependsOn setupDecompWorkspace
+	dependsOn idea
+	dependsOn eclipse
+}
+
+task countLines {
+	group = 'other'
+	description = 'Count lines of Java, JSON, and Lua'
+	
+	doLast {
+		println "Java: " + sourceSets.main.allSource.files.findAll {it.name.endsWith ".java"}.sum {(it.text =~ /\n/).count}
+		println "JSON: " + sourceSets.main.allSource.files.findAll {it.name.endsWith ".json"}.sum {(it.text =~ /\n/).count}
+		
+		def lualines = 0
+		new File(sourceSets.main.resources.srcDirs[0], 'assets/computercraft/lua')
+			.eachFileRecurse(groovy.io.FileType.FILES,{ lualines += (it.text =~ /\n/).count })
+		println "Lua: $lualines"
+	}
+}
