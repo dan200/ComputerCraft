@@ -7,7 +7,7 @@ _G.package = {}
 
 _G.package.cpath = ""
 _G.package.loaded = {}
-_G.package.loadlib = function() error("not implemented: package.loadlib") end
+_G.package.loadlib = function() return nil,"not implemented: package.loadlib" end
 _G.package.path = table.concat({
   "?",
   "?.lua",
@@ -26,8 +26,20 @@ _G.package.path = table.concat({
   "/rom/apis/command/?/init.lua",
 }, ";")
 _G.package.preload = {}
-_G.package.seeall = function(module) error("not implemented: package.seeall") end
-_G.module = function(m) error("NotImplemented: module") end
+_G.package.seeall = function(module)
+  if type(module) ~= "table" then
+    error("bad argument #1 to 'require' (table expected, got " .. type(module) .. ")", 2)
+  end
+
+  local meta = getmetatable(module)
+  if not meta then
+    meta = {}
+    setmetatable(module, meta)
+  end
+
+  meta.__index = _G
+end
+_G.module = function(m) error("not implemented: module") end
 
 local _table_blacklist = { "_ENV", "_G" }
 do
