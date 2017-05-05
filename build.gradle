@@ -80,6 +80,10 @@ jar {
     configurations.shade.each {
         from(it.isDirectory() ? it : zipTree(it)) { exclude 'META-INF', 'META-INF/**' }
     }
+	
+	into("api", { from (sourceSets.main.java) {
+        include "dan200/computercraft/api/**/*.java"
+    }})
 }
 
 task countLines {
