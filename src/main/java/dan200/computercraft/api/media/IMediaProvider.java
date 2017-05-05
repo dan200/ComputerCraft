@@ -9,15 +9,17 @@ package dan200.computercraft.api.media;
 import net.minecraft.item.ItemStack;
 
 /**
- * This interface is used to provide IMedia implementations for ItemStack
+ * This interface is used to provide {@link IMedia} implementations for {@link ItemStack}.
+ *
  * @see dan200.computercraft.api.ComputerCraftAPI#registerMediaProvider(IMediaProvider)
  */
 public interface IMediaProvider
 {
     /**
      * Produce an IMedia implementation from an ItemStack.
-     * @see dan200.computercraft.api.ComputerCraftAPI#registerMediaProvider(IMediaProvider)
+     *
      * @return an IMedia implementation, or null if the item is not something you wish to handle
+     * @see dan200.computercraft.api.ComputerCraftAPI#registerMediaProvider(IMediaProvider)
      */
     public IMedia getMedia( ItemStack stack );
 }

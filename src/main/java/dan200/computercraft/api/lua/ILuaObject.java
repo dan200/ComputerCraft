@@ -6,21 +6,35 @@
 
 package dan200.computercraft.api.lua;
 
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
+
 /**
- * An interface for representing custom objects returned by IPeripheral.callMethod() calls.
+ * An interface for representing custom objects returned by {@link IPeripheral#callMethod(IComputerAccess, ILuaContext, int, Object[])}
+ * calls.
+ *
  * Return objects implementing this interface to expose objects with methods to lua.
  */
 public interface ILuaObject
 {
     /**
-     * Get the names of the methods that this object implements. This works the same as IPeripheral.getMethodNames(). See that method for detailed documentation.
-     * @see dan200.computercraft.api.peripheral.IPeripheral#getMethodNames()
+     * Get the names of the methods that this object implements. This works the same as {@link IPeripheral#getMethodNames()}.
+     * See that method for detailed documentation.
+     *
+     * @see IPeripheral#getMethodNames()
      */
     public String[] getMethodNames();
 
     /**
-     * Called when a user calls one of the methods that this object implements. This works the same as IPeripheral.callMethod(). See that method for detailed documentation.
-     * @see dan200.computercraft.api.peripheral.IPeripheral#callMethod(dan200.computercraft.api.peripheral.IComputerAccess, ILuaContext, int, Object[])
+     * Called when a user calls one of the methods that this object implements. This works the same as
+     * {@link IPeripheral#callMethod(IComputerAccess, ILuaContext, int, Object[])}}. See that method for detailed
+     * documentation.
+     *
+     * @throws LuaException         If the task could not be queued, or if the task threw an exception.
+     * @throws InterruptedException If the user shuts down or reboots the computer the coroutine is suspended,
+     *                              InterruptedException will be thrown. This exception must not be caught or
+     *                              intercepted, or the computer will leak memory and end up in a broken state.w
+     * @see IPeripheral#callMethod(IComputerAccess, ILuaContext, int, Object[])
      */
     public Object[] callMethod( ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException;
 }

@@ -6,16 +6,35 @@
 
 package dan200.computercraft.api.turtle;
 
+import net.minecraft.util.EnumFacing;
+
+/**
+ * Used to indicate the result of executing a turtle command.
+ *
+ * @see ITurtleCommand#execute(ITurtleAccess)
+ * @see ITurtleUpgrade#useTool(ITurtleAccess, TurtleSide, TurtleVerb, EnumFacing)
+ */
 public final class TurtleCommandResult
 {
     private static final TurtleCommandResult s_success = new TurtleCommandResult( true, null, null );
     private static final TurtleCommandResult s_emptyFailure = new TurtleCommandResult( false, null, null );
 
+    /**
+     * Create a successful command result with no result.
+     *
+     * @return A successful command result with no values.
+     */
     public static TurtleCommandResult success()
     {
         return success( null );
     }
 
+    /**
+     * Create a successful command result with the given result values.
+     *
+     * @param results The results of executing this command.
+     * @return A successful command result with the given values.
+     */
     public static TurtleCommandResult success( Object[] results )
     {
         if( results == null || results.length == 0 )
@@ -28,11 +47,22 @@ public final class TurtleCommandResult
         }
     }
 
+    /**
+     * Create a failed command result with no error message.
+     *
+     * @return A failed command result with no message.
+     */
     public static TurtleCommandResult failure()
     {
         return failure( null );
     }
 
+    /**
+     * Create a failed command result with an error message.
+     *
+     * @param errorMessage The error message to provide.
+     * @return A failed command result with a message.
+     */
     public static TurtleCommandResult failure( String errorMessage )
     {
         if( errorMessage == null )
@@ -56,16 +86,31 @@ public final class TurtleCommandResult
         m_results = results;
     }
 
+    /**
+     * Determine whether the command executed successfully.
+     *
+     * @return If the command was successful.
+     */
     public boolean isSuccess()
     {
         return m_success;
     }
 
+    /**
+     * Get the error message of this command result.
+     *
+     * @return The command's error message, or {@code null} if it was a success.
+     */
     public String getErrorMessage()
     {
         return m_errorMessage;
     }
 
+    /**
+     * Get the resulting values of this command result.
+     *
+     * @return The command's result, or {@code null} if it was a failure.
+     */
     public Object[] getResults()
     {
         return m_results;
