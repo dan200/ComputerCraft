@@ -33,6 +33,7 @@ public interface ITurtleUpgrade
      * You should use a unique resource domain to ensure this upgrade is uniquely identified.
      * The turtle will fail registration if an already used ID is specified.
      *
+     * @return The unique ID for this upgrade.
      * @see ComputerCraftAPI#registerTurtleUpgrade(ITurtleUpgrade)
      */
     public ResourceLocation getUpgradeID();
@@ -43,6 +44,7 @@ public interface ITurtleUpgrade
      * not released for older ComputerCraft versions, you can return -1 here.
      * The turtle will fail registration if an already used positive ID is specified.
      *
+     * @return The legacy ID, or -1 if is needed.
      * @see ComputerCraftAPI#registerTurtleUpgrade(ITurtleUpgrade)
      */
     public int getLegacyUpgradeID();
@@ -51,13 +53,16 @@ public interface ITurtleUpgrade
      * Return an unlocalised string to describe this type of turtle in turtle item names.
      *
      * Examples of built-in adjectives are "Wireless", "Mining" and "Crafty".
+     *
+     * @return The localisation key for this upgrade's adjective.
      */
     public String getUnlocalisedAdjective();
 
     /**
      * Return whether this turtle adds a tool or a peripheral to the turtle.
      *
-     * @see TurtleUpgradeType for the differences between the two.
+     * @return The type of upgrade this is.
+     * @see TurtleUpgradeType for the differences between them.
      */
     public TurtleUpgradeType getType();
 
@@ -65,6 +70,8 @@ public interface ITurtleUpgrade
      * Return an item stack representing the type of item that a turtle must be crafted
      * with to create a turtle which holds this upgrade. This item stack is also used
      * to determine the upgrade given by {@code turtle.equip()}
+     *
+     * @return The item stack to craft with, or {@code null} if it cannot be crafted.
      */
     public ItemStack getCraftingItem();
 

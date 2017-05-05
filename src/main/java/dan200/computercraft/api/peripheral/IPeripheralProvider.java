@@ -20,6 +20,9 @@ public interface IPeripheralProvider
     /**
      * Produce an peripheral implementation from a block location.
      *
+     * @param world The world the block is in.
+     * @param pos   The position the block is at.
+     * @param side  The side to get the peripheral from.
      * @return A peripheral, or {@code null} if there is not a peripheral here you'd like to handle.
      * @see dan200.computercraft.api.ComputerCraftAPI#registerPeripheralProvider(IPeripheralProvider)
      */

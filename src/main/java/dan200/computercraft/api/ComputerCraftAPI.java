@@ -123,8 +123,8 @@ public final class ComputerCraftAPI
      * resources with the same domain and path.
      *
      * @param modClass A class in whose jar to look first for the resources to mount. Using your main mod class is recommended. eg: MyMod.class
-     * @param domain   The domain under which to look for resources. eg: "mymod"
-     * @param subPath  The domain under which to look for resources. eg: "mymod/lua/myfiles"
+     * @param domain   The domain under which to look for resources. eg: "mymod".
+     * @param subPath  The domain under which to look for resources. eg: "mymod/lua/myfiles".
      * @return The mount, or {@code null} if it could be created for some reason. Use IComputerAccess.mount() or
      * IComputerAccess.mountWritable() to mount this on a Computers' file system.
      * @see IComputerAccess#mount(String, IMount)
@@ -148,6 +148,7 @@ public final class ComputerCraftAPI
     /**
      * Registers a peripheral handler to convert blocks into {@link IPeripheral} implementations.
      *
+     * @param handler The peripheral provider to register.
      * @see dan200.computercraft.api.peripheral.IPeripheral
      * @see dan200.computercraft.api.peripheral.IPeripheralProvider
      */
@@ -169,6 +170,7 @@ public final class ComputerCraftAPI
      * users should be able to craft Turtles with your new turtle. It is recommended to call
      * this during the load() method of your mod.
      *
+     * @param upgrade The turtle upgrade to register.
      * @see dan200.computercraft.api.turtle.ITurtleUpgrade
      */
     public static void registerTurtleUpgrade( ITurtleUpgrade upgrade )
@@ -188,8 +190,9 @@ public final class ComputerCraftAPI
     }
 
     /**
-     * Registers a bundled redstone handler to provide bundled redstone output for blocks
+     * Registers a bundled redstone handler to provide bundled redstone output for blocks.
      *
+     * @param handler The bundled redstone provider to register.
      * @see dan200.computercraft.api.redstone.IBundledRedstoneProvider
      */
     public static void registerBundledRedstoneProvider( IBundledRedstoneProvider handler )
@@ -208,6 +211,9 @@ public final class ComputerCraftAPI
     /**
      * If there is a Computer or Turtle at a certain position in the world, get it's bundled redstone output.
      *
+     * @param world The world this block is in.
+     * @param pos   The position this block is at.
+     * @param side  The side to extract the bundled redstone output from.
      * @return If there is a block capable of emitting bundled redstone at the location, it's signal (0-65535) will be returned.
      * If there is no block capable of emitting bundled redstone at the location, -1 will be returned.
      * @see dan200.computercraft.api.redstone.IBundledRedstoneProvider
@@ -229,6 +235,7 @@ public final class ComputerCraftAPI
     /**
      * Registers a media handler to provide {@link IMedia} implementations for Items
      *
+     * @param handler The media provider to register.
      * @see dan200.computercraft.api.media.IMediaProvider
      */
     public static void registerMediaProvider( IMediaProvider handler )
@@ -245,8 +252,9 @@ public final class ComputerCraftAPI
     }
 
     /**
-     * Registers a permission handler to restrict where turtles can move or build
+     * Registers a permission handler to restrict where turtles can move or build.
      *
+     * @param handler The turtle permission provider to register.
      * @see dan200.computercraft.api.permissions.ITurtlePermissionProvider
      */
     public static void registerPermissionProvider( ITurtlePermissionProvider handler )

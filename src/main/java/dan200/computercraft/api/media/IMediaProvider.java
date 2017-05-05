@@ -18,7 +18,8 @@ public interface IMediaProvider
     /**
      * Produce an IMedia implementation from an ItemStack.
      *
-     * @return an IMedia implementation, or null if the item is not something you wish to handle
+     * @param stack The stack from which to extract the media information.
+     * @return An IMedia implementation, or null if the item is not something you wish to handle
      * @see dan200.computercraft.api.ComputerCraftAPI#registerMediaProvider(IMediaProvider)
      */
     public IMedia getMedia( ItemStack stack );

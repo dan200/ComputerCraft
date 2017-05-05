@@ -34,6 +34,7 @@ public interface IMount
      *
      * @param path A file path in normalised format, relative to the mount location. ie: "programs/myprogram"
      * @return If the file exists.
+     * @throws IOException If an error occurs when checking the existence of the file.
      */
     public boolean exists( String path ) throws IOException;
 
@@ -42,6 +43,7 @@ public interface IMount
      *
      * @param path A file path in normalised format, relative to the mount location. ie: "programs/myprograms".
      * @return If the file exists and is a directory
+     * @throws IOException If an error occurs when checking whether the file is a directory.
      */
     public boolean isDirectory( String path ) throws IOException;
 
@@ -50,6 +52,7 @@ public interface IMount
      *
      * @param path     A file path in normalised format, relative to the mount location. ie: "programs/myprograms".
      * @param contents A list of strings. Add all the file names to this list.
+     * @throws IOException If the file was not a directory, or could not be listed.
      */
     public void list( String path, List<String> contents ) throws IOException;
 
@@ -58,6 +61,7 @@ public interface IMount
      *
      * @param path A file path in normalised format, relative to the mount location. ie: "programs/myprogram".
      * @return The size of the file, in bytes.
+     * @throws IOException If the file does not exist, or its size could not be determined.
      */
     public long getSize( String path ) throws IOException;
 
@@ -66,6 +70,7 @@ public interface IMount
      *
      * @param path A file path in normalised format, relative to the mount location. ie: "programs/myprogram".
      * @return A stream representing the contents of the file.
+     * @throws IOException If the file does not exist, or could not be opened.
      */
     public InputStream openForRead( String path ) throws IOException;
 }

@@ -112,7 +112,8 @@ public interface ITurtleAccess
     /**
      * Sets the colour of the turtle, as if the player had dyed it with a dye item.
      *
-     * @param dyeColour 0-15 to dye the turtle one of the 16 standard Minecraft colours, or -1 to remove the dye from the turtle.
+     * @param dyeColour 0-15 to dye the turtle one of the 16 standard Minecraft <em>dye</em> colours, or -1 to remove
+     *                  the dye from the turtle.
      * @see #getDyeColour()
      */
     public void setDyeColour( int dyeColour );
@@ -120,7 +121,8 @@ public interface ITurtleAccess
     /**
      * Gets the colour the turtle has been dyed.
      *
-     * @return 0-15 if the turtle has been dyed one of the 16 standard Minecraft colours, -1 if the turtle is clean.
+     * @return 0-15 if the turtle has been dyed one of the 16 standard Minecraft <em>dye</em> colours, -1 if the turtle
+     * is clean.
      * @see #getDyeColour()
      */
     public int getDyeColour();
@@ -194,11 +196,18 @@ public interface ITurtleAccess
      * be supplied as a parameter to a "turtle_response" event issued to the turtle after the command has completed. Look at the
      * lua source code for "rom/apis/turtle" for how to build a lua wrapper around this functionality.
      *
-     * @param command an object which will execute the custom command when its point in the queue is reached
-     * @return the objects the command returned when executed. you should probably return these to the player
+     * @param context The Lua context to pull events from.
+     * @param command An object which will execute the custom command when its point in the queue is reached
+     * @return The objects the command returned when executed. you should probably return these to the player
      * unchanged if called from a peripheral method.
      * @throws UnsupportedOperationException When attempting to execute a command on the client side.
+     * @throws LuaException                  If the user presses CTRL+T to terminate the current program while {@code executeCommand()} is
+     *                                       waiting for an event, a "Terminated" exception will be thrown here.
+     * @throws InterruptedException          If the user shuts down or reboots the computer while pullEvent() is waiting for an
+     *                                       event, InterruptedException will be thrown. This exception must not be caught or
+     *                                       intercepted, or the computer will leak memory and end up in a broken state.
      * @see ITurtleCommand
+     * @see ILuaContext#pullEvent(String)
      */
     public Object[] executeCommand( ILuaContext context, ITurtleCommand command ) throws LuaException, InterruptedException;
 
@@ -215,6 +224,7 @@ public interface ITurtleAccess
     /**
      * Returns the turtle on the specified side of the turtle, if there is one.
      *
+     * @param side The side to get the upgrade from.
      * @return The upgrade on the specified side of the turtle, if there is one.
      * @see #setUpgrade(TurtleSide, ITurtleUpgrade)
      */
@@ -232,6 +242,7 @@ public interface ITurtleAccess
     /**
      * Returns the peripheral created by the upgrade on the specified side of the turtle, if there is one.
      *
+     * @param side The side to get the peripheral from.
      * @return The peripheral created by the upgrade on the specified side of the turtle, {@code null} if none exists.
      */
     public IPeripheral getPeripheral( TurtleSide side );
