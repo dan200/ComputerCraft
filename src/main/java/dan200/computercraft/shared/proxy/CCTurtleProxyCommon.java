@@ -126,7 +126,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     {
         if( family == ComputerFamily.Beginners )
         {
-            return upgrade.getType() == TurtleUpgradeType.Tool;
+            return upgrade.getType().isTool();
         }
         else
         {

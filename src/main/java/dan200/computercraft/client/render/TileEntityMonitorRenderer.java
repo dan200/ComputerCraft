@@ -11,7 +11,6 @@ import dan200.computercraft.client.gui.FixedWidthFontRenderer;
 import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.core.terminal.TextBuffer;
 import dan200.computercraft.shared.common.ClientTerminal;
-import dan200.computercraft.shared.common.ITerminal;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.DirectionUtil;
@@ -21,11 +20,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMonitor>
@@ -111,7 +107,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                     // Allocate display lists
                     if( origin.m_renderDisplayList < 0 )
                     {
-                        origin.m_renderDisplayList = GL11.glGenLists( 3 );
+                        origin.m_renderDisplayList = GlStateManager.glGenLists( 3 );
                         redraw = true;
                     }
 
@@ -135,7 +131,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         if( redraw )
                         {
                             // Build background display list
-                            GL11.glNewList( origin.m_renderDisplayList, GL11.GL_COMPILE );
+                            GlStateManager.glNewList( origin.m_renderDisplayList, GL11.GL_COMPILE );
                             try
                             {
                                 double marginXSize = TileMonitor.RENDER_MARGIN / xScale;
@@ -143,18 +139,18 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                 double marginSquash = marginYSize / (double) FixedWidthFontRenderer.FONT_HEIGHT;
 
                                 // Top and bottom margins
-                                GL11.glPushMatrix();
+                                GlStateManager.pushMatrix();
                                 try
                                 {
-                                    GL11.glScaled( 1.0, marginSquash, 1.0 );
-                                    GL11.glTranslated( 0.0, -marginYSize / marginSquash, 0.0 );
+                                    GlStateManager.scale( 1.0, marginSquash, 1.0 );
+                                    GlStateManager.translate( 0.0, -marginYSize / marginSquash, 0.0 );
                                     fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( 0 ), marginXSize, marginXSize, greyscale );
-                                    GL11.glTranslated( 0.0, ( marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT ) / marginSquash, 0.0 );
+                                    GlStateManager.translate( 0.0, ( marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT ) / marginSquash, 0.0 );
                                     fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( height - 1 ), marginXSize, marginXSize, greyscale );
                                 }
                                 finally
                                 {
-                                    GL11.glPopMatrix();
+                                    GlStateManager.popMatrix();
                                 }
 
                                 // Backgrounds
@@ -170,7 +166,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                             }
                             finally
                             {
-                                GL11.glEndList();
+                                GlStateManager.glEndList();
                             }
                         }
                         GlStateManager.callList( origin.m_renderDisplayList );
@@ -180,7 +176,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         if( redraw )
                         {
                             // Build text display list
-                            GL11.glNewList( origin.m_renderDisplayList + 1, GL11.GL_COMPILE );
+                            GlStateManager.glNewList( origin.m_renderDisplayList + 1, GL11.GL_COMPILE );
                             try
                             {
                                 // Lines
@@ -196,7 +192,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                             }
                             finally
                             {
-                                GL11.glEndList();
+                                GlStateManager.glEndList();
                             }
                         }
                         GlStateManager.callList( origin.m_renderDisplayList + 1 );
@@ -206,7 +202,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         if( redraw )
                         {
                             // Build cursor display list
-                            GL11.glNewList( origin.m_renderDisplayList + 2, GL11.GL_COMPILE );
+                            GlStateManager.glNewList( origin.m_renderDisplayList + 2, GL11.GL_COMPILE );
                             try
                             {
                                 // Cursor
@@ -226,7 +222,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                             }
                             finally
                             {
-                                GL11.glEndList();
+                                GlStateManager.glEndList();
                             }
                         }
                         if( ComputerCraft.getGlobalCursorBlink() )
@@ -243,13 +239,17 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                 {
                     // Draw a big black quad
                     mc.getTextureManager().bindTexture( FixedWidthFontRenderer.background );
-                    renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
-                    Colour colour = Colour.Black;
-                    renderer.pos( -TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).tex( 0.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-                    renderer.pos( xSize + TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).tex( 1.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-                    renderer.pos( xSize + TileMonitor.RENDER_MARGIN, TileMonitor.RENDER_MARGIN, 0.0D ).tex( 1.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-                    renderer.pos( -TileMonitor.RENDER_MARGIN, TileMonitor.RENDER_MARGIN, 0.0D ).tex( 0.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-                    renderer.pos( -TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).tex( 0.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+                    final Colour colour = Colour.Black;
+
+                    final float r = colour.getR();
+                    final float g = colour.getG();
+                    final float b = colour.getB();
+
+                    renderer.begin( GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR );
+                    renderer.pos( -TileMonitor.RENDER_MARGIN, TileMonitor.RENDER_MARGIN, 0.0D ).tex( 0.0, 0.0 ).color( r, g, b, 1.0f ).endVertex();
+                    renderer.pos( -TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).tex( 0.0, 1.0 ).color( r, g, b, 1.0f ).endVertex();
+                    renderer.pos( xSize + TileMonitor.RENDER_MARGIN, TileMonitor.RENDER_MARGIN, 0.0D ).tex( 1.0, 0.0 ).color( r, g, b, 1.0f ).endVertex();
+                    renderer.pos( xSize + TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).tex( 1.0, 1.0 ).color( r, g, b, 1.0f ).endVertex();
                     tessellator.draw();
                 }
             }
@@ -264,13 +264,11 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             try
             {
                 mc.getTextureManager().bindTexture( FixedWidthFontRenderer.background );
-                renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
-                Colour colour = Colour.Black;
-                renderer.pos( -TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).tex( 0.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-                renderer.pos( xSize + TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).tex( 1.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-                renderer.pos( xSize + TileMonitor.RENDER_MARGIN, TileMonitor.RENDER_MARGIN, 0.0D ).tex( 1.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-                renderer.pos( -TileMonitor.RENDER_MARGIN, TileMonitor.RENDER_MARGIN, 0.0D ).tex( 0.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-                renderer.pos( -TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).tex( 0.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+                renderer.begin( GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION );
+                renderer.pos( -TileMonitor.RENDER_MARGIN, TileMonitor.RENDER_MARGIN, 0.0 ).endVertex();
+                renderer.pos( -TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).endVertex();
+                renderer.pos( xSize + TileMonitor.RENDER_MARGIN, TileMonitor.RENDER_MARGIN, 0.0 ).endVertex();
+                renderer.pos( xSize + TileMonitor.RENDER_MARGIN, -ySize - TileMonitor.RENDER_MARGIN, 0.0 ).endVertex();
                 tessellator.draw();
             }
             finally

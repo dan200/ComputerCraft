@@ -6,10 +6,12 @@
 
 package dan200.computercraft.core.filesystem;
 
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 
 import java.io.*;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -289,8 +291,8 @@ public class FileSystem
         }
     }
 
-    private Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
-    private Set<IMountedFile> m_openFiles = new HashSet<IMountedFile>();
+    private final Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
+    private final WeakHashMap<IMountedFile, Object> m_openFiles = new WeakHashMap<IMountedFile, Object>();
     
     public FileSystem( String rootLabel, IMount rootMount ) throws FileSystemException
     {
@@ -307,18 +309,15 @@ public class FileSystem
         // Close all dangling open files
         synchronized( m_openFiles )
         {
-            while( m_openFiles.size() > 0 )
+            for(IMountedFile file : m_openFiles.keySet())
             {
-                IMountedFile file = m_openFiles.iterator().next();
-                try
-                {
+                try {
                     file.close();
-                }
-                catch( IOException e )
-                {
-                    m_openFiles.remove( file );
+                } catch (IOException e) {
+                    // Ignore
                 }
             }
+            m_openFiles.clear();
         }
     }
     
@@ -649,6 +648,41 @@ public class FileSystem
             }
         }
     }
+
+    private synchronized <T extends IMountedFile> T openFile(T file, Closeable handle) throws FileSystemException
+    {
+        synchronized( m_openFiles )
+        {
+            if( ComputerCraft.maximumFilesOpen > 0 &&
+                m_openFiles.size() >= ComputerCraft.maximumFilesOpen )
+            {
+                if( handle != null )
+                {
+                    try {
+                        handle.close();
+                    } catch ( IOException ignored ) {
+                        // shrug
+                    }
+                }
+                throw new FileSystemException("Too many files already open");
+            }
+
+            m_openFiles.put( file, null );
+            return file;
+        }
+    }
+
+    private synchronized void closeFile( IMountedFile file, Closeable handle ) throws IOException
+    {
+        synchronized( m_openFiles )
+        {
+            m_openFiles.remove( file );
+            if( handle != null )
+            {
+                handle.close();
+            }
+        }
+    }
     
     public synchronized IMountedFileNormal openForRead( String path ) throws FileSystemException
     {
@@ -684,11 +718,7 @@ public class FileSystem
                 @Override
                 public void close() throws IOException
                 {
-                    synchronized( m_openFiles )
-                    {
-                        m_openFiles.remove( this );
-                        reader.close();
-                    }
+                    closeFile( this, reader );
                 }
                 
                 @Override
@@ -697,11 +727,7 @@ public class FileSystem
                     throw new UnsupportedOperationException();
                 }
             };
-            synchronized( m_openFiles )
-            {
-                m_openFiles.add( file );
-            }
-            return file;
+            return openFile( file, reader );
         }
         return null;
     }
@@ -744,11 +770,7 @@ public class FileSystem
                 @Override
                 public void close() throws IOException
                 {
-                    synchronized( m_openFiles )
-                    {
-                        m_openFiles.remove( this );
-                        writer.close();
-                    }
+                    closeFile( this, writer );
                 }
                 
                 @Override
@@ -757,11 +779,7 @@ public class FileSystem
                     writer.flush();
                 }
             };
-            synchronized( m_openFiles )
-            {
-                m_openFiles.add( file );
-            }
-            return file;
+            return openFile( file, writer );
         }
         return null;
     }
@@ -790,11 +808,7 @@ public class FileSystem
                 @Override
                 public void close() throws IOException
                 {
-                    synchronized( m_openFiles )
-                    {
-                        m_openFiles.remove( this );
-                        stream.close();
-                    }
+                    closeFile( this, stream );
                 }
                 
                 @Override
@@ -803,11 +817,7 @@ public class FileSystem
                     throw new UnsupportedOperationException();
                 }
             };
-            synchronized( m_openFiles )
-            {
-                m_openFiles.add( file );
-            }
-            return file;
+            return openFile( file, stream );
         }
         return null;
     }
@@ -836,11 +846,7 @@ public class FileSystem
                 @Override
                 public void close() throws IOException
                 {
-                    synchronized( m_openFiles )
-                    {
-                        m_openFiles.remove( this );
-                        stream.close();
-                    }
+                    closeFile( this, stream );
                 }
                 
                 @Override
@@ -849,11 +855,7 @@ public class FileSystem
                     stream.flush();
                 }
             };
-            synchronized( m_openFiles )
-            {
-                m_openFiles.add( file );
-            }
-            return file;
+            return openFile( file, stream );
         }
         return null;
     }

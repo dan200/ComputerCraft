@@ -95,6 +95,10 @@ public abstract class TileGeneric extends TileEntity
     {
     }
 
+    public void onNeighbourTileEntityChange( BlockPos neighbour )
+    {
+    }
+
     public boolean isSolidOnSide( int side )
     {
         return true;
