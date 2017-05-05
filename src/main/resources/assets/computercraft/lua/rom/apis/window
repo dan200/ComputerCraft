@@ -94,12 +94,6 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         parent.setTextColor( nTextColor )
     end
 
-    local function updatePalette()
-        for k,v in pairs(tPalette) do
-            parent.setColour( k, table.unpack( v ) )
-        end
-    end
-    
     local function redrawLine( n )
         local tLine = tLines[ n ]
         parent.setCursorPos( nX, nY + n - 1 )
@@ -109,6 +103,12 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     local function redraw()
         for n=1,nHeight do
             redrawLine( n )
+        end
+    end
+
+    local function updatePalette()
+        for k,v in pairs(tPalette) do
+            parent.setColour( k, table.unpack( v ) )
         end
     end
 
@@ -293,6 +293,10 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         tCol[1] = r
         tCol[2] = g
         tCol[3] = b
+
+        if bVisible then
+            return updatePalette()
+        end
     end
 
     window.setColor = window.setColour
@@ -380,10 +384,10 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     function window.redraw()
         if bVisible then
             redraw()
+            updatePalette()
             updateCursorBlink()
             updateCursorColor()
             updateCursorPos()
-            updatePalette()
         end
     end
 
