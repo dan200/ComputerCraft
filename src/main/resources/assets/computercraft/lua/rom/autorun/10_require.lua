@@ -7,7 +7,7 @@ _G.package = {}
 
 _G.package.cpath = ""
 _G.package.loaded = {}
-_G.package.loadlib = function() return nil,"not implemented: package.loadlib" end
+_G.package.loadlib = function() return nil, "not implemented: package.loadlib" end
 _G.package.path = table.concat({
   "?",
   "?.lua",
