@@ -666,7 +666,7 @@ public class FileSystem
                 throw new FileSystemException("Too many files already open");
             }
 
-            m_openFiles.put( file, null );
+            m_openFiles.add( file );
             return file;
         }
     }
