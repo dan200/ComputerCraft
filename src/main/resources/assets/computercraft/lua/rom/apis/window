@@ -57,6 +57,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     local nTextColor = colors.white
     local nBackgroundColor = colors.black
     local tLines = {}
+    local tPalette = {}
     do
         local sEmptyText = sEmptySpaceLine
         local sEmptyTextColor = tEmptyColorLines[ nTextColor ]
@@ -67,6 +68,11 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
                 textColor = sEmptyTextColor,
                 backgroundColor = sEmptyBackgroundColor,
             }
+        end
+
+        for i=0,15 do
+            local c = 2 ^ i
+            tPalette[c] = table.pack( parent.getColour( c ) )
         end
     end
 
@@ -86,6 +92,12 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     
     local function updateCursorColor()
         parent.setTextColor( nTextColor )
+    end
+
+    local function updatePalette()
+        for k,v in pairs(tPalette) do
+            parent.setColour( k, table.unpack( v ) )
+        end
     end
     
     local function redrawLine( n )
@@ -275,6 +287,21 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     function window.setTextColour( color )
         setTextColor( color )
     end
+
+    function window.setColour( colour, r, g, b )
+        local tCol = tPalette[ colour ]
+        tCol[1] = r
+        tCol[2] = g
+        tCol[3] = b
+    end
+
+    window.setColor = window.setColour
+
+    function window.getColour( colour )
+        return table.unpack( tPalette[ colour ] )
+    end
+
+    window.getColor = window.getColour
 
     local function setBackgroundColor( color )
         if not parent.isColor() then

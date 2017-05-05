@@ -25,7 +25,7 @@ public class Terminal
     private TextBuffer m_textColour[];
     private TextBuffer m_backgroundColour[];
 
-    private Palette m_palette;
+    private final Palette m_palette;
 
     private boolean m_changed;
 

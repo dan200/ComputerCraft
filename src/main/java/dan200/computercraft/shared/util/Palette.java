@@ -82,8 +82,7 @@ public class Palette
     {
         if(i >= 0 && i < colours.length )
         {
-            Colour c = Colour.values()[ i ];
-            colours[i] = new PaletteColour( c.getR(), c.getG(), c.getB() );
+            setColour( i, Colour.values()[ i ] );
         }
     }
 
