@@ -977,15 +977,11 @@ public class TurtleBrain implements ITurtleAccess
                 if( !m_peripherals.containsKey( side ) )
                 {
                     serverComputer.setPeripheral( dir, peripheral );
-                    serverComputer.setRedstoneInput( dir, 0 );
-                    serverComputer.setBundledRedstoneInput( dir, 0 );
                     m_peripherals.put( side, peripheral );
                 }
                 else if( !m_peripherals.get( side ).equals( peripheral ) )
                 {
                     serverComputer.setPeripheral( dir, peripheral );
-                    serverComputer.setRedstoneInput( dir, 0 );
-                    serverComputer.setBundledRedstoneInput( dir, 0 );
                     m_peripherals.remove( side );
                     m_peripherals.put( side, peripheral );
                 }
