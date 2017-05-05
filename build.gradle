@@ -54,7 +54,7 @@ configurations {
 }
 
 dependencies {
-	shade project(':luaj')
+    shade project(':luaj')
 }
 
 processResources {
@@ -77,20 +77,22 @@ processResources {
 }
 
 jar {
-    from configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
+    configurations.shade.each {
+        from(it.isDirectory() ? it : zipTree(it)) { exclude 'META-INF', 'META-INF/**' }
+    }
 }
 
 task countLines {
-	group = 'other'
-	description = 'Count lines of Java, JSON, and Lua'
-	
-	doLast {
-		println "Java: " + sourceSets.main.allSource.files.findAll {it.name.endsWith ".java"}.sum {(it.text =~ /\n/).count}
-		println "JSON: " + sourceSets.main.allSource.files.findAll {it.name.endsWith ".json"}.sum {(it.text =~ /\n/).count}
-		
-		def lualines = 0
-		new File(sourceSets.main.resources.srcDirs[0], 'assets/computercraft/lua')
-			.eachFileRecurse(groovy.io.FileType.FILES,{ lualines += (it.text =~ /\n/).count })
-		println "Lua: $lualines"
-	}
+    group = 'other'
+    description = 'Count lines of Java, JSON, and Lua'
+    
+    doLast {
+        println "Java: " + sourceSets.main.allSource.files.findAll {it.name.endsWith ".java"}.sum {(it.text =~ /\n/).count}
+        println "JSON: " + sourceSets.main.allSource.files.findAll {it.name.endsWith ".json"}.sum {(it.text =~ /\n/).count}
+        
+        def lualines = 0
+        new File(sourceSets.main.resources.srcDirs[0], 'assets/computercraft/lua')
+            .eachFileRecurse(groovy.io.FileType.FILES,{ lualines += (it.text =~ /\n/).count })
+        println "Lua: $lualines"
+    }
 }
