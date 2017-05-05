@@ -11,7 +11,6 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 
 import java.io.*;
-import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -292,7 +291,7 @@ public class FileSystem
     }
 
     private final Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
-    private final WeakHashMap<IMountedFile, Object> m_openFiles = new WeakHashMap<IMountedFile, Object>();
+    private final Set<IMountedFile> m_openFiles = Collections.newSetFromMap( new WeakHashMap<IMountedFile, Boolean>() );
     
     public FileSystem( String rootLabel, IMount rootMount ) throws FileSystemException
     {
@@ -309,7 +308,7 @@ public class FileSystem
         // Close all dangling open files
         synchronized( m_openFiles )
         {
-            for(IMountedFile file : m_openFiles.keySet())
+            for(IMountedFile file : m_openFiles)
             {
                 try {
                     file.close();
