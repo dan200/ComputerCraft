@@ -307,7 +307,12 @@ public class Terminal
     {
         return m_changed;
     }
-    
+
+    public void setChanged()
+    {
+        m_changed = true;
+    }
+
     public void clearChanged()
     {
         m_changed = false;
@@ -325,6 +330,10 @@ public class Terminal
             nbttagcompound.setString( "term_text_" + n, m_text[n].toString() );
             nbttagcompound.setString( "term_textColour_" + n, m_textColour[n].toString() );
             nbttagcompound.setString( "term_textBgColour_" + n, m_backgroundColour[ n ].toString() );
+        }
+        if(m_palette != null)
+        {
+            m_palette.writeToNBT( nbttagcompound );
         }
         return nbttagcompound;
     }
@@ -354,6 +363,10 @@ public class Terminal
             {
                 m_backgroundColour[n].write( nbttagcompound.getString( "term_textBgColour_" + n ) );
             }
+        }
+        if (m_palette != null)
+        {
+            m_palette.readFromNBT( nbttagcompound );
         }
         m_changed = true;
     }

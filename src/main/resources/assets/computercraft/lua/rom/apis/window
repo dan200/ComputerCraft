@@ -383,6 +383,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
             updateCursorBlink()
             updateCursorColor()
             updateCursorPos()
+            updatePalette()
         end
     end
 

@@ -1,5 +1,7 @@
 package dan200.computercraft.shared.util;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 public class Palette
 {
     private static class PaletteColour
@@ -91,6 +93,30 @@ public class Palette
         for(int i = 0; i < Colour.values().length; ++i)
         {
             resetColour( i );
+        }
+    }
+
+    public NBTTagCompound writeToNBT( NBTTagCompound nbt )
+    {
+        for(int i = 0; i < colours.length; ++i)
+        {
+            PaletteColour c = colours[i];
+            String prefix = "term_palette_colour_" + i;
+            nbt.setFloat( prefix + "_r", c.m_r );
+            nbt.setFloat( prefix + "_g", c.m_g );
+            nbt.setFloat( prefix + "_b", c.m_b );
+        }
+        return nbt;
+    }
+
+    public void readFromNBT( NBTTagCompound nbt )
+    {
+        for(int i = 0; i < colours.length; ++i)
+        {
+            String prefix = "term_palette_colour_" + i;
+            colours[i].m_r = nbt.getFloat( prefix + "_r" );
+            colours[i].m_g = nbt.getFloat( prefix + "_g" );
+            colours[i].m_b = nbt.getFloat( prefix + "_b" );
         }
     }
 }

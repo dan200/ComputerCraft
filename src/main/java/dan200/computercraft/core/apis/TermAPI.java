@@ -72,9 +72,7 @@ public class TermAPI implements ILuaAPI
             "setColour",
             "setColor",
             "getColour",
-            "getColor",
-            "resetColour",
-            "resetColor"
+            "getColor"
         };
     }
     
@@ -302,6 +300,7 @@ public class TermAPI implements ILuaAPI
                     if( m_terminal.getPalette() != null )
                     {
                         m_terminal.getPalette().setColour( colour, r, g, b );
+                        m_terminal.setChanged();
                     }
                 }
                 return null;
