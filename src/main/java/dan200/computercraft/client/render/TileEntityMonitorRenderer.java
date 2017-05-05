@@ -14,6 +14,7 @@ import dan200.computercraft.shared.common.ClientTerminal;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.DirectionUtil;
+import dan200.computercraft.shared.util.Palette;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -47,6 +48,8 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
         {
             return;
         }
+
+        Palette palette = origin.getTerminal().getTerminal().getPalette();
 
         // Ensure each monitor is rendered only once
         long renderFrame = ComputerCraft.getRenderFrame();
@@ -144,9 +147,9 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                 {
                                     GlStateManager.scale( 1.0, marginSquash, 1.0 );
                                     GlStateManager.translate( 0.0, -marginYSize / marginSquash, 0.0 );
-                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( 0 ), marginXSize, marginXSize, greyscale );
+                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( 0 ), marginXSize, marginXSize, greyscale, palette );
                                     GlStateManager.translate( 0.0, ( marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT ) / marginSquash, 0.0 );
-                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( height - 1 ), marginXSize, marginXSize, greyscale );
+                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( height - 1 ), marginXSize, marginXSize, greyscale, palette );
                                 }
                                 finally
                                 {
@@ -160,7 +163,8 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                             0, FixedWidthFontRenderer.FONT_HEIGHT * y,
                                             terminal.getBackgroundColourLine( y ),
                                             marginXSize, marginXSize,
-                                            greyscale
+                                            greyscale,
+                                            palette
                                     );
                                 }
                             }
@@ -186,7 +190,8 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                             0, FixedWidthFontRenderer.FONT_HEIGHT * y,
                                             terminal.getLine( y ),
                                             terminal.getTextColourLine( y ),
-                                            greyscale
+                                            greyscale,
+                                            palette
                                     );
                                 }
                             }
@@ -216,7 +221,8 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                             FixedWidthFontRenderer.FONT_HEIGHT * cursorY,
                                             cursorColour, null,
                                             0, 0,
-                                            greyscale
+                                            greyscale,
+                                            palette
                                     );
                                 }
                             }

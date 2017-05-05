@@ -13,6 +13,7 @@ import dan200.computercraft.core.terminal.TextBuffer;
 import dan200.computercraft.shared.computer.core.IComputer;
 import dan200.computercraft.shared.computer.core.IComputerContainer;
 import dan200.computercraft.shared.util.Colour;
+import dan200.computercraft.shared.util.Palette;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -377,6 +378,8 @@ public class WidgetTerminal extends Widget
             boolean greyscale = !computer.isColour();
             synchronized( terminal )
             {
+                Palette palette = terminal.getPalette();
+
                 // Get the data from the terminal first
                 // Unfortunately we have to keep the lock for the whole of drawing, so the text doesn't change under us.
                 FixedWidthFontRenderer fontRenderer = (FixedWidthFontRenderer)ComputerCraft.getFixedWidthFontRenderer();
@@ -393,11 +396,11 @@ public class WidgetTerminal extends Widget
                 TextBuffer emptyLine = new TextBuffer( ' ', tw );
                 if( m_topMargin > 0 )
                 {
-                    fontRenderer.drawString( emptyLine, x, startY, terminal.getTextColourLine( 0 ), terminal.getBackgroundColourLine( 0 ), m_leftMargin, m_rightMargin, greyscale );
+                    fontRenderer.drawString( emptyLine, x, startY, terminal.getTextColourLine( 0 ), terminal.getBackgroundColourLine( 0 ), m_leftMargin, m_rightMargin, greyscale, palette );
                 }
                 if( m_bottomMargin > 0 )
                 {
-                    fontRenderer.drawString( emptyLine, x, startY + 2 * m_bottomMargin + ( th - 1 ) * FixedWidthFontRenderer.FONT_HEIGHT, terminal.getTextColourLine( th - 1 ), terminal.getBackgroundColourLine( th - 1 ), m_leftMargin, m_rightMargin, greyscale );
+                    fontRenderer.drawString( emptyLine, x, startY + 2 * m_bottomMargin + ( th - 1 ) * FixedWidthFontRenderer.FONT_HEIGHT, terminal.getTextColourLine( th - 1 ), terminal.getBackgroundColourLine( th - 1 ), m_leftMargin, m_rightMargin, greyscale, palette );
                 }
 
                 // Draw lines
@@ -406,7 +409,7 @@ public class WidgetTerminal extends Widget
                     TextBuffer text = terminal.getLine(line);
                     TextBuffer colour = terminal.getTextColourLine( line );
                     TextBuffer backgroundColour = terminal.getBackgroundColourLine( line );
-                    fontRenderer.drawString( text, x, y, colour, backgroundColour, m_leftMargin, m_rightMargin, greyscale );
+                    fontRenderer.drawString( text, x, y, colour, backgroundColour, m_leftMargin, m_rightMargin, greyscale, palette );
                     y += FixedWidthFontRenderer.FONT_HEIGHT;
                 }
 
@@ -421,7 +424,8 @@ public class WidgetTerminal extends Widget
                             startY + m_topMargin + FixedWidthFontRenderer.FONT_HEIGHT * ty,
                             cursorColour, null,
                             0, 0,
-                            greyscale
+                            greyscale,
+                            palette
                     );
                 }
             }

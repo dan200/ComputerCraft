@@ -5,6 +5,7 @@
  */
 
 package dan200.computercraft.core.terminal;
+import dan200.computercraft.shared.util.Palette;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class Terminal
@@ -23,6 +24,8 @@ public class Terminal
     private TextBuffer m_text[];
     private TextBuffer m_textColour[];
     private TextBuffer m_backgroundColour[];
+
+    private Palette m_palette;
 
     private boolean m_changed;
 
@@ -49,6 +52,8 @@ public class Terminal
         m_cursorBlink = false;
         
         m_changed = false;
+
+        m_palette = new Palette();
     }
 
     public void reset()
@@ -60,6 +65,7 @@ public class Terminal
         m_cursorBlink = false;
         clear();
         m_changed = true;
+        m_palette.resetColours();
     }
     
     public int getWidth() {
@@ -176,6 +182,11 @@ public class Terminal
     public int getBackgroundColour()
     {
         return m_cursorBackgroundColour;
+    }
+
+    public Palette getPalette()
+    {
+        return m_palette;
     }
 
     public void blit( String text, String textColour, String backgroundColour )
