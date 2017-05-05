@@ -80,24 +80,6 @@ jar {
     from configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
-// utility tasks
-task deploy {
-	group = 'build'
-	description = 'Generates a jar and a source jar for release'
-	
-	dependsOn jar
-	dependsOn sourceJar
-}
-
-task setupIdes {
-	group = 'ide'
-	description = 'Sets up project for IDE use'
-	
-	dependsOn setupDecompWorkspace
-	dependsOn idea
-	dependsOn eclipse
-}
-
 task countLines {
 	group = 'other'
 	description = 'Count lines of Java, JSON, and Lua'
