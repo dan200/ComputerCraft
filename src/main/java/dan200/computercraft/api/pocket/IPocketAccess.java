@@ -15,25 +15,25 @@ import java.util.Map;
 public interface IPocketAccess
 {
     /**
-     * Gets the holding entity of this item
+     * Gets the entity holding this item.
      *
-     * @return The holding entity, may be {@code null}.
+     * @return The holding entity. This may be {@code null}.
      */
     @Nullable
     Entity getEntity();
 
     /**
-     * Get the colour of the modem light.
+     * Get the colour of the pocket computer's light.
      *
      * See {@link #setLight(int)} for the values this may return.
      *
-     * @return The colour of the modem light.
+     * @return The colour of the pocket computer's light.
      * @see #setLight(int)
      */
     int getLight();
 
     /**
-     * Set the colour of the modem light. Use {@link 0} to turn it off.
+     * Set the colour of the pocket computer's light. Use {@link 0} to turn it off.
      *
      * Colours take the form of an integer between 0 and 15, using the opposite order to those in
      * {@link <a href="http://www.computercraft.info/wiki/Colors_(API)#Colors">The colors API</a>}  - so 0 being black,
@@ -45,31 +45,32 @@ public interface IPocketAccess
     void setLight( int value );
 
     /**
-     * Get the upgrade specific NBT
+     * Get the upgrade-specific NBT.
      *
-     * @return The upgrade's NBT
+     * This is persisted between computer reboots and chunk loads.
+     *
+     * @return The upgrade's NBT.
      * @see #updateUpgradeNBTData()
      */
     @Nonnull
     NBTTagCompound getUpgradeNBTData();
 
     /**
-     * Mark the upgrade specific NBT as dirty
+     * Mark the upgrade-specific NBT as dirty.
      *
      * @see #getUpgradeNBTData()
      */
     void updateUpgradeNBTData();
 
     /**
-     * Remove the current peripheral and create a new one. You
-     * may wish to do this if the methods available change.
+     * Remove the current peripheral and create a new one. You may wish to do this if the methods available change.
      */
     void invalidatePeripheral();
 
     /**
-     * Get a list of all upgrades for the pocket computer
+     * Get a list of all upgrades for the pocket computer.
      *
-     * @return A collection of all upgrade names
+     * @return A collection of all upgrade names.
      */
     @Nonnull
     Map<ResourceLocation, IPeripheral> getUpgrades();

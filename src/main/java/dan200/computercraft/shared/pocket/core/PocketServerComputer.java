@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,10 +25,9 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
     private Entity m_entity;
     private ItemStack m_stack;
 
-    public PocketServerComputer( World world, int computerID, String label, int instanceID, ComputerFamily family, ItemStack stack, Entity entity )
+    public PocketServerComputer( World world, int computerID, String label, int instanceID, ComputerFamily family )
     {
         super( world, computerID, label, instanceID, family, ComputerCraft.terminalWidth_pocketComputer, ComputerCraft.terminalHeight_pocketComputer );
-        update( entity, stack );
     }
 
     @Nullable
@@ -63,30 +61,7 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
     @Override
     public NBTTagCompound getUpgradeNBTData()
     {
-        NBTTagCompound tag;
-        if( m_stack.hasTagCompound() )
-        {
-            tag = m_stack.getTagCompound();
-        }
-        else
-        {
-            tag = new NBTTagCompound();
-            m_stack.setTagCompound( tag );
-        }
-
-        if( tag.hasKey( "upgrade_info", Constants.NBT.TAG_COMPOUND ) )
-        {
-            return tag.getCompoundTag( "upgrade_info" );
-        }
-        else
-        {
-            NBTTagCompound sub = new NBTTagCompound();
-
-            tag.setTag( "upgrade_info", sub );
-            updateUpgradeNBTData();
-
-            return sub;
-        }
+        return ComputerCraft.Items.pocketComputer.getUpgradeInfo( m_stack );
     }
 
     @Override
@@ -120,39 +95,47 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
         }
     }
 
-    public ItemStack getStack()
-    {
-        return m_stack;
-    }
-
     public IPocketUpgrade getUpgrade()
     {
         return m_upgrade;
     }
 
-    public void update( Entity entity, ItemStack stack )
-    {
-        if( m_entity != null ) setPosition( entity.getPosition() );
-        m_entity = entity;
-        m_stack = stack;
-    }
-
-    public synchronized void setUpgrade( IPocketUpgrade upgrade )
+    /**
+     * Set the upgrade for this pocket computer, also updating the item stack.
+     *
+     * Note this method is not thread safe - it must be called from the server thread.
+     *
+     * @param upgrade The new upgrade to set it to, may be {@code null}.
+     */
+    public void setUpgrade( IPocketUpgrade upgrade )
     {
         if( this.m_upgrade == upgrade ) return;
 
-        // Clear the old upgrade NBT
-        if( m_stack.hasTagCompound() )
+        synchronized (this)
         {
-            NBTTagCompound tag = m_stack.getTagCompound();
-            if( tag.hasKey( "upgrade_info", 10 ) )
-            {
-                tag.removeTag( "upgrade_info" );
-                updateUpgradeNBTData();
-            }
+            ComputerCraft.Items.pocketComputer.setUpgrade( m_stack, upgrade );
+            if( m_entity instanceof EntityPlayer ) ((EntityPlayer) m_entity).inventory.markDirty();
+
+            this.m_upgrade = upgrade;
+            invalidatePeripheral();
+        }
+    }
+
+    public synchronized void updateValues( Entity entity, ItemStack stack, IPocketUpgrade upgrade )
+    {
+        if( entity != null )
+        {
+            setWorld( entity.getEntityWorld() );
+            setPosition( entity.getPosition() );
         }
 
-        this.m_upgrade = upgrade;
-        invalidatePeripheral();
+        m_entity = entity;
+        m_stack = stack;
+
+        if( this.m_upgrade != upgrade )
+        {
+            this.m_upgrade = upgrade;
+            invalidatePeripheral();
+        }
     }
 }
