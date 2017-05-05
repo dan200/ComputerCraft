@@ -10,11 +10,31 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
- * This interface is used to restrict where turtles can move or build
+ * This interface is used to restrict where turtles can move or build.
+ *
+ * Turtles will call these methods before attempting to perform an action, allowing them to be cancelled.
+ *
  * @see dan200.computercraft.api.ComputerCraftAPI#registerPermissionProvider(ITurtlePermissionProvider)
  */
 public interface ITurtlePermissionProvider
 {
+    /**
+     * Determine whether a block can be entered by a turtle.
+     *
+     * @param world The world the block exists in
+     * @param pos   The location of the block.
+     * @return Whether the turtle can move into this block.
+     */
     public boolean isBlockEnterable( World world, BlockPos pos );
+
+    /**
+     * Determine whether a block can be modified by a turtle.
+     *
+     * This includes breaking and placing blocks.
+     *
+     * @param world The world the block exists in
+     * @param pos   The location of the block.
+     * @return Whether the turtle can modify this block.
+     */
     public boolean isBlockEditable( World world, BlockPos pos );
 }

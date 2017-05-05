@@ -6,20 +6,22 @@
 
 package dan200.computercraft.api.peripheral;
 
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
- * This interface is used to create peripheral implementations for blocks
+ * This interface is used to create peripheral implementations for blocks.
+ *
  * @see dan200.computercraft.api.ComputerCraftAPI#registerPeripheralProvider(IPeripheralProvider)
  */
 public interface IPeripheralProvider
 {
     /**
      * Produce an peripheral implementation from a block location.
+     *
+     * @return A peripheral, or {@code null} if there is not a peripheral here you'd like to handle.
      * @see dan200.computercraft.api.ComputerCraftAPI#registerPeripheralProvider(IPeripheralProvider)
-     * @return a peripheral, or null if there is not a peripheral here you'd like to handle.
      */
     public IPeripheral getPeripheral( World world, BlockPos pos, EnumFacing side );
 }
