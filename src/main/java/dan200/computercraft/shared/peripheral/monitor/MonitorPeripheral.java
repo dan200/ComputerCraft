@@ -11,6 +11,8 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.core.terminal.Terminal;
+import dan200.computercraft.shared.util.Palette;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class MonitorPeripheral implements IPeripheral
 {
@@ -52,7 +54,11 @@ public class MonitorPeripheral implements IPeripheral
             "getTextColor",
             "getBackgroundColour",
             "getBackgroundColor",
-            "blit"
+            "blit",
+            "setColour",
+            "setColor",
+            "getColour",
+            "getColor"
         };
     }
 
@@ -216,6 +222,52 @@ public class MonitorPeripheral implements IPeripheral
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.blit( text, textColour, backgroundColour );
                 terminal.setCursorPos( terminal.getCursorX() + text.length(), terminal.getCursorY() );
+                return null;
+            }
+            case 20:
+            case 21:
+            {
+                // setColour/setColor
+                Terminal terminal = m_monitor.getTerminal().getTerminal();
+                Palette palette = terminal.getPalette();
+
+                // setColour/setColor
+                if( args.length < 4 || !(args[0] instanceof Double) || !(args[1] instanceof Double) || !(args[2] instanceof Double) || !(args[3] instanceof Double) )
+                {
+                    throw new LuaException( "Expected number, number, number, number" );
+                }
+
+                boolean isColour = m_monitor.getTerminal().isColour();
+
+                if( !isColour )
+                {
+                    throw new LuaException( "Colour not supported" );
+                }
+
+                int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args, true );
+                float r = ((Double)args[1]).floatValue();
+                float g = ((Double)args[2]).floatValue();
+                float b = ((Double)args[3]).floatValue();
+
+                if( palette != null )
+                {
+                    palette.setColour( colour, r, g, b );
+                }
+                return null;
+            }
+            case 22:
+            case 23:
+            {
+                // getColour/getColor
+                Terminal terminal = m_monitor.getTerminal().getTerminal();
+                Palette palette = terminal.getPalette();
+
+                int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args, m_monitor.getTerminal().isColour() );
+
+                if( palette != null )
+                {
+                    return ArrayUtils.toObject( palette.getColour( colour ) );
+                }
                 return null;
             }
         }

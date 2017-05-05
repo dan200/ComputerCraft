@@ -279,12 +279,12 @@ public class TermAPI implements ILuaAPI
             case 20:
             {
                 // setColour/setColor
-                if ( args.length < 4 || !(args[0] instanceof Double) || !(args[1] instanceof Double) || !(args[2] instanceof Double) || !(args[3] instanceof Double) ) // toil and trouble
+                if( args.length < 4 || !(args[0] instanceof Double) || !(args[1] instanceof Double) || !(args[2] instanceof Double) || !(args[3] instanceof Double) ) // toil and trouble
                 {
                     throw new LuaException( "Expected number, number, number, number" );
                 }
 
-                if ( !m_environment.isColour() )
+                if( !m_environment.isColour() )
                 {
                     // Make sure you can't circumvent greyscale terminals with this function.
                     throw new LuaException( "Colour not supported" );
@@ -320,7 +320,7 @@ public class TermAPI implements ILuaAPI
                 {
                     if ( m_terminal.getPalette() != null )
                     {
-                        return ArrayUtils.toObject( m_terminal.getPalette().getColour64( colour ) );
+                        return ArrayUtils.toObject( m_terminal.getPalette().getColour( colour ) );
                     }
                 }
                 return null;

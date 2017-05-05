@@ -70,16 +70,6 @@ public class Palette
         return null;
     }
 
-    public double[] getColour64( int i )
-    {
-        if( i >= 0 && i < colours.length )
-        {
-            PaletteColour c = colours[ i ];
-            return new double[] { (double)c.m_r, (double)c.m_g, (double)c.m_b };
-        }
-        return null;
-    }
-
     public void resetColour( int i )
     {
         if(i >= 0 && i < colours.length )
