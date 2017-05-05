@@ -219,12 +219,6 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final AxisAlignedBB getSelectedBoundingBox( IBlockState state, World world, BlockPos pos )
-    {
-        return getBoundingBox( state, world, pos );
-    }
-
-    @Override
     public final AxisAlignedBB getCollisionBoundingBox( IBlockState state, World world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
