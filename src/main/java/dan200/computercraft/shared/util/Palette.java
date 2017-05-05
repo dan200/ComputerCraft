@@ -53,26 +53,45 @@ public class Palette
         }
     }
 
+    private static int encodeRGB8( float[] rgb )
+    {
+        int r = (int)( rgb[0] * 255 ) & 0xFF;
+        int g = (int)( rgb[1] * 255 ) & 0xFF;
+        int b = (int)( rgb[2] * 255 ) & 0xFF;
+
+        return ( r << 16 ) | ( g << 8 ) | b;
+    }
+
+    private static float[] decodeRGB8( int rgb )
+    {
+        return new float[]
+        {
+            (( rgb >> 16 ) & 0xFF) / 255.0f,
+            (( rgb >> 8 ) & 0xFF) / 255.0f,
+            ( rgb & 0xFF ) / 255.0f
+        };
+    }
+
     public NBTTagCompound writeToNBT( NBTTagCompound nbt )
     {
+        int[] rgb8 = new int[colours.length];
+
         for(int i = 0; i < colours.length; ++i)
         {
-            String prefix = "term_palette_colour_" + i;
-            nbt.setFloat( prefix + "_r", colours[i][0] );
-            nbt.setFloat( prefix + "_g", colours[i][1] );
-            nbt.setFloat( prefix + "_b", colours[i][2] );
+            rgb8[i] = encodeRGB8( colours[i] );
         }
+
+        nbt.setIntArray( "term_palette", rgb8 );
         return nbt;
     }
 
     public void readFromNBT( NBTTagCompound nbt )
     {
+        int[] rgb8 = nbt.getIntArray( "term_palette" );
+
         for(int i = 0; i < colours.length; ++i)
         {
-            String prefix = "term_palette_colour_" + i;
-            colours[i][0] = nbt.getFloat( prefix + "_r" );
-            colours[i][1] = nbt.getFloat( prefix + "_g" );
-            colours[i][2] = nbt.getFloat( prefix + "_b" );
+            colours[i] = decodeRGB8( rgb8[i] );
         }
     }
 }
