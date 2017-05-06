@@ -131,7 +131,6 @@ public class SoundAPI implements ILuaAPI
 
                     if (SoundEvent.REGISTRY.containsKey(resourceName))
                     {
-                        System.out.println(pitch);
                         m_computer.getWorld().playSound(null, m_computer.getPosition(), new SoundEvent(resourceName), SoundCategory.RECORDS, volume, pitch);
                         m_lastPlayTime = m_clock;
                         return new Object[]{true}; // Success, return true
