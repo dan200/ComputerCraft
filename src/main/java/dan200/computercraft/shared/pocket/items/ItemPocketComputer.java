@@ -18,6 +18,7 @@ import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import dan200.computercraft.shared.pocket.apis.PocketAPI;
 import dan200.computercraft.shared.pocket.peripherals.PocketModemPeripheral;
+import dan200.computercraft.shared.util.StringUtil;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,7 +31,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -200,14 +200,14 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         boolean modem = getHasModem( stack );
         if( modem )
         {
-            return I18n.translateToLocalFormatted(
+            return StringUtil.translateToLocalFormatted(
                 baseString + ".upgraded.name",
-                I18n.translateToLocal( "upgrade.computercraft:wireless_modem.adjective" )
+                StringUtil.translateToLocal( "upgrade.computercraft:wireless_modem.adjective" )
             );
         }
         else
         {
-            return I18n.translateToLocal( baseString + ".name" );
+            return StringUtil.translateToLocal( baseString + ".name" );
         }
     }
 

@@ -14,6 +14,7 @@ import dan200.computercraft.shared.computer.items.ItemComputerBase;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import dan200.computercraft.shared.util.Colour;
+import dan200.computercraft.shared.util.StringUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -21,10 +22,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -142,29 +142,29 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
         ITurtleUpgrade right = getUpgrade( stack, TurtleSide.Right );
         if( left != null && right != null )
         {
-            return I18n.translateToLocalFormatted(
+            return StringUtil.translateToLocalFormatted(
                 baseString + ".upgraded_twice.name",
-                I18n.translateToLocal( right.getUnlocalisedAdjective() ),
-                I18n.translateToLocal( left.getUnlocalisedAdjective() )
+                StringUtil.translateToLocal( right.getUnlocalisedAdjective() ),
+                StringUtil.translateToLocal( left.getUnlocalisedAdjective() )
             );
         }
         else if( left != null )
         {
-            return I18n.translateToLocalFormatted(
+            return StringUtil.translateToLocalFormatted(
                 baseString + ".upgraded.name",
-                I18n.translateToLocal( left.getUnlocalisedAdjective() )
+                StringUtil.translateToLocal( left.getUnlocalisedAdjective() )
             );
         }
         else if( right != null )
         {
-            return I18n.translateToLocalFormatted(
+            return StringUtil.translateToLocalFormatted(
                 baseString + ".upgraded.name",
-                I18n.translateToLocal( right.getUnlocalisedAdjective() )
+                StringUtil.translateToLocal( right.getUnlocalisedAdjective() )
             );
         }
         else
         {
-            return I18n.translateToLocal( baseString + ".name" );
+            return StringUtil.translateToLocal( baseString + ".name" );
         }
     }
 

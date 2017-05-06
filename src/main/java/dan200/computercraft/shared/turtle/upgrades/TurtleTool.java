@@ -136,7 +136,7 @@ public class TurtleTool implements ITurtleUpgrade
     {
         IBlockState state = world.getBlockState( pos );
         Block block = state.getBlock();
-        if( block.isAir( state, world, pos ) || block == Blocks.BEDROCK || block.getBlockHardness( state, world, pos ) <= -1.0F )
+        if( block.isAir( state, world, pos ) || block == Blocks.BEDROCK || state.getBlockHardness( world, pos ) <= -1.0F )
         {
             return false;
         }
