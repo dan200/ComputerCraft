@@ -7,6 +7,7 @@
 
 package dan200.computercraft.core.apis;
 
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.shared.computer.core.ServerComputer;
@@ -24,17 +25,22 @@ public class SoundAPI implements ILuaAPI
 
     private String[] methods;
     private ServerComputer computer;
+    private long lastPlayTime;
 
     public SoundAPI(ServerComputer computer)
     {
 
         this.methods = new String[] {
                 "play", // Plays a sound from given resource locator
+                        // Returns: Object[]{success}
+                "getPlayTimeout" // Gets minTimeBetweenPlay
         };
 
         this.computer = computer;
+        this.lastPlayTime = 0;
 
     }
+
 
     /* ILuaAPI implementations */
 
@@ -71,49 +77,64 @@ public class SoundAPI implements ILuaAPI
     @Override
     public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
     {
+        switch (method) {
 
-        switch(method)
-        {
+            // play
+            case 0:
 
-        // play
-        case 0:
+                float volume = 1f;
+                float pitch = 1f;
 
-            float volume = 1f;
-            float pitch = 1f;
-
-            // If anyone can come up with a more concise way of doing this, *please* do
-
-            // Check if arguments are correct
-            if (arguments.length == 0) // Too few args
-                throw new LuaException("Expected string, number (optional), number (optional)");
-
-            else if (!(arguments[0] instanceof String)) // Arg wrong type
-                throw new LuaException("Expected string, number (optional), number (optional)");
-
-
-            else if (arguments.length == 2)
-            {
-                if (!(arguments[1] instanceof Double)) // Arg wrong type
+                // Check if arguments are correct
+                if (arguments.length == 0) // Too few args
                     throw new LuaException("Expected string, number (optional), number (optional)");
-                volume = ((Double) arguments[1]).floatValue();
 
-            }
-
-            else if (arguments.length == 3)
-            {
-                if (!(arguments[2] instanceof Double)) // Arg wrong type
+                else if (!(arguments[0] instanceof String)) // Arg wrong type
                     throw new LuaException("Expected string, number (optional), number (optional)");
-                pitch = ((Double) arguments[2]).floatValue();
-            }
 
-            String resourceName = (String) arguments[0];
+                else if (arguments.length == 2)
+                {
+                    if (!(arguments[1] instanceof Double)) // Arg wrong type
+                        throw new LuaException("Expected string, number (optional), number (optional)");
+                    volume = ((Double) arguments[1]).floatValue();
 
-            this.computer.getWorld().playSound(null, this.computer.getPosition(), new SoundEvent(new ResourceLocation(resourceName)), SoundCategory.RECORDS, volume, pitch);
+                }
 
-            return null;
+                else if (arguments.length == 3)
+                {
+                    if (!(arguments[2] instanceof Double)) // Arg wrong type
+                        throw new LuaException("Expected string, number (optional), number (optional)");
+                    pitch = ((Double) arguments[2]).floatValue();
+                }
 
-        default:
-            return null;
+                ResourceLocation resourceName = new ResourceLocation((String) arguments[0]);
+
+                if (System.currentTimeMillis() - this.lastPlayTime > ComputerCraft.Config.minTimeBetweenSounds.getDouble())
+                {
+
+                    if (SoundEvent.REGISTRY.containsKey(resourceName))
+                    {
+
+                        this.computer.getWorld().playSound(null, this.computer.getPosition(), new SoundEvent(resourceName), SoundCategory.RECORDS, volume, pitch);
+                        this.lastPlayTime = System.currentTimeMillis();
+                        return new Object[] {true}; // Success, return true
+                    }
+
+                    else
+                        return new Object[] {false}; // Failed - sound not existent, return false
+
+                }
+
+                else
+                    return new Object[] {false}; // Failed - rate limited, return false
+
+            // getPlayTimeout
+            case 1:
+                return new Object[]{ComputerCraft.Config.minTimeBetweenSounds.getDouble()};
+
+            // ??? Something weird happened. Makes IDEs happy
+            default:
+                return null;
 
         }
     }

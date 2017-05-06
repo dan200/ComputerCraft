@@ -129,6 +129,8 @@ public class ComputerCraft
     public static int floppySpaceLimit = 125 * 1000;
     public static int maximumFilesOpen = 128;
 
+    public static double minTimeBetweenSounds = 1.0/5.0 * 1000.0; // 5 times per second
+
     // Blocks and Items
     public static class Blocks
     {
@@ -186,6 +188,8 @@ public class ComputerCraft
         public static Property computerSpaceLimit;
         public static Property floppySpaceLimit;
         public static Property maximumFilesOpen;
+
+        public static Property minTimeBetweenSounds;
 
     }
 
@@ -276,6 +280,9 @@ public class ComputerCraft
 
         Config.turtlesCanPush = Config.config.get( Configuration.CATEGORY_GENERAL, "turtlesCanPush", turtlesCanPush );
         Config.turtlesCanPush.setComment( "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so" );
+
+        Config.minTimeBetweenSounds = Config.config.get( Configuration.CATEGORY_GENERAL, "minTimeBetweenSounds", minTimeBetweenSounds);
+        Config.minTimeBetweenSounds.setComment("The minimum time in between calls to sound.play on one computer in milliseconds" );
 
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
