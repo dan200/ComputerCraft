@@ -23,6 +23,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class TileGeneric extends TileEntity
@@ -48,6 +50,7 @@ public abstract class TileGeneric extends TileEntity
     {
     }
 
+    @Nullable
     public BlockGeneric getBlock()
     {
         Block block = worldObj.getBlockState( getPos() ).getBlock();
@@ -77,7 +80,7 @@ public abstract class TileGeneric extends TileEntity
         worldObj.setBlockState( getPos(), newState, 3 );
     }
 
-    public void getDroppedItems( List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
     {
     }
 
@@ -95,7 +98,7 @@ public abstract class TileGeneric extends TileEntity
     {
     }
 
-    public void onNeighbourTileEntityChange( BlockPos neighbour )
+    public void onNeighbourTileEntityChange( @Nonnull BlockPos neighbour )
     {
     }
 
@@ -109,12 +112,13 @@ public abstract class TileGeneric extends TileEntity
         return false;
     }
 
+    @Nonnull
     public AxisAlignedBB getBounds()
     {
         return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
     }
 
-    public void getCollisionBounds( List<AxisAlignedBB> bounds )
+    public void getCollisionBounds( @Nonnull List<AxisAlignedBB> bounds )
     {
         bounds.add( getBounds() );
     }
@@ -129,12 +133,12 @@ public abstract class TileGeneric extends TileEntity
         return 0;
     }
 
-    public boolean getBundledRedstoneConnectivity( EnumFacing side )
+    public boolean getBundledRedstoneConnectivity( @Nonnull EnumFacing side )
     {
         return false;
     }
 
-    public int getBundledRedstoneOutput( EnumFacing side )
+    public int getBundledRedstoneOutput( @Nonnull EnumFacing side )
     {
         return 0;
     }
@@ -163,11 +167,11 @@ public abstract class TileGeneric extends TileEntity
         return false;
     }
 
-    protected void writeDescription( NBTTagCompound nbttagcompound )
+    protected void writeDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
     }
 
-    protected void readDescription( NBTTagCompound nbttagcompound )
+    protected void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
     }
 
@@ -186,7 +190,7 @@ public abstract class TileGeneric extends TileEntity
     }
 
     @Override
-    public boolean shouldRefresh( World world, BlockPos pos, IBlockState oldState, IBlockState newState )
+    public boolean shouldRefresh( World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState )
     {
         return newState.getBlock() != oldState.getBlock();
     }
@@ -215,6 +219,7 @@ public abstract class TileGeneric extends TileEntity
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound getUpdateTag ()
     {
@@ -224,7 +229,7 @@ public abstract class TileGeneric extends TileEntity
     }
 
     @Override
-    public void handleUpdateTag (NBTTagCompound tag)
+    public void handleUpdateTag ( @Nonnull NBTTagCompound tag)
     {
         super.handleUpdateTag(tag);
         readDescription( tag );

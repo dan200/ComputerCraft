@@ -14,6 +14,8 @@ import dan200.computercraft.shared.util.InventoryUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 
+import javax.annotation.Nonnull;
+
 public class TurtleRefuelCommand implements ITurtleCommand
 {
     private final int m_limit;
@@ -23,8 +25,9 @@ public class TurtleRefuelCommand implements ITurtleCommand
         m_limit = limit;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         if( m_limit == 0 )
         {

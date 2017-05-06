@@ -20,6 +20,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class TurtleUpgradeRecipe implements IRecipe
 {
     public TurtleUpgradeRecipe()
@@ -39,13 +41,13 @@ public class TurtleUpgradeRecipe implements IRecipe
     }
 
     @Override
-    public boolean matches( InventoryCrafting inventory, World world )
+    public boolean matches( @Nonnull InventoryCrafting inventory, @Nonnull World world )
     {
         return (getCraftingResult( inventory ) != null);
     }
 
     @Override
-    public ItemStack getCraftingResult( InventoryCrafting inventory )
+    public ItemStack getCraftingResult( @Nonnull InventoryCrafting inventory )
     {
         // Scan the grid for a row containing a turtle and 1 or 2 items
         ItemStack leftItem = null;
@@ -157,8 +159,9 @@ public class TurtleUpgradeRecipe implements IRecipe
         return TurtleItemFactory.create( computerID, label, colour, family, upgrades[0], upgrades[1], fuelLevel, overlay );
     }
 
+    @Nonnull
     @Override
-    public ItemStack[] getRemainingItems( InventoryCrafting inventoryCrafting )
+    public ItemStack[] getRemainingItems( @Nonnull InventoryCrafting inventoryCrafting )
     {
         ItemStack[] results = new ItemStack[ inventoryCrafting.getSizeInventory() ];
         for (int i = 0; i < results.length; ++i)

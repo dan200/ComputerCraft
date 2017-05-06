@@ -55,6 +55,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +89,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             private ModelResourceLocation computer = new ModelResourceLocation( "computercraft:CC-Computer", "inventory" );
             private ModelResourceLocation advanced_computer = new ModelResourceLocation( "computercraft:advanced_computer", "inventory" );
 
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 ItemComputer itemComputer = (ItemComputer) stack.getItem();
                 ComputerFamily family = itemComputer.getFamily( stack.getItemDamage() );
@@ -121,8 +123,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             private ModelResourceLocation advanced_pocket_computer_on = new ModelResourceLocation( "computercraft:advanced_pocket_computer_on", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_blinking = new ModelResourceLocation( "computercraft:advanced_pocket_computer_blinking", "inventory" );
 
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 ItemPocketComputer itemPocketComputer = (ItemPocketComputer)stack.getItem();
                 switch( itemPocketComputer.getFamily( stack ) )
@@ -180,7 +183,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         mc.getItemColors().registerItemColorHandler( new IItemColor()
         {
             @Override
-            public int getColorFromItemstack( ItemStack stack, int layout )
+            public int getColorFromItemstack( @Nonnull ItemStack stack, int layout )
             {
                 if( layout != 1 ) return 0xFFFFFF;
 
@@ -219,8 +222,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         ModelBakery.registerItemVariants( item, new ResourceLocation( "computercraft", name ) );
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, new ItemMeshDefinition()
         {
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 return res;
             }
@@ -519,7 +523,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 		}
 
 		@Override
-		public int getColorFromItemstack(ItemStack stack, int layer)
+		public int getColorFromItemstack( @Nonnull ItemStack stack, int layer)
 		{
 			return layer == 0 ? 0xFFFFFF : disk.getColor(stack);
 		}

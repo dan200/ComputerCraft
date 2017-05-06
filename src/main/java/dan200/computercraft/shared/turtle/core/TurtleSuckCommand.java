@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class TurtleSuckCommand implements ITurtleCommand
@@ -34,8 +35,9 @@ public class TurtleSuckCommand implements ITurtleCommand
         m_quantity = quantity;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Sucking nothing is easy
         if( m_quantity == 0 )

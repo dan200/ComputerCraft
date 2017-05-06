@@ -35,6 +35,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemPocketComputer extends Item implements IComputerItem, IMedia
@@ -79,7 +80,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     }
 
     @Override
-    public void getSubItems( Item itemID, CreativeTabs tabs, List<ItemStack> list )
+    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List list )
     {
         getSubItems( list, ComputerFamily.Normal );
         getSubItems( list, ComputerFamily.Advanced );
@@ -151,8 +152,9 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         }
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick( ItemStack stack, World world, EntityPlayer player, EnumHand hand )
+    public ActionResult<ItemStack> onItemRightClick( @Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand )
     {
         if( !world.isRemote )
         {
@@ -176,6 +178,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
     }
 
+    @Nonnull
     @Override
     public String getUnlocalizedName( ItemStack stack )
     {
@@ -193,8 +196,9 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         }
     }
 
+    @Nonnull
     @Override
-    public String getItemStackDisplayName( ItemStack stack )
+    public String getItemStackDisplayName( @Nonnull ItemStack stack )
     {
         String baseString = getUnlocalizedName( stack );
         IPocketUpgrade upgrade = getUpgrade( stack );
@@ -331,7 +335,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     }
 
     @Override
-    public String getLabel( ItemStack stack )
+    public String getLabel( @Nonnull ItemStack stack )
     {
         if( stack.hasDisplayName() )
         {
@@ -361,7 +365,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     // IMedia
 
     @Override
-    public boolean setLabel( ItemStack stack, String label )
+    public boolean setLabel( @Nonnull ItemStack stack, String label )
     {
         if( label != null )
         {
@@ -375,19 +379,19 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     }
 
     @Override
-    public String getAudioTitle( ItemStack stack )
+    public String getAudioTitle( @Nonnull ItemStack stack )
     {
         return null;
     }
 
     @Override
-    public SoundEvent getAudio( ItemStack stack )
+    public SoundEvent getAudio( @Nonnull ItemStack stack )
     {
         return null;
     }
 
     @Override
-    public IMount createDataMount( ItemStack stack, World world )
+    public IMount createDataMount( @Nonnull ItemStack stack, @Nonnull World world )
     {
         ServerComputer computer = createServerComputer( world, null, null, stack );
         if( computer != null )

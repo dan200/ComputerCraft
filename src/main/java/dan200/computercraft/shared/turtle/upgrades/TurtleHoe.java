@@ -21,6 +21,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class TurtleHoe extends TurtleTool
 {
     public TurtleHoe( ResourceLocation id, int legacyId, String adjective, Item item )
@@ -45,8 +47,9 @@ public class TurtleHoe extends TurtleTool
         return false;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction )
+    public TurtleCommandResult useTool( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction )
     {
         if( verb == TurtleVerb.Dig )
         {

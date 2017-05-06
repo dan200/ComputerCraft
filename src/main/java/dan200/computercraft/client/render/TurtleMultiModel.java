@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class TurtleMultiModel implements IBakedModel
         m_faceQuads = new List[6];
     }
 
+    @Nonnull
     @Override
     public List<BakedQuad> getQuads( IBlockState state, EnumFacing side, long rand )
     {
@@ -107,18 +109,21 @@ public class TurtleMultiModel implements IBakedModel
         return m_baseModel.isBuiltInRenderer();
     }
 
+    @Nonnull
     @Override
     public TextureAtlasSprite getParticleTexture()
     {
         return m_baseModel.getParticleTexture();
     }
 
+    @Nonnull
     @Override
     public ItemCameraTransforms getItemCameraTransforms()
     {
         return m_baseModel.getItemCameraTransforms();
     }
 
+    @Nonnull
     @Override
     public ItemOverrideList getOverrides()
     {

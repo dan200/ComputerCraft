@@ -14,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class PrintoutRecipe implements IRecipe
 {
     public PrintoutRecipe( )
@@ -33,13 +35,13 @@ public class PrintoutRecipe implements IRecipe
     }
 
     @Override
-    public boolean matches( InventoryCrafting _inventory, World world )
+    public boolean matches( @Nonnull InventoryCrafting _inventory, @Nonnull World world )
     {
         return (getCraftingResult( _inventory ) != null);
     }
 
     @Override
-    public ItemStack getCraftingResult( InventoryCrafting inventory )
+    public ItemStack getCraftingResult( @Nonnull InventoryCrafting inventory )
     {
         // See if we match the recipe, and extract the input disk ID and dye colour
         int numPages = 0;
@@ -146,8 +148,9 @@ public class PrintoutRecipe implements IRecipe
         return null;
     }
 
+    @Nonnull
     @Override
-    public ItemStack[] getRemainingItems( InventoryCrafting inventoryCrafting )
+    public ItemStack[] getRemainingItems( @Nonnull InventoryCrafting inventoryCrafting )
     {
         ItemStack[] results = new ItemStack[ inventoryCrafting.getSizeInventory() ];
         for (int i = 0; i < results.length; ++i)

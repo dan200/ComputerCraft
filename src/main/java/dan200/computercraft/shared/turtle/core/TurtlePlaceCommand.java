@@ -33,6 +33,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
+
 public class TurtlePlaceCommand implements ITurtleCommand
 {
     private final InteractDirection m_direction;
@@ -44,8 +46,9 @@ public class TurtlePlaceCommand implements ITurtleCommand
         m_extraArguments = arguments;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Get thing to place
         ItemStack stack = turtle.getInventory().getStackInSlot( turtle.getSelectedSlot() );

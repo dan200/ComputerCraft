@@ -19,6 +19,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class PocketAPI implements ILuaAPI
 {
     private final PocketServerComputer m_computer;
@@ -51,6 +53,7 @@ public class PocketAPI implements ILuaAPI
     {
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -61,7 +64,7 @@ public class PocketAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
     {
         switch( method )
         {

@@ -12,6 +12,8 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.core.terminal.Terminal;
 
+import javax.annotation.Nonnull;
+
 public class PrinterPeripheral implements IPeripheral
 {
     private final TilePrinter m_printer;
@@ -21,12 +23,14 @@ public class PrinterPeripheral implements IPeripheral
         m_printer = printer;
     }
 
+    @Nonnull
     @Override
     public String getType()
     {
         return "printer";
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -44,7 +48,7 @@ public class PrinterPeripheral implements IPeripheral
     }
 
     @Override
-    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] args ) throws LuaException
+    public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {
@@ -139,12 +143,12 @@ public class PrinterPeripheral implements IPeripheral
     }
 
     @Override
-    public void attach( IComputerAccess computer )
+    public void attach( @Nonnull IComputerAccess computer )
     {
     }
 
     @Override
-    public void detach( IComputerAccess computer )
+    public void detach( @Nonnull IComputerAccess computer )
     {
     }
 

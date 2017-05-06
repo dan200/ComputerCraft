@@ -21,6 +21,7 @@ import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -339,6 +340,7 @@ public class LuaJLuaMachine implements ILuaMachine
                         try
                         {
                             results = apiObject.callMethod( new ILuaContext() {
+                                @Nonnull
                                 @Override
                                 public Object[] pullEvent( String filter ) throws LuaException, InterruptedException
                                 {
@@ -350,12 +352,14 @@ public class LuaJLuaMachine implements ILuaMachine
                                     return results;
                                 }
                                 
+                                @Nonnull
                                 @Override
                                 public Object[] pullEventRaw( String filter ) throws InterruptedException
                                 {
                                     return yield( new Object[] { filter } );
                                 }
                                 
+                                @Nonnull
                                 @Override
                                 public Object[] yield( Object[] yieldArgs ) throws InterruptedException
                                 {
@@ -372,7 +376,7 @@ public class LuaJLuaMachine implements ILuaMachine
                                 }
 
                                 @Override
-                                public long issueMainThreadTask( final ILuaTask task ) throws LuaException
+                                public long issueMainThreadTask( @Nonnull final ILuaTask task ) throws LuaException
                                 {
                                     // Issue command
                                     final long taskID = MainThread.getUniqueTaskID();
@@ -431,7 +435,7 @@ public class LuaJLuaMachine implements ILuaMachine
                                 }
 
                                 @Override
-                                public Object[] executeMainThreadTask( final ILuaTask task ) throws LuaException, InterruptedException
+                                public Object[] executeMainThreadTask( @Nonnull final ILuaTask task ) throws LuaException, InterruptedException
                                 {
                                     // Issue task
                                     final long taskID = issueMainThreadTask( task );

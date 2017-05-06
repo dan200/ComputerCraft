@@ -11,6 +11,8 @@ import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.terminal.TextBuffer;
 
+import javax.annotation.Nonnull;
+
 public class BufferAPI implements ILuaAPI
 {
     private static class BufferLuaObject implements ILuaObject
@@ -22,6 +24,7 @@ public class BufferAPI implements ILuaAPI
             m_buffer = buffer;
         }
 
+        @Nonnull
         @Override
         public String[] getMethodNames()
         {
@@ -35,7 +38,7 @@ public class BufferAPI implements ILuaAPI
         }
 
         @Override
-        public Object[] callMethod( ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException
+        public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
         {
             switch( method )
             {
@@ -165,6 +168,7 @@ public class BufferAPI implements ILuaAPI
     {
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -174,7 +178,7 @@ public class BufferAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
     {
         switch( method )
         {

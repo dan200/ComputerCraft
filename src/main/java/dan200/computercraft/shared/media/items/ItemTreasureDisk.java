@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +39,7 @@ public class ItemTreasureDisk extends Item
     }
     
     @Override
-    public void getSubItems( Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List list )
     {
     }
     
@@ -61,31 +62,31 @@ public class ItemTreasureDisk extends Item
     // IMedia implementation
 
     @Override
-    public String getLabel( ItemStack stack )
+    public String getLabel( @Nonnull ItemStack stack )
     {
         return getTitle( stack );
     }
     
     @Override
-    public boolean setLabel( ItemStack stack, String label )
+    public boolean setLabel( @Nonnull ItemStack stack, String label )
     {
         return false;
     }
     
     @Override
-    public String getAudioTitle( ItemStack stack )
+    public String getAudioTitle( @Nonnull ItemStack stack )
     {
         return null;
     }
     
     @Override
-    public SoundEvent getAudio( ItemStack stack )
+    public SoundEvent getAudio( @Nonnull ItemStack stack )
     {
         return null;
     }
     
     @Override
-    public IMount createDataMount( ItemStack stack, World world )
+    public IMount createDataMount( @Nonnull ItemStack stack, @Nonnull World world )
     {
         IMount rootTreasure = getTreasureMount();
         String subPath = getSubPath( stack );

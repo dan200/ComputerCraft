@@ -27,6 +27,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
+
 public abstract class TileComputerBase extends TileGeneric
     implements IComputerTile, IDirectionalTile, ITickable
 {
@@ -167,14 +169,14 @@ public abstract class TileComputerBase extends TileGeneric
     }
 
     @Override
-    public boolean getBundledRedstoneConnectivity( EnumFacing side )
+    public boolean getBundledRedstoneConnectivity( @Nonnull EnumFacing side )
     {
         int localDir = remapLocalSide( DirectionUtil.toLocal( this, side ) );
         return !isRedstoneBlockedOnSide( localDir );
     }
 
     @Override
-    public int getBundledRedstoneOutput( EnumFacing side )
+    public int getBundledRedstoneOutput( @Nonnull EnumFacing side )
     {
         int localDir = remapLocalSide( DirectionUtil.toLocal( this, side ) );
         if( !isRedstoneBlockedOnSide( localDir ) )
@@ -198,7 +200,7 @@ public abstract class TileComputerBase extends TileGeneric
     }
 
     @Override
-    public void onNeighbourTileEntityChange( BlockPos neighbour )
+    public void onNeighbourTileEntityChange( @Nonnull BlockPos neighbour )
     {
         updateInput( neighbour );
     }
@@ -239,6 +241,7 @@ public abstract class TileComputerBase extends TileGeneric
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
@@ -517,14 +520,14 @@ public abstract class TileComputerBase extends TileGeneric
     // Networking stuff
 
     @Override
-    public void writeDescription( NBTTagCompound nbttagcompound )
+    public void writeDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.writeDescription( nbttagcompound );
         nbttagcompound.setInteger( "instanceID", createServerComputer().getInstanceID() );
     }
 
     @Override
-    public void readDescription( NBTTagCompound nbttagcompound )
+    public void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
         m_instanceID = nbttagcompound.getInteger( "instanceID" );

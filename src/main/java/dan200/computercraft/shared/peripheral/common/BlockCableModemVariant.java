@@ -9,6 +9,8 @@ package dan200.computercraft.shared.peripheral.common;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 
+import javax.annotation.Nonnull;
+
 public enum BlockCableModemVariant implements IStringSerializable
 {
     None( "none", null ),
@@ -60,6 +62,7 @@ public enum BlockCableModemVariant implements IStringSerializable
         m_facing = facing;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {

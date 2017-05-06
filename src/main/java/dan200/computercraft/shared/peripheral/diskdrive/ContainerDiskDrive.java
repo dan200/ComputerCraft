@@ -12,6 +12,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerDiskDrive extends Container
 {
     private final TileDiskDrive m_diskDrive;
@@ -36,7 +38,7 @@ public class ContainerDiskDrive extends Container
     }
 
     @Override
-    public boolean canInteractWith( EntityPlayer player )
+    public boolean canInteractWith( @Nonnull EntityPlayer player )
     {
         return m_diskDrive.isUseableByPlayer( player );
     }

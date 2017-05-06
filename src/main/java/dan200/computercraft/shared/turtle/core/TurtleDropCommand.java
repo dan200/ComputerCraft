@@ -21,6 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class TurtleDropCommand implements ITurtleCommand
 {
     private final InteractDirection m_direction;
@@ -32,8 +34,9 @@ public class TurtleDropCommand implements ITurtleCommand
         m_quantity = quantity;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Dropping nothing is easy
         if( m_quantity == 0 )

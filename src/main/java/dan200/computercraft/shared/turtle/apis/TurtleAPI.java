@@ -19,6 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +59,7 @@ public class TurtleAPI implements ILuaAPI
     {
     }
        
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -181,7 +183,7 @@ public class TurtleAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException, InterruptedException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException, InterruptedException
     {
         switch( method )
         {

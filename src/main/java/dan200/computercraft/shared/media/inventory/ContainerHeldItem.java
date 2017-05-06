@@ -12,6 +12,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
+import javax.annotation.Nonnull;
+
 public class ContainerHeldItem extends Container
 {
     private final ItemStack m_stack;
@@ -29,7 +31,7 @@ public class ContainerHeldItem extends Container
     }
 
     @Override
-    public boolean canInteractWith( EntityPlayer player )
+    public boolean canInteractWith( @Nonnull EntityPlayer player )
     {
         if( player != null && player.isEntityAlive() )
         {

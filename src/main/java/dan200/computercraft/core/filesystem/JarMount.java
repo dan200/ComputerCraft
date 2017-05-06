@@ -8,6 +8,7 @@ package dan200.computercraft.core.filesystem;
 
 import dan200.computercraft.api.filesystem.IMount;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -178,14 +179,14 @@ public class JarMount implements IMount
     // IMount implementation
     
     @Override
-    public boolean exists( String path ) throws IOException
+    public boolean exists( @Nonnull String path ) throws IOException
     {
         FileInZip file = m_root.getFile( path );
         return file != null;
     }
     
     @Override
-    public boolean isDirectory( String path ) throws IOException
+    public boolean isDirectory( @Nonnull String path ) throws IOException
     {
         FileInZip file = m_root.getFile( path );
         if( file != null )
@@ -196,7 +197,7 @@ public class JarMount implements IMount
     }
     
     @Override
-    public void list( String path, List<String> contents ) throws IOException
+    public void list( @Nonnull String path, @Nonnull List<String> contents ) throws IOException
     {
         FileInZip file = m_root.getFile( path );
         if( file != null && file.isDirectory() )
@@ -210,7 +211,7 @@ public class JarMount implements IMount
     }
     
     @Override
-    public long getSize( String path ) throws IOException
+    public long getSize( @Nonnull String path ) throws IOException
     {
         FileInZip file = m_root.getFile( path );
         if( file != null )
@@ -220,8 +221,9 @@ public class JarMount implements IMount
         throw new IOException( "No such file" );
     }
 
+    @Nonnull
     @Override
-    public InputStream openForRead( String path ) throws IOException
+    public InputStream openForRead( @Nonnull String path ) throws IOException
     {
         FileInZip file = m_root.getFile( path );
         if( file != null && !file.isDirectory() )

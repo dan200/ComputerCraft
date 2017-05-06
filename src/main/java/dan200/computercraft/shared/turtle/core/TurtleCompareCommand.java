@@ -19,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
@@ -31,8 +32,9 @@ public class TurtleCompareCommand implements ITurtleCommand
         m_direction = direction;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Get world direction from direction
         EnumFacing direction = m_direction.toWorldDir( turtle );

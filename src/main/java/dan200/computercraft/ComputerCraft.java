@@ -722,7 +722,7 @@ public class ComputerCraft
         }
     }
 
-    public static IMount createResourceMount( Class modClass, String domain, String subPath )
+    public static IMount createResourceMount( Class<?> modClass, String domain, String subPath )
     {
         // Start building list of mounts
         List<IMount> mounts = new ArrayList<IMount>();
@@ -806,7 +806,7 @@ public class ComputerCraft
         }
     }
 
-    private static File getContainingJar( Class modClass )
+    private static File getContainingJar( Class<?> modClass )
     {
         String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
         int bangIndex = path.indexOf( "!" );
@@ -831,7 +831,7 @@ public class ComputerCraft
         return file;
     }
 
-    private static File getDebugCodeDir( Class modClass )
+    private static File getDebugCodeDir( Class<?> modClass )
     {
         String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
         int bangIndex = path.indexOf("!");

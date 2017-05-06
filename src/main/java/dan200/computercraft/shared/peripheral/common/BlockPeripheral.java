@@ -30,6 +30,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class BlockPeripheral extends BlockPeripheralBase
 {
     public static class Properties
@@ -49,12 +51,14 @@ public class BlockPeripheral extends BlockPeripheralBase
         );
     }
 
+    @Nonnull
     @SideOnly( Side.CLIENT)
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
@@ -64,6 +68,7 @@ public class BlockPeripheral extends BlockPeripheralBase
         });
     }
 
+    @Nonnull
     @Override
     public IBlockState getStateFromMeta( int meta )
     {
@@ -166,8 +171,9 @@ public class BlockPeripheral extends BlockPeripheralBase
         return meta;
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         int anim;
         EnumFacing dir;

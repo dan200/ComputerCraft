@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class ImpostorRecipe extends ShapedRecipes
 {
     public ImpostorRecipe( int width, int height, ItemStack[] ingredients, ItemStack result )
@@ -18,13 +20,13 @@ public class ImpostorRecipe extends ShapedRecipes
     }
 
     @Override
-    public boolean matches( InventoryCrafting inv, World world )
+    public boolean matches( @Nonnull InventoryCrafting inv, World world )
     {
         return false;
     }
     
     @Override
-    public ItemStack getCraftingResult( InventoryCrafting _inventory )
+    public ItemStack getCraftingResult( @Nonnull InventoryCrafting _inventory )
     {
         return null;
     }

@@ -15,6 +15,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
+
 public class TurtleEquipCommand implements ITurtleCommand
 {
     private final TurtleSide m_side;
@@ -24,8 +26,9 @@ public class TurtleEquipCommand implements ITurtleCommand
         m_side = side;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Determine the upgrade to equipLeft
         ITurtleUpgrade newUpgrade;

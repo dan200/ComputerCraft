@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemDiskLegacy extends Item
@@ -34,7 +35,7 @@ public class ItemDiskLegacy extends Item
     }
     
     @Override
-    public void getSubItems( Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List list )
     {
         for( int colour=0; colour<16; ++colour )
         {
@@ -94,7 +95,7 @@ public class ItemDiskLegacy extends Item
     // IMedia implementation
 
     @Override
-    public String getLabel( ItemStack stack )
+    public String getLabel( @Nonnull ItemStack stack )
     {
         if( stack.hasDisplayName() )
         {
@@ -104,7 +105,7 @@ public class ItemDiskLegacy extends Item
     }
     
     @Override
-    public boolean setLabel( ItemStack stack, String label )
+    public boolean setLabel( @Nonnull ItemStack stack, String label )
     {
         if( label != null )
         {
@@ -118,19 +119,19 @@ public class ItemDiskLegacy extends Item
     }
     
     @Override
-    public String getAudioTitle( ItemStack stack )
+    public String getAudioTitle( @Nonnull ItemStack stack )
     {
         return null;
     }
     
     @Override
-    public SoundEvent getAudio( ItemStack stack )
+    public SoundEvent getAudio( @Nonnull ItemStack stack )
     {
         return null;
     }
     
     @Override
-    public IMount createDataMount( ItemStack stack, World world )
+    public IMount createDataMount( @Nonnull ItemStack stack, @Nonnull World world )
     {
         int diskID = getDiskID( stack );
         if( diskID < 0 )

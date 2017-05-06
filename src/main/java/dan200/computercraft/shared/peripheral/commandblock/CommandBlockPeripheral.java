@@ -14,6 +14,8 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
+
 public class CommandBlockPeripheral implements IPeripheral
 {
     private final TileEntityCommandBlock m_commandBlock;
@@ -25,12 +27,14 @@ public class CommandBlockPeripheral implements IPeripheral
 
     // IPeripheral methods
 
+    @Nonnull
     @Override
     public String getType()
     {
         return "command";
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -42,7 +46,7 @@ public class CommandBlockPeripheral implements IPeripheral
     }
 
     @Override
-    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, final Object[] arguments ) throws LuaException, InterruptedException
+    public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull final Object[] arguments ) throws LuaException, InterruptedException
     {
         switch (method)
         {
@@ -108,12 +112,12 @@ public class CommandBlockPeripheral implements IPeripheral
     }
 
     @Override
-    public void attach( IComputerAccess computer )
+    public void attach( @Nonnull IComputerAccess computer )
     {    
     }
 
     @Override
-    public void detach( IComputerAccess computer )
+    public void detach( @Nonnull IComputerAccess computer )
     {
     }
 

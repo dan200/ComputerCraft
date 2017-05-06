@@ -8,6 +8,8 @@ package dan200.computercraft.shared.peripheral;
 
 import net.minecraft.util.IStringSerializable;
 
+import javax.annotation.Nonnull;
+
 public enum PeripheralType implements IStringSerializable
 {
     DiskDrive( "disk_drive" ),
@@ -27,6 +29,7 @@ public enum PeripheralType implements IStringSerializable
         m_name = name;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {

@@ -13,6 +13,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -203,12 +204,14 @@ public abstract class ModemPeripheral
     
     // IPeripheral implementation
 
+    @Nonnull
     @Override
     public String getType()
     {
         return "modem";
     }
        
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -237,7 +240,7 @@ public abstract class ModemPeripheral
     }
     
     @Override
-    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException
+    public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
     {
         switch( method )
         {
@@ -366,7 +369,7 @@ public abstract class ModemPeripheral
     }
     
     @Override
-    public synchronized void attach( IComputerAccess computer )
+    public synchronized void attach( @Nonnull IComputerAccess computer )
     {
         m_computer = computer;
         setNetwork( getNetwork() );
@@ -374,7 +377,7 @@ public abstract class ModemPeripheral
     }
     
     @Override
-    public synchronized void detach( IComputerAccess computer )
+    public synchronized void detach( @Nonnull IComputerAccess computer )
     {
         if( m_network != null )
         {

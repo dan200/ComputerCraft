@@ -17,6 +17,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 
 
@@ -36,7 +38,8 @@ public interface ITurtleUpgrade
      * @return The unique ID for this upgrade.
      * @see ComputerCraftAPI#registerTurtleUpgrade(ITurtleUpgrade)
      */
-    public ResourceLocation getUpgradeID();
+    @Nonnull
+    ResourceLocation getUpgradeID();
 
     /**
      * Gets a numerical identifier representing this type of turtle upgrade,
@@ -47,7 +50,7 @@ public interface ITurtleUpgrade
      * @return The legacy ID, or -1 if is needed.
      * @see ComputerCraftAPI#registerTurtleUpgrade(ITurtleUpgrade)
      */
-    public int getLegacyUpgradeID();
+    int getLegacyUpgradeID();
 
     /**
      * Return an unlocalised string to describe this type of turtle in turtle item names.
@@ -56,7 +59,8 @@ public interface ITurtleUpgrade
      *
      * @return The localisation key for this upgrade's adjective.
      */
-    public String getUnlocalisedAdjective();
+    @Nonnull
+    String getUnlocalisedAdjective();
 
     /**
      * Return whether this turtle adds a tool or a peripheral to the turtle.
@@ -64,7 +68,8 @@ public interface ITurtleUpgrade
      * @return The type of upgrade this is.
      * @see TurtleUpgradeType for the differences between them.
      */
-    public TurtleUpgradeType getType();
+    @Nonnull
+    TurtleUpgradeType getType();
 
     /**
      * Return an item stack representing the type of item that a turtle must be crafted
@@ -73,7 +78,8 @@ public interface ITurtleUpgrade
      *
      * @return The item stack to craft with, or {@code null} if it cannot be crafted.
      */
-    public ItemStack getCraftingItem();
+    @Nullable
+    ItemStack getCraftingItem();
 
     /**
      * Will only be called for peripheral upgrades. Creates a peripheral for a turtle being placed using this upgrade.
@@ -87,7 +93,8 @@ public interface ITurtleUpgrade
      * @return The newly created peripheral. You may return {@code null} if this upgrade is a Tool
      * and this method is not expected to be called.
      */
-    public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side );
+    @Nullable
+    IPeripheral createPeripheral( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side );
 
     /**
      * Will only be called for Tool turtle. Called when turtle.dig() or turtle.attack() is called
@@ -104,7 +111,8 @@ public interface ITurtleUpgrade
      * a swinging animation. You may return {@code null} if this turtle is a Peripheral  and this method is not expected
      * to be called.
      */
-    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction );
+    @Nonnull
+    TurtleCommandResult useTool( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction );
 
     /**
      * Called to obtain the model to be used when rendering a turtle peripheral.
@@ -119,7 +127,8 @@ public interface ITurtleUpgrade
      * a transformation of {@code null} has the same effect as the identify matrix.
      */
     @SideOnly(Side.CLIENT)
-    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, TurtleSide side );
+    @Nonnull
+    Pair<IBakedModel, Matrix4f> getModel( @Nullable ITurtleAccess turtle, @Nonnull TurtleSide side );
 
     /**
      * Called once per tick for each turtle which has the upgrade equipped.
@@ -127,5 +136,5 @@ public interface ITurtleUpgrade
      * @param turtle Access to the turtle that the upgrade resides on.
      * @param side   Which side of the turtle (left or right) the upgrade resides on.
      */
-    public void update( ITurtleAccess turtle, TurtleSide side );
+    void update( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side );
 }

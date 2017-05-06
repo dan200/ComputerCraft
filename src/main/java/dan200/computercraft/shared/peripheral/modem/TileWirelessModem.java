@@ -17,6 +17,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class TileWirelessModem extends TileModemBase
 {
     // Statics
@@ -120,7 +122,7 @@ public class TileWirelessModem extends TileModemBase
     }
 
     @Override
-    public boolean shouldRefresh( World world, BlockPos pos, IBlockState oldState, IBlockState newState )
+    public boolean shouldRefresh( World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState )
     {
         return super.shouldRefresh( world, pos, oldState, newState ) || ComputerCraft.Blocks.peripheral.getPeripheralType( newState ) != PeripheralType.WirelessModem;
     }

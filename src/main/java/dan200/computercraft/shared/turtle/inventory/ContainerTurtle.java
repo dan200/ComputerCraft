@@ -18,6 +18,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ContainerTurtle extends Container
@@ -133,7 +134,7 @@ public class ContainerTurtle extends Container
     }
     
     @Override
-    public boolean canInteractWith( EntityPlayer player )
+    public boolean canInteractWith( @Nonnull EntityPlayer player )
     {
         TileTurtle turtle = ((TurtleBrain)m_turtle).getOwner();
         if( turtle != null )

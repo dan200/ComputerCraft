@@ -10,6 +10,8 @@ import dan200.computercraft.ComputerCraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
+import javax.annotation.Nonnull;
+
 public class CreativeTabMain extends CreativeTabs
 {
     public CreativeTabMain( int i )
@@ -17,12 +19,14 @@ public class CreativeTabMain extends CreativeTabs
         super( i, "ComputerCraft" );
     }
     
+    @Nonnull
     @Override
     public Item getTabIconItem()
     {
         return Item.getItemFromBlock( ComputerCraft.Blocks.computer );
     }
     
+    @Nonnull
     @Override
     public String getTranslatedTabLabel()
     {

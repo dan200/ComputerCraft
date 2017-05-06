@@ -35,6 +35,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import java.util.Iterator;
 
@@ -53,6 +54,7 @@ public class TurtleTool implements ITurtleUpgrade
         m_item = new ItemStack( item, 1, 0 );
     }
 
+    @Nonnull
     @Override
     public ResourceLocation getUpgradeID()
     {
@@ -65,12 +67,14 @@ public class TurtleTool implements ITurtleUpgrade
         return m_legacyId;
     }
 
+    @Nonnull
     @Override
     public String getUnlocalisedAdjective()
     {
         return m_adjective;
     }
 
+    @Nonnull
     @Override
     public TurtleUpgradeType getType()
     {
@@ -84,14 +88,15 @@ public class TurtleTool implements ITurtleUpgrade
     }
 
     @Override
-    public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
+    public IPeripheral createPeripheral( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
         return null;
     }
 
+    @Nonnull
     @Override
     @SideOnly( Side.CLIENT )
-    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, TurtleSide side )
+    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
         float xOffset = (side == TurtleSide.Left) ? -0.40625f : 0.40625f;
         Matrix4f transform = new Matrix4f(
@@ -108,12 +113,13 @@ public class TurtleTool implements ITurtleUpgrade
     }
 
     @Override
-    public void update( ITurtleAccess turtle, TurtleSide side )
+    public void update( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction )
+    public TurtleCommandResult useTool( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction )
     {
         switch( verb )
         {

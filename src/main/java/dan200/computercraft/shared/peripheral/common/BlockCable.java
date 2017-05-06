@@ -21,6 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 
+import javax.annotation.Nonnull;
+
 public class BlockCable extends BlockPeripheralBase
 {
     // Statics
@@ -73,6 +75,7 @@ public class BlockCable extends BlockPeripheralBase
         );
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
@@ -88,6 +91,7 @@ public class BlockCable extends BlockPeripheralBase
         });
     }
 
+    @Nonnull
     @Override
     public IBlockState getStateFromMeta( int meta )
     {
@@ -174,8 +178,9 @@ public class BlockCable extends BlockPeripheralBase
         }
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         state = state.withProperty( Properties.NORTH, doesConnect( state, world, pos, EnumFacing.NORTH ) );
         state = state.withProperty( Properties.SOUTH, doesConnect( state, world, pos, EnumFacing.SOUTH ) );
@@ -209,7 +214,7 @@ public class BlockCable extends BlockPeripheralBase
     }
 
     @Override
-    public boolean shouldSideBeRendered( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side )
+    public boolean shouldSideBeRendered( IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side )
     {
         return true;
     }

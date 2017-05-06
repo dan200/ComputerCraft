@@ -32,6 +32,7 @@ import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
@@ -473,12 +474,14 @@ public class TurtleBrain implements ITurtleAccess
         m_fuelLevel = nbttagcompound.getInteger( "fuelLevel" );
     }
 
+    @Nonnull
     @Override
     public World getWorld()
     {
         return m_owner.getWorld();
     }
 
+    @Nonnull
     @Override
     public BlockPos getPosition()
     {
@@ -486,7 +489,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public boolean teleportTo( World world, BlockPos pos )
+    public boolean teleportTo( @Nonnull World world, @Nonnull BlockPos pos )
     {
         if( world.isRemote || getWorld().isRemote )
         {
@@ -555,6 +558,7 @@ public class TurtleBrain implements ITurtleAccess
         return false;
     }
 
+    @Nonnull
     @Override
     public Vec3d getVisualPosition( float f )
     {
@@ -596,6 +600,7 @@ public class TurtleBrain implements ITurtleAccess
         return yaw;
     }
 
+    @Nonnull
     @Override
     public EnumFacing getDirection()
     {
@@ -603,7 +608,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public void setDirection( EnumFacing dir )
+    public void setDirection( @Nonnull EnumFacing dir )
     {
         if( dir.getAxis() == EnumFacing.Axis.Y )
         {
@@ -635,6 +640,7 @@ public class TurtleBrain implements ITurtleAccess
         }
     }
 
+    @Nonnull
     @Override
     public IInventory getInventory()
     {
@@ -711,8 +717,9 @@ public class TurtleBrain implements ITurtleAccess
         return m_commandsIssued;
     }
 
+    @Nonnull
     @Override
-    public Object[] executeCommand( ILuaContext context, ITurtleCommand command ) throws LuaException, InterruptedException
+    public Object[] executeCommand( @Nonnull ILuaContext context, @Nonnull ITurtleCommand command ) throws LuaException, InterruptedException
     {
         if( getWorld().isRemote )
         {
@@ -742,7 +749,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public void playAnimation( TurtleAnimation animation )
+    public void playAnimation( @Nonnull TurtleAnimation animation )
     {
         if( getWorld().isRemote )
         {
@@ -798,7 +805,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public ITurtleUpgrade getUpgrade( TurtleSide side )
+    public ITurtleUpgrade getUpgrade( @Nonnull TurtleSide side )
     {
         if( m_upgrades.containsKey( side ) )
         {
@@ -808,7 +815,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public void setUpgrade( TurtleSide side, ITurtleUpgrade upgrade )
+    public void setUpgrade( @Nonnull TurtleSide side, ITurtleUpgrade upgrade )
     {
         // Remove old upgrade
         if( m_upgrades.containsKey( side ) )
@@ -846,7 +853,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public IPeripheral getPeripheral( TurtleSide side )
+    public IPeripheral getPeripheral( @Nonnull TurtleSide side )
     {
         if( m_peripherals.containsKey( side ) )
         {
@@ -855,6 +862,7 @@ public class TurtleBrain implements ITurtleAccess
         return null;
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound getUpgradeNBTData( TurtleSide side )
     {
@@ -866,7 +874,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public void updateUpgradeNBTData( TurtleSide side )
+    public void updateUpgradeNBTData( @Nonnull TurtleSide side )
     {
         m_owner.updateBlock();
     }

@@ -14,10 +14,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class CommandBlockPeripheralProvider implements IPeripheralProvider
 {
     @Override
-    public IPeripheral getPeripheral( World world, BlockPos pos, EnumFacing side )
+    public IPeripheral getPeripheral( @Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileEntityCommandBlock )

@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemComputer extends ItemComputerBase
@@ -71,14 +72,14 @@ public class ItemComputer extends ItemComputerBase
     }
 
     @Override
-    public void getSubItems( Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List list )
     {
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Normal ) );
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Advanced ) );
     }
 
     @Override
-    public boolean placeBlockAt( ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState )
+    public boolean placeBlockAt( @Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState newState )
     {
         if( super.placeBlockAt( stack, player, world, pos, side, hitX, hitY, hitZ, newState ) )
         {
@@ -110,6 +111,7 @@ public class ItemComputer extends ItemComputerBase
         }
     }
 
+    @Nonnull
     @Override
     public String getUnlocalizedName( ItemStack stack )
     {

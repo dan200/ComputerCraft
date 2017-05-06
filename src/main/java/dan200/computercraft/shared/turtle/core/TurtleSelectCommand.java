@@ -10,6 +10,8 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.ITurtleCommand;
 import dan200.computercraft.api.turtle.TurtleCommandResult;
 
+import javax.annotation.Nonnull;
+
 public class TurtleSelectCommand implements ITurtleCommand
 {
     private final int m_slot;
@@ -19,8 +21,9 @@ public class TurtleSelectCommand implements ITurtleCommand
         m_slot = slot;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         turtle.setSelectedSlot( m_slot );
         return TurtleCommandResult.success();

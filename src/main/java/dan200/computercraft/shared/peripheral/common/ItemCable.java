@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemCable extends ItemPeripheralBase
@@ -63,14 +64,15 @@ public class ItemCable extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List list )
     {
         list.add( PeripheralItemFactory.create( PeripheralType.WiredModem, null, 1 ) );
         list.add( PeripheralItemFactory.create( PeripheralType.Cable, null, 1 ) );
     }
 
+    @Nonnull
     @Override
-    public EnumActionResult onItemUse( ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float fx, float fy, float fz )
+    public EnumActionResult onItemUse( ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumHand hand, @Nonnull EnumFacing side, float fx, float fy, float fz )
     {
         if( !canPlaceBlockOnSide( world, pos, side, player, stack ) )
         {

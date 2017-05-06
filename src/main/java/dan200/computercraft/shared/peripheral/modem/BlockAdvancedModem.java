@@ -23,6 +23,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class BlockAdvancedModem extends BlockPeripheralBase
 {
     public static class Properties
@@ -42,6 +44,7 @@ public class BlockAdvancedModem extends BlockPeripheralBase
         );
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
@@ -51,6 +54,7 @@ public class BlockAdvancedModem extends BlockPeripheralBase
         });
     }
 
+    @Nonnull
     @Override
     public IBlockState getStateFromMeta( int meta )
     {
@@ -63,12 +67,13 @@ public class BlockAdvancedModem extends BlockPeripheralBase
     @Override
     public int getMetaFromState( IBlockState state )
     {
-        EnumFacing dir = (EnumFacing) state.getValue( Properties.FACING );
+        EnumFacing dir = state.getValue( Properties.FACING );
         return dir.getIndex();
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         int anim;
         EnumFacing dir;

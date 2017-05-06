@@ -18,6 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TurtlePlayer extends FakePlayer
@@ -83,7 +84,7 @@ public class TurtlePlayer extends FakePlayer
     }
 
     @Override
-    public void dismountEntity( Entity entity )
+    public void dismountEntity( @Nonnull Entity entity )
     {
     }
 

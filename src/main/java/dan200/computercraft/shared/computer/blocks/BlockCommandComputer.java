@@ -25,6 +25,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class BlockCommandComputer extends BlockComputerBase
 {
     // Statics
@@ -50,6 +52,7 @@ public class BlockCommandComputer extends BlockComputerBase
         );
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
@@ -59,6 +62,7 @@ public class BlockCommandComputer extends BlockComputerBase
         });
     }
 
+    @Nonnull
     @Override
     public IBlockState getStateFromMeta( int meta )
     {
@@ -76,8 +80,9 @@ public class BlockCommandComputer extends BlockComputerBase
         return ((EnumFacing)state.getValue( Properties.FACING )).getIndex();
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof IComputerTile )

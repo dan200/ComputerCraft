@@ -11,6 +11,8 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.computer.IComputerEnvironment;
 import dan200.computercraft.core.terminal.Terminal;
 
+import javax.annotation.Nonnull;
+
 public class TermAPI implements ILuaAPI
 {
     private Terminal m_terminal;
@@ -45,6 +47,7 @@ public class TermAPI implements ILuaAPI
     {
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -102,7 +105,7 @@ public class TermAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {

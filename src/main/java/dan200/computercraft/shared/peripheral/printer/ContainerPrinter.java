@@ -14,6 +14,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerPrinter extends Container
 {
     private TilePrinter m_printer;
@@ -97,7 +99,7 @@ public class ContainerPrinter extends Container
     }
 
     @Override
-    public boolean canInteractWith( EntityPlayer player )
+    public boolean canInteractWith( @Nonnull EntityPlayer player )
     {
         return m_printer.isUseableByPlayer( player );
     }

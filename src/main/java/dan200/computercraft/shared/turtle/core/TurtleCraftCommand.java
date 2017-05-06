@@ -16,6 +16,7 @@ import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class TurtleCraftCommand implements ITurtleCommand
@@ -27,8 +28,9 @@ public class TurtleCraftCommand implements ITurtleCommand
         m_limit = limit;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Craft the item
         TurtleInventoryCrafting crafting = new TurtleInventoryCrafting( turtle );

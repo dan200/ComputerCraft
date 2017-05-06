@@ -27,6 +27,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class BlockTurtle extends BlockComputerBase
 {
     // Statics
@@ -54,6 +56,7 @@ public class BlockTurtle extends BlockComputerBase
         );
     }
 
+    @Nonnull
     @Override
     public EnumBlockRenderType getRenderType( IBlockState state )
     {
@@ -72,12 +75,14 @@ public class BlockTurtle extends BlockComputerBase
         return false;
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, Properties.FACING );
     }
 
+    @Nonnull
     @Override
     public IBlockState getStateFromMeta( int meta )
     {
@@ -90,8 +95,9 @@ public class BlockTurtle extends BlockComputerBase
         return 0;
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         return state.withProperty( Properties.FACING, getDirection( world, pos ) );
     }

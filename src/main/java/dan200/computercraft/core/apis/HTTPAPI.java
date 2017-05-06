@@ -10,6 +10,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -72,6 +73,7 @@ public class HTTPAPI implements ILuaAPI
     private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode, final Map<String, String> responseHeaders )
     {
         return new ILuaObject() {
+            @Nonnull
             @Override
             public String[] getMethodNames()
             {
@@ -85,7 +87,7 @@ public class HTTPAPI implements ILuaAPI
             }
             
             @Override
-            public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+            public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
             {
                 switch( method )
                 {
@@ -164,6 +166,7 @@ public class HTTPAPI implements ILuaAPI
         }
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -174,7 +177,7 @@ public class HTTPAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {

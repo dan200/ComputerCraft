@@ -29,6 +29,8 @@ import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
+
 public class TilePrinter extends TilePeripheralBase
     implements IInventory, ISidedInventory
 {
@@ -102,7 +104,8 @@ public class TilePrinter extends TilePeripheralBase
         }
     }
 
-    @Override    
+    @Nonnull
+    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
         nbttagcompound = super.writeToNBT(nbttagcompound);
@@ -136,14 +139,14 @@ public class TilePrinter extends TilePeripheralBase
     }
 
     @Override
-    public final void readDescription( NBTTagCompound nbttagcompound )
+    public final void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
         updateBlock();
     }
 
     @Override
-    public boolean shouldRefresh( World world, BlockPos pos, IBlockState oldState, IBlockState newState )
+    public boolean shouldRefresh( World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState )
     {
         return super.shouldRefresh( world, pos, oldState, newState ) || ComputerCraft.Blocks.peripheral.getPeripheralType( newState ) != PeripheralType.Printer;
     }
@@ -243,6 +246,7 @@ public class TilePrinter extends TilePeripheralBase
         return getLabel() != null;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {
@@ -257,6 +261,7 @@ public class TilePrinter extends TilePeripheralBase
         }
     }
 
+    @Nonnull
     @Override
     public ITextComponent getDisplayName()
     {
@@ -277,23 +282,23 @@ public class TilePrinter extends TilePeripheralBase
     }
 
     @Override    
-    public void openInventory( EntityPlayer player )
+    public void openInventory( @Nonnull EntityPlayer player )
     {
     }
     
     @Override    
-    public void closeInventory( EntityPlayer player )
+    public void closeInventory( @Nonnull EntityPlayer player )
     {
     }
 
     @Override
-    public boolean isItemValidForSlot( int slot, ItemStack itemstack )
+    public boolean isItemValidForSlot( int slot, @Nonnull ItemStack itemstack )
     {
         return true;
     }
 
     @Override
-    public boolean isUseableByPlayer( EntityPlayer player )
+    public boolean isUseableByPlayer( @Nonnull EntityPlayer player )
     {
         return isUsable( player, false );
     }
@@ -317,8 +322,9 @@ public class TilePrinter extends TilePeripheralBase
 
     // ISidedInventory implementation
     
-    @Override    
-    public int[] getSlotsForFace( EnumFacing side )
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace( @Nonnull EnumFacing side )
     {
         switch( side )
         {
@@ -329,13 +335,13 @@ public class TilePrinter extends TilePeripheralBase
     }
     
     @Override
-    public boolean canInsertItem( int slot, ItemStack itemstack, EnumFacing face )
+    public boolean canInsertItem( int slot, @Nonnull ItemStack itemstack, @Nonnull EnumFacing face )
     {
         return isItemValidForSlot( slot, itemstack );
     }
 
     @Override
-    public boolean canExtractItem( int slot, ItemStack itemstack, EnumFacing face )
+    public boolean canExtractItem( int slot, @Nonnull ItemStack itemstack, @Nonnull EnumFacing face )
     {
         return true;
     }

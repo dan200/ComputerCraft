@@ -8,6 +8,8 @@ package dan200.computercraft.shared.computer.blocks;
 
 import net.minecraft.util.IStringSerializable;
 
+import javax.annotation.Nonnull;
+
 public enum ComputerState implements IStringSerializable
 {
     Off( "off" ),
@@ -21,6 +23,7 @@ public enum ComputerState implements IStringSerializable
         m_name = name;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {

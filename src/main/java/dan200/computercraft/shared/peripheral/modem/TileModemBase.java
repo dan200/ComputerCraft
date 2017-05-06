@@ -14,6 +14,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import javax.annotation.Nonnull;
+
 public abstract class TileModemBase extends TilePeripheralBase
 {
     private static final AxisAlignedBB[] BOXES = new AxisAlignedBB[] {
@@ -65,6 +67,7 @@ public abstract class TileModemBase extends TilePeripheralBase
         }
     }
 
+    @Nonnull
     @Override
     public AxisAlignedBB getBounds()
     {
@@ -95,7 +98,7 @@ public abstract class TileModemBase extends TilePeripheralBase
     }
 
     @Override
-    public final void readDescription( NBTTagCompound nbttagcompound )
+    public final void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
         updateBlock();

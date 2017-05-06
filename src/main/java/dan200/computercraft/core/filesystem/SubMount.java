@@ -8,6 +8,7 @@ package dan200.computercraft.core.filesystem;
 
 import dan200.computercraft.api.filesystem.IMount;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -26,31 +27,32 @@ public class SubMount implements IMount
     // IMount implementation
     
     @Override
-    public boolean exists( String path ) throws IOException
+    public boolean exists( @Nonnull String path ) throws IOException
     {
         return m_parent.exists( getFullPath( path ) );
     }
     
     @Override
-    public boolean isDirectory( String path ) throws IOException
+    public boolean isDirectory( @Nonnull String path ) throws IOException
     {
         return m_parent.isDirectory( getFullPath( path ) );
     }
     
     @Override
-    public void list( String path, List<String> contents ) throws IOException
+    public void list( @Nonnull String path, @Nonnull List<String> contents ) throws IOException
     {
         m_parent.list( getFullPath( path ), contents );
     }
     
     @Override
-    public long getSize( String path ) throws IOException
+    public long getSize( @Nonnull String path ) throws IOException
     {
         return m_parent.getSize( getFullPath( path ) );
     }
 
+    @Nonnull
     @Override
-    public InputStream openForRead( String path ) throws IOException
+    public InputStream openForRead( @Nonnull String path ) throws IOException
     {
         return m_parent.openForRead( getFullPath( path ) );
     }

@@ -31,6 +31,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.*;
 
@@ -93,6 +94,7 @@ public class TileCable extends TileModemBase
             return new Vec3d( (double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5 );
         }
 
+        @Nonnull
         @Override
         public String[] getMethodNames()
         {
@@ -117,7 +119,7 @@ public class TileCable extends TileModemBase
         }
 
         @Override
-        public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException
+        public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
         {
             String[] methods = super.getMethodNames();
             switch( method - methods.length )
@@ -186,7 +188,7 @@ public class TileCable extends TileModemBase
         }
 
         @Override
-        public void attach( IComputerAccess computer )
+        public void attach( @Nonnull IComputerAccess computer )
         {
             super.attach( computer );
             synchronized( m_entity.m_peripheralsByName )
@@ -205,7 +207,7 @@ public class TileCable extends TileModemBase
         }
 
         @Override
-        public synchronized void detach( IComputerAccess computer )
+        public synchronized void detach( @Nonnull IComputerAccess computer )
         {
             synchronized( m_entity.m_peripheralsByName )
             {
@@ -302,7 +304,7 @@ public class TileCable extends TileModemBase
     }
 
     @Override
-    public void getDroppedItems( List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
     {
         if( !creative )
         {
@@ -409,6 +411,7 @@ public class TileCable extends TileModemBase
         return new AxisAlignedBB( xMin, yMin, zMin, xMax, yMax, zMax );
     }
     
+    @Nonnull
     @Override
     public AxisAlignedBB getBounds()
     {
@@ -434,7 +437,7 @@ public class TileCable extends TileModemBase
     }
 
     @Override
-    public void getCollisionBounds( List<AxisAlignedBB> bounds )
+    public void getCollisionBounds( @Nonnull List<AxisAlignedBB> bounds )
     {
         PeripheralType type = getPeripheralType();
         if( type == PeripheralType.WiredModem || type == PeripheralType.WiredModemWithCable )
@@ -503,7 +506,8 @@ public class TileCable extends TileModemBase
         m_attachedPeripheralID = nbttagcompound.getInteger( "peripheralID" );
     }
 
-    @Override    
+    @Nonnull
+    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
         // Write properties
@@ -828,25 +832,25 @@ public class TileCable extends TileModemBase
         // IComputerAccess implementation
 
         @Override
-        public String mount( String desiredLocation, IMount mount )
+        public String mount( @Nonnull String desiredLocation, @Nonnull IMount mount )
         {
             return m_computer.mount( desiredLocation, mount, m_name );
         }
 
         @Override
-        public String mount( String desiredLocation, IMount mount, String driveName )
+        public String mount( @Nonnull String desiredLocation, @Nonnull IMount mount, @Nonnull String driveName )
         {
             return m_computer.mount( desiredLocation, mount, driveName );
         }
 
         @Override
-        public String mountWritable( String desiredLocation, IWritableMount mount )
+        public String mountWritable( @Nonnull String desiredLocation, @Nonnull IWritableMount mount )
         {
             return m_computer.mountWritable( desiredLocation, mount, m_name );
         }
 
         @Override
-        public String mountWritable( String desiredLocation, IWritableMount mount, String driveName )
+        public String mountWritable( @Nonnull String desiredLocation, @Nonnull IWritableMount mount, @Nonnull String driveName )
         {
             return m_computer.mountWritable( desiredLocation, mount, driveName );
         }
@@ -864,11 +868,12 @@ public class TileCable extends TileModemBase
         }
         
         @Override
-        public void queueEvent( String event, Object[] arguments )
+        public void queueEvent( @Nonnull String event, Object[] arguments )
         {
             m_computer.queueEvent( event, arguments );
         }
         
+        @Nonnull
         @Override
         public String getAttachmentName()
         {

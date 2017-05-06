@@ -29,6 +29,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -145,6 +146,7 @@ public class TileDiskDrive extends TilePeripheralBase
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
@@ -320,6 +322,7 @@ public class TileDiskDrive extends TilePeripheralBase
         return getLabel() != null;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {
@@ -334,6 +337,7 @@ public class TileDiskDrive extends TilePeripheralBase
         }
     }
 
+    @Nonnull
     @Override
     public ITextComponent getDisplayName()
     {
@@ -354,23 +358,23 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public void openInventory( EntityPlayer player )
+    public void openInventory( @Nonnull EntityPlayer player )
     {
     }
     
     @Override
-    public void closeInventory( EntityPlayer player )
+    public void closeInventory( @Nonnull EntityPlayer player )
     {
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    public boolean isItemValidForSlot( int i, @Nonnull ItemStack itemstack)
     {
         return true;
     }
 
     @Override
-    public boolean isUseableByPlayer( EntityPlayer player )
+    public boolean isUseableByPlayer( @Nonnull EntityPlayer player )
     {
         return isUsable( player, false );
     }
@@ -613,7 +617,7 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public final void readDescription( NBTTagCompound nbttagcompound )
+    public final void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
         if( nbttagcompound.hasKey( "item" ) )
@@ -628,7 +632,7 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public void writeDescription( NBTTagCompound nbttagcompound )
+    public void writeDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.writeDescription( nbttagcompound );
         if( m_diskStack != null )
@@ -659,7 +663,7 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public boolean shouldRefresh( World world, BlockPos pos, IBlockState oldState, IBlockState newState )
+    public boolean shouldRefresh( World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState )
     {
         return super.shouldRefresh( world, pos, oldState, newState ) || ComputerCraft.Blocks.peripheral.getPeripheralType( newState ) != PeripheralType.DiskDrive;
     }

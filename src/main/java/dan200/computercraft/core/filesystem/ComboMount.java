@@ -8,6 +8,7 @@ package dan200.computercraft.core.filesystem;
 
 import dan200.computercraft.api.filesystem.IMount;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class ComboMount implements IMount
     // IMount implementation
     
     @Override
-    public boolean exists( String path ) throws IOException
+    public boolean exists( @Nonnull String path ) throws IOException
     {
         for( int i=m_parts.length-1; i>=0; --i )
         {
@@ -41,7 +42,7 @@ public class ComboMount implements IMount
     }
     
     @Override
-    public boolean isDirectory( String path ) throws IOException
+    public boolean isDirectory( @Nonnull String path ) throws IOException
     {
         for( int i=m_parts.length-1; i>=0; --i )
         {
@@ -55,7 +56,7 @@ public class ComboMount implements IMount
     }
     
     @Override
-    public void list( String path, List<String> contents ) throws IOException
+    public void list( @Nonnull String path, @Nonnull List<String> contents ) throws IOException
     {
         // Combine the lists from all the mounts
         List<String> foundFiles = null;
@@ -99,7 +100,7 @@ public class ComboMount implements IMount
     }
     
     @Override
-    public long getSize( String path ) throws IOException
+    public long getSize( @Nonnull String path ) throws IOException
     {
         for( int i=m_parts.length-1; i>=0; --i )
         {
@@ -112,8 +113,9 @@ public class ComboMount implements IMount
         throw new IOException( "No such file" );
     }
 
+    @Nonnull
     @Override
-    public InputStream openForRead( String path ) throws IOException
+    public InputStream openForRead( @Nonnull String path ) throws IOException
     {
         for( int i=m_parts.length-1; i>=0; --i )
         {

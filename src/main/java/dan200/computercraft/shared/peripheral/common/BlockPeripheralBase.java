@@ -17,6 +17,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public abstract class BlockPeripheralBase extends BlockDirectional
 {
     public BlockPeripheralBase()
@@ -42,7 +44,7 @@ public abstract class BlockPeripheralBase extends BlockDirectional
     }
 
     @Override
-    public final boolean canPlaceBlockOnSide( World world, BlockPos pos, EnumFacing side )
+    public final boolean canPlaceBlockOnSide( @Nonnull World world, @Nonnull BlockPos pos, EnumFacing side )
     {
         return true; // ItemPeripheralBase handles this
     }

@@ -8,6 +8,9 @@ package dan200.computercraft.api.media;
 
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This interface is used to provide {@link IMedia} implementations for {@link ItemStack}.
  *
@@ -22,5 +25,6 @@ public interface IMediaProvider
      * @return An IMedia implementation, or null if the item is not something you wish to handle
      * @see dan200.computercraft.api.ComputerCraftAPI#registerMediaProvider(IMediaProvider)
      */
-    public IMedia getMedia( ItemStack stack );
+    @Nullable
+    IMedia getMedia( @Nonnull ItemStack stack );
 }

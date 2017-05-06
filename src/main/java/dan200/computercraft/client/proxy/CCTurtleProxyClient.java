@@ -38,6 +38,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import javax.annotation.Nonnull;
+
 public class CCTurtleProxyClient extends CCTurtleProxyCommon
 {
     public CCTurtleProxyClient()
@@ -56,8 +58,9 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         {
             private ModelResourceLocation turtle_dynamic = new ModelResourceLocation( "computercraft:turtle_dynamic", "inventory" );
 
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 return turtle_dynamic;
             }
@@ -188,7 +191,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
     private static class TurtleItemColour implements IItemColor
     {
         @Override
-        public int getColorFromItemstack( ItemStack stack, int tintIndex )
+        public int getColorFromItemstack( @Nonnull ItemStack stack, int tintIndex )
         {
             if( tintIndex == 0 )
             {

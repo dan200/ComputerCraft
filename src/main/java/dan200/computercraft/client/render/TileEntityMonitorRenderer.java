@@ -24,6 +24,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMonitor>
 {
     public TileEntityMonitorRenderer()
@@ -31,7 +33,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
     }
 
     @Override
-    public void renderTileEntityAt( TileMonitor tileEntity, double posX, double posY, double posZ, float f, int i )
+    public void renderTileEntityAt( @Nonnull TileMonitor tileEntity, double posX, double posY, double posZ, float f, int i )
     {
         if( tileEntity != null )
         {

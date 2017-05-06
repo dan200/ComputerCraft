@@ -20,6 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 
 public class TurtleCraftingTable implements ITurtleUpgrade
@@ -41,6 +42,7 @@ public class TurtleCraftingTable implements ITurtleUpgrade
         m_item = new ItemStack( Blocks.CRAFTING_TABLE, 1, 0 );
     }
 
+    @Nonnull
     @Override
     public ResourceLocation getUpgradeID()
     {
@@ -53,12 +55,14 @@ public class TurtleCraftingTable implements ITurtleUpgrade
         return m_legacyID;
     }
 
+    @Nonnull
     @Override
     public String getUnlocalisedAdjective()
     {
         return "upgrade.minecraft:crafting_table.adjective";
     }
     
+    @Nonnull
     @Override
     public TurtleUpgradeType getType()
     {
@@ -72,13 +76,14 @@ public class TurtleCraftingTable implements ITurtleUpgrade
     }
 
     @Override
-    public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
+    public IPeripheral createPeripheral( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
         return new CraftingTablePeripheral( turtle );
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing dir )
+    public TurtleCommandResult useTool( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing dir )
     {
         return null;
     }
@@ -93,9 +98,10 @@ public class TurtleCraftingTable implements ITurtleUpgrade
         }
     }
 
+    @Nonnull
     @Override
     @SideOnly( Side.CLIENT )
-    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, TurtleSide side )
+    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
         loadModelLocations();
 
@@ -113,7 +119,7 @@ public class TurtleCraftingTable implements ITurtleUpgrade
     }
 
     @Override
-    public void update( ITurtleAccess turtle, TurtleSide side )
+    public void update( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
     }
 }

@@ -12,6 +12,8 @@ import dan200.computercraft.api.turtle.TurtleCommandResult;
 import dan200.computercraft.shared.util.InventoryUtil;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class TurtleCompareToCommand implements ITurtleCommand
 {
     private final int m_slot;
@@ -21,8 +23,9 @@ public class TurtleCompareToCommand implements ITurtleCommand
         m_slot = slot;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         ItemStack selectedStack = turtle.getInventory().getStackInSlot( turtle.getSelectedSlot() );
         ItemStack stack = turtle.getInventory().getStackInSlot( m_slot );

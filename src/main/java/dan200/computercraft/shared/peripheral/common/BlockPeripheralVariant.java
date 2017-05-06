@@ -9,6 +9,8 @@ package dan200.computercraft.shared.peripheral.common;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import net.minecraft.util.IStringSerializable;
 
+import javax.annotation.Nonnull;
+
 public enum BlockPeripheralVariant implements IStringSerializable
 {
     DiskDriveEmpty( "disk_drive_empty", PeripheralType.DiskDrive ),
@@ -130,6 +132,7 @@ public enum BlockPeripheralVariant implements IStringSerializable
         m_peripheralType = peripheralType;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {

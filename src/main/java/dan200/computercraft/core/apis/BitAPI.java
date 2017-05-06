@@ -9,6 +9,8 @@ package dan200.computercraft.core.apis;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 
+import javax.annotation.Nonnull;
+
 // Contributed by Nia
 // Based on LuaBit (http://luaforge.net/projects/bit)
  
@@ -68,6 +70,7 @@ public class BitAPI implements ILuaAPI
     {
     }
     
+    @Nonnull
     @Override
     public String[] getMethodNames() {
         return new String[] {
@@ -77,7 +80,7 @@ public class BitAPI implements ILuaAPI
     }
     
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         Object a = args.length>0?args[0]:null;
         Object b = args.length>1?args[1]:null;

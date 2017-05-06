@@ -9,6 +9,8 @@ package dan200.computercraft.shared.turtle.core;
 import com.google.common.base.Optional;
 import dan200.computercraft.api.turtle.*;
 
+import javax.annotation.Nonnull;
+
 public class TurtleToolCommand implements ITurtleCommand
 {
     private final TurtleVerb m_verb;
@@ -22,8 +24,9 @@ public class TurtleToolCommand implements ITurtleCommand
         m_side = side;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         TurtleCommandResult firstFailure = null;
         for( TurtleSide side : TurtleSide.values() )

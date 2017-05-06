@@ -14,6 +14,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class TurtleDetectCommand implements ITurtleCommand
 {
     private final InteractDirection m_direction;
@@ -23,8 +25,9 @@ public class TurtleDetectCommand implements ITurtleCommand
         m_direction = direction;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Get world direction from direction
         EnumFacing direction = m_direction.toWorldDir( turtle );
