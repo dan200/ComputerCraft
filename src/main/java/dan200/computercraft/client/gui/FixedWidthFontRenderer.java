@@ -8,6 +8,7 @@ package dan200.computercraft.client.gui;
 
 import dan200.computercraft.core.terminal.TextBuffer;
 import dan200.computercraft.shared.util.Colour;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -35,19 +36,23 @@ public class FixedWidthFontRenderer
         int column = index % 16;
         int row = index / 16;
         Colour colour = Colour.values()[ 15 - color ];
+        renderer.pos( x, y, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT ) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
         renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
         renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-        renderer.pos( x, y, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT ) / 256.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
     }
 
     private void drawQuad( VertexBuffer renderer, double x, double y, int color, double width )
     {
         Colour colour = Colour.values()[ 15 - color ];
-        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( 0.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-        renderer.pos( x + width, y + FONT_HEIGHT, 0.0 ).tex( 1.0, 1.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-        renderer.pos( x + width, y, 0.0 ).tex( 1.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
-        renderer.pos( x, y, 0.0 ).tex( 0.0, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        renderer.pos( x, y, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        renderer.pos( x + width, y, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        renderer.pos( x + width, y, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
+        renderer.pos( x + width, y + FONT_HEIGHT, 0.0 ).color( colour.getR(), colour.getG(), colour.getB(), 1.0f ).endVertex();
     }
 
     private boolean isGreyScale( int colour )
@@ -60,7 +65,7 @@ public class FixedWidthFontRenderer
         // Draw the quads
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer renderer = tessellator.getBuffer();
-        renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+        renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR );
         if( leftMarginSize > 0.0 )
         {
             int colour1 = "0123456789abcdef".indexOf( backgroundColour.charAt( 0 ) );
@@ -88,7 +93,9 @@ public class FixedWidthFontRenderer
             }
             drawQuad( renderer, x + i * FONT_WIDTH, y, colour, FONT_WIDTH );
         }
+        GlStateManager.disableTexture2D();
         tessellator.draw();
+        GlStateManager.enableTexture2D();
     }
 
     public void drawStringTextPart( int x, int y, TextBuffer s, TextBuffer textColour, boolean greyScale )
@@ -96,7 +103,7 @@ public class FixedWidthFontRenderer
         // Draw the quads
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer renderer = tessellator.getBuffer();
-        renderer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+        renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR );
         for( int i = 0; i < s.length(); i++ )
         {
             // Switch colour

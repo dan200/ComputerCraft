@@ -175,11 +175,11 @@ function os.pullEventRaw( sFilter )
 end
 
 function os.pullEvent( sFilter )
-    local eventData = { os.pullEventRaw( sFilter ) }
+    local eventData = table.pack( os.pullEventRaw( sFilter ) )
     if eventData[1] == "terminate" then
         error( "Terminated", 0 )
     end
-    return table.unpack( eventData )
+    return table.unpack( eventData, 1, eventData.n )
 end
 
 -- Install globals
@@ -550,13 +550,13 @@ end
 
 -- Install the rest of the OS api
 function os.run( _tEnv, _sPath, ... )
-    local tArgs = { ... }
+    local tArgs = table.pack( ... )
     local tEnv = _tEnv
     setmetatable( tEnv, { __index = _G } )
     local fnFile, err = loadfile( _sPath, tEnv )
     if fnFile then
         local ok, err = pcall( function()
-            fnFile( table.unpack( tArgs ) )
+            fnFile( table.unpack( tArgs, 1, tArgs.n ) )
         end )
         if not ok then
             if err and err ~= "" then

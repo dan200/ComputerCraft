@@ -20,12 +20,14 @@ import dan200.computercraft.shared.network.ComputerCraftPacket;
 import dan200.computercraft.shared.peripheral.diskdrive.TileDiskDrive;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
+import dan200.computercraft.shared.pocket.inventory.ContainerPocketComputer;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.proxy.ComputerCraftProxyCommon;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.entity.TurtleVisionCamera;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -255,7 +257,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     @Override
     public void deleteDisplayLists( int list, int range )
     {
-        GL11.glDeleteLists( list, range );
+        GlStateManager.glDeleteLists( list, range );
     }
 
     @Override
@@ -325,7 +327,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     @Override
     public Object getPocketComputerGUI( EntityPlayer player, EnumHand hand )
     {
-        ContainerHeldItem container = new ContainerHeldItem( player, hand );
+        ContainerPocketComputer container = new ContainerPocketComputer( player, hand );
         if( container.getStack() != null && container.getStack().getItem() instanceof ItemPocketComputer )
         {
             return new GuiPocketComputer( container );
@@ -410,7 +412,6 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     private void registerForgeHandlers()
     {
         ForgeHandlers handlers = new ForgeHandlers();
-        FMLCommonHandler.instance().bus().register( handlers );
         MinecraftForge.EVENT_BUS.register( handlers );
     }
 

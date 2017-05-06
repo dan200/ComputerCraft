@@ -42,15 +42,13 @@ import dan200.computercraft.shared.peripheral.modem.TileWirelessModem;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.ContainerPrinter;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
+import dan200.computercraft.shared.pocket.inventory.ContainerPocketComputer;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
 import dan200.computercraft.shared.pocket.recipes.PocketComputerUpgradeRecipe;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.inventory.ContainerTurtle;
-import dan200.computercraft.shared.util.Colour;
-import dan200.computercraft.shared.util.CreativeTabMain;
-import dan200.computercraft.shared.util.ImpostorRecipe;
-import dan200.computercraft.shared.util.ImpostorShapelessRecipe;
+import dan200.computercraft.shared.util.*;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -67,7 +65,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -129,7 +126,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         {
             ItemRecord record = (ItemRecord) item;
             String key = ObfuscationReflectionHelper.getPrivateValue( ItemRecord.class, record, "field_185077_c" );
-            return I18n.translateToLocal( key );
+            return StringUtil.translateToLocal( key );
         }
         return null;
     }
@@ -541,7 +538,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
                     if (tile != null && tile instanceof TileTurtle)
                     {
                         TileTurtle turtle = (TileTurtle) tile;
-                        return new ContainerTurtle( player.inventory, turtle.getAccess() );
+                        return new ContainerTurtle( player.inventory, turtle.getAccess(), turtle.getServerComputer() );
                     }
                     break;
                 }
@@ -551,7 +548,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
                 }
                 case ComputerCraft.pocketComputerGUIID:
                 {
-                    return new ContainerHeldItem( player, x == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND );
+                    return new ContainerPocketComputer( player, x == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND );
                 }
             }
             return null;

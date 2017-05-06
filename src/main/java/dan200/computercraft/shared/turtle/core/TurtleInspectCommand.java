@@ -57,7 +57,7 @@ public class TurtleInspectCommand implements ITurtleCommand
                 table.put( "metadata", metadata );
 
                 Map<Object, Object> stateTable = new HashMap<Object, Object>();
-                for( Object o : block.getActualState( state, world, newPosition ).getProperties().entrySet() )
+                for( Object o : state.getActualState( world, newPosition ).getProperties().entrySet() )
                 {
                     ImmutableMap.Entry<IProperty, Object> entry = (ImmutableMap.Entry<IProperty, Object>)o;
                     String propertyName = entry.getKey().getName();

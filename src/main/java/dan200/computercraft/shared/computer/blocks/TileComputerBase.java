@@ -22,10 +22,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 
 public abstract class TileComputerBase extends TileGeneric
     implements IComputerTile, IDirectionalTile, ITickable
@@ -143,7 +143,8 @@ public abstract class TileComputerBase extends TileGeneric
     @Override
     public boolean getRedstoneConnectivity( EnumFacing side )
     {
-        int localDir = remapLocalSide( DirectionUtil.toLocal( this, side ) );
+        if( side == null ) return false;
+        int localDir = remapLocalSide( DirectionUtil.toLocal( this, side.getOpposite() ) );
         return !isRedstoneBlockedOnSide( localDir );
     }
 
@@ -194,6 +195,12 @@ public abstract class TileComputerBase extends TileGeneric
     public void onNeighbourChange()
     {
         updateInput();
+    }
+
+    @Override
+    public void onNeighbourTileEntityChange( BlockPos neighbour )
+    {
+        updateInput( neighbour );
     }
 
     @Override
@@ -307,6 +314,21 @@ public abstract class TileComputerBase extends TileGeneric
         return localSide;
     }
 
+    private void updateSideInput( ServerComputer computer, EnumFacing dir, BlockPos offset )
+    {
+        EnumFacing offsetSide = dir.getOpposite();
+        int localDir = remapLocalSide( DirectionUtil.toLocal( this, dir ) );
+        if( !isRedstoneBlockedOnSide( localDir ) )
+        {
+            computer.setRedstoneInput( localDir, RedstoneUtil.getRedstoneOutput( worldObj, offset, offsetSide ) );
+            computer.setBundledRedstoneInput( localDir, RedstoneUtil.getBundledRedstoneOutput( worldObj, offset, offsetSide ) );
+        }
+        if( !isPeripheralBlockedOnSide( localDir ) )
+        {
+            computer.setPeripheral( localDir, PeripheralUtil.getPeripheral( worldObj, offset, offsetSide ) );
+        }
+    }
+
     public void updateInput()
     {
         if( worldObj == null || worldObj.isRemote )
@@ -321,17 +343,29 @@ public abstract class TileComputerBase extends TileGeneric
             BlockPos pos = computer.getPosition();
             for( EnumFacing dir : EnumFacing.VALUES )
             {
+                updateSideInput( computer, dir, pos.offset( dir ) );
+            }
+        }
+    }
+
+    public void updateInput( BlockPos neighbour )
+    {
+        if( worldObj == null || worldObj.isRemote )
+        {
+            return;
+        }
+
+        ServerComputer computer = getServerComputer();
+        if( computer != null )
+        {
+            BlockPos pos = computer.getPosition();
+            for( EnumFacing dir : EnumFacing.VALUES )
+            {
                 BlockPos offset = pos.offset( dir );
-                EnumFacing offsetSide = dir.getOpposite();
-                int localDir = remapLocalSide( DirectionUtil.toLocal( this, dir ) );
-                if( !isRedstoneBlockedOnSide( localDir ) )
+                if ( offset.equals( neighbour ) )
                 {
-                    computer.setRedstoneInput( localDir, RedstoneUtil.getRedstoneOutput( worldObj, offset, offsetSide ) );
-                    computer.setBundledRedstoneInput( localDir, RedstoneUtil.getBundledRedstoneOutput( worldObj, offset, offsetSide ) );
-                }
-                if( !isPeripheralBlockedOnSide( localDir ) )
-                {
-                    computer.setPeripheral( localDir, PeripheralUtil.getPeripheral( worldObj, offset, offsetSide ) );
+                    updateSideInput( computer, dir, offset );
+                    break;
                 }
             }
         }

@@ -5,6 +5,7 @@ deploy
 *.ipr
 *.iws
 *.iml
+.idea
 .gradle
 luaj-2.0.3/lib
 luaj-2.0.3/*.jar
