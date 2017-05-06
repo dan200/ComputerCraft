@@ -100,6 +100,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             // Draw the contents
             GlStateManager.depthMask( false );
             GlStateManager.disableLighting();
+            mc.entityRenderer.disableLightmap();
             try
             {
                 if( terminal != null )
@@ -256,6 +257,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             finally
             {
                 GlStateManager.depthMask( true );
+                mc.entityRenderer.enableLightmap();
                 GlStateManager.enableLighting();
             }
 
