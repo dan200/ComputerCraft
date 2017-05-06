@@ -15,29 +15,29 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 
+/**
+ * Sound API for ComputerCraft. Provides an interface to Forge's API.
+ * Possible use cases are notification apis, alert sounds, or playing music
+ */
 public class SoundAPI implements ILuaAPI
 {
 
-    /**
-     * Sound API for ComputerCraft. Provides an interface to Forge's API.
-     * Possible use cases are notification apis, alert sounds, or playing music
-     */
-
-    private String[] methods;
-    private ServerComputer computer;
-    private long lastPlayTime;
+    private String[] m_methods;
+    private ServerComputer m_computer;
+    private long m_lastPlayTime;
+    private long m_clock;
 
     public SoundAPI(ServerComputer computer)
     {
 
-        this.methods = new String[] {
+        m_methods = new String[] {
                 "play", // Plays a sound from given resource locator
                         // Returns: Object[]{success}
                 "getPlayTimeout" // Gets minTimeBetweenPlay
         };
 
-        this.computer = computer;
-        this.lastPlayTime = 0;
+        m_computer = computer;
+        m_lastPlayTime = 0;
 
     }
 
@@ -55,17 +55,19 @@ public class SoundAPI implements ILuaAPI
     @Override
     public String[] getMethodNames()
     {
-        return this.methods;
+        return m_methods;
     }
 
     @Override
     public void startup()
     {
+        m_clock = 0;
     }
 
     @Override
     public void advance(double _dt)
     {
+        m_clock++;
     }
 
     @Override
@@ -77,65 +79,94 @@ public class SoundAPI implements ILuaAPI
     @Override
     public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
     {
-        switch (method) {
+        switch (method)
+        {
 
             // play
             case 0:
+            {
 
                 float volume = 1f;
                 float pitch = 1f;
 
                 // Check if arguments are correct
                 if (arguments.length == 0) // Too few args
-                    throw new LuaException("Expected string, number (optional), number (optional)");
-
-                else if (!(arguments[0] instanceof String)) // Arg wrong type
-                    throw new LuaException("Expected string, number (optional), number (optional)");
-
-                else if (arguments.length == 2)
                 {
-                    if (!(arguments[1] instanceof Double)) // Arg wrong type
+                    throw new LuaException("Expected string, number (optional), number (optional)");
+                }
+
+                if (!(arguments[0] instanceof String)) // Arg wrong type
+                {
+                    throw new LuaException("Expected string, number (optional), number (optional)");
+                }
+
+                if (arguments.length > 1)
+                {
+                    if (!(arguments[1] instanceof Double))  // Arg wrong type
+                    {
                         throw new LuaException("Expected string, number (optional), number (optional)");
+                    }
                     volume = ((Double) arguments[1]).floatValue();
 
                 }
 
-                else if (arguments.length == 3)
+                if (arguments.length > 2)
                 {
                     if (!(arguments[2] instanceof Double)) // Arg wrong type
+                    {
                         throw new LuaException("Expected string, number (optional), number (optional)");
+                    }
                     pitch = ((Double) arguments[2]).floatValue();
+                }
+
+                if (arguments.length > 3)
+                {
+                    throw new LuaException("Expected string, number (optional), number (optional)");
                 }
 
                 ResourceLocation resourceName = new ResourceLocation((String) arguments[0]);
 
-                if (System.currentTimeMillis() - this.lastPlayTime > ComputerCraft.Config.minTimeBetweenSounds.getDouble())
+                if (m_clock - m_lastPlayTime > ComputerCraft.Config.minTimeBetweenSounds.getInt())
                 {
 
                     if (SoundEvent.REGISTRY.containsKey(resourceName))
                     {
-
-                        this.computer.getWorld().playSound(null, this.computer.getPosition(), new SoundEvent(resourceName), SoundCategory.RECORDS, volume, pitch);
-                        this.lastPlayTime = System.currentTimeMillis();
-                        return new Object[] {true}; // Success, return true
+                        System.out.println(pitch);
+                        m_computer.getWorld().playSound(null, m_computer.getPosition(), new SoundEvent(resourceName), SoundCategory.RECORDS, volume, pitch);
+                        m_lastPlayTime = m_clock;
+                        return new Object[]{true}; // Success, return true
                     }
 
                     else
-                        return new Object[] {false}; // Failed - sound not existent, return false
+                    {
+                        return new Object[]{false}; // Failed - sound not existent, return false
+                    }
 
                 }
 
                 else
-                    return new Object[] {false}; // Failed - rate limited, return false
+                {
+                    return new Object[]{false}; // Failed - rate limited, return false
+                }
+            }
 
             // getPlayTimeout
             case 1:
-                return new Object[]{ComputerCraft.Config.minTimeBetweenSounds.getDouble()};
+            {
+
+                if (arguments.length > 0)
+                {
+                    throw new LuaException("Expected nil, got arguments");
+                }
+
+                return new Object[]{ComputerCraft.Config.minTimeBetweenSounds.getInt()};
+            }
 
             // ??? Something weird happened. Makes IDEs happy
             default:
+            {
                 return null;
-
+            }
         }
     }
 }

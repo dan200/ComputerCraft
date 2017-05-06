@@ -58,9 +58,11 @@ public class ServerComputer extends ServerTerminal
         m_changedLastFrame = false;
         m_ticksSincePing = 0;
 
-        // Due to Computer not having access to XYZ position of physical computer, it is required to
-        // inject SoundAPI at creation of the computer.
-        m_computer.addAPI(new SoundAPI(this));
+        // Due to Computer not having access to XYZ position of physical computer, it is required to inject SoundAPI at creation of the computer.
+        if (ComputerCraft.Config.soundAPI_enable.getBoolean())
+        {
+            m_computer.addAPI(new SoundAPI(this));
+        }
 
     }
 
