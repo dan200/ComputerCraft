@@ -301,12 +301,16 @@ public class OSAPI implements ILuaAPI
                     //Get Hour of day (UTC)
                     if (param.equals("utc")) {
                         Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                        return new Object[] {c.get(Calendar.HOUR_OF_DAY)};
+                        float hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+                        hourOfDay += ((float)c.get(Calendar.MINUTE)/60)+(float)(c.get(Calendar.SECOND)/60*60);
+                        return new Object[] {hourOfDay};
                     }
                     //Get Hour of day (local time)
                     else if (param.equals("local")) {
                         Calendar c = Calendar.getInstance();
-                        return new Object[] {c.get(Calendar.HOUR_OF_DAY)};
+                        float hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+                        hourOfDay += ((float)c.get(Calendar.MINUTE)/60)+(float)(c.get(Calendar.SECOND)/60*60);
+                        return new Object[] {hourOfDay};
                     }
                     //Get ingame hour
                     else if (param.equals("ingame")) {
