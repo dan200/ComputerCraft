@@ -130,7 +130,7 @@ public class ComputerCraft
     public static int maximumFilesOpen = 128;
 
     public static int minTimeBetweenSounds = (int) (1.0/5.0 * 20); // 5 times per second in ticks
-    public static boolean soundAPI_enable = true;
+    public static boolean soundapi_enable = true;
 
     // Blocks and Items
     public static class Blocks
@@ -191,7 +191,7 @@ public class ComputerCraft
         public static Property maximumFilesOpen;
 
         public static Property minTimeBetweenSounds;
-        public static Property soundAPI_enable;
+        public static Property soundapi_enable;
 
     }
 
@@ -284,11 +284,11 @@ public class ComputerCraft
         Config.turtlesCanPush.setComment( "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so" );
 
         Config.minTimeBetweenSounds = Config.config.get( Configuration.CATEGORY_GENERAL, "minTimeBetweenSounds", minTimeBetweenSounds);
-        Config.minTimeBetweenSounds.setMinValue(0.0);
+        Config.minTimeBetweenSounds.setMinValue(0);
         Config.minTimeBetweenSounds.setComment("The minimum time in between calls to sound.play on one computer in ticks" );
 
-        Config.soundAPI_enable = Config.config.get( Configuration.CATEGORY_GENERAL, "soundAPI_enable", soundAPI_enable);
-        Config.soundAPI_enable.setComment("Whether the Sound API is enabled, allowing computers to play sounds");
+        Config.soundapi_enable = Config.config.get( Configuration.CATEGORY_GENERAL, "soundapiEnable", soundapi_enable);
+        Config.soundapi_enable.setComment("Whether the Sound API is enabled, allowing computers to play sounds");
 
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
@@ -328,6 +328,9 @@ public class ComputerCraft
         advancedTurtleFuelLimit = Config.advancedTurtleFuelLimit.getInt();
         turtlesObeyBlockProtection = Config.turtlesObeyBlockProtection.getBoolean();
         turtlesCanPush = Config.turtlesCanPush.getBoolean();
+
+        soundapi_enable = Config.soundapi_enable.getBoolean();
+        minTimeBetweenSounds = Config.minTimeBetweenSounds.getInt();
 
         Config.config.save();
     }
