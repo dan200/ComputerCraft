@@ -412,7 +412,6 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     private void registerForgeHandlers()
     {
         ForgeHandlers handlers = new ForgeHandlers();
-        FMLCommonHandler.instance().bus().register( handlers );
         MinecraftForge.EVENT_BUS.register( handlers );
     }
 

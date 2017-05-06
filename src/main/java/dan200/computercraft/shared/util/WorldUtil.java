@@ -27,16 +27,7 @@ public class WorldUtil
 
     public static boolean isLiquidBlock( World world, BlockPos pos )
     {
-        if( isBlockInWorld( world, pos ) )
-        {
-            IBlockState state = world.getBlockState( pos );
-            Block block = state.getBlock();
-            if( block != null )
-            {
-                return block.getMaterial( state ).isLiquid();
-            }
-        }
-        return false;
+        return isBlockInWorld( world, pos ) && world.getBlockState( pos ).getMaterial().isLiquid();
     }
 
     public static BlockPos moveCoords( BlockPos pos, EnumFacing dir )

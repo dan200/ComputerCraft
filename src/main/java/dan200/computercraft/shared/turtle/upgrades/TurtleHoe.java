@@ -34,8 +34,7 @@ public class TurtleHoe extends TurtleTool
         if( super.canBreakBlock( world, pos ) )
         {
             IBlockState state = world.getBlockState( pos );
-            Block block = state.getBlock();
-            Material material = block.getMaterial( state );
+            Material material = state.getMaterial( );
             return
                 material == Material.PLANTS ||
                 material == Material.CACTUS ||

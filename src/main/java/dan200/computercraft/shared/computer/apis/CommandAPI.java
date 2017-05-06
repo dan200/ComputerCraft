@@ -119,7 +119,7 @@ public class CommandAPI implements ILuaAPI
         table.put( "metadata", metadata );
 
         Map<Object, Object> stateTable = new HashMap<Object, Object>();
-        for( Object o : block.getActualState( state, world, pos ).getProperties().entrySet() )
+        for( Object o : state.getActualState( world, pos ).getProperties().entrySet() )
         {
             ImmutableMap.Entry<IProperty, Object> entry = (ImmutableMap.Entry<IProperty, Object>)o;
             String propertyName = entry.getKey().getName();
