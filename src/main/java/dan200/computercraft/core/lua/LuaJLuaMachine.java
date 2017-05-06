@@ -121,9 +121,6 @@ public class LuaJLuaMachine implements ILuaMachine
 
         m_softAbortMessage = null;
         m_hardAbortMessage = null;
-
-        //Add to use lua setters at the TimeAPI
-        m_globals.set("time", new TimeAPI());
     }
     
     @Override
