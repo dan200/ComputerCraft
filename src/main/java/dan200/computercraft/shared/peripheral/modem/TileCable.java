@@ -12,6 +12,9 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.network.IPacketNetwork;
+import dan200.computercraft.api.network.IPacketReceiver;
+import dan200.computercraft.api.network.Packet;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.common.BlockGeneric;
@@ -38,7 +41,7 @@ import java.io.File;
 import java.util.*;
 
 public class TileCable extends TileModemBase
-    implements INetwork
+    implements IPacketNetwork
 {
     private static final double MIN = 0.375;
     private static final double MAX = 1 - MIN;
@@ -65,31 +68,33 @@ public class TileCable extends TileModemBase
         }
 
         @Override
-        protected boolean isInterdimensional()
+        public boolean isInterdimensional()
         {
             return false;
         }
 
         @Override
-        protected double getTransmitRange()
+        public double getRange()
         {
             return 256.0;
         }
 
         @Override
-        protected INetwork getNetwork()
+        protected IPacketNetwork getNetwork()
         {
             return m_entity;
         }
 
+        @Nonnull
         @Override
-        protected World getWorld()
+        public World getWorld()
         {
             return m_entity.getWorld();
         }
 
+        @Nonnull
         @Override
-        protected Vec3d getPosition()
+        public Vec3d getPosition()
         {
             EnumFacing direction = m_entity.getDirection();
             BlockPos pos = m_entity.getPos().offset( direction );
@@ -233,7 +238,7 @@ public class TileCable extends TileModemBase
 
     // Members
 
-    private final Map<Integer, Set<IReceiver>> m_receivers;
+    private final Set<IPacketReceiver> m_receivers;
     private final Queue<Packet> m_transmitQueue;
     
     private boolean m_peripheralAccessAllowed;
@@ -248,7 +253,7 @@ public class TileCable extends TileModemBase
     
     public TileCable()
     {
-        m_receivers = new HashMap<Integer, Set<IReceiver>>();
+        m_receivers = new HashSet<IPacketReceiver>();
         m_transmitQueue = new LinkedList<Packet>();
         
         m_peripheralAccessAllowed = false;
@@ -573,50 +578,33 @@ public class TileCable extends TileModemBase
             }
         }
     }
-    
-    // INetwork implementation
-    
+
+    // IPacketNetwork implementation
+
     @Override
-    public void addReceiver( IReceiver receiver )
+    public void addReceiver( @Nonnull IPacketReceiver receiver )
     {
         synchronized( m_receivers )
         {
-            int channel = receiver.getChannel();
-            Set<IReceiver> receivers = m_receivers.get( channel );
-            if( receivers == null )
-            {
-                receivers = new HashSet<IReceiver>();
-                m_receivers.put( channel, receivers );
-            }
-            receivers.add( receiver );
+            m_receivers.add( receiver );
         }
     }
     
     @Override
-    public void removeReceiver( IReceiver receiver )
+    public void removeReceiver( @Nonnull IPacketReceiver receiver )
     {
         synchronized( m_receivers )
         {
-            int channel = receiver.getChannel();
-            Set<IReceiver> receivers = m_receivers.get( channel );
-            if( receivers != null )
-            {
-                receivers.remove( receiver );
-            }
+            m_receivers.remove( receiver );
         }
     }
     
     @Override
-    public void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
+    public void transmit( @Nonnull Packet packet )
     {
-        Packet p = new Packet();
-        p.channel = channel;
-        p.replyChannel = replyChannel;
-        p.payload = payload;
-        p.senderObject = senderObject;
         synchronized( m_transmitQueue )
         {
-            m_transmitQueue.offer(p);
+            m_transmitQueue.offer( packet );
         }
     }
     
@@ -726,14 +714,6 @@ public class TileCable extends TileModemBase
     // private stuff
         
     // Packet sending
-    
-    private class Packet
-    {
-        public int channel;
-        public int replyChannel;
-        public Object payload;
-        public Object senderObject;
-    }
         
     private void dispatchPacket( final Packet packet )
     {
@@ -749,13 +729,9 @@ public class TileCable extends TileModemBase
     {
         synchronized( m_receivers )
         {
-            Set<IReceiver> receivers = m_receivers.get( packet.channel );
-            if( receivers != null )
+            for (IPacketReceiver device : m_receivers)
             {
-                for( IReceiver receiver : receivers )
-                {
-                    receiver.receiveSameDimension( packet.replyChannel, packet.payload, (double) distanceTravelled, packet.senderObject );
-                }
+                device.receiveSameDimension( packet, distanceTravelled );
             }
         }
     }

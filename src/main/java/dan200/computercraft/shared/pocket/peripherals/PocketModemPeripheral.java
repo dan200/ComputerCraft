@@ -1,3 +1,8 @@
+/*
+ * This file is part of ComputerCraft - http://www.computercraft.info
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
+ * Send enquiries to dratcliffe@gmail.com
+ */
 package dan200.computercraft.shared.pocket.peripherals;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -5,11 +10,7 @@ import dan200.computercraft.shared.peripheral.modem.WirelessModemPeripheral;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-/*
- * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
- * Send enquiries to dratcliffe@gmail.com
- */
+import javax.annotation.Nonnull;
 
 public class PocketModemPeripheral extends WirelessModemPeripheral
 {
@@ -33,14 +34,16 @@ public class PocketModemPeripheral extends WirelessModemPeripheral
         }
     }
 
+    @Nonnull
     @Override
-    protected World getWorld()
+    public World getWorld()
     {
         return m_world;
     }
 
+    @Nonnull
     @Override
-    protected Vec3d getPosition()
+    public Vec3d getPosition()
     {
         if( m_world != null )
         {

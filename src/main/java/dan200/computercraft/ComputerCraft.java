@@ -11,6 +11,7 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.api.media.IMediaProvider;
+import dan200.computercraft.api.network.IPacketNetwork;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.api.permissions.ITurtlePermissionProvider;
@@ -700,6 +701,11 @@ public class ComputerCraft
         }
 
         return upgrades;
+    }
+
+    public IPacketNetwork getWirelessNetwork()
+    {
+        return WirelessNetwork.getUniversal();
     }
 
     public static int createUniqueNumberedSaveDir( World world, String parentSubPath )
