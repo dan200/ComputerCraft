@@ -1,21 +1,18 @@
 package dan200.computercraft.client.render;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.World;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
 
 public class TurtleMultiModel implements IBakedModel
@@ -49,7 +46,7 @@ public class TurtleMultiModel implements IBakedModel
         {
             if( m_faceQuads[ side.ordinal() ] == null )
             {
-                List<BakedQuad> quads = new ArrayList<BakedQuad>();
+                ArrayList<BakedQuad> quads = new ArrayList<BakedQuad>();
                 if( m_overlayModel != null )
                 {
                     quads.addAll( m_overlayModel.getQuads( state, side, rand ) );
@@ -62,6 +59,7 @@ public class TurtleMultiModel implements IBakedModel
                 {
                     quads.addAll( transformQuads( m_rightUpgradeModel.getQuads( state, side, rand ), m_rightUpgradeTransform ) );
                 }
+                quads.trimToSize();
                 m_faceQuads[ side.ordinal() ] = quads;
             }
             return  m_faceQuads[ side.ordinal() ];
@@ -70,20 +68,22 @@ public class TurtleMultiModel implements IBakedModel
         {
             if( m_generalQuads == null )
             {
-                m_generalQuads = new ArrayList<BakedQuad>();
-                m_generalQuads.addAll( m_baseModel.getQuads( state, side, rand ) );
+                ArrayList<BakedQuad> quads = new ArrayList<BakedQuad>();
+                quads.addAll( m_baseModel.getQuads( state, side, rand ) );
                 if( m_overlayModel != null )
                 {
-                    m_generalQuads.addAll( m_overlayModel.getQuads( state, side, rand ) );
+                    quads.addAll( m_overlayModel.getQuads( state, side, rand ) );
                 }
                 if( m_leftUpgradeModel != null )
                 {
-                    m_generalQuads.addAll( transformQuads( m_leftUpgradeModel.getQuads( state, side, rand ), m_leftUpgradeTransform ) );
+                    quads.addAll( transformQuads( m_leftUpgradeModel.getQuads( state, side, rand ), m_leftUpgradeTransform ) );
                 }
                 if( m_rightUpgradeModel != null )
                 {
-                    m_generalQuads.addAll( transformQuads( m_rightUpgradeModel.getQuads( state, side, rand ), m_rightUpgradeTransform ) );
+                    quads.addAll( transformQuads( m_rightUpgradeModel.getQuads( state, side, rand ), m_rightUpgradeTransform ) );
                 }
+                quads.trimToSize();
+                m_generalQuads = quads;
             }
             return m_generalQuads;
         }
@@ -147,7 +147,7 @@ public class TurtleMultiModel implements IBakedModel
     {
         int[] vertexData = quad.getVertexData().clone();
         int offset = 0;
-        BakedQuad copy = new BakedQuad( vertexData, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat() );
+        BakedQuad copy = new BakedQuad( vertexData, -1, quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat() );
         VertexFormat format = copy.getFormat();
         for( int i=0; i<format.getElementCount(); ++i ) // For each vertex element
         {

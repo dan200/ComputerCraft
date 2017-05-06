@@ -22,47 +22,33 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Matrix4f;
-import java.util.Iterator;
 import java.util.List;
 
 public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurtle>
 {
     private static ModelResourceLocation NORMAL_TURTLE_MODEL = new ModelResourceLocation( "computercraft:CC-Turtle", "inventory" );
     private static ModelResourceLocation ADVANCED_TURTLE_MODEL = new ModelResourceLocation( "computercraft:CC-TurtleAdvanced", "inventory" );
-    private static ModelResourceLocation[] COLOUR_TURTLE_MODELS = new ModelResourceLocation[] {
-        new ModelResourceLocation( "computercraft:turtle_black", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_red", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_green", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_brown", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_blue", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_purple", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_cyan", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_lightGrey", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_grey", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_pink", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_lime", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_yellow", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_lightBlue", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_magenta", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_orange", "inventory" ),
-        new ModelResourceLocation( "computercraft:turtle_white", "inventory" ),
-    };
+    private static ModelResourceLocation COLOUR_TURTLE_MODEL = new ModelResourceLocation( "computercraft:turtle_white", "inventory" );
     private static ModelResourceLocation BEGINNER_TURTLE_MODEL = new ModelResourceLocation( "computercraftedu:CC-TurtleJunior", "inventory" );
     private static ModelResourceLocation[] BEGINNER_TURTLE_COLOUR_MODELS = new ModelResourceLocation[] {
         new ModelResourceLocation( "computercraftedu:turtleJunior_black", "inventory" ),
@@ -115,38 +101,11 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
         {
             case Normal:
             default:
-            {
-                if( colour != null )
-                {
-                    return COLOUR_TURTLE_MODELS[ colour.ordinal() ];
-                }
-                else
-                {
-                    return NORMAL_TURTLE_MODEL;
-                }
-            }
+                return colour != null ? COLOUR_TURTLE_MODEL : NORMAL_TURTLE_MODEL;
             case Advanced:
-            {
-                if( colour != null )
-                {
-                    return COLOUR_TURTLE_MODELS[ colour.ordinal() ];
-                }
-                else
-                {
-                    return ADVANCED_TURTLE_MODEL;
-                }
-            }
+                return colour != null ? COLOUR_TURTLE_MODEL : ADVANCED_TURTLE_MODEL;
             case Beginners:
-            {
-                if( colour != null )
-                {
-                    return BEGINNER_TURTLE_COLOUR_MODELS[ colour.ordinal() ];
-                }
-                else
-                {
-                    return BEGINNER_TURTLE_MODEL;
-                }
-            }
+                return colour != null ? BEGINNER_TURTLE_COLOUR_MODELS[ colour.ordinal() ] : BEGINNER_TURTLE_MODEL;
         }
     }
 
@@ -216,7 +175,8 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
                 family = ComputerFamily.Normal;
                 overlay = null;
             }
-            renderModel( state, getTurtleModel( family, colour ) );
+
+            renderModel( state, getTurtleModel( family, colour ), colour == null ? null : new int[] { colour.getHex() } );
 
             // Render the overlay
             ModelResourceLocation overlayModel = getTurtleOverlayModel(
@@ -231,7 +191,7 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
                 GlStateManager.blendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
                 try
                 {
-                    renderModel( state, overlayModel );
+                    renderModel( state, overlayModel, null );
                 }
                 finally
                 {
@@ -275,7 +235,7 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
                     }
                     if( pair.getLeft() != null )
                     {
-                        renderModel( state, pair.getLeft() );
+                        renderModel( state, pair.getLeft(), null );
                     }
                 }
             }
@@ -286,35 +246,32 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
         }
     }
 
-    private void renderModel( IBlockState state, ModelResourceLocation modelLocation )
+    private void renderModel( IBlockState state, ModelResourceLocation modelLocation, int[] tints )
     {
         Minecraft mc = Minecraft.getMinecraft();
         ModelManager modelManager = mc.getRenderItem().getItemModelMesher().getModelManager();
-        renderModel( state, modelManager.getModel( modelLocation ) );
+        renderModel( state, modelManager.getModel( modelLocation ), tints );
     }
 
-    private void renderModel( IBlockState state, IBakedModel model )
+    private void renderModel( IBlockState state, IBakedModel model, int[] tints )
     {
         Minecraft mc = Minecraft.getMinecraft();
         Tessellator tessellator = Tessellator.getInstance();
         mc.getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
-        renderQuads( tessellator, model.getQuads( state, null, 0 ) );
+        renderQuads( tessellator, model.getQuads( state, null, 0 ), tints );
         for( EnumFacing facing : EnumFacing.VALUES )
         {
-            renderQuads( tessellator, model.getQuads( state, facing, 0 ) );
+            renderQuads( tessellator, model.getQuads( state, facing, 0 ), tints );
         }
     }
 
-    private void renderQuads( Tessellator tessellator, List quads )
+    private void renderQuads( Tessellator tessellator, List<BakedQuad> quads, int[] tints )
     {
-        int color = 0xFFFFFFFF;
-        Iterator it = quads.iterator();
         VertexBuffer buffer = tessellator.getBuffer();
         VertexFormat format = DefaultVertexFormats.ITEM;
         buffer.begin( GL11.GL_QUADS, format );
-        while( it.hasNext() )
+        for (BakedQuad quad : quads)
         {
-            BakedQuad quad = (BakedQuad)it.next();
             VertexFormat quadFormat = quad.getFormat();
             if( quadFormat != format )
             {
@@ -322,7 +279,15 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
                 format = quadFormat;
                 buffer.begin( GL11.GL_QUADS, format );
             }
-            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor( buffer, quad, color );
+
+            int colour = 0xFFFFFFFF;
+            if( quad.hasTintIndex() && tints != null )
+            {
+                int index = quad.getTintIndex();
+                if( index >= 0 && index < tints.length ) colour = tints[ index ] | 0xFF000000;
+            }
+
+            LightUtil.renderQuadColor( buffer, quad, colour );
         }
         tessellator.draw();
     }

@@ -34,7 +34,6 @@ public class BlockTurtle extends BlockComputerBase
     public static class Properties
     {
         public static final PropertyDirection FACING = PropertyDirection.create( "facing", EnumFacing.Plane.HORIZONTAL );
-        public static final PropertyEnum<BlockTurtleDyeVariant> DYE = PropertyEnum.<BlockTurtleDyeVariant>create( "dye", BlockTurtleDyeVariant.class );
     }
 
     public static BlockTurtle createTurtleBlock()
@@ -52,7 +51,6 @@ public class BlockTurtle extends BlockComputerBase
         setCreativeTab( ComputerCraft.mainCreativeTab );
         setDefaultState( this.blockState.getBaseState()
             .withProperty( Properties.FACING, EnumFacing.NORTH )
-            .withProperty( Properties.DYE, BlockTurtleDyeVariant.None )
         );
     }
 
@@ -77,10 +75,7 @@ public class BlockTurtle extends BlockComputerBase
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {
-            Properties.FACING,
-            Properties.DYE
-        });
+        return new BlockStateContainer(this, Properties.FACING );
     }
 
     @Override
@@ -98,18 +93,7 @@ public class BlockTurtle extends BlockComputerBase
     @Override
     public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
     {
-        state = state.withProperty( Properties.FACING, getDirection( world, pos ) );
-        TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof ITurtleTile )
-        {
-            ITurtleTile turtle = (ITurtleTile)tile;
-            state = state.withProperty( Properties.DYE, BlockTurtleDyeVariant.fromColour( turtle.getColour() ) );
-        }
-        else
-        {
-            state = state.withProperty( Properties.DYE, BlockTurtleDyeVariant.None );
-        }
-        return state;
+        return state.withProperty( Properties.FACING, getDirection( world, pos ) );
     }
 
     @Override
