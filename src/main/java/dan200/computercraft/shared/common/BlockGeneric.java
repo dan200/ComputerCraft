@@ -219,9 +219,9 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final AxisAlignedBB getSelectedBoundingBox( IBlockState state, World world, BlockPos pos )
+    public AxisAlignedBB getSelectedBoundingBox( IBlockState state, World worldIn, BlockPos pos )
     {
-        return getBoundingBox( state, world, pos );
+        return getBoundingBox( state, worldIn, pos ).offset( pos );
     }
 
     @Override
