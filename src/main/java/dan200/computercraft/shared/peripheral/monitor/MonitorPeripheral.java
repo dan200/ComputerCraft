@@ -14,6 +14,8 @@ import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.shared.util.Palette;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.HashMap;
+
 public class MonitorPeripheral implements IPeripheral
 {
     private final TileMonitor m_monitor;
@@ -229,14 +231,6 @@ public class MonitorPeripheral implements IPeripheral
             {
                 // setColour/setColor
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
-                Palette palette = terminal.getPalette();
-
-                // setColour/setColor
-                if( args.length < 4 || !(args[0] instanceof Double) || !(args[1] instanceof Double) || !(args[2] instanceof Double) || !(args[3] instanceof Double) )
-                {
-                    throw new LuaException( "Expected number, number, number, number" );
-                }
-
                 boolean isColour = m_monitor.getTerminal().isColour();
 
                 if( !isColour )
@@ -244,15 +238,25 @@ public class MonitorPeripheral implements IPeripheral
                     throw new LuaException( "Colour not supported" );
                 }
 
-                int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args, true );
-                float r = ((Double)args[1]).floatValue();
-                float g = ((Double)args[2]).floatValue();
-                float b = ((Double)args[3]).floatValue();
-
-                if( palette != null )
+                if(args.length >= 1 && args[0] instanceof HashMap )
                 {
-                    palette.setColour( colour, r, g, b );
+                    @SuppressWarnings( { "unchecked" } ) // There isn't really a nice way around this :(
+                    HashMap<Object, Object> colourTbl = (HashMap<Object, Object>)args[0];
+                    dan200.computercraft.core.apis.TermAPI.setColour( terminal, colourTbl );
                 }
+                else if (args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
+                {
+                    int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args, true );
+                    float r = ((Double)args[1]).floatValue();
+                    float g = ((Double)args[2]).floatValue();
+                    float b = ((Double)args[3]).floatValue();
+                    dan200.computercraft.core.apis.TermAPI.setColour( terminal, colour, r, g, b );
+                }
+                else
+                {
+                    throw new LuaException( "Expected table or number, number, number, number" );
+                }
+
                 return null;
             }
             case 22:

@@ -10,7 +10,12 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.computer.IComputerEnvironment;
 import dan200.computercraft.core.terminal.Terminal;
+import dan200.computercraft.shared.util.Palette;
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class TermAPI implements ILuaAPI
 {
@@ -104,6 +109,46 @@ public class TermAPI implements ILuaAPI
         return new Object[] {
             1 << colour
         };
+    }
+
+    public static void setColour( Terminal terminal, int colour, float r, float g, float b )
+    {
+        if( terminal.getPalette() != null )
+        {
+            terminal.getPalette().setColour( colour, r, g, b );
+            terminal.setChanged();
+        }
+    }
+
+    public static void setColour( Terminal terminal, HashMap<Object, Object> colours) throws LuaException
+    {
+        final double lg2 = Math.log( 2 );
+
+        for(Map.Entry<Object, Object> e : colours.entrySet())
+        {
+            if(e.getKey() instanceof Double)
+            {
+                int index = 15 - (int)( Math.log( (Double)e.getKey() ) / lg2 );
+
+                try
+                {
+                    @SuppressWarnings({ "unchecked" }) // There isn't really a nice way around this :(
+                    HashMap<Object, Object> colour = (HashMap<Object, Object>) e.getValue();
+
+                    setColour(
+                            terminal,
+                            index,
+                            ( (Double)colour.get( 1.0 ) ).floatValue(),
+                            ( (Double)colour.get( 2.0 ) ).floatValue(),
+                            ( (Double)colour.get( 3.0 ) ).floatValue()
+                    );
+                }
+                catch(ClassCastException cce)
+                {
+                    throw new LuaException( "Malformed colour table" );
+                }
+            }
+        }
     }
 
     @Override
@@ -279,30 +324,31 @@ public class TermAPI implements ILuaAPI
             case 20:
             {
                 // setColour/setColor
-                if( args.length < 4 || !(args[0] instanceof Double) || !(args[1] instanceof Double) || !(args[2] instanceof Double) || !(args[3] instanceof Double) ) // toil and trouble
-                {
-                    throw new LuaException( "Expected number, number, number, number" );
-                }
-
                 if( !m_environment.isColour() )
                 {
                     // Make sure you can't circumvent greyscale terminals with this function.
                     throw new LuaException( "Colour not supported" );
                 }
 
-                int colour = 15 - parseColour( args, m_environment.isColour() );
-                float r = ((Double)args[1]).floatValue();
-                float g = ((Double)args[2]).floatValue();
-                float b = ((Double)args[3]).floatValue();
-
-                synchronized( m_terminal )
+                if(args.length >= 1 && args[0] instanceof HashMap)
                 {
-                    if( m_terminal.getPalette() != null )
-                    {
-                        m_terminal.getPalette().setColour( colour, r, g, b );
-                        m_terminal.setChanged();
-                    }
+                    @SuppressWarnings( { "unchecked" } ) // There isn't really a nice way around this :(
+                    HashMap<Object, Object> colourTbl = (HashMap<Object, Object>)args[0];
+                    setColour( m_terminal, colourTbl );
                 }
+                else if (args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
+                {
+                    int colour = 15 - parseColour( args, m_environment.isColour() );
+                    float r = ((Double)args[1]).floatValue();
+                    float g = ((Double)args[2]).floatValue();
+                    float b = ((Double)args[3]).floatValue();
+                    setColour( m_terminal, colour, r, g, b );
+                }
+                else
+                {
+                    throw new LuaException( "Expected table or number, number, number, number" );
+                }
+
                 return null;
             }
             case 21:

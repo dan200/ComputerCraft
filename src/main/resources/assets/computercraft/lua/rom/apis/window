@@ -107,9 +107,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function updatePalette()
-        for k,v in pairs(tPalette) do
-            parent.setColour( k, table.unpack( v ) )
-        end
+        return parent.setColour( tPalette )
     end
 
     local function internalBlit( sText, sTextColor, sBackgroundColor )
@@ -289,10 +287,16 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.setColour( colour, r, g, b )
-        local tCol = tPalette[ colour ]
-        tCol[1] = r
-        tCol[2] = g
-        tCol[3] = b
+        if type(colour) == "table" then
+            for k,v in pairs(colour) do
+                tPalette[k] = v
+            end
+        else
+            local tCol = tPalette[ colour ]
+            tCol[1] = r
+            tCol[2] = g
+            tCol[3] = b
+        end
 
         if bVisible then
             return updatePalette()
