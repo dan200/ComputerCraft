@@ -163,7 +163,7 @@ public class TermAPI implements ILuaAPI
                 {
                     throw new LuaException( "Expected boolean" );
                 }
-                boolean b = ((Boolean)args[0]).booleanValue();
+                boolean b = (Boolean) args[ 0 ];
                 synchronized( m_terminal )
                 {
                     m_terminal.setCursorBlink( b );

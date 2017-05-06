@@ -95,14 +95,14 @@ public class TurtleSuckCommand implements ITurtleCommand
             {
                 boolean foundItems = false;
                 boolean storedItems = false;
-                for( int i=0; i<list.size(); i++ )
+                for( Object aList : list )
                 {
-                    Entity entity = (Entity)list.get(i);
+                    Entity entity = (Entity) aList;
                     if( entity != null && entity instanceof EntityItem && !entity.isDead )
                     {
                         // Suck up the item
                         foundItems = true;
-                        EntityItem entityItem = (EntityItem)entity;
+                        EntityItem entityItem = (EntityItem) entity;
                         ItemStack stack = entityItem.getEntityItem().copy();
                         ItemStack storeStack;
                         ItemStack leaveStack;

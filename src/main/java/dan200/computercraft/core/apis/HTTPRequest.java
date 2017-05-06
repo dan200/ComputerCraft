@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 class HTTPRequestException extends Exception {
+    private static final long serialVersionUID = 7591208619422744652L;
+
     public HTTPRequestException( String s ) {
         super( s );
     }
@@ -49,9 +51,8 @@ public class HTTPRequest
         boolean allowed = false;
         String whitelistString = ComputerCraft.http_whitelist;
         String[] allowedURLs = whitelistString.split( ";" );
-        for( int i=0; i<allowedURLs.length; ++i )
+        for( String allowedURL : allowedURLs )
         {
-            String allowedURL = allowedURLs[i];
             Pattern allowedURLPattern = Pattern.compile( "^\\Q" + allowedURL.replaceAll( "\\*", "\\\\E.*\\\\Q" ) + "\\E$" );
             if( allowedURLPattern.matcher( url.getHost() ).matches() )
             {
@@ -274,7 +275,7 @@ public class HTTPRequest
     
     public BufferedReader getContents()
     {
-        String result = null;
+        String result;
         synchronized(m_lock) {
             result = m_result;
         }

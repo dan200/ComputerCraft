@@ -54,10 +54,7 @@ public class JarMount implements IMount
         
         public void list( List<String> contents )
         {
-            for( String child : m_children.keySet() )
-            {
-                contents.add( child );
-            }
+            contents.addAll( m_children.keySet() );
         }
                 
         public void insertChild( FileInZip child )

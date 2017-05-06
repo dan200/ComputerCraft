@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +26,6 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class BlockGeneric extends Block implements
@@ -97,10 +95,8 @@ public abstract class BlockGeneric extends Block implements
         // Drop items
         if( drops.size() > 0 )
         {
-            Iterator<ItemStack> it = drops.iterator();
-            while( it.hasNext() )
+            for (ItemStack item : drops)
             {
-                ItemStack item = it.next();
                 dropItem( world, pos, item );
             }
         }
@@ -272,10 +268,8 @@ public abstract class BlockGeneric extends Block implements
             // Add collision bounds to list
             if( collision.size() > 0 )
             {
-                Iterator<AxisAlignedBB> it = collision.iterator();
-                while( it.hasNext() )
+                for (AxisAlignedBB localBounds : collision)
                 {
-                    AxisAlignedBB localBounds = it.next();
                     addCollisionBoxToList( pos, bigBox, list, localBounds );
                 }
             }

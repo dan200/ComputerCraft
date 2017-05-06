@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public abstract class ModemPeripheral
@@ -107,10 +106,9 @@ public abstract class ModemPeripheral
             // Leave old network
             if( m_network != null )
             {
-                Iterator<IReceiver> it = m_channels.values().iterator();
-                while( it.hasNext() )
+                for( IReceiver iReceiver : m_channels.values() )
                 {
-                    m_network.removeReceiver( it.next() );
+                    m_network.removeReceiver( iReceiver );
                 }
             }
 
@@ -120,10 +118,9 @@ public abstract class ModemPeripheral
             // Join new network
             if( m_network != null )
             {
-                Iterator<IReceiver> it = m_channels.values().iterator();
-                while( it.hasNext() )
+                for( IReceiver iReceiver : m_channels.values() )
                 {
-                    m_network.addReceiver( it.next() );
+                    m_network.addReceiver( iReceiver );
                 }
             }
         }
@@ -315,10 +312,9 @@ public abstract class ModemPeripheral
                     {
                         if( m_network != null )
                         {
-                            Iterator<IReceiver> it = m_channels.values().iterator();
-                            while( it.hasNext() )
+                            for( IReceiver iReceiver : m_channels.values() )
                             {
-                                m_network.removeReceiver( it.next() );
+                                m_network.removeReceiver( iReceiver );
                             }
                         }
                         m_channels.clear();
@@ -381,10 +377,9 @@ public abstract class ModemPeripheral
     {
         if( m_network != null )
         {
-            Iterator<IReceiver> it = m_channels.values().iterator();
-            while( it.hasNext() )
+            for( IReceiver iReceiver : m_channels.values() )
             {
-                m_network.removeReceiver( it.next() );
+                m_network.removeReceiver( iReceiver );
             }
             m_channels.clear();
             m_network = null;

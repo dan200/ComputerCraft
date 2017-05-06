@@ -21,7 +21,6 @@ import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -113,7 +112,7 @@ public class CommandAPI implements ILuaAPI
         // Get the details of the block
         IBlockState state = world.getBlockState( pos );
         Block block = state.getBlock();
-        String name = ((ResourceLocation)Block.REGISTRY.getNameForObject( block )).toString();
+        String name = Block.REGISTRY.getNameForObject( block ).toString();
         int metadata = block.getMetaFromState( state );
 
         Map<Object, Object> table = new HashMap<Object, Object>();

@@ -5,7 +5,6 @@
  */
 
 package dan200.computercraft.shared.turtle.upgrades;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;

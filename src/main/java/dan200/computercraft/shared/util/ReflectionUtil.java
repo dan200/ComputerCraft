@@ -35,11 +35,11 @@ public class ReflectionUtil
                 Class[] declaredClasses = enclosingClass.getDeclaredClasses();
                 if( declaredClasses != null )
                 {
-                    for( int i=0; i<declaredClasses.length; ++i )
+                    for( Class declaredClass : declaredClasses )
                     {
-                        if( declaredClasses[i].getSimpleName().equals( name ) )
+                        if( declaredClass.getSimpleName().equals( name ) )
                         {
-                            return declaredClasses[i];
+                            return declaredClass;
                         }
                     }
                 }

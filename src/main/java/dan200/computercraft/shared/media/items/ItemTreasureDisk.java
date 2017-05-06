@@ -23,10 +23,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class ItemTreasureDisk extends Item
     implements IMedia

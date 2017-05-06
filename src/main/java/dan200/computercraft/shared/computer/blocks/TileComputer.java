@@ -87,7 +87,7 @@ public class TileComputer extends TileComputerBase
     public EnumFacing getDirection()
     {
         IBlockState state = getBlockState();
-        return (EnumFacing)state.getValue( BlockComputer.Properties.FACING );
+        return state.getValue( BlockComputer.Properties.FACING );
     }
 
     @Override

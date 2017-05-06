@@ -8,7 +8,6 @@ package dan200.computercraft.shared.proxy;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
-import dan200.computercraft.api.turtle.TurtleUpgradeType;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
 import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
@@ -177,23 +176,23 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         {
             boolean captured = ObfuscationReflectionHelper.<Boolean, Entity>getPrivateValue(
                 Entity.class,
-                entity, 
+                entity,
                 "captureDrops"
-            ).booleanValue();
+            );
             
             if( !captured )
             {
                 ObfuscationReflectionHelper.setPrivateValue(
-                        Entity.class,
-                        entity,
-                        new Boolean( true ),
-                        "captureDrops"
+                    Entity.class,
+                    entity,
+                    Boolean.TRUE,
+                    "captureDrops"
                 );
                 
                 ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
-                        Entity.class,
-                        entity,
-                        "capturedDrops"
+                    Entity.class,
+                    entity,
+                    "capturedDrops"
                 );
                 
                 if( items == null || items.size() == 0 )
@@ -219,15 +218,15 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             {
                 ObfuscationReflectionHelper.setPrivateValue(
                     Entity.class,
-                    entity, 
-                    new Boolean( false ),
+                    entity,
+                    Boolean.FALSE,
                     "captureDrops"
                 );
                 
                 ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
-                        Entity.class,
-                        entity,
-                        "capturedDrops"
+                    Entity.class,
+                    entity,
+                    "capturedDrops"
                 );
                 
                 if( items != null )
@@ -437,10 +436,8 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         if( consumer != null )
         {
             // All checks have passed, lets dispatch the drops
-            Iterator<EntityItem> it = drops.iterator();
-            while( it.hasNext() )
+            for(EntityItem entityItem : drops)
             {
-                EntityItem entityItem = (EntityItem)it.next();
                 consumer.consumeDrop( entity, entityItem.getEntityItem() );
             }
             drops.clear();

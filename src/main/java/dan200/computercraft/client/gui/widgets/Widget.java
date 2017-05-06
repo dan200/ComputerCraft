@@ -11,13 +11,10 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public abstract class Widget extends Gui
 {
@@ -269,9 +266,8 @@ public abstract class Widget extends Gui
         FontRenderer fontRenderer = mc.fontRendererObj;
 
         int width = 0;
-        for( int i=0; i<lines.length; ++i )
+        for( String line : lines )
         {
-            String line = lines[i];
             width = Math.max( fontRenderer.getStringWidth( line ), width );
         }
         int startX = x + 12;

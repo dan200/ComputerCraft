@@ -47,7 +47,7 @@ public class ContainerDiskDrive extends Container
     public ItemStack transferStackInSlot( EntityPlayer player, int i )
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot)inventorySlots.get(i);
+        Slot slot = inventorySlots.get(i);
         if(slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();

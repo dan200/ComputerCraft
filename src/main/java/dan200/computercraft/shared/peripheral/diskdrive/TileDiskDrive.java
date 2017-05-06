@@ -17,13 +17,11 @@ import dan200.computercraft.shared.peripheral.common.BlockPeripheral;
 import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
 import dan200.computercraft.shared.util.InventoryUtil;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.audio.Sound;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.*;
@@ -31,7 +29,6 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -121,7 +118,7 @@ public class TileDiskDrive extends TilePeripheralBase
     public EnumFacing getDirection()
     {
         IBlockState state = getBlockState();
-        return (EnumFacing)state.getValue( BlockPeripheral.Properties.FACING );
+        return state.getValue( BlockPeripheral.Properties.FACING );
     }
 
     @Override
@@ -278,10 +275,8 @@ public class TileDiskDrive extends TilePeripheralBase
             if( m_diskStack != null )
             {
                 Set<IComputerAccess> computers = m_computers.keySet();
-                Iterator<IComputerAccess> it = computers.iterator();
-                while( it.hasNext() )
+                for( IComputerAccess computer : computers )
                 {
-                    IComputerAccess computer = it.next();
                     unmountDisk( computer );
                 }
             }
@@ -306,10 +301,8 @@ public class TileDiskDrive extends TilePeripheralBase
             if( m_diskStack != null )
             {
                 Set<IComputerAccess> computers = m_computers.keySet();
-                Iterator<IComputerAccess> it = computers.iterator();
-                while( it.hasNext() )
+                for( IComputerAccess computer : computers )
                 {
-                    IComputerAccess computer = it.next();
                     mountDisk( computer );
                 }
             }

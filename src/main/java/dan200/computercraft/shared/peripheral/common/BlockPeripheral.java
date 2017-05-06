@@ -37,7 +37,7 @@ public class BlockPeripheral extends BlockPeripheralBase
     public static class Properties
     {
         public static final PropertyDirection FACING = PropertyDirection.create( "facing", EnumFacing.Plane.HORIZONTAL );
-        public static final PropertyEnum<BlockPeripheralVariant> VARIANT = PropertyEnum.<BlockPeripheralVariant>create( "variant", BlockPeripheralVariant.class );
+        public static final PropertyEnum<BlockPeripheralVariant> VARIANT = PropertyEnum.create( "variant", BlockPeripheralVariant.class );
     }
 
     public BlockPeripheral()
@@ -115,12 +115,12 @@ public class BlockPeripheral extends BlockPeripheralBase
     public int getMetaFromState( IBlockState state )
     {
         int meta = 0;
-        BlockPeripheralVariant variant = (BlockPeripheralVariant)state.getValue( Properties.VARIANT );
+        BlockPeripheralVariant variant = state.getValue( Properties.VARIANT );
         switch( variant.getPeripheralType() )
         {
             case DiskDrive:
             {
-                EnumFacing dir = (EnumFacing)state.getValue( Properties.FACING );
+                EnumFacing dir = state.getValue( Properties.FACING );
                 if( dir.getAxis() == EnumFacing.Axis.Y ) {
                     dir = EnumFacing.NORTH;
                 }
@@ -145,7 +145,7 @@ public class BlockPeripheral extends BlockPeripheralBase
                     }
                     default:
                     {
-                        EnumFacing dir = (EnumFacing)state.getValue( Properties.FACING );
+                        EnumFacing dir = state.getValue( Properties.FACING );
                         meta = dir.getIndex() + 4;
                         break;
                     }
@@ -187,8 +187,8 @@ public class BlockPeripheral extends BlockPeripheralBase
         else
         {
             anim = 0;
-            dir = (EnumFacing)state.getValue( Properties.FACING );
-            switch( (BlockPeripheralVariant)state.getValue( BlockPeripheral.Properties.VARIANT ) )
+            dir = state.getValue( Properties.FACING );
+            switch( state.getValue( Properties.VARIANT ) )
             {
                 case WirelessModemDownOff:
                 case WirelessModemDownOn:
@@ -503,7 +503,7 @@ public class BlockPeripheral extends BlockPeripheralBase
     @Override
     public PeripheralType getPeripheralType( IBlockState state )
     {
-        return ((BlockPeripheralVariant)state.getValue( Properties.VARIANT )).getPeripheralType();
+        return state.getValue( Properties.VARIANT ).getPeripheralType();
     }
 
     @Override

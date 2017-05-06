@@ -77,9 +77,9 @@ public class ContainerPrinter extends Container
         if( !m_printer.getWorld().isRemote )
         {
             boolean printing = m_printer.isPrinting();
-            for (int i=0; i<listeners.size(); ++i)
+            for( IContainerListener listener : listeners )
             {
-                IContainerListener icrafting = (IContainerListener)listeners.get(i);
+                IContainerListener icrafting = listener;
                 if( printing != m_lastPrinting )
                 {
                     icrafting.sendProgressBarUpdate( this, 0, printing ? 1 : 0 );
@@ -108,7 +108,7 @@ public class ContainerPrinter extends Container
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot)inventorySlots.get(i);
+        Slot slot = inventorySlots.get(i);
         if( slot != null && slot.getHasStack() )
         {
             ItemStack itemstack1 = slot.getStack();

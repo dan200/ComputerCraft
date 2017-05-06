@@ -85,7 +85,7 @@ public class DiskRecipe implements IRecipe
         int[] var3 = new int[3];
         int var4 = 0;
         int var5 = 0;
-        ItemDiskLegacy var6 = null;
+        ItemDiskLegacy var6;
         int var7;
         int var9;
         float var10;

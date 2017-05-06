@@ -49,7 +49,6 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -405,7 +404,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                 {
                     ComputerCraft.clientComputerRegistry.add( instanceID, new ClientComputer( instanceID ) );
                 }
-                ComputerCraft.clientComputerRegistry.get( instanceID ).handlePacket( packet, (EntityPlayer) player );
+                ComputerCraft.clientComputerRegistry.get( instanceID ).handlePacket( packet, player );
                 break;
             }
             case ComputerCraftPacket.ComputerDeleted:

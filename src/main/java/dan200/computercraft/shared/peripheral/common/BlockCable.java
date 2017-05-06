@@ -29,7 +29,7 @@ public class BlockCable extends BlockPeripheralBase
 
     public static class Properties
     {
-        public static final PropertyEnum<BlockCableModemVariant> MODEM = PropertyEnum.<BlockCableModemVariant>create( "modem", BlockCableModemVariant.class );
+        public static final PropertyEnum<BlockCableModemVariant> MODEM = PropertyEnum.create( "modem", BlockCableModemVariant.class );
         public static final PropertyBool CABLE = PropertyBool.create( "cable" );
         public static final PropertyBool NORTH = PropertyBool.create( "north" );
         public static final PropertyBool SOUTH = PropertyBool.create( "south" );
@@ -118,8 +118,8 @@ public class BlockCable extends BlockPeripheralBase
     public int getMetaFromState( IBlockState state )
     {
         int meta = 0;
-        boolean cable = (Boolean)state.getValue( Properties.CABLE );
-        BlockCableModemVariant modem = (BlockCableModemVariant)state.getValue( Properties.MODEM );
+        boolean cable = state.getValue( Properties.CABLE );
+        BlockCableModemVariant modem = state.getValue( Properties.MODEM );
         if( cable && modem != BlockCableModemVariant.None )
         {
             meta = 6 + modem.getFacing().getIndex();
@@ -164,11 +164,11 @@ public class BlockCable extends BlockPeripheralBase
 
     private boolean doesConnect( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing dir )
     {
-        if( !((Boolean)state.getValue( Properties.CABLE )) )
+        if( !state.getValue( Properties.CABLE ) )
         {
             return false;
         }
-        else if( ((BlockCableModemVariant)state.getValue( Properties.MODEM )).getFacing() == dir )
+        else if( state.getValue( Properties.MODEM ).getFacing() == dir )
         {
             return true;
         }
@@ -201,7 +201,7 @@ public class BlockCable extends BlockPeripheralBase
             anim = 0;
         }
 
-        BlockCableModemVariant modem = ((BlockCableModemVariant)state.getValue( Properties.MODEM ));
+        BlockCableModemVariant modem = state.getValue( Properties.MODEM );
         if( modem != BlockCableModemVariant.None )
         {
             modem = BlockCableModemVariant.values()[
@@ -228,8 +228,8 @@ public class BlockCable extends BlockPeripheralBase
     @Override
     public PeripheralType getPeripheralType( IBlockState state )
     {
-        boolean cable = (Boolean)state.getValue( Properties.CABLE );
-        BlockCableModemVariant modem = (BlockCableModemVariant)state.getValue( Properties.MODEM );
+        boolean cable = state.getValue( Properties.CABLE );
+        BlockCableModemVariant modem = state.getValue( Properties.MODEM );
         if( cable && modem != BlockCableModemVariant.None )
         {
             return PeripheralType.WiredModemWithCable;

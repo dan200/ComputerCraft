@@ -22,7 +22,6 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -147,7 +146,7 @@ public class TileCommandComputer extends TileComputer
     public EnumFacing getDirection()
     {
         IBlockState state = getBlockState();
-        return (EnumFacing)state.getValue( BlockCommandComputer.Properties.FACING );
+        return state.getValue( BlockCommandComputer.Properties.FACING );
     }
 
     @Override

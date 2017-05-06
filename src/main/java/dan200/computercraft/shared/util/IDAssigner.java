@@ -21,7 +21,7 @@ public class IDAssigner
     private static int getNextID( File location, boolean directory )
     {
         // Determine where to locate ID file
-        File lastidFile = null;    
+        File lastidFile;
         if( directory )
         {
             location.mkdirs();
@@ -41,12 +41,15 @@ public class IDAssigner
             if( directory && location.exists() && location.isDirectory() )
             {
                 String[] contents = location.list();
-                for( int i=0; i<contents.length; ++i )
+                for( String content : contents )
                 {
-                    try {
-                        int number = Integer.parseInt( contents[i] );
+                    try
+                    {
+                        int number = Integer.parseInt( content );
                         id = Math.max( number + 1, id );
-                    } catch( NumberFormatException e ) {
+                    }
+                    catch( NumberFormatException e )
+                    {
                         continue;
                     }
                 }
@@ -55,7 +58,7 @@ public class IDAssigner
         else
         {
             // If an ID file does exist, parse the file to get the ID string
-            String idString = "0";
+            String idString;
             try
             {
                 FileInputStream in = new FileInputStream( lastidFile );

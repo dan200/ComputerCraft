@@ -89,9 +89,9 @@ public class PeripheralAPI implements ILuaAPI, IAPIEnvironment.IPeripheralChange
             m_attached = false;
             
             // Unmount everything the detach function forgot to do
-            Iterator<String> it = m_mounts.iterator();
-            while( it.hasNext() ) {
-                m_fileSystem.unmount( it.next() );
+            for( String m_mount : m_mounts )
+            {
+                m_fileSystem.unmount( m_mount );
             }
             m_mounts.clear();
         }
@@ -133,7 +133,7 @@ public class PeripheralAPI implements ILuaAPI, IAPIEnvironment.IPeripheralChange
             }
             
             // Mount the location
-            String location = null;
+            String location;
             synchronized( m_fileSystem )
             {
                 location = findFreeLocation( desiredLoc );
@@ -168,7 +168,7 @@ public class PeripheralAPI implements ILuaAPI, IAPIEnvironment.IPeripheralChange
             }
             
             // Mount the location
-            String location = null;
+            String location;
             synchronized( m_fileSystem )
             {
                 location = findFreeLocation( desiredLoc );
@@ -470,7 +470,7 @@ public class PeripheralAPI implements ILuaAPI, IAPIEnvironment.IPeripheralChange
                 int side = parseSide( args );
                 if( side >= 0 )
                 {
-                    PeripheralWrapper p = null;
+                    PeripheralWrapper p;
                     synchronized( m_peripherals )
                     {
                         p = m_peripherals[ side ];

@@ -91,7 +91,7 @@ public class RedstoneAPI implements ILuaAPI
                     throw new LuaException( "Expected string, boolean" );
                 }
                 int side = parseSide( args );
-                boolean output = ((Boolean)args[1]).booleanValue();
+                boolean output = (Boolean) args[ 1 ];
                 m_environment.setOutput( side, output ? 15 : 0 );
                 return null;
             }

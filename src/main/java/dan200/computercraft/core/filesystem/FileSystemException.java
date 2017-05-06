@@ -7,6 +7,8 @@
 package dan200.computercraft.core.filesystem;
 
 public class FileSystemException extends Exception {
+    private static final long serialVersionUID = -2500631644868104029L;
+
     FileSystemException( String s ) {
         super( s );
     }

@@ -20,7 +20,7 @@ public class NBTUtil
         {
             if( object instanceof Boolean )
             {
-                boolean b = ((Boolean)object).booleanValue();
+                boolean b = (Boolean) object;
                 return new NBTTagByte( b ? (byte)1 : (byte)0 );
             }
             else if( object instanceof Number )

@@ -19,7 +19,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -37,7 +36,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
-import java.util.Iterator;
 
 public class TurtleTool implements ITurtleUpgrade
 {
@@ -271,10 +269,8 @@ public class TurtleTool implements ITurtleUpgrade
                 java.util.List<ItemStack> items = getBlockDropped( world, newPosition );
                 if( items != null && items.size() > 0 )
                 {
-                    Iterator<ItemStack> it = items.iterator();
-                    while( it.hasNext() )
+                    for( ItemStack stack : items )
                     {
-                        ItemStack stack = it.next();
                         ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
                         if( remainder != null )
                         {

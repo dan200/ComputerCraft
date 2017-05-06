@@ -21,7 +21,6 @@ import dan200.computercraft.core.terminal.Terminal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Computer
@@ -370,10 +369,8 @@ public class Computer
                 // Advance our APIs
                 synchronized( m_apis )
                 {
-                    Iterator<ILuaAPI> it = m_apis.iterator();
-                    while( it.hasNext() )
+                    for(ILuaAPI api : m_apis)
                     {
-                        ILuaAPI api = it.next();
                         api.advance( _dt );
                     }
                 }
@@ -628,10 +625,8 @@ public class Computer
         ILuaMachine machine = new LuaJLuaMachine( this );
         
         // Add the APIs
-        Iterator<ILuaAPI> it = m_apis.iterator();
-        while( it.hasNext() )
+        for(ILuaAPI api : m_apis)
         {
-            ILuaAPI api = it.next();
             machine.addAPI( api );
             api.startup();
         }
@@ -794,10 +789,8 @@ public class Computer
                     // Shutdown our APIs
                     synchronized( m_apis )
                     {
-                        Iterator<ILuaAPI> it = m_apis.iterator();
-                        while( it.hasNext() )
+                        for(ILuaAPI api : m_apis)
                         {
-                            ILuaAPI api = it.next();
                             api.shutdown();
                         }
                     }

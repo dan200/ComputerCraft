@@ -261,9 +261,9 @@ public class FileMount implements IWritableMount
         if( file.isDirectory() )
         {
             String[] children = file.list();
-            for( int i=0; i<children.length; i++ )
+            for( String aChildren : children )
             {
-                deleteRecursively( new File( file, children[i] ) );
+                deleteRecursively( new File( file, aChildren ) );
             }
         }
         
@@ -376,9 +376,9 @@ public class FileMount implements IWritableMount
         {
             long size = MINIMUM_FILE_SIZE;
             String[] contents = file.list();
-            for( int i=0; i<contents.length; ++i )
+            for( String content : contents )
             {
-                size += measureUsedSpace( new File( file, contents[i] ) );
+                size += measureUsedSpace( new File( file, content ) );
             }
             return size;
         }

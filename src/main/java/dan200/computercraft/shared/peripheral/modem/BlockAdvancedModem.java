@@ -15,13 +15,10 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
@@ -87,7 +84,7 @@ public class BlockAdvancedModem extends BlockPeripheralBase
         else
         {
             anim = 0;
-            dir = (EnumFacing)state.getValue( Properties.FACING );
+            dir = state.getValue( Properties.FACING );
         }
 
         state = state.withProperty( Properties.FACING, dir );

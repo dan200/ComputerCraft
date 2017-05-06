@@ -21,7 +21,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 
 public class TurtleCompareCommand implements ITurtleCommand
 {
@@ -84,10 +83,8 @@ public class TurtleCompareCommand implements ITurtleCommand
                         java.util.List<ItemStack> drops = lookAtBlock.getDrops( world, newPosition, lookAtState, 0 );
                         if( drops != null && drops.size() > 0 )
                         {
-                            Iterator<ItemStack> it = drops.iterator();
-                            while( it.hasNext() )
+                            for( ItemStack drop : drops )
                             {
-                                ItemStack drop = it.next();
                                 if( drop.getItem() == Item.getItemFromBlock( lookAtBlock ) )
                                 {
                                     lookAtStack = drop;

@@ -6,7 +6,6 @@
 
 package dan200.computercraft.server.proxy;
 
-import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.blocks.TileComputer;
 import dan200.computercraft.shared.peripheral.diskdrive.TileDiskDrive;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;

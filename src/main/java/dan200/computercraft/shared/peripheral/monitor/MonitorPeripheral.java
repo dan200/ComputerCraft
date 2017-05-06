@@ -111,7 +111,7 @@ public class MonitorPeripheral implements IPeripheral
                     throw new LuaException( "Expected boolean" );
                 }
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
-                terminal.setCursorBlink( ((Boolean)args[0]).booleanValue() );
+                terminal.setCursorBlink( (Boolean) args[ 0 ] );
                 return null;
             }
             case 4:

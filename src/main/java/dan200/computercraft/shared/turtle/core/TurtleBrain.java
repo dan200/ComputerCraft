@@ -28,7 +28,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -335,11 +334,11 @@ public class TurtleBrain implements ITurtleAccess
         // Write NBT
         if( m_upgradeNBTData.containsKey( TurtleSide.Left ) )
         {
-            nbttagcompound.setTag( "leftUpgradeNBT", (NBTTagCompound) getUpgradeNBTData( TurtleSide.Left ).copy() );
+            nbttagcompound.setTag( "leftUpgradeNBT", getUpgradeNBTData( TurtleSide.Left ).copy() );
         }
         if( m_upgradeNBTData.containsKey( TurtleSide.Right ) )
         {
-            nbttagcompound.setTag( "rightUpgradeNBT", (NBTTagCompound) getUpgradeNBTData( TurtleSide.Right ).copy() );
+            nbttagcompound.setTag( "rightUpgradeNBT", getUpgradeNBTData( TurtleSide.Right ).copy() );
         }
 
         return nbttagcompound;
@@ -371,11 +370,11 @@ public class TurtleBrain implements ITurtleAccess
         // NBT
         if( m_upgradeNBTData.containsKey( TurtleSide.Left ) )
         {
-            nbttagcompound.setTag( "leftUpgradeNBT", (NBTTagCompound) getUpgradeNBTData( TurtleSide.Left ).copy() );
+            nbttagcompound.setTag( "leftUpgradeNBT", getUpgradeNBTData( TurtleSide.Left ).copy() );
         }
         if( m_upgradeNBTData.containsKey( TurtleSide.Right ) )
         {
-            nbttagcompound.setTag( "rightUpgradeNBT", (NBTTagCompound) getUpgradeNBTData( TurtleSide.Right ).copy() );
+            nbttagcompound.setTag( "rightUpgradeNBT", getUpgradeNBTData( TurtleSide.Right ).copy() );
         }
 
         // Colour
@@ -738,10 +737,7 @@ public class TurtleBrain implements ITurtleAccess
                 if( ( (Number) response[ 1 ] ).intValue() == commandID )
                 {
                     Object[] returnValues = new Object[ response.length - 2 ];
-                    for( int i = 0; i < returnValues.length; ++i )
-                    {
-                        returnValues[ i ] = response[ i + 2 ];
-                    }
+                    System.arraycopy( response, 2, returnValues, 0, returnValues.length );
                     return returnValues;
                 }
             }
@@ -1033,10 +1029,7 @@ public class TurtleBrain implements ITurtleAccess
                                 Object[] arguments = new Object[ results.length + 2 ];
                                 arguments[0] = callbackID;
                                 arguments[1] = true;
-                                for( int i=0; i<results.length; ++i )
-                                {
-                                    arguments[2+i] = results[i];
-                                }
+                                System.arraycopy( results, 0, arguments, 2, results.length );
                                 computer.queueEvent( "turtle_response", arguments );
                             }
                             else
@@ -1140,16 +1133,16 @@ public class TurtleBrain implements ITurtleAccess
                     }
 
                     AxisAlignedBB aabb = new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ );
-                    List list = world.getEntitiesWithinAABBExcludingEntity( (Entity)null, aabb );
+                    List list = world.getEntitiesWithinAABBExcludingEntity( null, aabb );
                     if( !list.isEmpty() )
                     {
                         double pushStep = 1.0f / (float) ANIM_DURATION;
                         double pushStepX = (double) moveDir.getFrontOffsetX() * pushStep;
                         double pushStepY = (double) moveDir.getFrontOffsetY() * pushStep;
                         double pushStepZ = (double) moveDir.getFrontOffsetZ() * pushStep;
-                        for( int i = 0; i < list.size(); ++i )
+                        for (Object aList : list)
                         {
-                            Entity entity = (Entity) list.get( i );
+                            Entity entity = (Entity) aList;
                             entity.moveEntity(
                                 pushStepX, pushStepY, pushStepZ
                             );

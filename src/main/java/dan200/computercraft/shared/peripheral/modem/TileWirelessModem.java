@@ -69,7 +69,7 @@ public class TileWirelessModem extends TileModemBase
     {
         // Wireless Modem
         IBlockState state = getBlockState();
-        switch( (BlockPeripheralVariant)state.getValue( BlockPeripheral.Properties.VARIANT ) )
+        switch( state.getValue( BlockPeripheral.Properties.VARIANT ) )
         {
             case WirelessModemDownOff:
             case WirelessModemDownOn:
@@ -83,7 +83,7 @@ public class TileWirelessModem extends TileModemBase
             }
             default:
             {
-                return (EnumFacing)state.getValue( BlockPeripheral.Properties.FACING );
+                return state.getValue( BlockPeripheral.Properties.FACING );
             }
         }
     }

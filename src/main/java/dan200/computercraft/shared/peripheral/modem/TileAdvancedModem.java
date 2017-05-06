@@ -7,7 +7,6 @@
 package dan200.computercraft.shared.peripheral.modem;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.peripheral.common.BlockPeripheral;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -64,7 +63,7 @@ public class TileAdvancedModem extends TileModemBase
     {
         // Wireless Modem
         IBlockState state = getBlockState();
-        return (EnumFacing)state.getValue( BlockAdvancedModem.Properties.FACING );
+        return state.getValue( BlockAdvancedModem.Properties.FACING );
     }
 
     @Override

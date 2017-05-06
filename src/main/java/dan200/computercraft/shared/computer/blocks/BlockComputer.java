@@ -36,7 +36,7 @@ public class BlockComputer extends BlockComputerBase
     {
         public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
         public static final PropertyBool ADVANCED = PropertyBool.create("advanced");
-        public static final PropertyEnum<ComputerState> STATE = PropertyEnum.<ComputerState>create("state", ComputerState.class);
+        public static final PropertyEnum<ComputerState> STATE = PropertyEnum.create("state", ComputerState.class);
     }
 
     // Members
@@ -90,8 +90,8 @@ public class BlockComputer extends BlockComputerBase
     @Override
     public int getMetaFromState( IBlockState state )
     {
-        int meta = ((EnumFacing)state.getValue( Properties.FACING )).getIndex();
-        if( (Boolean)state.getValue( Properties.ADVANCED ) )
+        int meta = state.getValue( Properties.FACING ).getIndex();
+        if( state.getValue( Properties.ADVANCED ) )
         {
             meta += 8;
         }
@@ -153,7 +153,7 @@ public class BlockComputer extends BlockComputerBase
     @Override
     public ComputerFamily getFamily( IBlockState state )
     {
-        if( (Boolean)state.getValue( Properties.ADVANCED ) ) {
+        if( state.getValue( Properties.ADVANCED ) ) {
             return ComputerFamily.Advanced;
         } else {
             return ComputerFamily.Normal;

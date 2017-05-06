@@ -26,9 +26,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -131,10 +133,8 @@ public class TileCable extends TileModemBase
                     {
                         int idx = 1;
                         Map<Object,Object> table = new HashMap<Object,Object>();
-                        Iterator<String> it = m_entity.m_peripheralWrappersByName.keySet().iterator();
-                        while( it.hasNext() )
+                        for( String name : m_entity.m_peripheralWrappersByName.keySet() )
                         {
-                            String name = it.next();
                             table.put( idx++, name );
                         }
                         return new Object[] { table };
@@ -193,10 +193,8 @@ public class TileCable extends TileModemBase
             super.attach( computer );
             synchronized( m_entity.m_peripheralsByName )
             {
-                Iterator<String> it = m_entity.m_peripheralsByName.keySet().iterator();
-                while( it.hasNext() )
+                for (String periphName : m_entity.m_peripheralsByName.keySet())
                 {
-                    String periphName = it.next();
                     IPeripheral peripheral = m_entity.m_peripheralsByName.get( periphName );
                     if( peripheral != null )
                     {
@@ -211,10 +209,8 @@ public class TileCable extends TileModemBase
         {
             synchronized( m_entity.m_peripheralsByName )
             {
-                Iterator<String> it = m_entity.m_peripheralsByName.keySet().iterator();
-                while( it.hasNext() )
+                for (String periphName : m_entity.m_peripheralsByName.keySet())
                 {
-                    String periphName = it.next();
                     m_entity.detachPeripheral( periphName );
                 }
             }
@@ -281,7 +277,7 @@ public class TileCable extends TileModemBase
     public EnumFacing getDirection()
     {
         IBlockState state = getBlockState();
-        BlockCableModemVariant modem = (BlockCableModemVariant)state.getValue( BlockCable.Properties.MODEM );
+        BlockCableModemVariant modem = state.getValue( BlockCable.Properties.MODEM );
         if( modem != BlockCableModemVariant.None )
         {
             return modem.getFacing();
@@ -296,7 +292,7 @@ public class TileCable extends TileModemBase
     public void setDirection( EnumFacing dir )
     {
         IBlockState state = getBlockState();
-        BlockCableModemVariant modem = ( BlockCableModemVariant )state.getValue( BlockCable.Properties.MODEM );
+        BlockCableModemVariant modem = state.getValue( BlockCable.Properties.MODEM );
         if( modem != BlockCableModemVariant.None )
         {
             setBlockState( state.withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.fromFacing( dir ) ) );
@@ -756,11 +752,9 @@ public class TileCable extends TileModemBase
             Set<IReceiver> receivers = m_receivers.get( packet.channel );
             if( receivers != null )
             {
-                Iterator<IReceiver> it = receivers.iterator();
-                while( it.hasNext() )
+                for( IReceiver receiver : receivers )
                 {
-                    IReceiver receiver = it.next();
-                    receiver.receiveSameDimension( packet.replyChannel, packet.payload, (double)distanceTravelled, packet.senderObject );
+                    receiver.receiveSameDimension( packet.replyChannel, packet.payload, (double) distanceTravelled, packet.senderObject );
                 }
             }
         }
@@ -920,10 +914,8 @@ public class TileCable extends TileModemBase
             }
 
             // Attach all the new peripherals
-            Iterator<String> it2 = newPeripheralsByName.keySet().iterator();
-            while( it2.hasNext() )
+            for( String periphName : newPeripheralsByName.keySet() )
             {
-                String periphName = it2.next();
                 if( !m_peripheralsByName.containsKey( periphName ) )
                 {
                     IPeripheral peripheral = newPeripheralsByName.get( periphName );

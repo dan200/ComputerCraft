@@ -139,9 +139,8 @@ public class TurtleMultiModel implements IBakedModel
         else
         {
             List<BakedQuad> output = new ArrayList<BakedQuad>( input.size() );
-            for( int i=0; i<input.size(); ++i )
+            for( BakedQuad quad : input )
             {
-                BakedQuad quad = input.get( i );
                 output.add( transformQuad( quad, transform ) );
             }
             return output;

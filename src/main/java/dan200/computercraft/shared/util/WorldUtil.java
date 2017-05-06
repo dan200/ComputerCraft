@@ -6,8 +6,6 @@
 
 package dan200.computercraft.shared.util;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -63,9 +61,9 @@ public class WorldUtil
         Entity closest = null;
         double closestDist = 99.0;
         List list = world.getEntitiesWithinAABBExcludingEntity( null, bigBox );
-        for( int i=0; i<list.size(); i++ )
+        for( Object aList : list )
         {
-            Entity entity = (net.minecraft.entity.Entity)list.get(i);
+            Entity entity = (Entity) aList;
             if( entity.isDead || !entity.canBeCollidedWith() )
             {
                 continue;

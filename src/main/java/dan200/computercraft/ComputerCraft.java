@@ -74,7 +74,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 ///////////////
 // UNIVERSAL //
@@ -509,9 +512,8 @@ public class ComputerCraft
             }
         }
 
-        for( int i=0; i<permissionProviders.size(); ++i )
+        for( ITurtlePermissionProvider provider : permissionProviders )
         {
-            ITurtlePermissionProvider provider = permissionProviders.get( i );
             if( !provider.isBlockEnterable( world, pos ) )
             {
                 return false;
@@ -531,9 +533,8 @@ public class ComputerCraft
             }
         }
 
-        for( int i=0; i<permissionProviders.size(); ++i )
+        for( ITurtlePermissionProvider provider : permissionProviders )
         {
-            ITurtlePermissionProvider provider = permissionProviders.get( i );
             if( !provider.isBlockEditable( world, pos ) )
             {
                 return false;
@@ -581,12 +582,11 @@ public class ComputerCraft
     public static IPeripheral getPeripheralAt( World world, BlockPos pos, EnumFacing side )
     {
         // Try the handlers in order:
-        Iterator<IPeripheralProvider> it = peripheralProviders.iterator();
-        while( it.hasNext() )
+        for( IPeripheralProvider peripheralProvider : peripheralProviders )
         {
             try
             {
-                IPeripheralProvider handler = it.next();
+                IPeripheralProvider handler = peripheralProvider;
                 IPeripheral peripheral = handler.getPeripheral( world, pos, side );
                 if( peripheral != null )
                 {
@@ -620,12 +620,11 @@ public class ComputerCraft
 
         // Try the handlers in order:
         int combinedSignal = -1;
-        Iterator<IBundledRedstoneProvider> it = bundledRedstoneProviders.iterator();
-        while( it.hasNext() )
+        for( IBundledRedstoneProvider bundledRedstoneProvider : bundledRedstoneProviders )
         {
             try
             {
-                IBundledRedstoneProvider handler = it.next();
+                IBundledRedstoneProvider handler = bundledRedstoneProvider;
                 int signal = handler.getBundledRedstoneOutput( world, pos, side );
                 if( signal >= 0 )
                 {
@@ -652,12 +651,11 @@ public class ComputerCraft
         if( stack != null )
         {
             // Try the handlers in order:
-            Iterator<IMediaProvider> it = mediaProviders.iterator();
-            while( it.hasNext() )
+            for( IMediaProvider mediaProvider : mediaProviders )
             {
                 try
                 {
-                    IMediaProvider handler = it.next();
+                    IMediaProvider handler = mediaProvider;
                     IMedia media = handler.getMedia( stack );
                     if( media != null )
                     {
@@ -760,11 +758,11 @@ public class ComputerCraft
         if( resourcePackDir.exists() && resourcePackDir.isDirectory() )
         {
             String[] resourcePacks = resourcePackDir.list();
-            for( int i=0; i<resourcePacks.length; ++i )
+            for( String resourcePack1 : resourcePacks )
             {
                 try
                 {
-                    File resourcePack = new File( resourcePackDir, resourcePacks[i] );
+                    File resourcePack = new File( resourcePackDir, resourcePack1 );
                     if( !resourcePack.isDirectory() )
                     {
                         // Mount a resource pack from a jar

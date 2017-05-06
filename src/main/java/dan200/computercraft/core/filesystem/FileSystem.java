@@ -327,7 +327,7 @@ public class FileSystem
             throw new NullPointerException();
         }
         location = sanitizePath( location );
-        if( location.indexOf( ".." ) != -1 ) {
+        if( location.contains( ".." ) ) {
             throw new FileSystemException( "Cannot mount below the root" );
         }                    
         mount( new MountWrapper( label, location, mount ) );
@@ -427,10 +427,10 @@ public class FileSystem
         mount.list( path, list );
         
         // Add any mounts that are mounted at this location
-        Iterator<MountWrapper> it = m_mounts.values().iterator();
-        while( it.hasNext() ) {
-            MountWrapper otherMount = it.next();
-            if( getDirectory( otherMount.getLocation() ).equals( path ) ) {
+        for( MountWrapper otherMount : m_mounts.values() )
+        {
+            if( getDirectory( otherMount.getLocation() ).equals( path ) )
+            {
                 list.add( getName( otherMount.getLocation() ) );
             }
         }
@@ -445,9 +445,8 @@ public class FileSystem
     private void findIn( String dir, List<String> matches, Pattern wildPattern ) throws FileSystemException
     {
         String[] list = list( dir );
-        for( int i=0; i<list.length; ++i )
+        for( String entry : list )
         {
-            String entry = list[i];
             String entryPath = dir.isEmpty() ? entry : (dir + "/" + entry);
             if( wildPattern.matcher( entryPath ).matches() )
             {
@@ -910,7 +909,7 @@ public class FileSystem
             char c = path.charAt(i);
             if( c >= 32 && Arrays.binarySearch( specialChars, c ) < 0 && (allowWildcards || c != '*') )
             {
-                cleanName.append((char)c);
+                cleanName.append( c );
             }
         }
         path = cleanName.toString();
@@ -918,30 +917,42 @@ public class FileSystem
         // Collapse the string into its component parts, removing ..'s
         String[] parts = path.split("/");
         Stack<String> outputParts = new Stack<String>();
-        for( int n=0; n<parts.length; ++n ) {
-            String part = parts[n];
-            if( part.length() == 0 || part.equals(".") )
+        for( String part : parts )
+        {
+            if( part.length() == 0 || part.equals( "." ) )
             {
                 // . is redundant
                 continue;
-            } else if( part.equals("..") || part.equals( "..." ) ) {
+            }
+            else if( part.equals( ".." ) || part.equals( "..." ) )
+            {
                 // .. or ... can cancel out the last folder entered
-                if( !outputParts.empty() ) {
+                if( !outputParts.empty() )
+                {
                     String top = outputParts.peek();
-                    if( !top.equals("..") ) {
+                    if( !top.equals( ".." ) )
+                    {
                         outputParts.pop();
-                    } else {
-                        outputParts.push("..");
                     }
-                } else {
-                    outputParts.push("..");
+                    else
+                    {
+                        outputParts.push( ".." );
+                    }
                 }
-            } else if (part.length() >= 255) {
+                else
+                {
+                    outputParts.push( ".." );
+                }
+            }
+            else if( part.length() >= 255 )
+            {
                 // If part length > 255 and it is the last part
-                outputParts.push( part.substring(0, 255) );
-            } else {
+                outputParts.push( part.substring( 0, 255 ) );
+            }
+            else
+            {
                 // Anything else we add to the stack
-                outputParts.push(part);
+                outputParts.push( part );
             }
         }
         

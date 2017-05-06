@@ -84,9 +84,8 @@ public class ComboMount implements IMount
         {
             // We found multiple directories, so filter for duplicates
             Set<String> seen = new HashSet<String>();
-            for( int i=0; i<foundFiles.size(); ++i )
+            for(String file : foundFiles)
             {
-                String file = foundFiles.get(i);
                 if( seen.add( file ) )
                 {
                     contents.add( file );

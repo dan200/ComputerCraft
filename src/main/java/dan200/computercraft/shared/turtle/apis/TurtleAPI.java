@@ -17,7 +17,6 @@ import dan200.computercraft.core.apis.ILuaAPI;
 import dan200.computercraft.shared.turtle.core.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -480,7 +479,7 @@ public class TurtleAPI implements ILuaAPI
                 if( stack != null && stack.stackSize > 0 )
                 {
                     Item item = stack.getItem();
-                    String name = ((ResourceLocation)Item.REGISTRY.getNameForObject( item )).toString();
+                    String name = Item.REGISTRY.getNameForObject( item ).toString();
                     int damage = stack.getItemDamage();
                     int count = stack.stackSize;
 

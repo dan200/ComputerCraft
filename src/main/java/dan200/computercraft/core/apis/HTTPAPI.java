@@ -157,9 +157,8 @@ public class HTTPAPI implements ILuaAPI
     {
         synchronized( m_httpRequests )
         {
-            Iterator<HTTPRequest> it = m_httpRequests.iterator();
-            while( it.hasNext() ) {
-                HTTPRequest r = it.next();
+            for( HTTPRequest r : m_httpRequests )
+            {
                 r.cancel();
             }
             m_httpRequests.clear();
