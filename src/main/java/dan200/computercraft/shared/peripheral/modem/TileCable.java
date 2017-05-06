@@ -37,6 +37,19 @@ import java.util.*;
 public class TileCable extends TileModemBase
     implements INetwork
 {
+    private static final double MIN = 0.375;
+    private static final double MAX = 1 - MIN;
+
+    private static final AxisAlignedBB BOX_CENTRE = new AxisAlignedBB( MIN, MIN, MIN, MAX, MAX, MAX );
+    private static final AxisAlignedBB[] BOXES = new AxisAlignedBB[]{
+        new AxisAlignedBB( MIN, 0, MIN, MAX, MIN, MAX ),   // Down
+        new AxisAlignedBB( MIN, MAX, MIN, MAX, 1, MAX ),   // Up
+        new AxisAlignedBB( MIN, MIN, 0, MAX, MAX, MIN ),   // North
+        new AxisAlignedBB( MIN, MIN, MAX, MAX, MAX, 1 ),   // South
+        new AxisAlignedBB( 0, MIN, MIN, MIN, MAX, MAX ),   // West
+        new AxisAlignedBB( MAX, MIN, MIN, 1, MAX, MAX ),   // East
+    };
+
     // Statics
 
     private static class Peripheral extends ModemPeripheral
@@ -415,14 +428,7 @@ public class TileCable extends TileModemBase
             {
                 AxisAlignedBB modem = getModemBounds();
                 AxisAlignedBB cable = getCableBounds();
-                return new AxisAlignedBB(
-                    Math.min( modem.minX, cable.minX ),
-                    Math.min( modem.minY, cable.minY ),
-                    Math.min( modem.minZ, cable.minZ ),
-                    Math.max( modem.maxX, cable.maxX ),
-                    Math.max( modem.maxY, cable.maxY ),
-                    Math.max( modem.maxZ, cable.maxZ )
-                );
+                return modem.union( cable );
             }
         }
     }
@@ -437,7 +443,15 @@ public class TileCable extends TileModemBase
         }
         if( type == PeripheralType.Cable || type == PeripheralType.WiredModemWithCable )
         {
-            bounds.add( getCableBounds() );
+            bounds.add( BOX_CENTRE );
+            BlockPos pos = getPos();
+            for (EnumFacing facing : EnumFacing.VALUES)
+            {
+                if( BlockCable.isCable( worldObj, pos.offset( facing ) ) )
+                {
+                    bounds.add( BOXES[ facing.ordinal() ] );
+                }
+            }
         }
     }
 
