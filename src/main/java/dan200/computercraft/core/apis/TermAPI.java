@@ -132,20 +132,33 @@ public class TermAPI implements ILuaAPI
 
                 try
                 {
-                    @SuppressWarnings({ "unchecked" }) // There isn't really a nice way around this :(
-                    HashMap<Object, Object> colour = (HashMap<Object, Object>) e.getValue();
+                    if (e.getValue() instanceof HashMap)
+                    {
+                        @SuppressWarnings({ "unchecked" }) // There isn't really a nice way around this :(
+                        HashMap<Object, Object> colour = (HashMap<Object, Object>) e.getValue();
 
-                    setColour(
-                            terminal,
-                            index,
-                            ( (Double)colour.get( 1.0 ) ).floatValue(),
-                            ( (Double)colour.get( 2.0 ) ).floatValue(),
-                            ( (Double)colour.get( 3.0 ) ).floatValue()
-                    );
+                        setColour(
+                                terminal,
+                                index,
+                                ( (Double)colour.get( 1.0 ) ).floatValue(),
+                                ( (Double)colour.get( 2.0 ) ).floatValue(),
+                                ( (Double)colour.get( 3.0 ) ).floatValue()
+                        );
+                    }
+                    else if (e.getValue() instanceof Double)
+                    {
+                        float[] rgb = Palette.decodeRGB8( ((Double)e.getValue()).intValue() );
+
+                        setColour(
+                                terminal,
+                                index,
+                                rgb[0], rgb[1], rgb[2]
+                        );
+                    }
                 }
                 catch(ClassCastException cce)
                 {
-                    throw new LuaException( "Malformed colour table" );
+                    throw new LuaException( "Malformed colour table " + cce.getMessage() );
                 }
             }
         }
@@ -335,21 +348,29 @@ public class TermAPI implements ILuaAPI
                     @SuppressWarnings( { "unchecked" } ) // There isn't really a nice way around this :(
                     HashMap<Object, Object> colourTbl = (HashMap<Object, Object>)args[0];
                     setColour( m_terminal, colourTbl );
+                    return null;
                 }
-                else if (args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
+
+                if(args.length == 2 && args[0] instanceof Double && args[1] instanceof Double)
+                {
+                    int colour = 15 - parseColour( args, m_environment.isColour() );
+                    int hex = ((Double)args[1]).intValue();
+                    float[] rgb = Palette.decodeRGB8( hex );
+                    setColour( m_terminal, colour, rgb[0], rgb[1], rgb[2] );
+                    return null;
+                }
+
+                if(args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
                 {
                     int colour = 15 - parseColour( args, m_environment.isColour() );
                     float r = ((Double)args[1]).floatValue();
                     float g = ((Double)args[2]).floatValue();
                     float b = ((Double)args[3]).floatValue();
                     setColour( m_terminal, colour, r, g, b );
-                }
-                else
-                {
-                    throw new LuaException( "Expected table or number, number, number, number" );
+                    return null;
                 }
 
-                return null;
+                throw new LuaException( "Expected table or number, number or number, number, number, number" );
             }
             case 21:
             case 22:

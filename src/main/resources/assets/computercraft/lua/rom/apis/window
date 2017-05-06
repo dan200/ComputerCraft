@@ -72,7 +72,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
         for i=0,15 do
             local c = 2 ^ i
-            tPalette[c] = table.pack( parent.getColour( c ) )
+            tPalette[c] = { parent.getColour( c ) }
         end
     end
 
@@ -291,7 +291,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
             for k,v in pairs(colour) do
                 tPalette[k] = v
             end
-        else
+        elseif type(colour) == "number" and type(r) == "number" and g == nil and b == nil then
+            tPalette[ colour ] = { colours.rgb8( r ) }
+        elseif type(colour) == "number" and type(r) == "number" and type(g) == "number" and type(b) == "number" then
             local tCol = tPalette[ colour ]
             tCol[1] = r
             tCol[2] = g

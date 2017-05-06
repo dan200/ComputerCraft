@@ -53,7 +53,7 @@ public class Palette
         }
     }
 
-    private static int encodeRGB8( float[] rgb )
+    public static int encodeRGB8( float[] rgb )
     {
         int r = (int)( rgb[0] * 255 ) & 0xFF;
         int g = (int)( rgb[1] * 255 ) & 0xFF;
@@ -62,7 +62,7 @@ public class Palette
         return ( r << 16 ) | ( g << 8 ) | b;
     }
 
-    private static float[] decodeRGB8( int rgb )
+    public static float[] decodeRGB8( int rgb )
     {
         return new float[]
         {
