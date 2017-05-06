@@ -49,8 +49,6 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             return;
         }
 
-        Palette palette = origin.getTerminal().getTerminal().getPalette();
-
         // Ensure each monitor is rendered only once
         long renderFrame = ComputerCraft.getRenderFrame();
         if( origin.m_lastRenderFrame == renderFrame )
@@ -107,6 +105,8 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             {
                 if( terminal != null )
                 {
+                    Palette palette = terminal.getPalette();
+
                     // Allocate display lists
                     if( origin.m_renderDisplayList < 0 )
                     {
