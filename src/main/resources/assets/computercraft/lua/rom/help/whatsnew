@@ -3,6 +3,8 @@ New Features in ComputerCraft 1.80:
 * Added .getResponseHeaders() to HTTP responses.
 * Return a HTTP response when a HTTP error occurs.
 * Added a GUI to change ComputerCraft config options
+* os.time( ... ) now accept parameters to get real timestamp and real hour of day
+* os.day ( ... ) now accept parameters to get real day since 1970-01-01
 * Monitor text now glows in the dark
 
 Type "help changelog" to see the full version history.

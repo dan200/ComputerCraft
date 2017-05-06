@@ -10,10 +10,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.shared.util.StringUtil;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class OSAPI implements ILuaAPI
 {
@@ -294,17 +291,78 @@ public class OSAPI implements ILuaAPI
             case 11:
             {
                 // m_time
-                synchronized( m_alarms )
-                {
-                    return new Object[] { m_time };
+                if (args.length == 0) {
+                    synchronized (m_alarms) {
+                        return new Object[]{m_time};
+                    }
+                }
+                else if (args.length > 0 && args[0] != null && args[0] instanceof String) {
+                    String param = (String) args[0];
+                    //Get Hour of day (UTC)
+                    if (param.equals("utc")) {
+                        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                        float hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+                        hourOfDay += ((float)c.get(Calendar.MINUTE)/60)+(float)(c.get(Calendar.SECOND)/60*60);
+                        return new Object[] {hourOfDay};
+                    }
+                    //Get Hour of day (local time)
+                    else if (param.equals("local")) {
+                        Calendar c = Calendar.getInstance();
+                        float hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+                        hourOfDay += ((float)c.get(Calendar.MINUTE)/60)+(float)(c.get(Calendar.SECOND)/60*60);
+                        return new Object[] {hourOfDay};
+                    }
+                    //Get ingame hour
+                    else if (param.equals("ingame")) {
+                        return callMethod(context, method, new Object[0]);
+                    }
+                    //Get timestamp (without mills)
+                    else if (param.equals("timestamp")) {
+                        long timestamp = Calendar.getInstance().getTimeInMillis()/1000;
+                        return new Object[]{timestamp};
+                    }
+                    else {
+                        throw new LuaException("Unsupported operation");
+                    }
+                }
+                else {
+                    throw new LuaException("Expected string");
                 }
             }
             case 12:
             {
                 // day
-                synchronized( m_alarms )
-                {
-                    return new Object[] { m_day };
+                if (args.length == 0 ) {
+                    synchronized (m_alarms) {
+                        return new Object[]{m_day};
+                    }
+                }
+                else if (args.length > 0 && args[0] != null && args[0] instanceof String) {
+                    String param = (String) args[0];
+                    //Get numbers of days since 1970-01-01 (utc)
+                    if (param.equals("utc")) {
+                        long timestamp = Calendar.getInstance().getTimeInMillis();
+                        timestamp /= 86400000; //Secounds of a day
+                        return new Object[] {timestamp};
+                    }
+                    //Get numbers of days since 1970-01-01 (local time)
+                    else if (param.equals("local")) {
+                        long timestamp = Calendar.getInstance().getTimeInMillis();
+                        int offset = TimeZone.getDefault().getRawOffset();
+                        timestamp += offset; //Add TZOffset to mills
+                        timestamp /= 86400000; //Secounds of a day
+                        return new Object[] {timestamp};
+                    }
+                    //Get game day
+                    else if (param.equals("ingame")){
+                        return callMethod(context, method, new Object[0]); //Normal os.day()
+                    }
+                    else {
+                        throw new LuaException("Unsupported operation");
+                    }
+                }
+                else {
+                    throw new LuaException("Expected string");
                 }
             }
             case 13:
