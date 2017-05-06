@@ -167,7 +167,7 @@ end
 
 -- Install lua parts of the os api
 function os.version()
-    return "CraftOS 1.7"
+    return "CraftOS 1.8"
 end
 
 function os.pullEventRaw( sFilter )
