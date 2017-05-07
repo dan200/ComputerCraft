@@ -129,6 +129,9 @@ public class ComputerCraft
     public static int floppySpaceLimit = 125 * 1000;
     public static int maximumFilesOpen = 128;
 
+    public static int minTimeBetweenSounds = (int) (1.0/5.0 * 20); // 5 times per second in ticks
+    public static boolean soundapi_enable = true;
+
     // Blocks and Items
     public static class Blocks
     {
@@ -186,6 +189,9 @@ public class ComputerCraft
         public static Property computerSpaceLimit;
         public static Property floppySpaceLimit;
         public static Property maximumFilesOpen;
+
+        public static Property minTimeBetweenSounds;
+        public static Property soundapi_enable;
 
     }
 
@@ -277,6 +283,13 @@ public class ComputerCraft
         Config.turtlesCanPush = Config.config.get( Configuration.CATEGORY_GENERAL, "turtlesCanPush", turtlesCanPush );
         Config.turtlesCanPush.setComment( "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so" );
 
+        Config.minTimeBetweenSounds = Config.config.get( Configuration.CATEGORY_GENERAL, "minTimeBetweenSounds", minTimeBetweenSounds);
+        Config.minTimeBetweenSounds.setMinValue(0);
+        Config.minTimeBetweenSounds.setComment("The minimum time in between calls to sound.play on one computer in ticks" );
+
+        Config.soundapi_enable = Config.config.get( Configuration.CATEGORY_GENERAL, "soundapiEnable", soundapi_enable);
+        Config.soundapi_enable.setComment("Whether the Sound API is enabled, allowing computers to play sounds");
+
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
             property.setLanguageKey( "gui.computercraft:config." + CaseFormat.LOWER_CAMEL.to( CaseFormat.LOWER_UNDERSCORE, property.getName() ) );
@@ -315,6 +328,9 @@ public class ComputerCraft
         advancedTurtleFuelLimit = Config.advancedTurtleFuelLimit.getInt();
         turtlesObeyBlockProtection = Config.turtlesObeyBlockProtection.getBoolean();
         turtlesCanPush = Config.turtlesCanPush.getBoolean();
+
+        soundapi_enable = Config.soundapi_enable.getBoolean();
+        minTimeBetweenSounds = Config.minTimeBetweenSounds.getInt();
 
         Config.config.save();
     }

@@ -13,6 +13,7 @@ import dan200.computercraft.api.filesystem.IWritableMount;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.core.apis.IAPIEnvironment;
 import dan200.computercraft.core.apis.ILuaAPI;
+import dan200.computercraft.core.apis.SoundAPI;
 import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.core.computer.IComputerEnvironment;
 import dan200.computercraft.shared.common.ServerTerminal;
@@ -56,6 +57,13 @@ public class ServerComputer extends ServerTerminal
 
         m_changedLastFrame = false;
         m_ticksSincePing = 0;
+
+        // Due to Computer not having access to XYZ position of physical computer, it is required to inject SoundAPI at creation of the computer.
+        if (ComputerCraft.Config.soundapi_enable.getBoolean())
+        {
+            m_computer.addAPI(new SoundAPI(this));
+        }
+
     }
 
     public World getWorld()
