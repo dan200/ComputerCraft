@@ -169,7 +169,7 @@ public class MonitorPeripheral implements IPeripheral
             case 10:
             {
                 // setTextColour/setTextColor
-                int colour = dan200.computercraft.core.apis.TermAPI.parseColour( args, m_monitor.getTerminal().isColour() );
+                int colour = dan200.computercraft.core.apis.TermAPI.parseColour( args );
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setTextColour( colour );
                 return null;
@@ -178,7 +178,7 @@ public class MonitorPeripheral implements IPeripheral
             case 12:
             {
                 // setBackgroundColour/setBackgroundColor
-                int colour = dan200.computercraft.core.apis.TermAPI.parseColour( args, m_monitor.getTerminal().isColour() );
+                int colour = dan200.computercraft.core.apis.TermAPI.parseColour( args );
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setBackgroundColour( colour );
                 return null;
@@ -234,7 +234,7 @@ public class MonitorPeripheral implements IPeripheral
 
                 if(args.length == 2 && args[0] instanceof Double && args[1] instanceof Double)
                 {
-                    int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args, true );
+                    int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args );
                     int hex = ((Double)args[1]).intValue();
                     float[] rgb = Palette.decodeRGB8( hex );
                     dan200.computercraft.core.apis.TermAPI.setColour( terminal, colour, rgb[0], rgb[1], rgb[2] );
@@ -243,7 +243,7 @@ public class MonitorPeripheral implements IPeripheral
 
                 if (args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
                 {
-                    int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args, true );
+                    int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args );
                     float r = ((Double)args[1]).floatValue();
                     float g = ((Double)args[2]).floatValue();
                     float b = ((Double)args[3]).floatValue();
@@ -251,7 +251,7 @@ public class MonitorPeripheral implements IPeripheral
                     return null;
                 }
 
-                throw new LuaException( "Expected number, number or number, number, number, number" );
+                throw new LuaException( "Expected number, number, number, number" );
             }
             case 22:
             case 23:
@@ -260,7 +260,7 @@ public class MonitorPeripheral implements IPeripheral
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 Palette palette = terminal.getPalette();
 
-                int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args, m_monitor.getTerminal().isColour() );
+                int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args );
 
                 if( palette != null )
                 {
