@@ -17,7 +17,10 @@ import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.turtle.apis.TurtleAPI;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
-import dan200.computercraft.shared.util.*;
+import dan200.computercraft.shared.util.Colour;
+import dan200.computercraft.shared.util.InventoryUtil;
+import dan200.computercraft.shared.util.RedstoneUtil;
+import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,9 +30,16 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -195,7 +205,8 @@ public class TileTurtle extends TileComputerBase
                         m_brain.setDyeColour( -1 );
                         if( !player.capabilities.isCreativeMode )
                         {
-                            currentItem.setItem( Items.BUCKET );
+                            player.setHeldItem( EnumHand.MAIN_HAND, new ItemStack( Items.BUCKET ) );
+                            player.inventory.markDirty();
                         }
                     }
                 }

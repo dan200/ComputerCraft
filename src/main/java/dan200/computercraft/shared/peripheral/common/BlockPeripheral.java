@@ -66,6 +66,7 @@ public class BlockPeripheral extends BlockPeripheralBase
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         IBlockState state = getDefaultState();
@@ -169,6 +170,7 @@ public class BlockPeripheral extends BlockPeripheralBase
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         int anim;

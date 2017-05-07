@@ -18,14 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-class HTTPRequestException extends Exception {
-    private static final long serialVersionUID = 7591208619422744652L;
-
-    public HTTPRequestException( String s ) {
-        super( s );
-    }
-}
-
 public class HTTPRequest
 {
     public static URL checkURL( String urlString ) throws HTTPRequestException

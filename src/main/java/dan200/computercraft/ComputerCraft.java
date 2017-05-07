@@ -84,11 +84,13 @@ import java.util.Map;
 ///////////////
 
 @Mod(
-    modid = "ComputerCraft", name = "ComputerCraft", version = "${version}",
+    modid = ComputerCraft.MOD_ID, name = "ComputerCraft", version = "${version}",
     guiFactory = "dan200.computercraft.client.gui.GuiConfigCC$Factory"
 )
 public class ComputerCraft
 {
+    public static final String MOD_ID = "ComputerCraft";
+
     // GUI IDs
     public static final int diskDriveGUIID = 100;
     public static final int computerGUIID = 101;
@@ -212,7 +214,7 @@ public class ComputerCraft
     private static final Map<String, IPocketUpgrade> pocketUpgrades = new HashMap<String, IPocketUpgrade>();
 
     // Implementation
-    @Mod.Instance( value = "ComputerCraft" )
+    @Mod.Instance( value = ComputerCraft.MOD_ID )
     public static ComputerCraft instance;
 
     @SidedProxy( clientSide = "dan200.computercraft.client.proxy.ComputerCraftProxyClient", serverSide = "dan200.computercraft.server.proxy.ComputerCraftProxyServer" )

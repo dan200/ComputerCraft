@@ -24,6 +24,7 @@ import dan200.computercraft.shared.turtle.upgrades.*;
 import dan200.computercraft.shared.util.IEntityDropConsumer;
 import dan200.computercraft.shared.util.ImpostorRecipe;
 import dan200.computercraft.shared.util.InventoryUtil;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -326,14 +327,14 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         // Blocks
         // Turtle
         ComputerCraft.Blocks.turtle = BlockTurtle.createTurtleBlock();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.turtle, ItemTurtleLegacy.class, "CC-Turtle" );
+        registerBlock( ComputerCraft.Blocks.turtle, new ItemTurtleLegacy(ComputerCraft.Blocks.turtle), "CC-Turtle" );
 
         ComputerCraft.Blocks.turtleExpanded = BlockTurtle.createTurtleBlock();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.turtleExpanded, ItemTurtleNormal.class, "CC-TurtleExpanded" );
+        registerBlock( ComputerCraft.Blocks.turtleExpanded, new ItemTurtleNormal( ComputerCraft.Blocks.turtleExpanded ), "CC-TurtleExpanded" );
 
         // Advanced Turtle
         ComputerCraft.Blocks.turtleAdvanced = BlockTurtle.createTurtleBlock();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.turtleAdvanced, ItemTurtleAdvanced.class, "CC-TurtleAdvanced" );
+        registerBlock( ComputerCraft.Blocks.turtleAdvanced, new ItemTurtleAdvanced( ComputerCraft.Blocks.turtleAdvanced ), "CC-TurtleAdvanced" );
 
         // Recipe types
         RecipeSorter.register( "computercraft:turtle", TurtleRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
@@ -401,6 +402,11 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
 
         ComputerCraft.Upgrades.advancedModem =  new TurtleModem( true, new ResourceLocation( "computercraft", "advanced_modem" ), -1 );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.advancedModem );
+    }
+
+    private void registerBlock( Block block, Item item, String name) {
+        GameRegistry.register( block.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
+        GameRegistry.register( item.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
     }
 
     private void registerTileEntities()

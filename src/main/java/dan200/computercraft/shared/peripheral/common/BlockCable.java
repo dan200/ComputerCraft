@@ -92,6 +92,7 @@ public class BlockCable extends BlockPeripheralBase
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         IBlockState state = getDefaultState();
@@ -179,6 +180,7 @@ public class BlockCable extends BlockPeripheralBase
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         state = state.withProperty( Properties.NORTH, doesConnect( state, world, pos, EnumFacing.NORTH ) );
@@ -213,6 +215,7 @@ public class BlockCable extends BlockPeripheralBase
     }
 
     @Override
+    @Deprecated
     public boolean shouldSideBeRendered( IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side )
     {
         return true;

@@ -208,6 +208,7 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
 
     @Nonnull
     @Override
+    @Deprecated
     public ItemCameraTransforms getItemCameraTransforms()
     {
         return getDefaultModel().getItemCameraTransforms();

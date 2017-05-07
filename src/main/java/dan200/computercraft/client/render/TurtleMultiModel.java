@@ -118,6 +118,7 @@ public class TurtleMultiModel implements IBakedModel
 
     @Nonnull
     @Override
+    @Deprecated
     public ItemCameraTransforms getItemCameraTransforms()
     {
         return m_baseModel.getItemCameraTransforms();

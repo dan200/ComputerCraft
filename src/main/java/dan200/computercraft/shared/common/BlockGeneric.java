@@ -152,6 +152,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final void neighborChanged( IBlockState state, World world, BlockPos pos, Block block )
     {
         TileEntity tile = world.getTileEntity( pos );
@@ -208,6 +209,7 @@ public abstract class BlockGeneric extends Block implements
 
     @Nonnull
     @Override
+    @Deprecated
     public final AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
@@ -221,12 +223,14 @@ public abstract class BlockGeneric extends Block implements
 
     @Nonnull
     @Override
+    @Deprecated
     public final AxisAlignedBB getSelectedBoundingBox( IBlockState state, @Nonnull World world, @Nonnull BlockPos pos )
     {
         return getBoundingBox( state, world, pos ).offset( pos );
     }
 
     @Override
+    @Deprecated
     public final AxisAlignedBB getCollisionBoundingBox( IBlockState state, @Nonnull World world, @Nonnull BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
@@ -254,6 +258,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final void addCollisionBoxToList( IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB bigBox, @Nonnull List<AxisAlignedBB> list, Entity entity )
     {
         TileEntity tile = world.getTileEntity( pos );
@@ -277,6 +282,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final boolean canProvidePower( IBlockState state )
     {
         return true;
@@ -295,6 +301,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final int getStrongPower( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing oppositeSide )
     {
         TileEntity tile = world.getTileEntity( pos );
@@ -307,6 +314,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final int getWeakPower( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing oppositeSide )
     {
         return getStrongPower( state, world, pos, oppositeSide );
@@ -335,6 +343,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public boolean eventReceived( IBlockState state, World world, BlockPos pos, int eventID, int eventParameter )
     {
         if( world.isRemote )

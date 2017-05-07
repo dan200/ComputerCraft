@@ -62,6 +62,7 @@ public class BlockComputer extends BlockComputerBase
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         EnumFacing dir = EnumFacing.getFront( meta & 0x7 );
@@ -118,6 +119,7 @@ public class BlockComputer extends BlockComputerBase
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );

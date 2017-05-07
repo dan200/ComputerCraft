@@ -55,18 +55,21 @@ public class BlockTurtle extends BlockComputerBase
 
     @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType( IBlockState state )
     {
         return EnumBlockRenderType.INVISIBLE;
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube( IBlockState state )
     {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullCube( IBlockState state )
     {
         return false;
@@ -81,6 +84,7 @@ public class BlockTurtle extends BlockComputerBase
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         return getDefaultState();
@@ -94,6 +98,7 @@ public class BlockTurtle extends BlockComputerBase
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         return state.withProperty( Properties.FACING, getDirection( world, pos ) );
