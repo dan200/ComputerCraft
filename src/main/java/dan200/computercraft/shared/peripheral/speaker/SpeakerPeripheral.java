@@ -104,8 +104,8 @@ public class SpeakerPeripheral implements IPeripheral {
 
     private Object[] playNote(Object[] arguments) throws LuaException
     {
-        float volume = 1f;
-        float pitch = 1f;
+        double volume = 1f;
+        double pitch = 1f;
 
         // Check if arguments are correct
         if (arguments.length == 0) // Too few args
@@ -114,7 +114,7 @@ public class SpeakerPeripheral implements IPeripheral {
         }
 
         if (!(arguments[0] instanceof String)) // Arg wrong type
-            {
+        {
             throw new LuaException("Expected string, number (optional), number (optional)");
         }
 
@@ -125,7 +125,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
         if (arguments.length > 1)
         {
-            if (!(arguments[1] instanceof Double))  // Arg wrong type
+            if (!(arguments[1] instanceof Double))   // Arg wrong type
             {
                 throw new LuaException("Expected string, number (optional), number (optional)");
             }
@@ -135,7 +135,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
         if (arguments.length > 2)
         {
-            if (!(arguments[2] instanceof Double)) // Arg wrong type
+            if (!(arguments[1] instanceof Double))  // Arg wrong type
             {
                 throw new LuaException("Expected string, number (optional), number (optional)");
             }
@@ -147,7 +147,7 @@ public class SpeakerPeripheral implements IPeripheral {
             throw new LuaException("Expected string, number (optional), number (optional)");
         }
 
-        return playSound(new Object[] {"block.note." + arguments[0], volume, pitch});
+        return playSound(new Object[] {"block.note." + arguments[0], volume, Math.pow(2d, (pitch - 12) / 12d)});
 
     }
 
@@ -180,7 +180,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
         if (arguments.length > 2)
         {
-            if (!(arguments[2] instanceof Double)) // Arg wrong type
+            if (!(arguments[1] instanceof Double))  // Arg wrong type
             {
                 throw new LuaException("Expected string, number (optional), number (optional)");
             }
