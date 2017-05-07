@@ -9,6 +9,7 @@ tile.computercraft:wired_modem.name=Wired Modem
 tile.computercraft:cable.name=Networking Cable
 tile.computercraft:command_computer.name=Command Computer
 tile.computercraft:advanced_modem.name=Ender Modem
+tile.computercraft:speaker.name=Speaker
 
 tile.computercraft:turtle.name=Turtle
 tile.computercraft:turtle.upgraded.name=%s Turtle

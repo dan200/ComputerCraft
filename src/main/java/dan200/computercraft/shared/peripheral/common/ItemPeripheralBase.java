@@ -98,6 +98,10 @@ public abstract class ItemPeripheralBase extends ItemBlock implements IPeriphera
             {
                 return "tile.computercraft:advanced_modem";
             }
+            case Speaker:
+            {
+                return "tile.computercraft:speaker";
+            }
         }
     }
 
