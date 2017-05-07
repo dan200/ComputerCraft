@@ -8,7 +8,7 @@ New Features in ComputerCraft 1.80:
 * Monitor text now glows in the dark.
 * Added a "Pocket Computer upgrde API" so mod developers can add their own pocket upgrades.
 * Added pocket.equipBack()/pocket.unequipBack() to add/remove pocket upgrades.
-* Added term.setColorPalette() to change colors
+* Added term.setPaletteColor() to change colors
 * Added colors.rgb8()/colours.rgb8() 
 * Performance improvements to fs.find
 * Requires the player to be interacting with the computer when typing
