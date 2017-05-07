@@ -205,7 +205,7 @@ public class GuiPrintout extends GuiContainer
             int lineIdx = ItemPrintout.LINES_PER_PAGE * m_page + line;
             if( lineIdx >= 0 && lineIdx < m_text.length )
             {
-                fontRenderer.drawString( m_text[lineIdx], x, y, m_colours[lineIdx], null, 0, 0, false, new Palette() );
+                fontRenderer.drawString( m_text[lineIdx], x, y, m_colours[lineIdx], null, 0, 0, false, Palette.DEFAULT );
             }
             y = y + FixedWidthFontRenderer.FONT_HEIGHT;
         }

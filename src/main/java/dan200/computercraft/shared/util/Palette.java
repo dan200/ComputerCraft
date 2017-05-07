@@ -7,6 +7,8 @@ public class Palette
     private static final int PALETTE_SIZE = 16;
     private final float[][] colours = new float[PALETTE_SIZE][3];
 
+    public static final Palette DEFAULT = new Palette();
+
     public Palette()
     {
         // Get the default palette
