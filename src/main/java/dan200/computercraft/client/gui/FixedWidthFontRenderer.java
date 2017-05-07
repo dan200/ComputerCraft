@@ -35,7 +35,7 @@ public class FixedWidthFontRenderer
 
     private static void greyscaleify( float[] rgb )
     {
-        Arrays.fill(rgb, ( rgb[0] + rgb[1] + rgb[2] ) / 3.0f);
+        Arrays.fill( rgb, ( rgb[0] + rgb[1] + rgb[2] ) / 3.0f );
     }
 
     private void drawChar( VertexBuffer renderer, double x, double y, int index, int color, Palette p, boolean greyscale )
