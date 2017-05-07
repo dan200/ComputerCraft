@@ -81,7 +81,7 @@ public class TermAPI implements ILuaAPI
         };
     }
     
-    public static int parseColour( Object[] args, boolean _enableColours ) throws LuaException
+    public static int parseColour( Object[] args ) throws LuaException
     {
         if( args.length < 1 || args[0] == null || !(args[0] instanceof Double) )
         {
@@ -96,10 +96,6 @@ public class TermAPI implements ILuaAPI
         if( colour < 0 || colour > 15 )
         {
             throw new LuaException( "Colour out of range" );
-        }
-        if( !_enableColours && (colour != 0 && colour != 15 && colour != 7 && colour != 8) )
-        {
-            throw new LuaException( "Colour not supported" );
         }
         return colour;
     }
@@ -230,7 +226,7 @@ public class TermAPI implements ILuaAPI
             case 9:
             {
                 // setTextColour/setTextColor
-                int colour = parseColour( args, m_environment.isColour() );
+                int colour = parseColour( args );
                 synchronized( m_terminal )
                 {
                     m_terminal.setTextColour( colour );
@@ -241,7 +237,7 @@ public class TermAPI implements ILuaAPI
             case 11:
             {
                 // setBackgroundColour/setBackgroundColor
-                int colour = parseColour( args, m_environment.isColour() );
+                int colour = parseColour( args );
                 synchronized( m_terminal )
                 {
                     m_terminal.setBackgroundColour( colour );
@@ -295,7 +291,7 @@ public class TermAPI implements ILuaAPI
                 // setPaletteColour/setPaletteColor
                 if(args.length == 2 && args[0] instanceof Double && args[1] instanceof Double)
                 {
-                    int colour = 15 - parseColour( args, true );
+                    int colour = 15 - parseColour( args );
                     int hex = ((Double)args[1]).intValue();
                     float[] rgb = Palette.decodeRGB8( hex );
                     setColour( m_terminal, colour, rgb[0], rgb[1], rgb[2] );
@@ -304,7 +300,7 @@ public class TermAPI implements ILuaAPI
 
                 if(args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
                 {
-                    int colour = 15 - parseColour( args, true );
+                    int colour = 15 - parseColour( args );
                     float r = ((Double)args[1]).floatValue();
                     float g = ((Double)args[2]).floatValue();
                     float b = ((Double)args[3]).floatValue();
@@ -323,8 +319,7 @@ public class TermAPI implements ILuaAPI
                     throw new LuaException( "Expected number" );
                 }
 
-                int colour = 15 - parseColour( args, m_environment.isColour() );
-
+                int colour = 15 - parseColour( args );
                 synchronized( m_terminal )
                 {
                     if ( m_terminal.getPalette() != null )
