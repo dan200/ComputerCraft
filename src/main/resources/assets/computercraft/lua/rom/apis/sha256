@@ -174,7 +174,7 @@ local function digestblock(msg, i, H)
 	H[8] = band(H[8] + h)
 end
 
-local function sha256(msg)
+function sha256(msg)
 	msg = preproc(msg, #msg)
 	local H = initH256({})
 	for i = 1, #msg, 64 do digestblock(msg, i, H) end
