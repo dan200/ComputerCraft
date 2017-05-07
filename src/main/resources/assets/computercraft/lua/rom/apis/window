@@ -72,7 +72,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
         for i=0,15 do
             local c = 2 ^ i
-            tPalette[c] = { parent.getColour( c ) }
+            tPalette[c] = { parent.getPaletteColour( c ) }
         end
     end
 
@@ -107,7 +107,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function updatePalette()
-        return parent.setColour( tPalette )
+        return parent.setPaletteColour( tPalette )
     end
 
     local function internalBlit( sText, sTextColor, sBackgroundColor )
@@ -286,7 +286,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         setTextColor( color )
     end
 
-    function window.setColour( colour, r, g, b )
+    function window.setPaletteColour( colour, r, g, b )
         if type(colour) == "table" then
             for k,v in pairs(colour) do
                 tPalette[k] = v
@@ -305,13 +305,13 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         end
     end
 
-    window.setColor = window.setColour
+    window.setPaletteColor = window.setPaletteColour
 
-    function window.getColour( colour )
+    function window.getPaletteColour( colour )
         return table.unpack( tPalette[ colour ] )
     end
 
-    window.getColor = window.getColour
+    window.getPaletteColor = window.getPaletteColour
 
     local function setBackgroundColor( color )
         if not parent.isColor() then

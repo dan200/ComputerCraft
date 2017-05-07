@@ -57,10 +57,10 @@ public class MonitorPeripheral implements IPeripheral
             "getBackgroundColour",
             "getBackgroundColor",
             "blit",
-            "setColour",
-            "setColor",
-            "getColour",
-            "getColor"
+            "setPaletteColour",
+            "setPaletteColor",
+            "getPaletteColour",
+            "getPaletteColor"
         };
     }
 

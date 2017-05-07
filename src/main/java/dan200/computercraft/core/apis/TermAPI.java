@@ -74,10 +74,10 @@ public class TermAPI implements ILuaAPI
             "getBackgroundColour",
             "getBackgroundColor",
             "blit",
-            "setColour",
-            "setColor",
-            "getColour",
-            "getColor"
+            "setPaletteColour",
+            "setPaletteColor",
+            "getPaletteColour",
+            "getPaletteColor"
         };
     }
     
