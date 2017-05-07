@@ -194,7 +194,7 @@ shell.setCompletionFunction( "rom/programs/fun/dj", completeDJ )
 shell.setCompletionFunction( "rom/programs/fun/advanced/paint", completeFile )
 shell.setCompletionFunction( "rom/programs/http/pastebin", completePastebin )
 shell.setCompletionFunction( "rom/programs/rednet/chat", completeChat )
-
+shell.setCompletionFunction( "rom/programs/size", completeFile )
 -- Run autorun files
 if fs.exists( "/rom/autorun" ) and fs.isDir( "/rom/autorun" ) then
 	local tFiles = fs.list( "/rom/autorun" )
