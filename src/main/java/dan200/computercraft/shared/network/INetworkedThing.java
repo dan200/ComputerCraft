@@ -9,5 +9,5 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public interface INetworkedThing
 {
-    public void handlePacket( ComputerCraftPacket packet, EntityPlayer sender );
+    void handlePacket( ComputerCraftPacket packet, EntityPlayer sender );
 }

@@ -29,7 +29,7 @@ public class Computer
         "bottom", "top", "back", "front", "right", "left",
     };
     
-    private static enum State
+    private enum State
     {
         Off,
         Starting,

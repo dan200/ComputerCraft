@@ -8,5 +8,5 @@ package dan200.computercraft.shared.computer.core;
 
 public interface IComputerContainer
 {
-    public IComputer getComputer();
+    IComputer getComputer();
 }

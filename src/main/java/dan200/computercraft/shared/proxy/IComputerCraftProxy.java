@@ -23,25 +23,25 @@ import java.io.File;
 
 public interface IComputerCraftProxy
 {
-    public void preInit();
-    public void init();
-    public boolean isClient();
+    void preInit();
+    void init();
+    boolean isClient();
 
-    public boolean getGlobalCursorBlink();
-    public long getRenderFrame();
-    public void deleteDisplayLists( int list, int range );
-    public Object getFixedWidthFontRenderer();
+    boolean getGlobalCursorBlink();
+    long getRenderFrame();
+    void deleteDisplayLists( int list, int range );
+    Object getFixedWidthFontRenderer();
 
-    public String getRecordInfo( ItemStack item );
-    public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos );
+    String getRecordInfo( ItemStack item );
+    void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos );
 
-    public Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive );
-    public Object getComputerGUI( TileComputer computer );
-    public Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer );
-    public Object getTurtleGUI( InventoryPlayer inventory, TileTurtle turtle );
-    public abstract Object getPrintoutGUI( EntityPlayer player, EnumHand hand );
-    public abstract Object getPocketComputerGUI( EntityPlayer player, EnumHand hand );
+    Object getDiskDriveGUI( InventoryPlayer inventory, TileDiskDrive drive );
+    Object getComputerGUI( TileComputer computer );
+    Object getPrinterGUI( InventoryPlayer inventory, TilePrinter printer );
+    Object getTurtleGUI( InventoryPlayer inventory, TileTurtle turtle );
+    Object getPrintoutGUI( EntityPlayer player, EnumHand hand );
+    Object getPocketComputerGUI( EntityPlayer player, EnumHand hand );
 
-    public File getWorldDir( World world );
-    public void handlePacket( ComputerCraftPacket packet, EntityPlayer player );
+    File getWorldDir( World world );
+    void handlePacket( ComputerCraftPacket packet, EntityPlayer player );
 }

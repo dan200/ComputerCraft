@@ -11,5 +11,5 @@ import net.minecraft.item.ItemStack;
 
 public interface IPeripheralItem
 {
-    public PeripheralType getPeripheralType( ItemStack stack );
+    PeripheralType getPeripheralType( ItemStack stack );
 }

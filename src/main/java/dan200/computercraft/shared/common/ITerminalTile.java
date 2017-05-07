@@ -8,5 +8,5 @@ package dan200.computercraft.shared.common;
 
 public interface ITerminalTile
 {
-    public ITerminal getTerminal();
+    ITerminal getTerminal();
 }

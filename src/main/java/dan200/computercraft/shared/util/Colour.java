@@ -37,7 +37,7 @@ public enum Colour
     private int m_hex;
     private float[] m_rgb;
 
-    private Colour( int hex )
+    Colour( int hex )
     {
         m_hex = hex;
         m_rgb = new float[] {

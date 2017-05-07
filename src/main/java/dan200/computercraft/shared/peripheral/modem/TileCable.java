@@ -986,9 +986,9 @@ public class TileCable extends TileModemBase
     
     // Generic network search stuff
     
-    private static interface ICableVisitor
+    private interface ICableVisitor
     {
-        public void visit( TileCable modem, int distance );
+        void visit( TileCable modem, int distance );
     }
     
     private static class SearchLoc

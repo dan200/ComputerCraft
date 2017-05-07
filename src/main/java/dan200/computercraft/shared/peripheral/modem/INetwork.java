@@ -11,8 +11,8 @@ import net.minecraft.world.World;
 
 public interface INetwork
 {
-    public void addReceiver( IReceiver receiver );
-    public void removeReceiver( IReceiver receiver );
-    public void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject );
-    public boolean isWireless();
+    void addReceiver( IReceiver receiver );
+    void removeReceiver( IReceiver receiver );
+    void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject );
+    boolean isWireless();
 }

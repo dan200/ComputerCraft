@@ -126,7 +126,7 @@ public enum BlockPeripheralVariant implements IStringSerializable
     private String m_name;
     private PeripheralType m_peripheralType;
 
-    private BlockPeripheralVariant( String name, PeripheralType peripheralType )
+    BlockPeripheralVariant( String name, PeripheralType peripheralType )
     {
         m_name = name;
         m_peripheralType = peripheralType;

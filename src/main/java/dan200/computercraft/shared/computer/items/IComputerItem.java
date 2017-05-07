@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 
 public interface IComputerItem
 {
-    public int getComputerID( ItemStack stack );
-    public String getLabel( ItemStack stack );
-    public ComputerFamily getFamily( ItemStack stack );
+    int getComputerID( ItemStack stack );
+    String getLabel( ItemStack stack );
+    ComputerFamily getFamily( ItemStack stack );
 }
