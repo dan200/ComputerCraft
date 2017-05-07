@@ -289,8 +289,16 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     function window.setPaletteColour( colour, r, g, b )
         if type(colour) == "table" then
             for k,v in pairs(colour) do
-                tPalette[k] = v
+                if type(v) == "number" then
+                    local vr, vg, vb = colours.rgb8( v )
+                    tPalette[k] = { vr, vg, vb }
+                    parent.setPaletteColour( k, vr, vg, vb )
+                elseif type(v) == "table" then
+                    tPalette[k] = v
+                    parent.setPaletteColour( k, table.unpack( v ) )
+                end
             end
+            return
         elseif type(colour) == "number" and type(r) == "number" and g == nil and b == nil then
             tPalette[ colour ] = { colours.rgb8( r ) }
         elseif type(colour) == "number" and type(r) == "number" and type(g) == "number" and type(b) == "number" then
@@ -301,7 +309,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         end
 
         if bVisible then
-            return updatePalette()
+            return parent.setPaletteColour( colour, tPalette[ colour ] )
         end
     end
 
