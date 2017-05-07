@@ -336,7 +336,7 @@ public class TermAPI implements ILuaAPI
             case 19:
             case 20:
             {
-                // setColour/setColor
+                // setPaletteColour/setPaletteColor
                 if( !m_environment.isColour() )
                 {
                     // Make sure you can't circumvent greyscale terminals with this function.
@@ -375,8 +375,8 @@ public class TermAPI implements ILuaAPI
             case 21:
             case 22:
             {
-                // getColour/getColor
-                if (args.length < 1 || !(args[0] instanceof Double))
+                // getPaletteColour/getPaletteColor
+                if(args.length < 1 || !(args[0] instanceof Double))
                 {
                     throw new LuaException( "Expected number" );
                 }

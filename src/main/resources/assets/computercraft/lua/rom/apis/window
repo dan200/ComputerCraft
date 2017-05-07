@@ -309,7 +309,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         end
 
         if bVisible then
-            return parent.setPaletteColour( colour, tPalette[ colour ] )
+            return parent.setPaletteColour( colour, table.unpack( tPalette[ colour ] ) )
         end
     end
 

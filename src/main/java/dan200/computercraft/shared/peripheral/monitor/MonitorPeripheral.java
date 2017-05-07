@@ -229,7 +229,7 @@ public class MonitorPeripheral implements IPeripheral
             case 20:
             case 21:
             {
-                // setColour/setColor
+                // setPaletteColour/setPaletteColor
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 boolean isColour = m_monitor.getTerminal().isColour();
 
@@ -270,7 +270,7 @@ public class MonitorPeripheral implements IPeripheral
             case 22:
             case 23:
             {
-                // getColour/getColor
+                // getPaletteColour/getPaletteColor
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 Palette palette = terminal.getPalette();
 
