@@ -298,7 +298,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         end
 
         if bVisible then
-            return parent.setPaletteColour( colour, tCol[1], tCol[2], tCol[3] ) )
+            return parent.setPaletteColour( colour, tCol[1], tCol[2], tCol[3] )
         end
     end
 
