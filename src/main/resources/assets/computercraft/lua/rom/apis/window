@@ -20,6 +20,7 @@ local tHex = {
 
 local string_rep = string.rep
 local string_sub = string.sub
+local table_unpack = table.unpack
 
 function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
@@ -57,6 +58,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     local nTextColor = colors.white
     local nBackgroundColor = colors.black
     local tLines = {}
+    local tPalette = {}
     do
         local sEmptyText = sEmptySpaceLine
         local sEmptyTextColor = tEmptyColorLines[ nTextColor ]
@@ -67,6 +69,11 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
                 textColor = sEmptyTextColor,
                 backgroundColor = sEmptyBackgroundColor,
             }
+        end
+
+        for i=0,15 do
+            local c = 2 ^ i
+            tPalette[c] = { parent.getPaletteColour( c ) }
         end
     end
 
@@ -87,7 +94,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     local function updateCursorColor()
         parent.setTextColor( nTextColor )
     end
-    
+
     local function redrawLine( n )
         local tLine = tLines[ n ]
         parent.setCursorPos( nX, nY + n - 1 )
@@ -97,6 +104,12 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     local function redraw()
         for n=1,nHeight do
             redrawLine( n )
+        end
+    end
+
+    local function updatePalette()
+        for k,v in pairs( tPalette ) do
+            parent.setPaletteColour( k, v[1], v[2], v[3] )
         end
     end
 
@@ -257,11 +270,6 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function setTextColor( color )
-        if not parent.isColor() then
-            if color ~= colors.white and color ~= colors.black and color ~= colors.gray and color ~= colors.lightGray then
-                error( "Color not supported", 3 )
-            end
-        end
         nTextColor = color
         if bVisible then
             updateCursorColor()
@@ -276,12 +284,34 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         setTextColor( color )
     end
 
-    local function setBackgroundColor( color )
-        if not parent.isColor() then
-            if color ~= colors.white and color ~= colors.black and color ~= colors.gray and color ~= colors.lightGray then
-                error( "Color not supported", 3 )
-            end
+    function window.setPaletteColour( colour, r, g, b )
+        local tCol
+        if type(colour) == "number" and type(r) == "number" and g == nil and b == nil then
+            tCol = { colours.rgb8( r ) }
+        elseif type(colour) == "number" and type(r) == "number" and type(g) == "number" and type(b) == "number" then
+            tCol = tPalette[ colour ]
+            tCol[1] = r
+            tCol[2] = g
+            tCol[3] = b
+        else
+            error("Expected number, number, number, number")
         end
+
+        if bVisible then
+            return parent.setPaletteColour( colour, tCol[1], tCol[2], tCol[3] ) )
+        end
+    end
+
+    window.setPaletteColor = window.setPaletteColour
+
+    function window.getPaletteColour( colour )
+        local tCol = tPalette[ colour ]
+        return tCol[1], tCol[2], tCol[3]
+    end
+
+    window.getPaletteColor = window.getPaletteColour
+
+    local function setBackgroundColor( color )
         nBackgroundColor = color
     end
 
@@ -353,6 +383,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     function window.redraw()
         if bVisible then
             redraw()
+            updatePalette()
             updateCursorBlink()
             updateCursorColor()
             updateCursorPos()

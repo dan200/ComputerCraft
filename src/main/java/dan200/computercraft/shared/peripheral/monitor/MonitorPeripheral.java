@@ -11,6 +11,10 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.core.terminal.Terminal;
+import dan200.computercraft.shared.util.Palette;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.HashMap;
 
 public class MonitorPeripheral implements IPeripheral
 {
@@ -52,7 +56,11 @@ public class MonitorPeripheral implements IPeripheral
             "getTextColor",
             "getBackgroundColour",
             "getBackgroundColor",
-            "blit"
+            "blit",
+            "setPaletteColour",
+            "setPaletteColor",
+            "getPaletteColour",
+            "getPaletteColor"
         };
     }
 
@@ -161,7 +169,7 @@ public class MonitorPeripheral implements IPeripheral
             case 10:
             {
                 // setTextColour/setTextColor
-                int colour = dan200.computercraft.core.apis.TermAPI.parseColour( args, m_monitor.getTerminal().isColour() );
+                int colour = dan200.computercraft.core.apis.TermAPI.parseColour( args );
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setTextColour( colour );
                 return null;
@@ -170,7 +178,7 @@ public class MonitorPeripheral implements IPeripheral
             case 12:
             {
                 // setBackgroundColour/setBackgroundColor
-                int colour = dan200.computercraft.core.apis.TermAPI.parseColour( args, m_monitor.getTerminal().isColour() );
+                int colour = dan200.computercraft.core.apis.TermAPI.parseColour( args );
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setBackgroundColour( colour );
                 return null;
@@ -216,6 +224,48 @@ public class MonitorPeripheral implements IPeripheral
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.blit( text, textColour, backgroundColour );
                 terminal.setCursorPos( terminal.getCursorX() + text.length(), terminal.getCursorY() );
+                return null;
+            }
+            case 20:
+            case 21:
+            {
+                // setPaletteColour/setPaletteColor
+                Terminal terminal = m_monitor.getTerminal().getTerminal();
+
+                if(args.length == 2 && args[0] instanceof Double && args[1] instanceof Double)
+                {
+                    int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args );
+                    int hex = ((Double)args[1]).intValue();
+                    float[] rgb = Palette.decodeRGB8( hex );
+                    dan200.computercraft.core.apis.TermAPI.setColour( terminal, colour, rgb[0], rgb[1], rgb[2] );
+                    return null;
+                }
+
+                if (args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
+                {
+                    int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args );
+                    float r = ((Double)args[1]).floatValue();
+                    float g = ((Double)args[2]).floatValue();
+                    float b = ((Double)args[3]).floatValue();
+                    dan200.computercraft.core.apis.TermAPI.setColour( terminal, colour, r, g, b );
+                    return null;
+                }
+
+                throw new LuaException( "Expected number, number, number, number" );
+            }
+            case 22:
+            case 23:
+            {
+                // getPaletteColour/getPaletteColor
+                Terminal terminal = m_monitor.getTerminal().getTerminal();
+                Palette palette = terminal.getPalette();
+
+                int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args );
+
+                if( palette != null )
+                {
+                    return ArrayUtils.toObject( palette.getColour( colour ) );
+                }
                 return null;
             }
         }

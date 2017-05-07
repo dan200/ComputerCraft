@@ -5,6 +5,7 @@
  */
 
 package dan200.computercraft.core.terminal;
+import dan200.computercraft.shared.util.Palette;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class Terminal
@@ -23,6 +24,8 @@ public class Terminal
     private TextBuffer m_text[];
     private TextBuffer m_textColour[];
     private TextBuffer m_backgroundColour[];
+
+    private final Palette m_palette;
 
     private boolean m_changed;
 
@@ -49,6 +52,8 @@ public class Terminal
         m_cursorBlink = false;
         
         m_changed = false;
+
+        m_palette = new Palette();
     }
 
     public void reset()
@@ -60,6 +65,7 @@ public class Terminal
         m_cursorBlink = false;
         clear();
         m_changed = true;
+        m_palette.resetColours();
     }
     
     public int getWidth() {
@@ -176,6 +182,11 @@ public class Terminal
     public int getBackgroundColour()
     {
         return m_cursorBackgroundColour;
+    }
+
+    public Palette getPalette()
+    {
+        return m_palette;
     }
 
     public void blit( String text, String textColour, String backgroundColour )
@@ -296,7 +307,12 @@ public class Terminal
     {
         return m_changed;
     }
-    
+
+    public void setChanged()
+    {
+        m_changed = true;
+    }
+
     public void clearChanged()
     {
         m_changed = false;
@@ -314,6 +330,10 @@ public class Terminal
             nbttagcompound.setString( "term_text_" + n, m_text[n].toString() );
             nbttagcompound.setString( "term_textColour_" + n, m_textColour[n].toString() );
             nbttagcompound.setString( "term_textBgColour_" + n, m_backgroundColour[ n ].toString() );
+        }
+        if(m_palette != null)
+        {
+            m_palette.writeToNBT( nbttagcompound );
         }
         return nbttagcompound;
     }
@@ -343,6 +363,10 @@ public class Terminal
             {
                 m_backgroundColour[n].write( nbttagcompound.getString( "term_textBgColour_" + n ) );
             }
+        }
+        if (m_palette != null)
+        {
+            m_palette.readFromNBT( nbttagcompound );
         }
         m_changed = true;
     }
