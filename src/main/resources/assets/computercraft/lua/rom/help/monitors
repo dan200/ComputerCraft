@@ -16,6 +16,7 @@ getBackgroundColor()
 getSize()
 scroll( n )
 setPaletteColor( color, r, g, b )
+getPaletteColor( color )
 
 Events fired by the Monitor:
 "monitor_touch" when an Advanced Monitor is touched by the player. Arguments are name, x, y
