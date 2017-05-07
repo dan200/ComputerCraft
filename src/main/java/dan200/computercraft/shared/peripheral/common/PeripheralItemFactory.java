@@ -25,6 +25,7 @@ public class PeripheralItemFactory
         ItemAdvancedModem advancedModem = ((ItemAdvancedModem)Item.getItemFromBlock( ComputerCraft.Blocks.advancedModem ));
         switch( type )
         {
+            case Speaker:
             case DiskDrive:
             case Printer:
             case Monitor:

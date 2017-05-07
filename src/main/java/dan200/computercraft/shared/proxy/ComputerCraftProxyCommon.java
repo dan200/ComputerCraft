@@ -44,6 +44,7 @@ import dan200.computercraft.shared.peripheral.modem.TileWirelessModem;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.ContainerPrinter;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
+import dan200.computercraft.shared.peripheral.speaker.TileSpeaker;
 import dan200.computercraft.shared.pocket.inventory.ContainerPocketComputer;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
@@ -308,6 +309,15 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
                 'Y', Items.REDSTONE
         );
 
+        // Speaker
+        ItemStack speaker = PeripheralItemFactory.create( PeripheralType.Speaker, null, 1);
+        GameRegistry.addRecipe( speaker,
+                "XXX", "XYX", "XZX",
+                'X', Blocks.STONE,
+                'Y', Blocks.NOTEBLOCK,
+                'Z', Items.REDSTONE
+        );
+
         // Wireless Modem
         ItemStack wirelessModem = PeripheralItemFactory.create( PeripheralType.WirelessModem, null, 1 );
         GameRegistry.addRecipe( wirelessModem,
@@ -541,14 +551,15 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
     private void registerTileEntities()
     {
         // Tile Entities
-        registerTileEntity( TileComputer.class, "computer" );
-        registerTileEntity( TileDiskDrive.class, "diskdrive" );
-        registerTileEntity( TileWirelessModem.class, "wirelessmodem" );
-        registerTileEntity( TileMonitor.class, "monitor" );
-        registerTileEntity( TilePrinter.class, "ccprinter" );
-        registerTileEntity( TileCable.class, "wiredmodem" );
-        registerTileEntity( TileCommandComputer.class, "command_computer" );
-        registerTileEntity( TileAdvancedModem.class, "advanced_modem" );
+        GameRegistry.registerTileEntity( TileComputer.class, "computer" );
+        GameRegistry.registerTileEntity( TileDiskDrive.class, "diskdrive" );
+        GameRegistry.registerTileEntity( TileWirelessModem.class, "wirelessmodem" );
+        GameRegistry.registerTileEntity( TileMonitor.class, "monitor" );
+        GameRegistry.registerTileEntity( TilePrinter.class, "ccprinter" );
+        GameRegistry.registerTileEntity( TileCable.class, "wiredmodem" );
+        GameRegistry.registerTileEntity( TileCommandComputer.class, "command_computer" );
+        GameRegistry.registerTileEntity( TileAdvancedModem.class, "advanced_modem" );
+        GameRegistry.registerTileEntity( TileSpeaker.class, "speaker" );
 
         // Register peripheral providers
         ComputerCraftAPI.registerPeripheralProvider( new DefaultPeripheralProvider() );
