@@ -1,0 +1,3 @@
+echo prints a text
+
+Usage: echo <text>
