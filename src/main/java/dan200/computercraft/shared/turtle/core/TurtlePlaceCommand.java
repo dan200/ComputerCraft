@@ -208,8 +208,7 @@ public class TurtlePlaceCommand implements ITurtleCommand
         final BlockPos position = turtle.getPosition();
         Vec3d turtlePos = new Vec3d( turtlePlayer.posX, turtlePlayer.posY, turtlePlayer.posZ );
         Vec3d rayDir = turtlePlayer.getLook( 1.0f );
-        Vec3d rayStart = turtlePos;
-        Pair<Entity, Vec3d> hit = WorldUtil.rayTraceEntities( world, rayStart, rayDir, 1.5 );
+        Pair<Entity, Vec3d> hit = WorldUtil.rayTraceEntities( world, turtlePos, rayDir, 1.5 );
         if( hit == null )
         {
             return stack;

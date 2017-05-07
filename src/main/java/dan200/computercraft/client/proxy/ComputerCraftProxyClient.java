@@ -279,10 +279,10 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     @Override
     public String getRecordInfo( ItemStack recordStack )
     {
-        List info = new ArrayList(1);
+        List<String> info = new ArrayList<String>( 1 );
         recordStack.getItem().addInformation( recordStack, null, info, false );
         if( info.size() > 0 ) {
-            return info.get(0).toString();
+            return info.get( 0 );
         } else {
             return super.getRecordInfo( recordStack );
         }

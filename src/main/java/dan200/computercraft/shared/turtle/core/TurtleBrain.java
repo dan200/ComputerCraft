@@ -26,8 +26,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -573,8 +577,7 @@ public class TurtleBrain implements ITurtleAccess
     @Override
     public float getVisualYaw( float f )
     {
-        float forward = DirectionUtil.toYawAngle( getDirection() );
-        float yaw = forward;
+        float yaw = DirectionUtil.toYawAngle( getDirection() );
         switch( m_animation )
         {
             case TurnLeft:
@@ -1133,19 +1136,16 @@ public class TurtleBrain implements ITurtleAccess
                     }
 
                     AxisAlignedBB aabb = new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ );
-                    List list = world.getEntitiesWithinAABBExcludingEntity( null, aabb );
+                    List<Entity> list = world.getEntitiesWithinAABBExcludingEntity( null, aabb );
                     if( !list.isEmpty() )
                     {
                         double pushStep = 1.0f / (float) ANIM_DURATION;
                         double pushStepX = (double) moveDir.getFrontOffsetX() * pushStep;
                         double pushStepY = (double) moveDir.getFrontOffsetY() * pushStep;
                         double pushStepZ = (double) moveDir.getFrontOffsetZ() * pushStep;
-                        for (Object aList : list)
+                        for (Entity entity : list)
                         {
-                            Entity entity = (Entity) aList;
-                            entity.moveEntity(
-                                pushStepX, pushStepY, pushStepZ
-                            );
+                            entity.moveEntity( pushStepX, pushStepY, pushStepZ );
                         }
                     }
                 }

@@ -49,7 +49,7 @@ public class ItemAdvancedModem extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List list )
+    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( PeripheralItemFactory.create( PeripheralType.AdvancedModem, null, 1 ) );
     }

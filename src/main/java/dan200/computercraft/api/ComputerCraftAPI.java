@@ -298,36 +298,36 @@ public final class ComputerCraftAPI
         if( !ccSearched ) {
             try {
                 computerCraft = Class.forName( "dan200.computercraft.ComputerCraft" );
-                computerCraft_getVersion = findCCMethod( "getVersion", new Class[]{
+                computerCraft_getVersion = findCCMethod( "getVersion", new Class<?>[]{
                 } );
-                computerCraft_createUniqueNumberedSaveDir = findCCMethod( "createUniqueNumberedSaveDir", new Class[]{
+                computerCraft_createUniqueNumberedSaveDir = findCCMethod( "createUniqueNumberedSaveDir", new Class<?>[]{
                     World.class, String.class
                 } );
-                computerCraft_createSaveDirMount = findCCMethod( "createSaveDirMount", new Class[] {
+                computerCraft_createSaveDirMount = findCCMethod( "createSaveDirMount", new Class<?>[] {
                     World.class, String.class, Long.TYPE
                 } );
-                computerCraft_createResourceMount = findCCMethod( "createResourceMount", new Class[] {
+                computerCraft_createResourceMount = findCCMethod( "createResourceMount", new Class<?>[] {
                     Class.class, String.class, String.class
                 } );
-                computerCraft_registerPeripheralProvider = findCCMethod( "registerPeripheralProvider", new Class[] {
+                computerCraft_registerPeripheralProvider = findCCMethod( "registerPeripheralProvider", new Class<?>[] {
                     IPeripheralProvider.class
                 } );
-                computerCraft_registerTurtleUpgrade = findCCMethod( "registerTurtleUpgrade", new Class[] {
+                computerCraft_registerTurtleUpgrade = findCCMethod( "registerTurtleUpgrade", new Class<?>[] {
                     ITurtleUpgrade.class
                 } );
-                computerCraft_registerBundledRedstoneProvider = findCCMethod( "registerBundledRedstoneProvider", new Class[] {
+                computerCraft_registerBundledRedstoneProvider = findCCMethod( "registerBundledRedstoneProvider", new Class<?>[] {
                     IBundledRedstoneProvider.class
                 } );
-                computerCraft_getDefaultBundledRedstoneOutput = findCCMethod( "getDefaultBundledRedstoneOutput", new Class[] {
+                computerCraft_getDefaultBundledRedstoneOutput = findCCMethod( "getDefaultBundledRedstoneOutput", new Class<?>[] {
                     World.class, BlockPos.class, EnumFacing.class
                 } );
-                computerCraft_registerMediaProvider = findCCMethod( "registerMediaProvider", new Class[] {
+                computerCraft_registerMediaProvider = findCCMethod( "registerMediaProvider", new Class<?>[] {
                     IMediaProvider.class
                 } );
-                computerCraft_registerPermissionProvider = findCCMethod( "registerPermissionProvider", new Class[] {
+                computerCraft_registerPermissionProvider = findCCMethod( "registerPermissionProvider", new Class<?>[] {
                     ITurtlePermissionProvider.class
                 } );
-                computerCraft_registerPocketUpgrade = findCCMethod( "registerPocketUpgrade", new Class[] {
+                computerCraft_registerPocketUpgrade = findCCMethod( "registerPocketUpgrade", new Class<?>[] {
                     IPocketUpgrade.class
                 } );
             } catch( Exception e ) {
@@ -353,7 +353,7 @@ public final class ComputerCraftAPI
     }
 
     private static boolean ccSearched = false;
-    private static Class computerCraft = null;
+    private static Class<?> computerCraft = null;
     private static Method computerCraft_getVersion = null;
     private static Method computerCraft_createUniqueNumberedSaveDir = null;
     private static Method computerCraft_createSaveDirMount = null;

@@ -72,10 +72,9 @@ public class TurtleMoveCommand implements ITurtleCommand
             if( ComputerCraft.turtlesCanPush && m_direction != MoveDirection.Up && m_direction != MoveDirection.Down )
             {
                 // Check there is space for all the pushable entities to be pushed
-                List list = oldWorld.getEntitiesWithinAABBExcludingEntity( null, aabb );
-                for( Object aList : list )
+                List<Entity> list = oldWorld.getEntitiesWithinAABBExcludingEntity( null, aabb );
+                for( Entity entity : list )
                 {
-                    Entity entity = (Entity) aList;
                     if( !entity.isDead && entity.preventEntitySpawning )
                     {
                         AxisAlignedBB entityBB = entity.getEntityBoundingBox();

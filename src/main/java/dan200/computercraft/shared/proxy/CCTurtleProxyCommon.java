@@ -31,6 +31,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -275,7 +276,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         if( isUpgradeVanilla( upgrade )  )
         {
             // Add fake recipes to fool NEI
-            List recipeList = CraftingManager.getInstance().getRecipeList();
+            List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
             ItemStack craftingItem = upgrade.getCraftingItem();
 
             // A turtle just containing this upgrade

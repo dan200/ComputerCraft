@@ -10,15 +10,14 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.modem.TileCable;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import javax.annotation.Nonnull;
@@ -79,7 +78,7 @@ public class BlockCable extends BlockPeripheralBase
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {
+        return new BlockStateContainer( this,
             Properties.MODEM,
             Properties.CABLE,
             Properties.NORTH,
@@ -87,8 +86,8 @@ public class BlockCable extends BlockPeripheralBase
             Properties.EAST,
             Properties.WEST,
             Properties.UP,
-            Properties.DOWN,
-        });
+            Properties.DOWN
+        );
     }
 
     @Nonnull

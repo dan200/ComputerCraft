@@ -586,8 +586,7 @@ public class ComputerCraft
         {
             try
             {
-                IPeripheralProvider handler = peripheralProvider;
-                IPeripheral peripheral = handler.getPeripheral( world, pos, side );
+                IPeripheral peripheral = peripheralProvider.getPeripheral( world, pos, side );
                 if( peripheral != null )
                 {
                     return peripheral;
@@ -624,8 +623,7 @@ public class ComputerCraft
         {
             try
             {
-                IBundledRedstoneProvider handler = bundledRedstoneProvider;
-                int signal = handler.getBundledRedstoneOutput( world, pos, side );
+                int signal = bundledRedstoneProvider.getBundledRedstoneOutput( world, pos, side );
                 if( signal >= 0 )
                 {
                     if( combinedSignal < 0 )
@@ -655,8 +653,7 @@ public class ComputerCraft
             {
                 try
                 {
-                    IMediaProvider handler = mediaProvider;
-                    IMedia media = handler.getMedia( stack );
+                    IMedia media = mediaProvider.getMedia( stack );
                     if( media != null )
                     {
                         return media;

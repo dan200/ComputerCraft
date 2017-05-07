@@ -36,7 +36,7 @@ public abstract class ItemComputerBase extends ItemBlock implements IComputerIte
     }
 
     @Override
-    public void addInformation( @Nonnull ItemStack stack, @Nonnull EntityPlayer player, @Nonnull List list, boolean debug )
+    public void addInformation( @Nonnull ItemStack stack, @Nonnull EntityPlayer player, @Nonnull List<String> list, boolean debug )
     {
         if( debug )
         {

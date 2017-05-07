@@ -90,14 +90,13 @@ public class TurtleSuckCommand implements ITurtleCommand
                 newPosition.getX(), newPosition.getY(), newPosition.getZ(),
                 newPosition.getX() + 1.0, newPosition.getY() + 1.0, newPosition.getZ() + 1.0
             );
-            List list = world.getEntitiesWithinAABBExcludingEntity( null, aabb );
+            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity( null, aabb );
             if( list.size() > 0 )
             {
                 boolean foundItems = false;
                 boolean storedItems = false;
-                for( Object aList : list )
+                for( Entity entity : list )
                 {
-                    Entity entity = (Entity) aList;
                     if( entity != null && entity instanceof EntityItem && !entity.isDead )
                     {
                         // Suck up the item

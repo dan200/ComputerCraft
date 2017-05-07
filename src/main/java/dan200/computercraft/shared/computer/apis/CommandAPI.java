@@ -120,9 +120,8 @@ public class CommandAPI implements ILuaAPI
         table.put( "metadata", metadata );
 
         Map<Object, Object> stateTable = new HashMap<Object, Object>();
-        for( Object o : state.getActualState( world, pos ).getProperties().entrySet() )
+        for( ImmutableMap.Entry<IProperty<?>, Comparable<?>> entry : state.getActualState( world, pos ).getProperties().entrySet() )
         {
-            ImmutableMap.Entry<IProperty, Object> entry = (ImmutableMap.Entry<IProperty, Object>)o;
             String propertyName = entry.getKey().getName();
             Object value = entry.getValue();
             if( value instanceof String || value instanceof Number || value instanceof Boolean )
@@ -194,12 +193,11 @@ public class CommandAPI implements ILuaAPI
                         {
                             ICommandManager commandManager = server.getCommandManager();
                             ICommandSender commmandSender = m_computer.getCommandSender();
-                            Map commands = commandManager.getCommands();
-                            for( Object entryObject : commands.entrySet() )
+                            Map<String, ICommand> commands = commandManager.getCommands();
+                            for( Map.Entry<String, ICommand> entry : commands.entrySet() )
                             {
-                                Map.Entry entry = (Map.Entry)entryObject;
-                                String name = (String)entry.getKey();
-                                ICommand command = (ICommand)entry.getValue();
+                                String name = entry.getKey();
+                                ICommand command = entry.getValue();
                                 try
                                 {
                                     if( command.checkPermission( server, commmandSender ) )

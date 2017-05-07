@@ -477,8 +477,7 @@ public class PeripheralAPI implements ILuaAPI, IAPIEnvironment.IPeripheralChange
                     }
                     if( p != null )
                     {
-                        Object[] results = p.call( context, methodName, methodArgs );
-                        return results;
+                        return p.call( context, methodName, methodArgs );
                     }
                 }
                 throw new LuaException( "No peripheral attached" );

@@ -42,7 +42,7 @@ public class ItemPrintout extends Item
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List<ItemStack> list )
     {
         list.add( createSingleFromTitleAndText( null, new String[ LINES_PER_PAGE ], new String[ LINES_PER_PAGE ] ) );
         list.add( createMultipleFromTitleAndText( null, new String[ 2*LINES_PER_PAGE ], new String[ 2*LINES_PER_PAGE ] ) );
@@ -50,7 +50,7 @@ public class ItemPrintout extends Item
     }
 
     @Override
-    public void addInformation( ItemStack itemstack, EntityPlayer par2EntityPlayer, List list, boolean flag )
+    public void addInformation( ItemStack itemstack, EntityPlayer par2EntityPlayer, List<String> list, boolean flag )
     {
         String title = getTitle( itemstack );
         if( title != null && title.length() > 0 )

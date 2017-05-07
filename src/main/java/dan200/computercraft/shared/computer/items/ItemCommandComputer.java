@@ -52,7 +52,7 @@ public class ItemCommandComputer extends ItemComputer
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List list )
+    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Command ) );
     }

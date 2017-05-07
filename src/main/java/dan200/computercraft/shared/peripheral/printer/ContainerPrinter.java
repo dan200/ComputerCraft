@@ -79,10 +79,9 @@ public class ContainerPrinter extends Container
             boolean printing = m_printer.isPrinting();
             for( IContainerListener listener : listeners )
             {
-                IContainerListener icrafting = listener;
                 if( printing != m_lastPrinting )
                 {
-                    icrafting.sendProgressBarUpdate( this, 0, printing ? 1 : 0 );
+                    listener.sendProgressBarUpdate( this, 0, printing ? 1 : 0 );
                 }
             }
             m_lastPrinting = printing;

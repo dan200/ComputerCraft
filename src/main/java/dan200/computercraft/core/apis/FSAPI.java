@@ -124,7 +124,7 @@ public class FSAPI implements ILuaAPI
                     throw new LuaException( "Expected string" );
                 }
                 String path = (String)args[0];
-                return new Object[]{ m_fileSystem.getName( path ) };
+                return new Object[]{ FileSystem.getName( path ) };
             }
             case 3:
             {
@@ -359,7 +359,7 @@ public class FSAPI implements ILuaAPI
                     throw new LuaException( "Expected string" );
                 }
                 String path = (String)args[0];
-                return new Object[]{ m_fileSystem.getDirectory( path ) };
+                return new Object[]{ FileSystem.getDirectory( path ) };
             }
             default:
             {

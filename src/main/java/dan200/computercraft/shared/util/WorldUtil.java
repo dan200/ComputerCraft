@@ -60,10 +60,9 @@ public class WorldUtil
 
         Entity closest = null;
         double closestDist = 99.0;
-        List list = world.getEntitiesWithinAABBExcludingEntity( null, bigBox );
-        for( Object aList : list )
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity( null, bigBox );
+        for( Entity entity : list )
         {
-            Entity entity = (Entity) aList;
             if( entity.isDead || !entity.canBeCollidedWith() )
             {
                 continue;

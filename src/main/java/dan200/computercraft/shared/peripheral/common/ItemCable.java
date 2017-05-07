@@ -63,7 +63,7 @@ public class ItemCable extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List list )
+    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( PeripheralItemFactory.create( PeripheralType.WiredModem, null, 1 ) );
         list.add( PeripheralItemFactory.create( PeripheralType.Cable, null, 1 ) );

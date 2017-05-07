@@ -80,7 +80,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List<ItemStack> list )
     {
         getSubItems( list, ComputerFamily.Normal );
         getSubItems( list, ComputerFamily.Advanced );
@@ -216,7 +216,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
     }
 
     @Override
-    public void addInformation( ItemStack stack, EntityPlayer player, List list, boolean debug )
+    public void addInformation( ItemStack stack, EntityPlayer player, List<String> list, boolean debug )
     {
         if( debug )
         {

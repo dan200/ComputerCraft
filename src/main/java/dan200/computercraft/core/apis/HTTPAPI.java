@@ -201,7 +201,7 @@ public class HTTPAPI implements ILuaAPI
                 Map<String, String> headers = null;
                 if( args.length >= 3 && args[2] instanceof Map )
                 {
-                    Map table = (Map)args[2];
+                    Map<?, ?> table = (Map<?, ?>)args[2];
                     headers = new HashMap<String, String>( table.size() );
                     for( Object key : table.keySet() )
                     {

@@ -316,8 +316,6 @@ public class LuaJLuaMachine implements ILuaMachine
             throw new LuaError( abortMessage );
         }
     }
-
-    private static long s_nextUnusedTaskID = 0;
     
     private LuaTable wrapLuaObject( ILuaObject object )
     {
@@ -531,9 +529,8 @@ public class LuaJLuaMachine implements ILuaMachine
                 m_valuesInProgress.put( object, table );
 
                 // Convert all keys
-                for( Object o : ((Map) object).entrySet() )
+                for( Map.Entry<?, ?> pair : ((Map<?, ?>) object).entrySet() )
                 {
-                    Map.Entry pair = (Map.Entry) o;
                     LuaValue key = toValue( pair.getKey() );
                     LuaValue value = toValue( pair.getValue() );
                     if( !key.isnil() && !value.isnil() )
@@ -554,8 +551,7 @@ public class LuaJLuaMachine implements ILuaMachine
         }
         else if( object instanceof ILuaObject )
         {
-            LuaValue table = wrapLuaObject( (ILuaObject)object );
-            return table;
+            return wrapLuaObject( (ILuaObject)object );
         }
         else
         {
@@ -623,7 +619,7 @@ public class LuaJLuaMachine implements ILuaMachine
                     {
                         return m_objectsInProgress.get( value );
                     }
-                    Map table = new HashMap();
+                    Map<Object, Object> table = new HashMap<Object, Object>();
                     m_objectsInProgress.put( value, table );
 
                     // Convert all keys

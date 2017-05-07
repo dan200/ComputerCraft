@@ -25,7 +25,7 @@ public class TurtleMultiModel implements IBakedModel
     private IBakedModel m_rightUpgradeModel;
     private Matrix4f m_rightUpgradeTransform;
     private List<BakedQuad> m_generalQuads;
-    private List<BakedQuad> m_faceQuads[];
+    private List<BakedQuad>[] m_faceQuads;
 
     public TurtleMultiModel( IBakedModel baseModel, IBakedModel overlayModel, IBakedModel leftUpgradeModel, Matrix4f leftUpgradeTransform, IBakedModel rightUpgradeModel, Matrix4f rightUpgradeTransform )
     {

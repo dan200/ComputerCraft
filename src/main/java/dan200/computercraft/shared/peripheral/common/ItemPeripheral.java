@@ -69,7 +69,7 @@ public class ItemPeripheral extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List list )
+    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( PeripheralItemFactory.create( PeripheralType.DiskDrive, null, 1 ) );
         list.add( PeripheralItemFactory.create( PeripheralType.Printer, null, 1 ) );

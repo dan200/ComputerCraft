@@ -35,7 +35,7 @@ public class ItemDiskLegacy extends Item
     }
     
     @Override
-    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List<ItemStack> list )
     {
         for( int colour=0; colour<16; ++colour )
         {
@@ -80,7 +80,7 @@ public class ItemDiskLegacy extends Item
     }
 
     @Override
-    public void addInformation( ItemStack stack, EntityPlayer player, List list, boolean debug )
+    public void addInformation( ItemStack stack, EntityPlayer player, List<String> list, boolean debug )
     {
         if( debug )
         {
