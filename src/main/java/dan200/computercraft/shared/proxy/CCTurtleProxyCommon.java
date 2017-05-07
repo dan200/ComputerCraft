@@ -112,7 +112,6 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             }
             catch( Exception e )
             {
-                continue;
             }
         }
         return null;

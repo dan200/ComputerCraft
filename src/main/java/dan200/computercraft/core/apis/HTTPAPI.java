@@ -17,8 +17,8 @@ import java.util.*;
 
 public class HTTPAPI implements ILuaAPI
 {
-    private IAPIEnvironment m_apiEnvironment;
-    private List<HTTPRequest> m_httpRequests;
+    private final IAPIEnvironment m_apiEnvironment;
+    private final List<HTTPRequest> m_httpRequests;
     
     public HTTPAPI( IAPIEnvironment environment )
     {

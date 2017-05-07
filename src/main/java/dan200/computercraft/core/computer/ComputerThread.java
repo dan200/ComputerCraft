@@ -13,14 +13,14 @@ import java.util.concurrent.LinkedBlockingQueue;
     
 public class ComputerThread
 {
-    private static Object m_lock;
+    private static final Object m_lock;
     
     private static Thread m_thread;
-    private static WeakHashMap <Object, LinkedBlockingQueue<ITask>> m_computerTasks;
-    private static ArrayList <LinkedBlockingQueue<ITask>> m_computerTasksActive;
-    private static ArrayList <LinkedBlockingQueue<ITask>> m_computerTasksPending;
-    private static Object m_defaultQueue;
-    private static Object m_monitor;
+    private static final WeakHashMap <Object, LinkedBlockingQueue<ITask>> m_computerTasks;
+    private static final ArrayList <LinkedBlockingQueue<ITask>> m_computerTasksActive;
+    private static final ArrayList <LinkedBlockingQueue<ITask>> m_computerTasksPending;
+    private static final Object m_defaultQueue;
+    private static final Object m_monitor;
 
     private static boolean m_running;
     private static boolean m_stopped;

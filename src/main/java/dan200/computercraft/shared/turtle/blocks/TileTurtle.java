@@ -245,11 +245,7 @@ public class TileTurtle extends TileComputerBase
         }
         else
         {
-            if( exploder != null && ( exploder instanceof EntityLivingBase || exploder instanceof EntityFireball ) )
-            {
-                return true;
-            }
-            return false;
+            return exploder != null && (exploder instanceof EntityLivingBase || exploder instanceof EntityFireball);
         }
     }
 
@@ -705,11 +701,7 @@ public class TileTurtle extends TileComputerBase
             case 5:    upgrade = getUpgrade( TurtleSide.Left ); break;
             default: return false;
         }
-        if( upgrade != null && upgrade.getType().isPeripheral() )
-        {
-            return true;
-        }
-        return false;
+        return upgrade != null && upgrade.getType().isPeripheral();
     }
 
     public void transferStateFrom( TileTurtle copy )

@@ -447,16 +447,8 @@ public class TilePrinter extends TilePeripheralBase
     {
         synchronized( m_inventory )
         {
-            ItemStack inkStack = m_inventory[0];
-            if( inkStack == null || !isInk(inkStack) )
-            {
-                return false;
-            }
-            if( getPaperLevel() > 0 )
-            {
-                return true;
-            }
-            return false;
+            ItemStack inkStack = m_inventory[ 0 ];
+            return inkStack != null && isInk( inkStack ) && getPaperLevel() > 0;
         }
     }
     

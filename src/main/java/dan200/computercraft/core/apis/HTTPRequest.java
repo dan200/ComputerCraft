@@ -278,8 +278,8 @@ public class HTTPRequest
         return null;
     }
     
-    private Object m_lock = new Object();
-    private URL m_url;
+    private final Object m_lock = new Object();
+    private final URL m_url;
     private final String m_urlString;
     
     private boolean m_complete;

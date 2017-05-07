@@ -15,8 +15,8 @@ import javax.annotation.Nonnull;
 
 public class TermAPI implements ILuaAPI
 {
-    private Terminal m_terminal;
-    private IComputerEnvironment m_environment;
+    private final Terminal m_terminal;
+    private final IComputerEnvironment m_environment;
 
     public TermAPI( IAPIEnvironment _environment )
     {

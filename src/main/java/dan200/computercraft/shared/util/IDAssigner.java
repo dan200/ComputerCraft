@@ -50,7 +50,6 @@ public class IDAssigner
                     }
                     catch( NumberFormatException e )
                     {
-                        continue;
                     }
                 }
             }

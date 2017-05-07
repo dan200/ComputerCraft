@@ -52,10 +52,6 @@ public class PocketModemPeripheral extends WirelessModemPeripheral
     @Override
     public boolean equals( IPeripheral other )
     {
-        if( other instanceof PocketModemPeripheral )
-        {
-            return true;
-        }
-        return false;
+        return other instanceof PocketModemPeripheral;
     }
 }

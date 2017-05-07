@@ -233,13 +233,13 @@ public class TileCable extends TileModemBase
 
     // Members
 
-    private Map<Integer, Set<IReceiver>> m_receivers;
-    private Queue<Packet> m_transmitQueue;
+    private final Map<Integer, Set<IReceiver>> m_receivers;
+    private final Queue<Packet> m_transmitQueue;
     
     private boolean m_peripheralAccessAllowed;
     private int m_attachedPeripheralID;
     
-    private Map<String, IPeripheral> m_peripheralsByName;
+    private final Map<String, IPeripheral> m_peripheralsByName;
     private Map<String, RemotePeripheralWrapper> m_peripheralWrappersByName;
     private boolean m_peripheralsKnown;
     private boolean m_destroyed;
