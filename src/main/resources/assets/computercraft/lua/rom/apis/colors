@@ -43,7 +43,7 @@ function rgb8( r, g, b )
         return 
             bit32.lshift( bit32.band(r * 255, 0xFF), 16 ) +
             bit32.lshift( bit32.band(g * 255, 0xFF), 8 ) +
-            bit32.band(b * 255 0xFF)
+            bit32.band(b * 255, 0xFF)
     else
         error( "Expected 1 or 3 numbers" )
     end
