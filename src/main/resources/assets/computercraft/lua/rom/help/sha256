@@ -1,1 +1,8 @@
-The SHA256 API allows for the hashing of passwords, text, etc. To use add: sha256.sha256([text]) (replace [text] with the thing you want to hash.
+Functions in the commands API:
+sha256.sha256( ThingToHash )
+
+Example:
+-Hash:
+hash = sha256.sha256(password)
+-Check:
+if input = sha256.sha256(hash) then
