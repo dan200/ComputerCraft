@@ -8,6 +8,7 @@ package dan200.computercraft.shared.proxy;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.ComputerCraftAPI;
+import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.core.computer.MainThread;
 import dan200.computercraft.shared.common.DefaultBundledRedstoneProvider;
 import dan200.computercraft.shared.common.TileGeneric;
@@ -45,6 +46,7 @@ import dan200.computercraft.shared.peripheral.printer.TilePrinter;
 import dan200.computercraft.shared.pocket.inventory.ContainerPocketComputer;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
+import dan200.computercraft.shared.pocket.peripherals.PocketModem;
 import dan200.computercraft.shared.pocket.recipes.PocketComputerUpgradeRecipe;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.inventory.ContainerTurtle;
@@ -410,7 +412,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         GameRegistry.addRecipe( new ImpostorShapelessRecipe( bookPrintout, new Object[]{leather, singlePrintout, string} ) );
 
         // Pocket Computer
-        ItemStack pocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, false );
+        ItemStack pocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, null );
         GameRegistry.addRecipe( pocketComputer,
                 "XXX", "XYX", "XZX",
                 'X', Blocks.STONE,
@@ -419,7 +421,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         );
 
         // Advanced Pocket Computer
-        ItemStack advancedPocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Advanced, false );
+        ItemStack advancedPocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Advanced, null );
         GameRegistry.addRecipe( advancedPocketComputer,
                 "XXX", "XYX", "XZX",
                 'X', Items.GOLD_INGOT,
@@ -427,16 +429,30 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
                 'Z', Blocks.GLASS_PANE
         );
 
+        // Register pocket upgrades
+        ComputerCraft.PocketUpgrades.wirelessModem = new PocketModem( false );
+        ComputerCraftAPI.registerPocketUpgrade( ComputerCraft.PocketUpgrades.wirelessModem );
+        ComputerCraft.PocketUpgrades.advancedModem = new PocketModem( true );
+        ComputerCraftAPI.registerPocketUpgrade( ComputerCraft.PocketUpgrades.advancedModem );
+
         // Wireless Pocket Computer
-        ItemStack wirelessPocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, true );
         GameRegistry.addRecipe( new PocketComputerUpgradeRecipe() );
 
-        // Advanced Wireless Pocket Computer
-        ItemStack advancedWirelessPocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Advanced, true );
-
         // Impostor Pocket Computer recipes (to fool NEI)
-        GameRegistry.addRecipe( new ImpostorRecipe( 1, 2, new ItemStack[]{wirelessModem, pocketComputer}, wirelessPocketComputer ) );
-        GameRegistry.addRecipe( new ImpostorRecipe( 1, 2, new ItemStack[]{wirelessModem, advancedPocketComputer}, advancedWirelessPocketComputer ) );
+        for (IPocketUpgrade upgrade : ComputerCraft.getVanillaPocketUpgrades())
+        {
+            GameRegistry.addRecipe( new ImpostorRecipe(
+                1, 2,
+                new ItemStack[]{ upgrade.getCraftingItem(), pocketComputer },
+                PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, upgrade )
+            ) );
+
+            GameRegistry.addRecipe( new ImpostorRecipe(
+                1, 2,
+                new ItemStack[]{ upgrade.getCraftingItem(), advancedPocketComputer },
+                PocketComputerItemFactory.create( -1, null, ComputerFamily.Advanced, upgrade )
+            ) );
+        }
 
         // Skulls (Easter Egg)
         // Dan

@@ -14,6 +14,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.api.permissions.ITurtlePermissionProvider;
+import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraft.util.EnumFacing;
@@ -270,6 +271,17 @@ public final class ComputerCraftAPI
         }
     }
 
+    public static void registerPocketUpgrade(IPocketUpgrade upgrade) {
+        findCC();
+        if(computerCraft_registerPocketUpgrade != null) {
+            try {
+                computerCraft_registerPocketUpgrade.invoke( null, upgrade );
+            } catch (Exception e) {
+                // It failed
+            }
+        }
+    }
+
     // The functions below here are private, and are used to interface with the non-API ComputerCraft classes.
     // Reflection is used here so you can develop your mod without decompiling ComputerCraft and including
     // it in your solution, and so your mod won't crash if ComputerCraft is installed.
@@ -308,6 +320,9 @@ public final class ComputerCraftAPI
                 computerCraft_registerPermissionProvider = findCCMethod( "registerPermissionProvider", new Class[] {
                     ITurtlePermissionProvider.class
                 } );
+                computerCraft_registerPocketUpgrade = findCCMethod( "registerPocketUpgrade", new Class[] {
+                    IPocketUpgrade.class
+                } );
             } catch( Exception e ) {
                 System.out.println( "ComputerCraftAPI: ComputerCraft not found." );
             } finally {
@@ -342,4 +357,5 @@ public final class ComputerCraftAPI
     private static Method computerCraft_getDefaultBundledRedstoneOutput = null;
     private static Method computerCraft_registerMediaProvider = null;
     private static Method computerCraft_registerPermissionProvider = null;
+    private static Method computerCraft_registerPocketUpgrade = null;
 }
