@@ -9,6 +9,9 @@ package dan200.computercraft.api.peripheral;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * The interface that defines a peripheral. See {@link IPeripheralProvider} for how to associate blocks with peripherals.
  */
@@ -20,7 +23,8 @@ public interface IPeripheral
      *
      * @return A string identifying the type of peripheral.
      */
-    public String getType();
+    @Nonnull
+    String getType();
 
     /**
      * Should return an array of strings that identify the methods that this
@@ -30,7 +34,8 @@ public interface IPeripheral
      * @return An array of strings representing method names.
      * @see #callMethod
      */
-    public String[] getMethodNames();
+    @Nonnull
+    String[] getMethodNames();
 
     /**
      * This is called when a lua program on an attached computer calls {@code peripheral.call()} with
@@ -66,7 +71,8 @@ public interface IPeripheral
      *                              intercepted, or the computer will leak memory and end up in a broken state.
      * @see #getMethodNames
      */
-    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException;
+    @Nullable
+    Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException;
 
     /**
      * Is called when canAttachToSide has returned true, and a computer is attaching to the peripheral.
@@ -85,7 +91,7 @@ public interface IPeripheral
      *                 computers can be attached to a peripheral at once.
      * @see #detach
      */
-    public void attach( IComputerAccess computer );
+    void attach( @Nonnull IComputerAccess computer );
 
     /**
      * Is called when a computer is detaching from the peripheral.
@@ -102,7 +108,7 @@ public interface IPeripheral
      *                 computers can be attached to a peripheral at once.
      * @see #detach
      */
-    public void detach( IComputerAccess computer );
+    void detach( @Nonnull IComputerAccess computer );
 
     /**
      * Determine whether this peripheral is equivalent to another one.
@@ -113,5 +119,5 @@ public interface IPeripheral
      * @param other The peripheral to compare against. This may be {@code null}.
      * @return Whether these peripherals are equivalent.
      */
-    public boolean equals( IPeripheral other );
+    boolean equals( @Nullable IPeripheral other );
 }

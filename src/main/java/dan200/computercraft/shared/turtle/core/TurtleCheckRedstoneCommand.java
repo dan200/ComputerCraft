@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -11,6 +11,8 @@ import dan200.computercraft.api.turtle.ITurtleCommand;
 import dan200.computercraft.api.turtle.TurtleCommandResult;
 import dan200.computercraft.core.apis.IAPIEnvironment;
 
+import javax.annotation.Nonnull;
+
 public class TurtleCheckRedstoneCommand implements ITurtleCommand
 {
     private final IAPIEnvironment m_environment;
@@ -22,8 +24,9 @@ public class TurtleCheckRedstoneCommand implements ITurtleCommand
         m_direction = direction;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Do the checking
         int redstoneSide;

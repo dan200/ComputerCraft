@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class TileComputer extends TileComputerBase
@@ -47,7 +48,7 @@ public class TileComputer extends TileComputerBase
     }
 
     @Override
-    public void getDroppedItems( List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
     {
         IComputer computer = getComputer();
         if( !creative || (computer != null && computer.getLabel() != null) )
@@ -69,7 +70,7 @@ public class TileComputer extends TileComputerBase
     }
 
     @Override
-    public final void readDescription( NBTTagCompound nbttagcompound )
+    public final void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
         updateBlock();
@@ -86,7 +87,7 @@ public class TileComputer extends TileComputerBase
     public EnumFacing getDirection()
     {
         IBlockState state = getBlockState();
-        return (EnumFacing)state.getValue( BlockComputer.Properties.FACING );
+        return state.getValue( BlockComputer.Properties.FACING );
     }
 
     @Override

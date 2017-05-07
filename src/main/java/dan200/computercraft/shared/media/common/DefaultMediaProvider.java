@@ -7,6 +7,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class DefaultMediaProvider implements IMediaProvider
 {
     public DefaultMediaProvider()
@@ -14,7 +16,7 @@ public class DefaultMediaProvider implements IMediaProvider
     }
 
     @Override
-    public IMedia getMedia( ItemStack stack )
+    public IMedia getMedia( @Nonnull ItemStack stack )
     {
         Item item = stack.getItem();
         if( item instanceof IMedia )

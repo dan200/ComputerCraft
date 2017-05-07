@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,6 +10,8 @@ import dan200.computercraft.ComputerCraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
+import javax.annotation.Nonnull;
+
 public class CreativeTabTreasure extends CreativeTabs
 {
     public CreativeTabTreasure( int i )
@@ -17,12 +19,14 @@ public class CreativeTabTreasure extends CreativeTabs
         super( i, "Treasure Disks" );
     }
     
+    @Nonnull
     @Override
     public Item getTabIconItem()
     {
         return ComputerCraft.Items.treasureDisk;
     }
     
+    @Nonnull
     @Override
     public String getTranslatedTabLabel()
     {

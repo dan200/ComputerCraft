@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -11,6 +11,8 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.computer.core.ServerComputer;
+
+import javax.annotation.Nonnull;
 
 public class ComputerPeripheral
     implements IPeripheral
@@ -26,12 +28,14 @@ public class ComputerPeripheral
         
     // IPeripheral implementation
 
+    @Nonnull
     @Override
     public String getType()
     {
         return m_type;
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -45,7 +49,7 @@ public class ComputerPeripheral
     }
 
     @Override
-    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws LuaException
+    public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException
     {
         switch( method )
         {
@@ -87,12 +91,12 @@ public class ComputerPeripheral
     }
 
     @Override
-    public void attach( IComputerAccess computer )
+    public void attach( @Nonnull IComputerAccess computer )
     {
     }
 
     @Override
-    public void detach( IComputerAccess computer )
+    public void detach( @Nonnull IComputerAccess computer )
     {
     }
 

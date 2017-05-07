@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -12,9 +12,9 @@ import dan200.computercraft.shared.computer.core.IComputer;
 
 public interface IComputerTile extends ITerminalTile
 {
-    public void setComputerID( int id );
-    public void setLabel( String label );
-    public IComputer getComputer();
-    public IComputer createComputer();
-    public ComputerFamily getFamily();
+    void setComputerID( int id );
+    void setLabel( String label );
+    IComputer getComputer();
+    IComputer createComputer();
+    ComputerFamily getFamily();
 }

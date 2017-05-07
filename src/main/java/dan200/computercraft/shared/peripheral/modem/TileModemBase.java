@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -13,6 +13,8 @@ import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+
+import javax.annotation.Nonnull;
 
 public abstract class TileModemBase extends TilePeripheralBase
 {
@@ -65,6 +67,7 @@ public abstract class TileModemBase extends TilePeripheralBase
         }
     }
 
+    @Nonnull
     @Override
     public AxisAlignedBB getBounds()
     {
@@ -95,7 +98,7 @@ public abstract class TileModemBase extends TilePeripheralBase
     }
 
     @Override
-    public final void readDescription( NBTTagCompound nbttagcompound )
+    public final void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
         updateBlock();

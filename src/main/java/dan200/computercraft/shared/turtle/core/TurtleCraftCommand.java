@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -16,6 +16,7 @@ import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class TurtleCraftCommand implements ITurtleCommand
@@ -27,8 +28,9 @@ public class TurtleCraftCommand implements ITurtleCommand
         m_limit = limit;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Craft the item
         TurtleInventoryCrafting crafting = new TurtleInventoryCrafting( turtle );
@@ -36,9 +38,8 @@ public class TurtleCraftCommand implements ITurtleCommand
         if( results != null )
         {
             // Store the results
-            for( int i=0; i<results.size(); ++i )
+            for( ItemStack stack : results )
             {
-                ItemStack stack = results.get( i );
                 ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
                 if( remainder != null )
                 {

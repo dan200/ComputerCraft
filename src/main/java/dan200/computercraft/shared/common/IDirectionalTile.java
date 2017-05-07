@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,6 +10,6 @@ import net.minecraft.util.EnumFacing;
 
 public interface IDirectionalTile
 {
-    public EnumFacing getDirection();
-    public void setDirection( EnumFacing dir );
+    EnumFacing getDirection();
+    void setDirection( EnumFacing dir );
 }

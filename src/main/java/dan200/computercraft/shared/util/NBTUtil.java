@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -20,7 +20,7 @@ public class NBTUtil
         {
             if( object instanceof Boolean )
             {
-                boolean b = ((Boolean)object).booleanValue();
+                boolean b = (Boolean) object;
                 return new NBTTagByte( b ? (byte)1 : (byte)0 );
             }
             else if( object instanceof Number )
@@ -35,10 +35,10 @@ public class NBTUtil
             }
             else if( object instanceof Map )
             {
-                Map<Object, Object> m = (Map<Object, Object>)object;
+                Map<?, ?> m = (Map<?, ?>)object;
                 NBTTagCompound nbt = new NBTTagCompound();
                 int i=0;
-                for( Map.Entry<Object, Object> entry : m.entrySet() )
+                for( Map.Entry<?, ?> entry : m.entrySet() )
                 {
                     NBTBase key = toNBTTag( entry.getKey() );
                     NBTBase value = toNBTTag( entry.getKey() );
@@ -85,18 +85,15 @@ public class NBTUtil
             {
                 case Constants.NBT.TAG_BYTE: // byte
                 {
-                    boolean b = (((NBTTagByte)tag).getByte() > 0);
-                    return b;
+                    return (((NBTTagByte)tag).getByte() > 0);
                 }
                 case Constants.NBT.TAG_DOUBLE: // Double
                 {
-                    double d = ((NBTTagDouble)tag).getDouble();
-                    return d;
+                    return ((NBTTagDouble)tag).getDouble();
                 }
                 case Constants.NBT.TAG_STRING: // String
                 {
-                    String s = ((NBTTagString)tag).getString();
-                    return s;
+                    return ((NBTTagString)tag).getString();
                 }
                 case Constants.NBT.TAG_COMPOUND: // Compound
                 {

@@ -10,6 +10,7 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -33,7 +34,7 @@ public interface IWritableMount extends IMount
      * @param path A file path in normalised format, relative to the mount location. ie: "programs/mynewprograms".
      * @throws IOException If the directory already exists or could not be created.
      */
-    public void makeDirectory( String path ) throws IOException;
+    void makeDirectory( @Nonnull String path ) throws IOException;
 
     /**
      * Deletes a directory at a given path inside the virtual file system.
@@ -41,7 +42,7 @@ public interface IWritableMount extends IMount
      * @param path A file path in normalised format, relative to the mount location. ie: "programs/myoldprograms".
      * @throws IOException If the file does not exist or could not be deleted.
      */
-    public void delete( String path ) throws IOException;
+    void delete( @Nonnull String path ) throws IOException;
 
     /**
      * Opens a file with a given path, and returns an {@link OutputStream} for writing to it.
@@ -50,7 +51,8 @@ public interface IWritableMount extends IMount
      * @return A stream for writing to
      * @throws IOException If the file could not be opened for writing.
      */
-    public OutputStream openForWrite( String path ) throws IOException;
+    @Nonnull
+    OutputStream openForWrite( @Nonnull String path ) throws IOException;
 
     /**
      * Opens a file with a given path, and returns an {@link OutputStream} for appending to it.
@@ -59,7 +61,8 @@ public interface IWritableMount extends IMount
      * @return A stream for writing to.
      * @throws IOException If the file could not be opened for writing.
      */
-    public OutputStream openForAppend( String path ) throws IOException;
+    @Nonnull
+    OutputStream openForAppend( @Nonnull String path ) throws IOException;
 
     /**
      * Get the amount of free space on the mount, in bytes. You should decrease this value as the user writes to the
@@ -68,5 +71,5 @@ public interface IWritableMount extends IMount
      * @return The amount of free space, in bytes.
      * @throws IOException If the remaining space could not be computed.
      */
-    public long getRemainingSpace() throws IOException;
+    long getRemainingSpace() throws IOException;
 }

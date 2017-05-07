@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,14 +10,15 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
 public class HTTPAPI implements ILuaAPI
 {
-    private IAPIEnvironment m_apiEnvironment;
-    private List<HTTPRequest> m_httpRequests;
+    private final IAPIEnvironment m_apiEnvironment;
+    private final List<HTTPRequest> m_httpRequests;
     
     public HTTPAPI( IAPIEnvironment environment )
     {
@@ -72,6 +73,7 @@ public class HTTPAPI implements ILuaAPI
     private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode, final Map<String, String> responseHeaders )
     {
         return new ILuaObject() {
+            @Nonnull
             @Override
             public String[] getMethodNames()
             {
@@ -85,7 +87,7 @@ public class HTTPAPI implements ILuaAPI
             }
             
             @Override
-            public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+            public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
             {
                 switch( method )
                 {
@@ -155,15 +157,15 @@ public class HTTPAPI implements ILuaAPI
     {
         synchronized( m_httpRequests )
         {
-            Iterator<HTTPRequest> it = m_httpRequests.iterator();
-            while( it.hasNext() ) {
-                HTTPRequest r = it.next();
+            for( HTTPRequest r : m_httpRequests )
+            {
                 r.cancel();
             }
             m_httpRequests.clear();
         }
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -174,7 +176,7 @@ public class HTTPAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {
@@ -199,7 +201,7 @@ public class HTTPAPI implements ILuaAPI
                 Map<String, String> headers = null;
                 if( args.length >= 3 && args[2] instanceof Map )
                 {
-                    Map table = (Map)args[2];
+                    Map<?, ?> table = (Map<?, ?>)args[2];
                     headers = new HashMap<String, String>( table.size() );
                     for( Object key : table.keySet() )
                     {

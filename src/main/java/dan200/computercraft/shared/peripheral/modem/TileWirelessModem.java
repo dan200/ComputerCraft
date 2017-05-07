@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -16,6 +16,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class TileWirelessModem extends TileModemBase
 {
@@ -67,7 +69,7 @@ public class TileWirelessModem extends TileModemBase
     {
         // Wireless Modem
         IBlockState state = getBlockState();
-        switch( (BlockPeripheralVariant)state.getValue( BlockPeripheral.Properties.VARIANT ) )
+        switch( state.getValue( BlockPeripheral.Properties.VARIANT ) )
         {
             case WirelessModemDownOff:
             case WirelessModemDownOn:
@@ -81,7 +83,7 @@ public class TileWirelessModem extends TileModemBase
             }
             default:
             {
-                return (EnumFacing)state.getValue( BlockPeripheral.Properties.FACING );
+                return state.getValue( BlockPeripheral.Properties.FACING );
             }
         }
     }
@@ -120,7 +122,7 @@ public class TileWirelessModem extends TileModemBase
     }
 
     @Override
-    public boolean shouldRefresh( World world, BlockPos pos, IBlockState oldState, IBlockState newState )
+    public boolean shouldRefresh( World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState )
     {
         return super.shouldRefresh( world, pos, oldState, newState ) || ComputerCraft.Blocks.peripheral.getPeripheralType( newState ) != PeripheralType.WirelessModem;
     }

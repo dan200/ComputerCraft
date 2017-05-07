@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -13,7 +13,6 @@ import dan200.computercraft.shared.peripheral.modem.TileWirelessModem;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
 import dan200.computercraft.shared.util.DirectionUtil;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -22,20 +21,22 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 public class BlockPeripheral extends BlockPeripheralBase
 {
     public static class Properties
     {
         public static final PropertyDirection FACING = PropertyDirection.create( "facing", EnumFacing.Plane.HORIZONTAL );
-        public static final PropertyEnum<BlockPeripheralVariant> VARIANT = PropertyEnum.<BlockPeripheralVariant>create( "variant", BlockPeripheralVariant.class );
+        public static final PropertyEnum<BlockPeripheralVariant> VARIANT = PropertyEnum.create( "variant", BlockPeripheralVariant.class );
     }
 
     public BlockPeripheral()
@@ -49,22 +50,23 @@ public class BlockPeripheral extends BlockPeripheralBase
         );
     }
 
+    @Nonnull
     @SideOnly( Side.CLIENT)
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {
-            Properties.FACING,
-            Properties.VARIANT
-        });
+        return new BlockStateContainer( this, Properties.FACING, Properties.VARIANT );
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         IBlockState state = getDefaultState();
@@ -110,12 +112,12 @@ public class BlockPeripheral extends BlockPeripheralBase
     public int getMetaFromState( IBlockState state )
     {
         int meta = 0;
-        BlockPeripheralVariant variant = (BlockPeripheralVariant)state.getValue( Properties.VARIANT );
+        BlockPeripheralVariant variant = state.getValue( Properties.VARIANT );
         switch( variant.getPeripheralType() )
         {
             case DiskDrive:
             {
-                EnumFacing dir = (EnumFacing)state.getValue( Properties.FACING );
+                EnumFacing dir = state.getValue( Properties.FACING );
                 if( dir.getAxis() == EnumFacing.Axis.Y ) {
                     dir = EnumFacing.NORTH;
                 }
@@ -140,7 +142,7 @@ public class BlockPeripheral extends BlockPeripheralBase
                     }
                     default:
                     {
-                        EnumFacing dir = (EnumFacing)state.getValue( Properties.FACING );
+                        EnumFacing dir = state.getValue( Properties.FACING );
                         meta = dir.getIndex() + 4;
                         break;
                     }
@@ -166,8 +168,10 @@ public class BlockPeripheral extends BlockPeripheralBase
         return meta;
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    @Deprecated
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         int anim;
         EnumFacing dir;
@@ -181,8 +185,8 @@ public class BlockPeripheral extends BlockPeripheralBase
         else
         {
             anim = 0;
-            dir = (EnumFacing)state.getValue( Properties.FACING );
-            switch( (BlockPeripheralVariant)state.getValue( BlockPeripheral.Properties.VARIANT ) )
+            dir = state.getValue( Properties.FACING );
+            switch( state.getValue( Properties.VARIANT ) )
             {
                 case WirelessModemDownOff:
                 case WirelessModemDownOn:
@@ -497,7 +501,7 @@ public class BlockPeripheral extends BlockPeripheralBase
     @Override
     public PeripheralType getPeripheralType( IBlockState state )
     {
-        return ((BlockPeripheralVariant)state.getValue( Properties.VARIANT )).getPeripheralType();
+        return state.getValue( Properties.VARIANT ).getPeripheralType();
     }
 
     @Override

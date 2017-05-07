@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,6 +10,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.shared.util.StringUtil;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class OSAPI implements ILuaAPI
@@ -47,7 +48,7 @@ public class OSAPI implements ILuaAPI
         }
 
         @Override
-        public int compareTo( Alarm o )
+        public int compareTo( @Nonnull Alarm o )
         {
             double t = (double)m_day * 24.0 + m_time;
             double ot = (double)m_day * 24.0 + m_time;
@@ -166,6 +167,7 @@ public class OSAPI implements ILuaAPI
         }
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -216,7 +218,7 @@ public class OSAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {

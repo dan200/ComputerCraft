@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class TurtleSuckCommand implements ITurtleCommand
@@ -34,8 +35,9 @@ public class TurtleSuckCommand implements ITurtleCommand
         m_quantity = quantity;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Sucking nothing is easy
         if( m_quantity == 0 )
@@ -88,19 +90,18 @@ public class TurtleSuckCommand implements ITurtleCommand
                 newPosition.getX(), newPosition.getY(), newPosition.getZ(),
                 newPosition.getX() + 1.0, newPosition.getY() + 1.0, newPosition.getZ() + 1.0
             );
-            List list = world.getEntitiesWithinAABBExcludingEntity( null, aabb );
+            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity( null, aabb );
             if( list.size() > 0 )
             {
                 boolean foundItems = false;
                 boolean storedItems = false;
-                for( int i=0; i<list.size(); i++ )
+                for( Entity entity : list )
                 {
-                    Entity entity = (Entity)list.get(i);
                     if( entity != null && entity instanceof EntityItem && !entity.isDead )
                     {
                         // Suck up the item
                         foundItems = true;
-                        EntityItem entityItem = (EntityItem)entity;
+                        EntityItem entityItem = (EntityItem) entity;
                         ItemStack stack = entityItem.getEntityItem().copy();
                         ItemStack storeStack;
                         ItemStack leaveStack;

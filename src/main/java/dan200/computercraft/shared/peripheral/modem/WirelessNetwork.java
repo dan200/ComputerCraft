@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -66,10 +66,8 @@ public class WirelessNetwork implements INetwork
         Set<IReceiver> receivers = m_receivers.get( channel );
         if( receivers != null )
         {
-            Iterator<IReceiver> it = receivers.iterator();
-            while( it.hasNext() )
+            for( IReceiver receiver : receivers )
             {
-                IReceiver receiver = it.next();
                 tryTransmit( receiver, replyChannel, payload, world, pos, range, interdimensional, senderObject );
             }
         }

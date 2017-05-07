@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -16,6 +16,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
 
+import javax.annotation.Nonnull;
+
 public class MonitorPeripheral implements IPeripheral
 {
     private final TileMonitor m_monitor;
@@ -27,12 +29,14 @@ public class MonitorPeripheral implements IPeripheral
 
     // IPeripheral implementation
 
+    @Nonnull
     @Override
     public String getType()
     {
         return "monitor";
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -65,7 +69,7 @@ public class MonitorPeripheral implements IPeripheral
     }
 
     @Override
-    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object args[] ) throws LuaException
+    public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object args[] ) throws LuaException
     {
         switch( method )
         {
@@ -115,7 +119,7 @@ public class MonitorPeripheral implements IPeripheral
                     throw new LuaException( "Expected boolean" );
                 }
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
-                terminal.setCursorBlink( ((Boolean)args[0]).booleanValue() );
+                terminal.setCursorBlink( (Boolean) args[ 0 ] );
                 return null;
             }
             case 4:
@@ -273,13 +277,13 @@ public class MonitorPeripheral implements IPeripheral
     }
 
     @Override
-    public void attach( IComputerAccess computer )
+    public void attach( @Nonnull IComputerAccess computer )
     {
         m_monitor.addComputer( computer );
     }
 
     @Override
-    public void detach( IComputerAccess computer )
+    public void detach( @Nonnull IComputerAccess computer )
     {
         m_monitor.removeComputer( computer );
     }

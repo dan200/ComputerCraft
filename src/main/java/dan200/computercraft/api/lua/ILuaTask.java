@@ -6,6 +6,8 @@
 
 package dan200.computercraft.api.lua;
 
+import javax.annotation.Nullable;
+
 /**
  * A task which can be executed via {@link ILuaContext#executeMainThreadTask(ILuaTask)} or
  * {@link ILuaContext#issueMainThreadTask(ILuaTask)}. This will be run on the main thread, at the beginning of the
@@ -25,5 +27,6 @@ public interface ILuaTask
      *                      same message as your exception. Use this to throw appropriate errors if the wrong
      *                      arguments are supplied to your method.
      */
-    public Object[] execute() throws LuaException;
+    @Nullable
+    Object[] execute() throws LuaException;
 }

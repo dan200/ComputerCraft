@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -8,6 +8,7 @@ package dan200.computercraft.core.filesystem;
 
 import dan200.computercraft.api.filesystem.IWritableMount;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.List;
 
@@ -39,14 +40,14 @@ public class FileMount implements IWritableMount
         }
         
         @Override
-        public void write( byte[] b ) throws IOException
+        public void write( @Nonnull byte[] b ) throws IOException
         {
             count( b.length );
             m_innerStream.write( b );
         }
         
         @Override
-        public void write( byte[] b, int off, int len ) throws IOException 
+        public void write( @Nonnull byte[] b, int off, int len ) throws IOException
         {
             count( len );
             m_innerStream.write( b, off, len );
@@ -94,7 +95,7 @@ public class FileMount implements IWritableMount
     // IMount implementation
     
     @Override
-    public boolean exists( String path ) throws IOException
+    public boolean exists( @Nonnull String path ) throws IOException
     {
         if( !created() )
         {
@@ -108,7 +109,7 @@ public class FileMount implements IWritableMount
     }
     
     @Override
-    public boolean isDirectory( String path ) throws IOException
+    public boolean isDirectory( @Nonnull String path ) throws IOException
     {
         if( !created() )
         {
@@ -122,7 +123,7 @@ public class FileMount implements IWritableMount
     }
     
     @Override
-    public void list( String path, List<String> contents ) throws IOException
+    public void list( @Nonnull String path, @Nonnull List<String> contents ) throws IOException
     {
         if( !created() )
         {
@@ -153,7 +154,7 @@ public class FileMount implements IWritableMount
     }
 
     @Override
-    public long getSize( String path ) throws IOException
+    public long getSize( @Nonnull String path ) throws IOException
     {
         if( !created() )
         {
@@ -180,8 +181,9 @@ public class FileMount implements IWritableMount
         throw new IOException( "No such file" );
     }
     
+    @Nonnull
     @Override
-    public InputStream openForRead( String path ) throws IOException
+    public InputStream openForRead( @Nonnull String path ) throws IOException
     {
         if( created() )
         {
@@ -197,7 +199,7 @@ public class FileMount implements IWritableMount
     // IWritableMount implementation
     
     @Override
-    public void makeDirectory( String path ) throws IOException
+    public void makeDirectory( @Nonnull String path ) throws IOException
     {
         create();
         File file = getRealPath( path );
@@ -236,7 +238,7 @@ public class FileMount implements IWritableMount
     }
     
     @Override
-    public void delete( String path ) throws IOException
+    public void delete( @Nonnull String path ) throws IOException
     {
         if( path.length() == 0 )
         {
@@ -259,9 +261,9 @@ public class FileMount implements IWritableMount
         if( file.isDirectory() )
         {
             String[] children = file.list();
-            for( int i=0; i<children.length; i++ )
+            for( String aChildren : children )
             {
-                deleteRecursively( new File( file, children[i] ) );
+                deleteRecursively( new File( file, aChildren ) );
             }
         }
         
@@ -278,8 +280,9 @@ public class FileMount implements IWritableMount
         }
     }
     
+    @Nonnull
     @Override
-    public OutputStream openForWrite( String path ) throws IOException
+    public OutputStream openForWrite( @Nonnull String path ) throws IOException
     {
         create();
         File file = getRealPath( path );
@@ -309,8 +312,9 @@ public class FileMount implements IWritableMount
         }
     }
     
+    @Nonnull
     @Override
-    public OutputStream openForAppend( String path ) throws IOException
+    public OutputStream openForAppend( @Nonnull String path ) throws IOException
     {
         if( created() )
         {
@@ -372,9 +376,9 @@ public class FileMount implements IWritableMount
         {
             long size = MINIMUM_FILE_SIZE;
             String[] contents = file.list();
-            for( int i=0; i<contents.length; ++i )
+            for( String content : contents )
             {
-                size += measureUsedSpace( new File( file, contents[i] ) );
+                size += measureUsedSpace( new File( file, content ) );
             }
             return size;
         }

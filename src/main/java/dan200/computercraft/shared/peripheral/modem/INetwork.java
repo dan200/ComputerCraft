@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -11,8 +11,8 @@ import net.minecraft.world.World;
 
 public interface INetwork
 {
-    public void addReceiver( IReceiver receiver );
-    public void removeReceiver( IReceiver receiver );
-    public void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject );
-    public boolean isWireless();
+    void addReceiver( IReceiver receiver );
+    void removeReceiver( IReceiver receiver );
+    void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject );
+    boolean isWireless();
 }

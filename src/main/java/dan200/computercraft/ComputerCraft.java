@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -74,18 +74,23 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 ///////////////
 // UNIVERSAL //
 ///////////////
 
 @Mod(
-    modid = "ComputerCraft", name = "ComputerCraft", version = "${version}",
+    modid = ComputerCraft.MOD_ID, name = "ComputerCraft", version = "${version}",
     guiFactory = "dan200.computercraft.client.gui.GuiConfigCC$Factory"
 )
 public class ComputerCraft
 {
+    public static final String MOD_ID = "ComputerCraft";
+
     // GUI IDs
     public static final int diskDriveGUIID = 100;
     public static final int computerGUIID = 101;
@@ -209,7 +214,7 @@ public class ComputerCraft
     private static final Map<String, IPocketUpgrade> pocketUpgrades = new HashMap<String, IPocketUpgrade>();
 
     // Implementation
-    @Mod.Instance( value = "ComputerCraft" )
+    @Mod.Instance( value = ComputerCraft.MOD_ID )
     public static ComputerCraft instance;
 
     @SidedProxy( clientSide = "dan200.computercraft.client.proxy.ComputerCraftProxyClient", serverSide = "dan200.computercraft.server.proxy.ComputerCraftProxyServer" )
@@ -509,9 +514,8 @@ public class ComputerCraft
             }
         }
 
-        for( int i=0; i<permissionProviders.size(); ++i )
+        for( ITurtlePermissionProvider provider : permissionProviders )
         {
-            ITurtlePermissionProvider provider = permissionProviders.get( i );
             if( !provider.isBlockEnterable( world, pos ) )
             {
                 return false;
@@ -531,9 +535,8 @@ public class ComputerCraft
             }
         }
 
-        for( int i=0; i<permissionProviders.size(); ++i )
+        for( ITurtlePermissionProvider provider : permissionProviders )
         {
-            ITurtlePermissionProvider provider = permissionProviders.get( i );
             if( !provider.isBlockEditable( world, pos ) )
             {
                 return false;
@@ -581,13 +584,11 @@ public class ComputerCraft
     public static IPeripheral getPeripheralAt( World world, BlockPos pos, EnumFacing side )
     {
         // Try the handlers in order:
-        Iterator<IPeripheralProvider> it = peripheralProviders.iterator();
-        while( it.hasNext() )
+        for( IPeripheralProvider peripheralProvider : peripheralProviders )
         {
             try
             {
-                IPeripheralProvider handler = it.next();
-                IPeripheral peripheral = handler.getPeripheral( world, pos, side );
+                IPeripheral peripheral = peripheralProvider.getPeripheral( world, pos, side );
                 if( peripheral != null )
                 {
                     return peripheral;
@@ -620,13 +621,11 @@ public class ComputerCraft
 
         // Try the handlers in order:
         int combinedSignal = -1;
-        Iterator<IBundledRedstoneProvider> it = bundledRedstoneProviders.iterator();
-        while( it.hasNext() )
+        for( IBundledRedstoneProvider bundledRedstoneProvider : bundledRedstoneProviders )
         {
             try
             {
-                IBundledRedstoneProvider handler = it.next();
-                int signal = handler.getBundledRedstoneOutput( world, pos, side );
+                int signal = bundledRedstoneProvider.getBundledRedstoneOutput( world, pos, side );
                 if( signal >= 0 )
                 {
                     if( combinedSignal < 0 )
@@ -652,13 +651,11 @@ public class ComputerCraft
         if( stack != null )
         {
             // Try the handlers in order:
-            Iterator<IMediaProvider> it = mediaProviders.iterator();
-            while( it.hasNext() )
+            for( IMediaProvider mediaProvider : mediaProviders )
             {
                 try
                 {
-                    IMediaProvider handler = it.next();
-                    IMedia media = handler.getMedia( stack );
+                    IMedia media = mediaProvider.getMedia( stack );
                     if( media != null )
                     {
                         return media;
@@ -722,7 +719,7 @@ public class ComputerCraft
         }
     }
 
-    public static IMount createResourceMount( Class modClass, String domain, String subPath )
+    public static IMount createResourceMount( Class<?> modClass, String domain, String subPath )
     {
         // Start building list of mounts
         List<IMount> mounts = new ArrayList<IMount>();
@@ -760,11 +757,11 @@ public class ComputerCraft
         if( resourcePackDir.exists() && resourcePackDir.isDirectory() )
         {
             String[] resourcePacks = resourcePackDir.list();
-            for( int i=0; i<resourcePacks.length; ++i )
+            for( String resourcePack1 : resourcePacks )
             {
                 try
                 {
-                    File resourcePack = new File( resourcePackDir, resourcePacks[i] );
+                    File resourcePack = new File( resourcePackDir, resourcePack1 );
                     if( !resourcePack.isDirectory() )
                     {
                         // Mount a resource pack from a jar
@@ -806,7 +803,7 @@ public class ComputerCraft
         }
     }
 
-    private static File getContainingJar( Class modClass )
+    private static File getContainingJar( Class<?> modClass )
     {
         String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
         int bangIndex = path.indexOf( "!" );
@@ -831,7 +828,7 @@ public class ComputerCraft
         return file;
     }
 
-    private static File getDebugCodeDir( Class modClass )
+    private static File getDebugCodeDir( Class<?> modClass )
     {
         String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
         int bangIndex = path.indexOf("!");

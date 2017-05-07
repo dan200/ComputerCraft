@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -26,10 +26,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ISmartVariant;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,8 +101,9 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
         m_cachedModels = new HashMap<TurtleModelCombination, IBakedModel>();
         m_overrides = new ItemOverrideList( new ArrayList<ItemOverride>() )
         {
+            @Nonnull
             @Override
-            public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+            public IBakedModel handleItemState( @Nonnull IBakedModel originalModel, ItemStack stack, @Nonnull World world, @Nonnull EntityLivingBase entity)
             {
                 ItemTurtleBase turtle = (ItemTurtleBase) stack.getItem();
                 ComputerFamily family = turtle.getFamily( stack );
@@ -127,6 +127,7 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
         };
     }
 
+    @Nonnull
     @Override
     public ItemOverrideList getOverrides()
     {
@@ -134,7 +135,7 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
     }
 
     @Override
-    public void onResourceManagerReload( IResourceManager resourceManager )
+    public void onResourceManagerReload( @Nonnull IResourceManager resourceManager )
     {
         m_cachedModels.clear();
     }
@@ -173,6 +174,7 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
 
     // These should not be called:
 
+    @Nonnull
     @Override
     public List<BakedQuad> getQuads( IBlockState state, EnumFacing facing, long rand )
     {
@@ -197,13 +199,16 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
         return getDefaultModel().isBuiltInRenderer();
     }
 
+    @Nonnull
     @Override
     public TextureAtlasSprite getParticleTexture()
     {
         return getDefaultModel().getParticleTexture();
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public ItemCameraTransforms getItemCameraTransforms()
     {
         return getDefaultModel().getItemCameraTransforms();

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -19,7 +19,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -35,8 +34,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
-import java.util.Iterator;
 
 public class TurtleTool implements ITurtleUpgrade
 {
@@ -53,6 +52,7 @@ public class TurtleTool implements ITurtleUpgrade
         m_item = new ItemStack( item, 1, 0 );
     }
 
+    @Nonnull
     @Override
     public ResourceLocation getUpgradeID()
     {
@@ -65,12 +65,14 @@ public class TurtleTool implements ITurtleUpgrade
         return m_legacyId;
     }
 
+    @Nonnull
     @Override
     public String getUnlocalisedAdjective()
     {
         return m_adjective;
     }
 
+    @Nonnull
     @Override
     public TurtleUpgradeType getType()
     {
@@ -84,14 +86,15 @@ public class TurtleTool implements ITurtleUpgrade
     }
 
     @Override
-    public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
+    public IPeripheral createPeripheral( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
         return null;
     }
 
+    @Nonnull
     @Override
     @SideOnly( Side.CLIENT )
-    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, TurtleSide side )
+    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
         float xOffset = (side == TurtleSide.Left) ? -0.40625f : 0.40625f;
         Matrix4f transform = new Matrix4f(
@@ -108,12 +111,13 @@ public class TurtleTool implements ITurtleUpgrade
     }
 
     @Override
-    public void update( ITurtleAccess turtle, TurtleSide side )
+    public void update( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction )
+    public TurtleCommandResult useTool( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction )
     {
         switch( verb )
         {
@@ -136,11 +140,7 @@ public class TurtleTool implements ITurtleUpgrade
     {
         IBlockState state = world.getBlockState( pos );
         Block block = state.getBlock();
-        if( block.isAir( state, world, pos ) || block == Blocks.BEDROCK || state.getBlockHardness( world, pos ) <= -1.0F )
-        {
-            return false;
-        }
-        return true;
+        return !block.isAir( state, world, pos ) && block != Blocks.BEDROCK && state.getBlockHardness( world, pos ) > -1.0F;
     }
     
     protected boolean canHarvestBlock( World world, BlockPos pos )
@@ -166,8 +166,7 @@ public class TurtleTool implements ITurtleUpgrade
         // See if there is an entity present
         Vec3d turtlePos = new Vec3d( turtlePlayer.posX, turtlePlayer.posY, turtlePlayer.posZ );
         Vec3d rayDir = turtlePlayer.getLook( 1.0f );
-        Vec3d rayStart = turtlePos;
-        Pair<Entity, Vec3d> hit = WorldUtil.rayTraceEntities( world, rayStart, rayDir, 1.5 );
+        Pair<Entity, Vec3d> hit = WorldUtil.rayTraceEntities( world, turtlePos, rayDir, 1.5 );
         if( hit != null )
         {
             // Load up the turtle's inventory
@@ -265,10 +264,8 @@ public class TurtleTool implements ITurtleUpgrade
                 java.util.List<ItemStack> items = getBlockDropped( world, newPosition );
                 if( items != null && items.size() > 0 )
                 {
-                    Iterator<ItemStack> it = items.iterator();
-                    while( it.hasNext() )
+                    for( ItemStack stack : items )
                     {
-                        ItemStack stack = it.next();
                         ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
                         if( remainder != null )
                         {

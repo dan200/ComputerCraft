@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -16,9 +16,9 @@ import java.util.Arrays;
 
 public class ImpostorShapelessRecipe extends ShapelessRecipes
 {
-    public ImpostorShapelessRecipe( ItemStack result, Object[] ingredients )
+    public ImpostorShapelessRecipe( ItemStack result, ItemStack[] ingredients )
     {
-        super( result, new ArrayList(Arrays.asList( ingredients )));
+        super( result, new ArrayList<ItemStack>(Arrays.asList( ingredients )));
     }
 
     @Override

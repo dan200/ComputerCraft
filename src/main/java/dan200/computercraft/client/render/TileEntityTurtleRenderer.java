@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -41,6 +41,7 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import java.util.List;
 
@@ -75,7 +76,7 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
     }
 
     @Override
-    public void renderTileEntityAt( TileTurtle tileEntity, double posX, double posY, double posZ, float f, int i )
+    public void renderTileEntityAt( @Nonnull TileTurtle tileEntity, double posX, double posY, double posZ, float f, int i )
     {
         if( tileEntity != null )
         {

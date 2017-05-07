@@ -6,6 +6,8 @@
 
 package dan200.computercraft.api.lua;
 
+import javax.annotation.Nullable;
+
 /**
  * An exception representing an error in Lua, like that raised by the {@code error()} function.
  */
@@ -19,12 +21,12 @@ public class LuaException extends Exception
         this( "error", 1 );
     }
 
-    public LuaException( String message )
+    public LuaException( @Nullable String message )
     {
         this( message, 1 );
     }
 
-    public LuaException( String message, int level )
+    public LuaException( @Nullable String message, int level )
     {
         super( message );
         m_level = level;

@@ -10,6 +10,7 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -36,7 +37,7 @@ public interface IMount
      * @return If the file exists.
      * @throws IOException If an error occurs when checking the existence of the file.
      */
-    public boolean exists( String path ) throws IOException;
+    boolean exists( @Nonnull String path ) throws IOException;
 
     /**
      * Returns whether a file with a given path is a directory or not.
@@ -45,7 +46,7 @@ public interface IMount
      * @return If the file exists and is a directory
      * @throws IOException If an error occurs when checking whether the file is a directory.
      */
-    public boolean isDirectory( String path ) throws IOException;
+    boolean isDirectory( @Nonnull String path ) throws IOException;
 
     /**
      * Returns the file names of all the files in a directory.
@@ -54,7 +55,7 @@ public interface IMount
      * @param contents A list of strings. Add all the file names to this list.
      * @throws IOException If the file was not a directory, or could not be listed.
      */
-    public void list( String path, List<String> contents ) throws IOException;
+    void list( @Nonnull String path, @Nonnull List<String> contents ) throws IOException;
 
     /**
      * Returns the size of a file with a given path, in bytes
@@ -63,7 +64,7 @@ public interface IMount
      * @return The size of the file, in bytes.
      * @throws IOException If the file does not exist, or its size could not be determined.
      */
-    public long getSize( String path ) throws IOException;
+    long getSize( @Nonnull String path ) throws IOException;
 
     /**
      * Opens a file with a given path, and returns an {@link InputStream} representing its contents.
@@ -72,5 +73,6 @@ public interface IMount
      * @return A stream representing the contents of the file.
      * @throws IOException If the file does not exist, or could not be opened.
      */
-    public InputStream openForRead( String path ) throws IOException;
+    @Nonnull
+    InputStream openForRead( @Nonnull String path ) throws IOException;
 }

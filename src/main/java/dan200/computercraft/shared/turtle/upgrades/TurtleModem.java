@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -26,6 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 
 public class TurtleModem implements ITurtleUpgrade
@@ -93,6 +94,7 @@ public class TurtleModem implements ITurtleUpgrade
         m_legacyID = legacyId;
     }
 
+    @Nonnull
     @Override
     public ResourceLocation getUpgradeID()
     {
@@ -105,6 +107,7 @@ public class TurtleModem implements ITurtleUpgrade
         return m_legacyID;
     }
     
+    @Nonnull
     @Override
     public String getUnlocalisedAdjective()
     {
@@ -118,6 +121,7 @@ public class TurtleModem implements ITurtleUpgrade
         }
     }
     
+    @Nonnull
     @Override
     public TurtleUpgradeType getType()
     {
@@ -138,13 +142,14 @@ public class TurtleModem implements ITurtleUpgrade
     }
 
     @Override
-    public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side )
+    public IPeripheral createPeripheral( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
         return new Peripheral( turtle, m_advanced );
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing dir )
+    public TurtleCommandResult useTool( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing dir )
     {
         return null;
     }
@@ -171,9 +176,10 @@ public class TurtleModem implements ITurtleUpgrade
         }
     }
 
+    @Nonnull
     @Override
     @SideOnly( Side.CLIENT )
-    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, TurtleSide side )
+    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
         loadModelLocations();
 
@@ -207,7 +213,7 @@ public class TurtleModem implements ITurtleUpgrade
     }
 
     @Override
-    public void update( ITurtleAccess turtle, TurtleSide side )
+    public void update( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
         // Advance the modem
         if( !turtle.getWorld().isRemote )

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 
 public interface IComputerItem
 {
-    public int getComputerID( ItemStack stack );
-    public String getLabel( ItemStack stack );
-    public ComputerFamily getFamily( ItemStack stack );
+    int getComputerID( ItemStack stack );
+    String getLabel( ItemStack stack );
+    ComputerFamily getFamily( ItemStack stack );
 }

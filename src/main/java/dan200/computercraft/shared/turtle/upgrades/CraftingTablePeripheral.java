@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -13,6 +13,8 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.shared.turtle.core.TurtleCraftCommand;
 
+import javax.annotation.Nonnull;
+
 public class CraftingTablePeripheral
     implements IPeripheral
 {
@@ -25,12 +27,14 @@ public class CraftingTablePeripheral
             
     // IPeripheral implementation
 
+    @Nonnull
     @Override
     public String getType()
     {
         return "workbench";
     }
        
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -59,7 +63,7 @@ public class CraftingTablePeripheral
     }
     
     @Override
-    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException
+    public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
     {
         switch( method )
         {
@@ -77,12 +81,12 @@ public class CraftingTablePeripheral
     }
     
     @Override
-    public void attach( IComputerAccess computer )
+    public void attach( @Nonnull IComputerAccess computer )
     {
     }
     
     @Override
-    public void detach( IComputerAccess computer )
+    public void detach( @Nonnull IComputerAccess computer )
     {
     }
 

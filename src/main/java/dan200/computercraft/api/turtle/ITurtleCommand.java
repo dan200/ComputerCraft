@@ -8,6 +8,8 @@ package dan200.computercraft.api.turtle;
 
 import dan200.computercraft.api.lua.ILuaContext;
 
+import javax.annotation.Nonnull;
+
 /**
  * An interface for objects executing custom turtle commands, used with {@link ITurtleAccess#executeCommand(ILuaContext, ITurtleCommand)}.
  *
@@ -28,5 +30,6 @@ public interface ITurtleCommand
      * @see TurtleCommandResult#failure(String)
      * @see TurtleCommandResult
      */
-    public TurtleCommandResult execute( ITurtleAccess turtle );
+    @Nonnull
+    TurtleCommandResult execute( @Nonnull ITurtleAccess turtle );
 }

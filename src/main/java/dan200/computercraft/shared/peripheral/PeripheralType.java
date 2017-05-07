@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -7,6 +7,8 @@
 package dan200.computercraft.shared.peripheral;
 
 import net.minecraft.util.IStringSerializable;
+
+import javax.annotation.Nonnull;
 
 public enum PeripheralType implements IStringSerializable
 {
@@ -22,11 +24,12 @@ public enum PeripheralType implements IStringSerializable
 
     private String m_name;
 
-    private PeripheralType( String name )
+    PeripheralType( String name )
     {
         m_name = name;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {
