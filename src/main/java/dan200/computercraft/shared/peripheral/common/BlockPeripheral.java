@@ -502,6 +502,10 @@ public class BlockPeripheral extends BlockPeripheralBase
             {
                 return getDefaultState().withProperty( Properties.VARIANT, BlockPeripheralVariant.AdvancedMonitor );
             }
+            case Speaker:
+            {
+                return getDefaultState().withProperty( Properties.VARIANT, BlockPeripheralVariant.Speaker );
+            }
         }
     }
 
