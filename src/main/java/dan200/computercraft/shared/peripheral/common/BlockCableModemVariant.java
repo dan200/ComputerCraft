@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -8,6 +8,8 @@ package dan200.computercraft.shared.peripheral.common;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
+
+import javax.annotation.Nonnull;
 
 public enum BlockCableModemVariant implements IStringSerializable
 {
@@ -54,12 +56,13 @@ public enum BlockCableModemVariant implements IStringSerializable
     private String m_name;
     private EnumFacing m_facing;
 
-    private BlockCableModemVariant( String name, EnumFacing facing )
+    BlockCableModemVariant( String name, EnumFacing facing )
     {
         m_name = name;
         m_facing = facing;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {

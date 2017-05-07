@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -37,7 +37,7 @@ public enum Colour
     private int m_hex;
     private float[] m_rgb;
 
-    private Colour( int hex )
+    Colour( int hex )
     {
         m_hex = hex;
         m_rgb = new float[] {

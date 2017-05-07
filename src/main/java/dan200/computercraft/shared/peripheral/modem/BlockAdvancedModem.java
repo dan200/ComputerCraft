@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,18 +10,16 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.BlockPeripheralBase;
 import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class BlockAdvancedModem extends BlockPeripheralBase
 {
@@ -42,16 +40,16 @@ public class BlockAdvancedModem extends BlockPeripheralBase
         );
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {
-            Properties.FACING,
-            Properties.ON
-        });
+        return new BlockStateContainer(this, Properties.FACING, Properties.ON );
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         IBlockState state = getDefaultState();
@@ -63,12 +61,14 @@ public class BlockAdvancedModem extends BlockPeripheralBase
     @Override
     public int getMetaFromState( IBlockState state )
     {
-        EnumFacing dir = (EnumFacing) state.getValue( Properties.FACING );
+        EnumFacing dir = state.getValue( Properties.FACING );
         return dir.getIndex();
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    @Deprecated
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         int anim;
         EnumFacing dir;
@@ -82,7 +82,7 @@ public class BlockAdvancedModem extends BlockPeripheralBase
         else
         {
             anim = 0;
-            dir = (EnumFacing)state.getValue( Properties.FACING );
+            dir = state.getValue( Properties.FACING );
         }
 
         state = state.withProperty( Properties.FACING, dir );

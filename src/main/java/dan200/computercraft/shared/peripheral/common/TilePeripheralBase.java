@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public abstract class TilePeripheralBase extends TileGeneric
@@ -45,7 +46,7 @@ public abstract class TilePeripheralBase extends TileGeneric
     }
 
     @Override
-    public void getDroppedItems( List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
     {
         if( !creative )
         {
@@ -149,7 +150,8 @@ public abstract class TilePeripheralBase extends TileGeneric
         }
     }
 
-    @Override    
+    @Nonnull
+    @Override
     public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
         // Write properties
@@ -164,7 +166,7 @@ public abstract class TilePeripheralBase extends TileGeneric
     }
 
     @Override
-    public void readDescription( NBTTagCompound nbttagcompound )
+    public void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
         m_dir = EnumFacing.getFront( nbttagcompound.getInteger( "dir" ) );
@@ -180,7 +182,7 @@ public abstract class TilePeripheralBase extends TileGeneric
     }
 
     @Override
-    public void writeDescription( NBTTagCompound nbttagcompound )
+    public void writeDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.writeDescription( nbttagcompound );
         nbttagcompound.setInteger( "dir", m_dir.getIndex() );

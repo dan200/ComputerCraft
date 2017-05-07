@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -12,7 +12,6 @@ import dan200.computercraft.shared.computer.core.IComputer;
 import dan200.computercraft.shared.computer.items.ItemComputer;
 import dan200.computercraft.shared.util.DirectionUtil;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
@@ -22,10 +21,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class BlockComputer extends BlockComputerBase
 {
@@ -34,7 +35,7 @@ public class BlockComputer extends BlockComputerBase
     {
         public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
         public static final PropertyBool ADVANCED = PropertyBool.create("advanced");
-        public static final PropertyEnum<ComputerState> STATE = PropertyEnum.<ComputerState>create("state", ComputerState.class);
+        public static final PropertyEnum<ComputerState> STATE = PropertyEnum.create("state", ComputerState.class);
     }
 
     // Members
@@ -52,17 +53,16 @@ public class BlockComputer extends BlockComputerBase
         );
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {
-            Properties.FACING,
-            Properties.ADVANCED,
-            Properties.STATE
-        });
+        return new BlockStateContainer( this, Properties.FACING, Properties.ADVANCED, Properties.STATE );
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         EnumFacing dir = EnumFacing.getFront( meta & 0x7 );
@@ -86,8 +86,8 @@ public class BlockComputer extends BlockComputerBase
     @Override
     public int getMetaFromState( IBlockState state )
     {
-        int meta = ((EnumFacing)state.getValue( Properties.FACING )).getIndex();
-        if( (Boolean)state.getValue( Properties.ADVANCED ) )
+        int meta = state.getValue( Properties.FACING ).getIndex();
+        if( state.getValue( Properties.ADVANCED ) )
         {
             meta += 8;
         }
@@ -117,8 +117,10 @@ public class BlockComputer extends BlockComputerBase
         }
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    @Deprecated
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof IComputerTile )
@@ -148,7 +150,7 @@ public class BlockComputer extends BlockComputerBase
     @Override
     public ComputerFamily getFamily( IBlockState state )
     {
-        if( (Boolean)state.getValue( Properties.ADVANCED ) ) {
+        if( state.getValue( Properties.ADVANCED ) ) {
             return ComputerFamily.Advanced;
         } else {
             return ComputerFamily.Normal;

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -16,6 +16,7 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class TurtleVisionCamera extends EntityLivingBase
@@ -42,6 +43,7 @@ public class TurtleVisionCamera extends EntityLivingBase
         return 0.0f;
     }
 
+    @Nonnull
     @Override
     public EnumHandSide getPrimaryHand()
     {
@@ -93,16 +95,17 @@ public class TurtleVisionCamera extends EntityLivingBase
     }
 
     @Override
-    public void setItemStackToSlot(EntityEquipmentSlot slot, ItemStack stack)
+    public void setItemStackToSlot( @Nonnull EntityEquipmentSlot slot, ItemStack stack)
     {
     }
 
     @Override
-    public ItemStack getItemStackFromSlot(EntityEquipmentSlot slot)
+    public ItemStack getItemStackFromSlot( @Nonnull EntityEquipmentSlot slot)
     {
         return null;
     }
 
+    @Nonnull
     @Override
     public Iterable<ItemStack> getArmorInventoryList()
     {

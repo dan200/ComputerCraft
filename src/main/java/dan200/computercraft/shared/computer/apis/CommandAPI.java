@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -21,9 +21,9 @@ import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,6 +61,7 @@ public class CommandAPI implements ILuaAPI
     {
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -111,7 +112,7 @@ public class CommandAPI implements ILuaAPI
         // Get the details of the block
         IBlockState state = world.getBlockState( pos );
         Block block = state.getBlock();
-        String name = ((ResourceLocation)Block.REGISTRY.getNameForObject( block )).toString();
+        String name = Block.REGISTRY.getNameForObject( block ).toString();
         int metadata = block.getMetaFromState( state );
 
         Map<Object, Object> table = new HashMap<Object, Object>();
@@ -119,9 +120,8 @@ public class CommandAPI implements ILuaAPI
         table.put( "metadata", metadata );
 
         Map<Object, Object> stateTable = new HashMap<Object, Object>();
-        for( Object o : state.getActualState( world, pos ).getProperties().entrySet() )
+        for( ImmutableMap.Entry<IProperty<?>, Comparable<?>> entry : state.getActualState( world, pos ).getProperties().entrySet() )
         {
-            ImmutableMap.Entry<IProperty, Object> entry = (ImmutableMap.Entry<IProperty, Object>)o;
             String propertyName = entry.getKey().getName();
             Object value = entry.getValue();
             if( value instanceof String || value instanceof Number || value instanceof Boolean )
@@ -139,7 +139,7 @@ public class CommandAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
     {
         switch( method )
         {
@@ -193,12 +193,11 @@ public class CommandAPI implements ILuaAPI
                         {
                             ICommandManager commandManager = server.getCommandManager();
                             ICommandSender commmandSender = m_computer.getCommandSender();
-                            Map commands = commandManager.getCommands();
-                            for( Object entryObject : commands.entrySet() )
+                            Map<String, ICommand> commands = commandManager.getCommands();
+                            for( Map.Entry<String, ICommand> entry : commands.entrySet() )
                             {
-                                Map.Entry entry = (Map.Entry)entryObject;
-                                String name = (String)entry.getKey();
-                                ICommand command = (ICommand)entry.getValue();
+                                String name = entry.getKey();
+                                ICommand command = entry.getValue();
                                 try
                                 {
                                     if( command.checkPermission( server, commmandSender ) )

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -12,6 +12,8 @@ import dan200.computercraft.api.turtle.TurtleAnimation;
 import dan200.computercraft.api.turtle.TurtleCommandResult;
 import dan200.computercraft.shared.util.DirectionUtil;
 
+import javax.annotation.Nonnull;
+
 public class TurtleTurnCommand implements ITurtleCommand
 {
     private final TurnDirection m_direction;
@@ -21,8 +23,9 @@ public class TurtleTurnCommand implements ITurtleCommand
         m_direction = direction;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         switch( m_direction )
         {

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -48,10 +48,10 @@ public class WidgetContainer extends Widget
 	@Override
 	public void update()
 	{
-		for( int i=0; i<m_widgets.size(); ++i )
-		{
-			m_widgets.get( i ).update();
-		}
+        for( Widget m_widget : m_widgets )
+        {
+            m_widget.update();
+        }
 		if( m_modalWidget != null )
 		{
 			m_modalWidget.update();
@@ -61,20 +61,19 @@ public class WidgetContainer extends Widget
 	@Override
 	public void draw( Minecraft mc, int xOrigin, int yOrigin, int mouseX, int mouseY )
 	{
-		for( int i=0; i<m_widgets.size(); ++i )
-		{
-			Widget widget = m_widgets.get( i );
-			if( widget.isVisible() )
-			{
-				widget.draw(
-						mc,
-						xOrigin + getXPosition(),
-						yOrigin + getYPosition(),
-						(m_modalWidget == null) ? (mouseX - getXPosition()) : -99,
-						(m_modalWidget == null) ? (mouseY - getYPosition()) : -99
-				);
-			}
-		}
+        for( Widget widget : m_widgets )
+        {
+            if( widget.isVisible() )
+            {
+                widget.draw(
+                    mc,
+                    xOrigin + getXPosition(),
+                    yOrigin + getYPosition(),
+                    (m_modalWidget == null) ? (mouseX - getXPosition()) : -99,
+                    (m_modalWidget == null) ? (mouseY - getYPosition()) : -99
+                );
+            }
+        }
 		if( m_modalWidget != null )
 		{
 			if( m_modalWidget.isVisible() )
@@ -102,20 +101,19 @@ public class WidgetContainer extends Widget
 	@Override
 	public void drawForeground( Minecraft mc, int xOrigin, int yOrigin, int mouseX, int mouseY )
 	{
-		for( int i=0; i<m_widgets.size(); ++i )
-		{
-			Widget widget = m_widgets.get( i );
-			if( widget.isVisible() )
-			{
-				widget.drawForeground(
-						mc,
-						xOrigin + getXPosition(),
-						yOrigin + getYPosition(),
-						(m_modalWidget == null) ? (mouseX - getXPosition()) : -99,
-						(m_modalWidget == null) ? (mouseY - getYPosition()) : -99
-				);
-			}
-		}
+        for( Widget widget : m_widgets )
+        {
+            if( widget.isVisible() )
+            {
+                widget.drawForeground(
+                    mc,
+                    xOrigin + getXPosition(),
+                    yOrigin + getYPosition(),
+                    (m_modalWidget == null) ? (mouseX - getXPosition()) : -99,
+                    (m_modalWidget == null) ? (mouseY - getYPosition()) : -99
+                );
+            }
+        }
 
 		if( m_modalWidget != null )
 		{
@@ -148,14 +146,13 @@ public class WidgetContainer extends Widget
 		pos.y -= getYPosition();
 		if( m_modalWidget == null )
 		{
-			for( int i = 0; i < m_widgets.size(); ++i )
-			{
-				Widget widget = m_widgets.get( i );
-				if( widget.isVisible() )
-				{
-					widget.modifyMousePosition( pos );
-				}
-			}
+            for( Widget widget : m_widgets )
+            {
+                if( widget.isVisible() )
+                {
+                    widget.modifyMousePosition( pos );
+                }
+            }
 		}
 		else
 		{
@@ -173,23 +170,22 @@ public class WidgetContainer extends Widget
 	{
 		if( m_modalWidget == null )
 		{
-			for( int i = 0; i < m_widgets.size(); ++i )
-			{
-				Widget widget = m_widgets.get( i );
-				if( widget.isVisible() )
-				{
-					if( widget.suppressItemTooltips(
-							mc,
-							xOrigin + getXPosition(),
-							yOrigin + getYPosition(),
-							mouseX - getXPosition(),
-							mouseY - getYPosition()
-					) )
-					{
-						return true;
-					}
-				}
-			}
+            for( Widget widget : m_widgets )
+            {
+                if( widget.isVisible() )
+                {
+                    if( widget.suppressItemTooltips(
+                        mc,
+                        xOrigin + getXPosition(),
+                        yOrigin + getYPosition(),
+                        mouseX - getXPosition(),
+                        mouseY - getYPosition()
+                    ) )
+                    {
+                        return true;
+                    }
+                }
+            }
 		}
 		else
 		{
@@ -211,17 +207,16 @@ public class WidgetContainer extends Widget
 	{
 		if( m_modalWidget == null )
 		{
-			for( int i = 0; i < m_widgets.size(); ++i )
-			{
-				Widget widget = m_widgets.get( i );
-				if( widget.isVisible() )
-				{
-					if( widget.suppressKeyPress( c, k ) )
-					{
-						return true;
-					}
-				}
-			}
+            for( Widget widget : m_widgets )
+            {
+                if( widget.isVisible() )
+                {
+                    if( widget.suppressKeyPress( c, k ) )
+                    {
+                        return true;
+                    }
+                }
+            }
 		}
 		else
 		{
@@ -241,17 +236,16 @@ public class WidgetContainer extends Widget
 	{
 		if( m_modalWidget == null )
 		{
-			for( int i = 0; i < m_widgets.size(); ++i )
-			{
-				Widget widget = m_widgets.get( i );
-				if( widget.isVisible() )
-				{
-					widget.handleMouseInput(
-							mouseX - getXPosition(),
-							mouseY - getYPosition()
-					);
-				}
-			}
+            for( Widget widget : m_widgets )
+            {
+                if( widget.isVisible() )
+                {
+                    widget.handleMouseInput(
+                        mouseX - getXPosition(),
+                        mouseY - getYPosition()
+                    );
+                }
+            }
 		}
 		else
 		{
@@ -270,14 +264,13 @@ public class WidgetContainer extends Widget
 	{
 		if( m_modalWidget == null )
 		{
-			for( int i = 0; i < m_widgets.size(); ++i )
-			{
-				Widget widget = m_widgets.get( i );
-				if( widget.isVisible() )
-				{
-					widget.handleKeyboardInput();
-				}
-			}
+            for( Widget widget : m_widgets )
+            {
+                if( widget.isVisible() )
+                {
+                    widget.handleKeyboardInput();
+                }
+            }
 		}
 		else
 		{
@@ -293,18 +286,17 @@ public class WidgetContainer extends Widget
 	{
 		if( m_modalWidget == null )
 		{
-			for( int i = 0; i < m_widgets.size(); ++i )
-			{
-				Widget widget = m_widgets.get( i );
-				if( widget.isVisible() )
-				{
-					widget.mouseClicked(
-							mouseX - getXPosition(),
-							mouseY - getYPosition(),
-							mouseButton
-					);
-				}
-			}
+            for( Widget widget : m_widgets )
+            {
+                if( widget.isVisible() )
+                {
+                    widget.mouseClicked(
+                        mouseX - getXPosition(),
+                        mouseY - getYPosition(),
+                        mouseButton
+                    );
+                }
+            }
 		}
 		else
 		{
@@ -324,14 +316,13 @@ public class WidgetContainer extends Widget
 	{
 		if( m_modalWidget == null )
 		{
-			for( int i = 0; i < m_widgets.size(); ++i )
-			{
-				Widget widget = m_widgets.get( i );
-				if( widget.isVisible() )
-				{
-					widget.keyTyped( c, k );
-				}
-			}
+            for( Widget widget : m_widgets )
+            {
+                if( widget.isVisible() )
+                {
+                    widget.keyTyped( c, k );
+                }
+            }
 		}
 		else
 		{

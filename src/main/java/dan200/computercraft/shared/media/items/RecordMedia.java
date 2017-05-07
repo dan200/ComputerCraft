@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -15,6 +15,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import javax.annotation.Nonnull;
+
 // An implementation of IMedia for ItemRecord's
 public class RecordMedia implements IMedia
 {
@@ -23,32 +25,32 @@ public class RecordMedia implements IMedia
     }
      
     @Override
-    public String getLabel( ItemStack stack )
+    public String getLabel( @Nonnull ItemStack stack )
     {
         return getAudioTitle( stack );
     }
     
     @Override
-    public boolean setLabel( ItemStack stack, String label )
+    public boolean setLabel( @Nonnull ItemStack stack, String label )
     {
         return false;
     }
     
     @Override
-    public String getAudioTitle( ItemStack stack )
+    public String getAudioTitle( @Nonnull ItemStack stack )
     {
         return ComputerCraft.getRecordInfo( stack );
     }
     
     @Override
-    public SoundEvent getAudio( ItemStack stack )
+    public SoundEvent getAudio( @Nonnull ItemStack stack )
     {
         ItemRecord itemRecord = (ItemRecord)stack.getItem();
         return ObfuscationReflectionHelper.getPrivateValue(ItemRecord.class, itemRecord, "field_185076_b");
     }
     
     @Override
-    public IMount createDataMount( ItemStack stack, World world )
+    public IMount createDataMount( @Nonnull ItemStack stack, @Nonnull World world )
     {
         return null;
     }

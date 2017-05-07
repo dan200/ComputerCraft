@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -8,6 +8,8 @@ package dan200.computercraft.shared.peripheral.common;
 
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import net.minecraft.util.IStringSerializable;
+
+import javax.annotation.Nonnull;
 
 public enum BlockPeripheralVariant implements IStringSerializable
 {
@@ -124,12 +126,13 @@ public enum BlockPeripheralVariant implements IStringSerializable
     private String m_name;
     private PeripheralType m_peripheralType;
 
-    private BlockPeripheralVariant( String name, PeripheralType peripheralType )
+    BlockPeripheralVariant( String name, PeripheralType peripheralType )
     {
         m_name = name;
         m_peripheralType = peripheralType;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {

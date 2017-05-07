@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -8,7 +8,6 @@ package dan200.computercraft.shared.proxy;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
-import dan200.computercraft.api.turtle.TurtleUpgradeType;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
 import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
@@ -25,6 +24,7 @@ import dan200.computercraft.shared.turtle.upgrades.*;
 import dan200.computercraft.shared.util.IEntityDropConsumer;
 import dan200.computercraft.shared.util.ImpostorRecipe;
 import dan200.computercraft.shared.util.InventoryUtil;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -32,6 +32,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -111,7 +112,6 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             }
             catch( Exception e )
             {
-                continue;
             }
         }
         return null;
@@ -177,23 +177,23 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         {
             boolean captured = ObfuscationReflectionHelper.<Boolean, Entity>getPrivateValue(
                 Entity.class,
-                entity, 
+                entity,
                 "captureDrops"
-            ).booleanValue();
+            );
             
             if( !captured )
             {
                 ObfuscationReflectionHelper.setPrivateValue(
-                        Entity.class,
-                        entity,
-                        new Boolean( true ),
-                        "captureDrops"
+                    Entity.class,
+                    entity,
+                    Boolean.TRUE,
+                    "captureDrops"
                 );
                 
                 ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
-                        Entity.class,
-                        entity,
-                        "capturedDrops"
+                    Entity.class,
+                    entity,
+                    "capturedDrops"
                 );
                 
                 if( items == null || items.size() == 0 )
@@ -219,15 +219,15 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             {
                 ObfuscationReflectionHelper.setPrivateValue(
                     Entity.class,
-                    entity, 
-                    new Boolean( false ),
+                    entity,
+                    Boolean.FALSE,
                     "captureDrops"
                 );
                 
                 ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
-                        Entity.class,
-                        entity,
-                        "capturedDrops"
+                    Entity.class,
+                    entity,
+                    "capturedDrops"
                 );
                 
                 if( items != null )
@@ -276,7 +276,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         if( isUpgradeVanilla( upgrade )  )
         {
             // Add fake recipes to fool NEI
-            List recipeList = CraftingManager.getInstance().getRecipeList();
+            List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
             ItemStack craftingItem = upgrade.getCraftingItem();
 
             // A turtle just containing this upgrade
@@ -326,14 +326,14 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         // Blocks
         // Turtle
         ComputerCraft.Blocks.turtle = BlockTurtle.createTurtleBlock();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.turtle, ItemTurtleLegacy.class, "CC-Turtle" );
+        registerBlock( ComputerCraft.Blocks.turtle, new ItemTurtleLegacy(ComputerCraft.Blocks.turtle), "CC-Turtle" );
 
         ComputerCraft.Blocks.turtleExpanded = BlockTurtle.createTurtleBlock();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.turtleExpanded, ItemTurtleNormal.class, "CC-TurtleExpanded" );
+        registerBlock( ComputerCraft.Blocks.turtleExpanded, new ItemTurtleNormal( ComputerCraft.Blocks.turtleExpanded ), "CC-TurtleExpanded" );
 
         // Advanced Turtle
         ComputerCraft.Blocks.turtleAdvanced = BlockTurtle.createTurtleBlock();
-        GameRegistry.registerBlock( ComputerCraft.Blocks.turtleAdvanced, ItemTurtleAdvanced.class, "CC-TurtleAdvanced" );
+        registerBlock( ComputerCraft.Blocks.turtleAdvanced, new ItemTurtleAdvanced( ComputerCraft.Blocks.turtleAdvanced ), "CC-TurtleAdvanced" );
 
         // Recipe types
         RecipeSorter.register( "computercraft:turtle", TurtleRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
@@ -403,6 +403,11 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.advancedModem );
     }
 
+    private void registerBlock( Block block, Item item, String name) {
+        GameRegistry.register( block.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
+        GameRegistry.register( item.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
+    }
+
     private void registerTileEntities()
     {
         // TileEntities
@@ -437,10 +442,8 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         if( consumer != null )
         {
             // All checks have passed, lets dispatch the drops
-            Iterator<EntityItem> it = drops.iterator();
-            while( it.hasNext() )
+            for(EntityItem entityItem : drops)
             {
-                EntityItem entityItem = (EntityItem)it.next();
                 consumer.consumeDrop( entity, entityItem.getEntityItem() );
             }
             drops.clear();

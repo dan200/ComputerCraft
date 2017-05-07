@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -11,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+
+import javax.annotation.Nonnull;
 
 public class ContainerHeldItem extends Container
 {
@@ -29,7 +31,7 @@ public class ContainerHeldItem extends Container
     }
 
     @Override
-    public boolean canInteractWith( EntityPlayer player )
+    public boolean canInteractWith( @Nonnull EntityPlayer player )
     {
         if( player != null && player.isEntityAlive() )
         {

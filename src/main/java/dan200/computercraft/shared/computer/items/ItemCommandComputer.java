@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemCommandComputer extends ItemComputer
@@ -51,7 +52,7 @@ public class ItemCommandComputer extends ItemComputer
     }
 
     @Override
-    public void getSubItems( Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Command ) );
     }

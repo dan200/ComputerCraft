@@ -6,6 +6,9 @@
 
 package dan200.computercraft.api.lua;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * An interface passed to peripherals and {@link ILuaObject}s by computers or turtles, providing methods
  * that allow the peripheral call to wait for events before returning, just like in lua. This is very useful if you need
@@ -28,7 +31,8 @@ public interface ILuaContext
      *                              event, InterruptedException will be thrown. This exception must not be caught or
      *                              intercepted, or the computer will leak memory and end up in a broken state.
      */
-    public Object[] pullEvent( String filter ) throws LuaException, InterruptedException;
+    @Nonnull
+    Object[] pullEvent( @Nullable String filter ) throws LuaException, InterruptedException;
 
     /**
      * The same as {@link #pullEvent(String)}, except "terminated" events are ignored. Only use this if you want to
@@ -42,7 +46,8 @@ public interface ILuaContext
      *                              intercepted, or the computer will leak memory and end up in a broken state.
      * @see #pullEvent(String)
      */
-    public Object[] pullEventRaw( String filter ) throws InterruptedException;
+    @Nonnull
+    Object[] pullEventRaw( @Nullable String filter ) throws InterruptedException;
 
     /**
      * Yield the current coroutine with some arguments until it is resumed. This method is exactly equivalent to
@@ -55,7 +60,8 @@ public interface ILuaContext
      *                              intercepted, or the computer will leak memory and end up in a broken state.
      * @see #pullEvent(String)
      */
-    public Object[] yield( Object[] arguments ) throws InterruptedException;
+    @Nonnull
+    Object[] yield( @Nullable Object[] arguments ) throws InterruptedException;
 
     /**
      * Queue a task to be executed on the main server thread at the beginning of next tick, waiting for it to complete.
@@ -71,7 +77,8 @@ public interface ILuaContext
      *                              InterruptedException will be thrown. This exception must not be caught or
      *                              intercepted, or the computer will leak memory and end up in a broken state.
      */
-    public Object[] executeMainThreadTask( ILuaTask task ) throws LuaException, InterruptedException;
+    @Nullable
+    Object[] executeMainThreadTask( @Nonnull ILuaTask task ) throws LuaException, InterruptedException;
 
     /**
      * Queue a task to be executed on the main server thread at the beginning of next tick, but do not wait for it to
@@ -86,5 +93,5 @@ public interface ILuaContext
      * @return The "id" of the task. This will be the first argument to the {@code task_completed} event.
      * @throws LuaException If the task could not be queued.
      */
-    public long issueMainThreadTask( ILuaTask task ) throws LuaException;
+    long issueMainThreadTask( @Nonnull ILuaTask task ) throws LuaException;
 }

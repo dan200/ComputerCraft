@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -17,20 +17,18 @@ import dan200.computercraft.shared.peripheral.common.BlockPeripheral;
 import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
 import dan200.computercraft.shared.util.InventoryUtil;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.audio.Sound;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -120,7 +118,7 @@ public class TileDiskDrive extends TilePeripheralBase
     public EnumFacing getDirection()
     {
         IBlockState state = getBlockState();
-        return (EnumFacing)state.getValue( BlockPeripheral.Properties.FACING );
+        return state.getValue( BlockPeripheral.Properties.FACING );
     }
 
     @Override
@@ -145,6 +143,7 @@ public class TileDiskDrive extends TilePeripheralBase
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
@@ -276,10 +275,8 @@ public class TileDiskDrive extends TilePeripheralBase
             if( m_diskStack != null )
             {
                 Set<IComputerAccess> computers = m_computers.keySet();
-                Iterator<IComputerAccess> it = computers.iterator();
-                while( it.hasNext() )
+                for( IComputerAccess computer : computers )
                 {
-                    IComputerAccess computer = it.next();
                     unmountDisk( computer );
                 }
             }
@@ -304,10 +301,8 @@ public class TileDiskDrive extends TilePeripheralBase
             if( m_diskStack != null )
             {
                 Set<IComputerAccess> computers = m_computers.keySet();
-                Iterator<IComputerAccess> it = computers.iterator();
-                while( it.hasNext() )
+                for( IComputerAccess computer : computers )
                 {
-                    IComputerAccess computer = it.next();
                     mountDisk( computer );
                 }
             }
@@ -320,6 +315,7 @@ public class TileDiskDrive extends TilePeripheralBase
         return getLabel() != null;
     }
 
+    @Nonnull
     @Override
     public String getName()
     {
@@ -334,6 +330,7 @@ public class TileDiskDrive extends TilePeripheralBase
         }
     }
 
+    @Nonnull
     @Override
     public ITextComponent getDisplayName()
     {
@@ -354,23 +351,23 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public void openInventory( EntityPlayer player )
+    public void openInventory( @Nonnull EntityPlayer player )
     {
     }
     
     @Override
-    public void closeInventory( EntityPlayer player )
+    public void closeInventory( @Nonnull EntityPlayer player )
     {
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    public boolean isItemValidForSlot( int i, @Nonnull ItemStack itemstack)
     {
         return true;
     }
 
     @Override
-    public boolean isUseableByPlayer( EntityPlayer player )
+    public boolean isUseableByPlayer( @Nonnull EntityPlayer player )
     {
         return isUsable( player, false );
     }
@@ -613,7 +610,7 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public final void readDescription( NBTTagCompound nbttagcompound )
+    public final void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
         if( nbttagcompound.hasKey( "item" ) )
@@ -628,7 +625,7 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public void writeDescription( NBTTagCompound nbttagcompound )
+    public void writeDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.writeDescription( nbttagcompound );
         if( m_diskStack != null )
@@ -659,7 +656,7 @@ public class TileDiskDrive extends TilePeripheralBase
     }
 
     @Override
-    public boolean shouldRefresh( World world, BlockPos pos, IBlockState oldState, IBlockState newState )
+    public boolean shouldRefresh( World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState )
     {
         return super.shouldRefresh( world, pos, oldState, newState ) || ComputerCraft.Blocks.peripheral.getPeripheralType( newState ) != PeripheralType.DiskDrive;
     }

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,11 +10,19 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.computer.IComputerEnvironment;
 import dan200.computercraft.core.terminal.Terminal;
+import dan200.computercraft.shared.util.Palette;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 public class TermAPI implements ILuaAPI
 {
-    private Terminal m_terminal;
-    private IComputerEnvironment m_environment;
+    private final Terminal m_terminal;
+    private final IComputerEnvironment m_environment;
 
     public TermAPI( IAPIEnvironment _environment )
     {
@@ -45,6 +53,7 @@ public class TermAPI implements ILuaAPI
     {
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -67,13 +76,17 @@ public class TermAPI implements ILuaAPI
             "getTextColor",
             "getBackgroundColour",
             "getBackgroundColor",
-            "blit"
+            "blit",
+            "setPaletteColour",
+            "setPaletteColor",
+            "getPaletteColour",
+            "getPaletteColor"
         };
     }
     
-    public static int parseColour( Object[] args, boolean _enableColours ) throws LuaException
+    public static int parseColour( Object[] args ) throws LuaException
     {
-        if( args.length != 1 || args[0] == null || !(args[0] instanceof Double) )
+        if( args.length < 1 || args[0] == null || !(args[0] instanceof Double) )
         {
             throw new LuaException( "Expected number" );
         }            
@@ -87,10 +100,6 @@ public class TermAPI implements ILuaAPI
         {
             throw new LuaException( "Colour out of range" );
         }
-        if( !_enableColours && (colour != 0 && colour != 15 && colour != 7 && colour != 8) )
-        {
-            throw new LuaException( "Colour not supported" );
-        }
         return colour;
     }
 
@@ -101,8 +110,17 @@ public class TermAPI implements ILuaAPI
         };
     }
 
+    public static void setColour( Terminal terminal, int colour, float r, float g, float b )
+    {
+        if( terminal.getPalette() != null )
+        {
+            terminal.getPalette().setColour( colour, r, g, b );
+            terminal.setChanged();
+        }
+    }
+
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {
@@ -160,7 +178,7 @@ public class TermAPI implements ILuaAPI
                 {
                     throw new LuaException( "Expected boolean" );
                 }
-                boolean b = ((Boolean)args[0]).booleanValue();
+                boolean b = (Boolean) args[ 0 ];
                 synchronized( m_terminal )
                 {
                     m_terminal.setCursorBlink( b );
@@ -211,7 +229,7 @@ public class TermAPI implements ILuaAPI
             case 9:
             {
                 // setTextColour/setTextColor
-                int colour = parseColour( args, m_environment.isColour() );
+                int colour = parseColour( args );
                 synchronized( m_terminal )
                 {
                     m_terminal.setTextColour( colour );
@@ -222,7 +240,7 @@ public class TermAPI implements ILuaAPI
             case 11:
             {
                 // setBackgroundColour/setBackgroundColor
-                int colour = parseColour( args, m_environment.isColour() );
+                int colour = parseColour( args );
                 synchronized( m_terminal )
                 {
                     m_terminal.setBackgroundColour( colour );
@@ -267,6 +285,50 @@ public class TermAPI implements ILuaAPI
                 {
                     m_terminal.blit( text, textColour, backgroundColour );
                     m_terminal.setCursorPos( m_terminal.getCursorX() + text.length(), m_terminal.getCursorY() );
+                }
+                return null;
+            }
+            case 19:
+            case 20:
+            {
+                // setPaletteColour/setPaletteColor
+                if(args.length == 2 && args[0] instanceof Double && args[1] instanceof Double)
+                {
+                    int colour = 15 - parseColour( args );
+                    int hex = ((Double)args[1]).intValue();
+                    float[] rgb = Palette.decodeRGB8( hex );
+                    setColour( m_terminal, colour, rgb[0], rgb[1], rgb[2] );
+                    return null;
+                }
+
+                if(args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
+                {
+                    int colour = 15 - parseColour( args );
+                    float r = ((Double)args[1]).floatValue();
+                    float g = ((Double)args[2]).floatValue();
+                    float b = ((Double)args[3]).floatValue();
+                    setColour( m_terminal, colour, r, g, b );
+                    return null;
+                }
+
+                throw new LuaException( "Expected number, number or number, number, number, number" );
+            }
+            case 21:
+            case 22:
+            {
+                // getPaletteColour/getPaletteColor
+                if(args.length < 1 || !(args[0] instanceof Double))
+                {
+                    throw new LuaException( "Expected number" );
+                }
+
+                int colour = 15 - parseColour( args );
+                synchronized( m_terminal )
+                {
+                    if ( m_terminal.getPalette() != null )
+                    {
+                        return ArrayUtils.toObject( m_terminal.getPalette().getColour( colour ) );
+                    }
                 }
                 return null;
             }

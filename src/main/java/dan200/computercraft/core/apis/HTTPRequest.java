@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -17,12 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-class HTTPRequestException extends Exception {
-    public HTTPRequestException( String s ) {
-        super( s );
-    }
-}
 
 public class HTTPRequest
 {
@@ -49,9 +43,8 @@ public class HTTPRequest
         boolean allowed = false;
         String whitelistString = ComputerCraft.http_whitelist;
         String[] allowedURLs = whitelistString.split( ";" );
-        for( int i=0; i<allowedURLs.length; ++i )
+        for( String allowedURL : allowedURLs )
         {
-            String allowedURL = allowedURLs[i];
             Pattern allowedURLPattern = Pattern.compile( "^\\Q" + allowedURL.replaceAll( "\\*", "\\\\E.*\\\\Q" ) + "\\E$" );
             if( allowedURLPattern.matcher( url.getHost() ).matches() )
             {
@@ -274,7 +267,7 @@ public class HTTPRequest
     
     public BufferedReader getContents()
     {
-        String result = null;
+        String result;
         synchronized(m_lock) {
             result = m_result;
         }
@@ -285,8 +278,8 @@ public class HTTPRequest
         return null;
     }
     
-    private Object m_lock = new Object();
-    private URL m_url;
+    private final Object m_lock = new Object();
+    private final URL m_url;
     private final String m_urlString;
     
     private boolean m_complete;

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -12,6 +12,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class DefaultBundledRedstoneProvider implements IBundledRedstoneProvider
 {
     public DefaultBundledRedstoneProvider()
@@ -19,7 +21,7 @@ public class DefaultBundledRedstoneProvider implements IBundledRedstoneProvider
     }
 
     @Override
-    public int getBundledRedstoneOutput( World world, BlockPos pos, EnumFacing side )
+    public int getBundledRedstoneOutput( @Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side )
     {
         return getDefaultBundledRedstoneOutput( world, pos, side );
     }

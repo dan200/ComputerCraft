@@ -5,7 +5,7 @@ import dan200.computercraft.shared.peripheral.modem.WirelessModemPeripheral;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -52,10 +52,6 @@ public class PocketModemPeripheral extends WirelessModemPeripheral
     @Override
     public boolean equals( IPeripheral other )
     {
-        if( other instanceof PocketModemPeripheral )
-        {
-            return true;
-        }
-        return false;
+        return other instanceof PocketModemPeripheral;
     }
 }

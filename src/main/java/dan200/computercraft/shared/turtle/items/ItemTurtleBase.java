@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -27,6 +27,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
     public abstract ItemStack create( int id, String label, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay );
 
     @Override
-    public void getSubItems( Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         List<ItemStack> all = new ArrayList<ItemStack>();
         ComputerCraft.addAllUpgradedTurtles( all );
@@ -56,7 +57,7 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
     }
 
     @Override
-    public boolean placeBlockAt( ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState )
+    public boolean placeBlockAt( @Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState newState )
     {
         if( super.placeBlockAt( stack, player, world, pos, side, hitX, hitY, hitZ, newState ) )
         {
@@ -112,6 +113,7 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
         }
     }
 
+    @Nonnull
     @Override
     public String getUnlocalizedName( ItemStack stack )
     {
@@ -134,8 +136,9 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
         }
     }
 
+    @Nonnull
     @Override
-    public String getItemStackDisplayName( ItemStack stack )
+    public String getItemStackDisplayName( @Nonnull ItemStack stack )
     {
         String baseString = getUnlocalizedName( stack );
         ITurtleUpgrade left = getUpgrade( stack, TurtleSide.Left );

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -49,12 +49,12 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +88,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             private ModelResourceLocation computer = new ModelResourceLocation( "computercraft:CC-Computer", "inventory" );
             private ModelResourceLocation advanced_computer = new ModelResourceLocation( "computercraft:advanced_computer", "inventory" );
 
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 ItemComputer itemComputer = (ItemComputer) stack.getItem();
                 ComputerFamily family = itemComputer.getFamily( stack.getItemDamage() );
@@ -121,8 +122,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             private ModelResourceLocation advanced_pocket_computer_on = new ModelResourceLocation( "computercraft:advanced_pocket_computer_on", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_blinking = new ModelResourceLocation( "computercraft:advanced_pocket_computer_blinking", "inventory" );
 
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 ItemPocketComputer itemPocketComputer = (ItemPocketComputer)stack.getItem();
                 switch( itemPocketComputer.getFamily( stack ) )
@@ -180,7 +182,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         mc.getItemColors().registerItemColorHandler( new IItemColor()
         {
             @Override
-            public int getColorFromItemstack( ItemStack stack, int layout )
+            public int getColorFromItemstack( @Nonnull ItemStack stack, int layout )
             {
                 if( layout != 1 ) return 0xFFFFFF;
 
@@ -219,8 +221,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         ModelBakery.registerItemVariants( item, new ResourceLocation( "computercraft", name ) );
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, new ItemMeshDefinition()
         {
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 return res;
             }
@@ -276,10 +279,10 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     @Override
     public String getRecordInfo( ItemStack recordStack )
     {
-        List info = new ArrayList(1);
+        List<String> info = new ArrayList<String>( 1 );
         recordStack.getItem().addInformation( recordStack, null, info, false );
         if( info.size() > 0 ) {
-            return info.get(0).toString();
+            return info.get( 0 );
         } else {
             return super.getRecordInfo( recordStack );
         }
@@ -401,7 +404,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                 {
                     ComputerCraft.clientComputerRegistry.add( instanceID, new ClientComputer( instanceID ) );
                 }
-                ComputerCraft.clientComputerRegistry.get( instanceID ).handlePacket( packet, (EntityPlayer) player );
+                ComputerCraft.clientComputerRegistry.get( instanceID ).handlePacket( packet, player );
                 break;
             }
             case ComputerCraftPacket.ComputerDeleted:
@@ -519,7 +522,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 		}
 
 		@Override
-		public int getColorFromItemstack(ItemStack stack, int layer)
+		public int getColorFromItemstack( @Nonnull ItemStack stack, int layer)
 		{
 			return layer == 0 ? 0xFFFFFF : disk.getColor(stack);
 		}

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -15,6 +15,8 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class PocketComputerUpgradeRecipe implements IRecipe
 {
@@ -35,13 +37,13 @@ public class PocketComputerUpgradeRecipe implements IRecipe
     }
 
     @Override
-    public boolean matches( InventoryCrafting inventory, World world )
+    public boolean matches( @Nonnull InventoryCrafting inventory, @Nonnull World world )
     {
         return (getCraftingResult( inventory ) != null);
     }
 
     @Override
-    public ItemStack getCraftingResult( InventoryCrafting inventory )
+    public ItemStack getCraftingResult( @Nonnull InventoryCrafting inventory )
     {
         // Scan the grid for a pocket computer
         ItemStack computer = null;
@@ -112,8 +114,9 @@ public class PocketComputerUpgradeRecipe implements IRecipe
         return PocketComputerItemFactory.create( computerID, label, family, upgrade );
     }
 
+    @Nonnull
     @Override
-    public ItemStack[] getRemainingItems( InventoryCrafting inventoryCrafting )
+    public ItemStack[] getRemainingItems( @Nonnull InventoryCrafting inventoryCrafting )
     {
         ItemStack[] results = new ItemStack[ inventoryCrafting.getSizeInventory() ];
         for (int i = 0; i < results.length; ++i)

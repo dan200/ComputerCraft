@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,7 +10,6 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
-import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -18,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public abstract class ItemComputerBase extends ItemBlock implements IComputerItem, IMedia
@@ -36,7 +36,7 @@ public abstract class ItemComputerBase extends ItemBlock implements IComputerIte
     }
 
     @Override
-    public void addInformation( ItemStack stack, EntityPlayer player, List list, boolean debug )
+    public void addInformation( @Nonnull ItemStack stack, @Nonnull EntityPlayer player, @Nonnull List<String> list, boolean debug )
     {
         if( debug )
         {
@@ -54,7 +54,7 @@ public abstract class ItemComputerBase extends ItemBlock implements IComputerIte
     public abstract int getComputerID( ItemStack stack );
 
     @Override
-    public String getLabel( ItemStack stack )
+    public String getLabel( @Nonnull ItemStack stack )
     {
         if( stack.hasDisplayName() )
         {
@@ -73,7 +73,7 @@ public abstract class ItemComputerBase extends ItemBlock implements IComputerIte
     // IMedia implementation
 
     @Override
-    public boolean setLabel( ItemStack stack, String label )
+    public boolean setLabel( @Nonnull ItemStack stack, String label )
     {
         if( label != null )
         {
@@ -87,19 +87,19 @@ public abstract class ItemComputerBase extends ItemBlock implements IComputerIte
     }
 
     @Override
-    public String getAudioTitle( ItemStack stack )
+    public String getAudioTitle( @Nonnull ItemStack stack )
     {
         return null;
     }
 
     @Override
-    public SoundEvent getAudio( ItemStack stack )
+    public SoundEvent getAudio( @Nonnull ItemStack stack )
     {
         return null;
     }
 
     @Override
-    public IMount createDataMount( ItemStack stack, World world )
+    public IMount createDataMount( @Nonnull ItemStack stack, @Nonnull World world )
     {
         ComputerFamily family = getFamily( stack );
         if( family != ComputerFamily.Command )

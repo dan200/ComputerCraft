@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,13 +10,13 @@ import dan200.computercraft.api.filesystem.IWritableMount;
 
 public interface IComputerEnvironment
 {
-    public int getDay();
-    public double getTimeOfDay();
-    public boolean isColour();
-    public long getComputerSpaceLimit();
-    public String getHostString();
+    int getDay();
+    double getTimeOfDay();
+    boolean isColour();
+    long getComputerSpaceLimit();
+    String getHostString();
 
-    public int assignNewID();
-    public IWritableMount createSaveDirMount( String subPath, long capacity );
-    public IMount createResourceMount( String domain, String subPath );
+    int assignNewID();
+    IWritableMount createSaveDirMount( String subPath, long capacity );
+    IMount createResourceMount( String domain, String subPath );
 }

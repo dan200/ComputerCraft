@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class TurtleMultiModel implements IBakedModel
     private IBakedModel m_rightUpgradeModel;
     private Matrix4f m_rightUpgradeTransform;
     private List<BakedQuad> m_generalQuads;
-    private List<BakedQuad> m_faceQuads[];
+    private List<BakedQuad>[] m_faceQuads;
 
     public TurtleMultiModel( IBakedModel baseModel, IBakedModel overlayModel, IBakedModel leftUpgradeModel, Matrix4f leftUpgradeTransform, IBakedModel rightUpgradeModel, Matrix4f rightUpgradeTransform )
     {
@@ -39,6 +40,7 @@ public class TurtleMultiModel implements IBakedModel
         m_faceQuads = new List[6];
     }
 
+    @Nonnull
     @Override
     public List<BakedQuad> getQuads( IBlockState state, EnumFacing side, long rand )
     {
@@ -107,18 +109,22 @@ public class TurtleMultiModel implements IBakedModel
         return m_baseModel.isBuiltInRenderer();
     }
 
+    @Nonnull
     @Override
     public TextureAtlasSprite getParticleTexture()
     {
         return m_baseModel.getParticleTexture();
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public ItemCameraTransforms getItemCameraTransforms()
     {
         return m_baseModel.getItemCameraTransforms();
     }
 
+    @Nonnull
     @Override
     public ItemOverrideList getOverrides()
     {
@@ -134,9 +140,8 @@ public class TurtleMultiModel implements IBakedModel
         else
         {
             List<BakedQuad> output = new ArrayList<BakedQuad>( input.size() );
-            for( int i=0; i<input.size(); ++i )
+            for( BakedQuad quad : input )
             {
-                BakedQuad quad = input.get( i );
                 output.add( transformQuad( quad, transform ) );
             }
             return output;

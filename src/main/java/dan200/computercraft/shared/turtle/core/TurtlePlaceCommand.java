@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -33,6 +33,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
+
 public class TurtlePlaceCommand implements ITurtleCommand
 {
     private final InteractDirection m_direction;
@@ -44,8 +46,9 @@ public class TurtlePlaceCommand implements ITurtleCommand
         m_extraArguments = arguments;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Get thing to place
         ItemStack stack = turtle.getInventory().getStackInSlot( turtle.getSelectedSlot() );
@@ -205,8 +208,7 @@ public class TurtlePlaceCommand implements ITurtleCommand
         final BlockPos position = turtle.getPosition();
         Vec3d turtlePos = new Vec3d( turtlePlayer.posX, turtlePlayer.posY, turtlePlayer.posZ );
         Vec3d rayDir = turtlePlayer.getLook( 1.0f );
-        Vec3d rayStart = turtlePos;
-        Pair<Entity, Vec3d> hit = WorldUtil.rayTraceEntities( world, rayStart, rayDir, 1.5 );
+        Pair<Entity, Vec3d> hit = WorldUtil.rayTraceEntities( world, turtlePos, rayDir, 1.5 );
         if( hit == null )
         {
             return stack;

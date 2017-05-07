@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -14,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public abstract class ItemPeripheralBase extends ItemBlock implements IPeripheralItem
 {
@@ -33,7 +35,7 @@ public abstract class ItemPeripheralBase extends ItemBlock implements IPeriphera
     }
 
     @Override
-    public boolean canPlaceBlockOnSide( World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack ) // canPlaceItemBlockOnSide
+    public boolean canPlaceBlockOnSide( World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side, EntityPlayer player, @Nonnull ItemStack stack ) // canPlaceItemBlockOnSide
     {
         PeripheralType type = getPeripheralType( stack );
         switch( type )
@@ -55,6 +57,7 @@ public abstract class ItemPeripheralBase extends ItemBlock implements IPeriphera
         }
     }
 
+    @Nonnull
     @Override
     public String getUnlocalizedName( ItemStack stack )
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -206,12 +206,11 @@ public class InventoryUtil
 
         // Inspect the slots in order and try to find empty or stackable slots
         ItemStack remainder = stack;
-        for( int n=0; n<slots.length; ++n )
+        for( int slot : slots )
         {
-            int slot = slots[n];
             if( canPlaceItemThroughFace( inventory, slot, remainder, face ) )
             {
-                ItemStack slotContents = inventory.getStackInSlot(slot);
+                ItemStack slotContents = inventory.getStackInSlot( slot );
                 if( slotContents == null )
                 {
                     // Slot is empty
@@ -286,9 +285,8 @@ public class InventoryUtil
         // Combine multiple stacks from inventory into one if necessary
         ItemStack partialStack = null;
         int countRemaining = count;
-        for( int n=0; n<slots.length; ++n )
+        for( int slot : slots )
         {
-            int slot = slots[n];
             if( countRemaining > 0 )
             {
                 ItemStack stack = inventory.getStackInSlot( slot );

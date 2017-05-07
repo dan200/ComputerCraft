@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -26,12 +26,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
@@ -334,11 +338,11 @@ public class TurtleBrain implements ITurtleAccess
         // Write NBT
         if( m_upgradeNBTData.containsKey( TurtleSide.Left ) )
         {
-            nbttagcompound.setTag( "leftUpgradeNBT", (NBTTagCompound) getUpgradeNBTData( TurtleSide.Left ).copy() );
+            nbttagcompound.setTag( "leftUpgradeNBT", getUpgradeNBTData( TurtleSide.Left ).copy() );
         }
         if( m_upgradeNBTData.containsKey( TurtleSide.Right ) )
         {
-            nbttagcompound.setTag( "rightUpgradeNBT", (NBTTagCompound) getUpgradeNBTData( TurtleSide.Right ).copy() );
+            nbttagcompound.setTag( "rightUpgradeNBT", getUpgradeNBTData( TurtleSide.Right ).copy() );
         }
 
         return nbttagcompound;
@@ -370,11 +374,11 @@ public class TurtleBrain implements ITurtleAccess
         // NBT
         if( m_upgradeNBTData.containsKey( TurtleSide.Left ) )
         {
-            nbttagcompound.setTag( "leftUpgradeNBT", (NBTTagCompound) getUpgradeNBTData( TurtleSide.Left ).copy() );
+            nbttagcompound.setTag( "leftUpgradeNBT", getUpgradeNBTData( TurtleSide.Left ).copy() );
         }
         if( m_upgradeNBTData.containsKey( TurtleSide.Right ) )
         {
-            nbttagcompound.setTag( "rightUpgradeNBT", (NBTTagCompound) getUpgradeNBTData( TurtleSide.Right ).copy() );
+            nbttagcompound.setTag( "rightUpgradeNBT", getUpgradeNBTData( TurtleSide.Right ).copy() );
         }
 
         // Colour
@@ -473,12 +477,14 @@ public class TurtleBrain implements ITurtleAccess
         m_fuelLevel = nbttagcompound.getInteger( "fuelLevel" );
     }
 
+    @Nonnull
     @Override
     public World getWorld()
     {
         return m_owner.getWorld();
     }
 
+    @Nonnull
     @Override
     public BlockPos getPosition()
     {
@@ -486,7 +492,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public boolean teleportTo( World world, BlockPos pos )
+    public boolean teleportTo( @Nonnull World world, @Nonnull BlockPos pos )
     {
         if( world.isRemote || getWorld().isRemote )
         {
@@ -555,6 +561,7 @@ public class TurtleBrain implements ITurtleAccess
         return false;
     }
 
+    @Nonnull
     @Override
     public Vec3d getVisualPosition( float f )
     {
@@ -570,8 +577,7 @@ public class TurtleBrain implements ITurtleAccess
     @Override
     public float getVisualYaw( float f )
     {
-        float forward = DirectionUtil.toYawAngle( getDirection() );
-        float yaw = forward;
+        float yaw = DirectionUtil.toYawAngle( getDirection() );
         switch( m_animation )
         {
             case TurnLeft:
@@ -596,6 +602,7 @@ public class TurtleBrain implements ITurtleAccess
         return yaw;
     }
 
+    @Nonnull
     @Override
     public EnumFacing getDirection()
     {
@@ -603,7 +610,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public void setDirection( EnumFacing dir )
+    public void setDirection( @Nonnull EnumFacing dir )
     {
         if( dir.getAxis() == EnumFacing.Axis.Y )
         {
@@ -635,6 +642,7 @@ public class TurtleBrain implements ITurtleAccess
         }
     }
 
+    @Nonnull
     @Override
     public IInventory getInventory()
     {
@@ -711,8 +719,9 @@ public class TurtleBrain implements ITurtleAccess
         return m_commandsIssued;
     }
 
+    @Nonnull
     @Override
-    public Object[] executeCommand( ILuaContext context, ITurtleCommand command ) throws LuaException, InterruptedException
+    public Object[] executeCommand( @Nonnull ILuaContext context, @Nonnull ITurtleCommand command ) throws LuaException, InterruptedException
     {
         if( getWorld().isRemote )
         {
@@ -731,10 +740,7 @@ public class TurtleBrain implements ITurtleAccess
                 if( ( (Number) response[ 1 ] ).intValue() == commandID )
                 {
                     Object[] returnValues = new Object[ response.length - 2 ];
-                    for( int i = 0; i < returnValues.length; ++i )
-                    {
-                        returnValues[ i ] = response[ i + 2 ];
-                    }
+                    System.arraycopy( response, 2, returnValues, 0, returnValues.length );
                     return returnValues;
                 }
             }
@@ -742,7 +748,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public void playAnimation( TurtleAnimation animation )
+    public void playAnimation( @Nonnull TurtleAnimation animation )
     {
         if( getWorld().isRemote )
         {
@@ -798,7 +804,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public ITurtleUpgrade getUpgrade( TurtleSide side )
+    public ITurtleUpgrade getUpgrade( @Nonnull TurtleSide side )
     {
         if( m_upgrades.containsKey( side ) )
         {
@@ -808,7 +814,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public void setUpgrade( TurtleSide side, ITurtleUpgrade upgrade )
+    public void setUpgrade( @Nonnull TurtleSide side, ITurtleUpgrade upgrade )
     {
         // Remove old upgrade
         if( m_upgrades.containsKey( side ) )
@@ -846,7 +852,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public IPeripheral getPeripheral( TurtleSide side )
+    public IPeripheral getPeripheral( @Nonnull TurtleSide side )
     {
         if( m_peripherals.containsKey( side ) )
         {
@@ -855,6 +861,7 @@ public class TurtleBrain implements ITurtleAccess
         return null;
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound getUpgradeNBTData( TurtleSide side )
     {
@@ -866,7 +873,7 @@ public class TurtleBrain implements ITurtleAccess
     }
 
     @Override
-    public void updateUpgradeNBTData( TurtleSide side )
+    public void updateUpgradeNBTData( @Nonnull TurtleSide side )
     {
         m_owner.updateBlock();
     }
@@ -1025,10 +1032,7 @@ public class TurtleBrain implements ITurtleAccess
                                 Object[] arguments = new Object[ results.length + 2 ];
                                 arguments[0] = callbackID;
                                 arguments[1] = true;
-                                for( int i=0; i<results.length; ++i )
-                                {
-                                    arguments[2+i] = results[i];
-                                }
+                                System.arraycopy( results, 0, arguments, 2, results.length );
                                 computer.queueEvent( "turtle_response", arguments );
                             }
                             else
@@ -1132,19 +1136,16 @@ public class TurtleBrain implements ITurtleAccess
                     }
 
                     AxisAlignedBB aabb = new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ );
-                    List list = world.getEntitiesWithinAABBExcludingEntity( (Entity)null, aabb );
+                    List<Entity> list = world.getEntitiesWithinAABBExcludingEntity( null, aabb );
                     if( !list.isEmpty() )
                     {
                         double pushStep = 1.0f / (float) ANIM_DURATION;
                         double pushStepX = (double) moveDir.getFrontOffsetX() * pushStep;
                         double pushStepY = (double) moveDir.getFrontOffsetY() * pushStep;
                         double pushStepZ = (double) moveDir.getFrontOffsetZ() * pushStep;
-                        for( int i = 0; i < list.size(); ++i )
+                        for (Entity entity : list)
                         {
-                            Entity entity = (Entity) list.get( i );
-                            entity.moveEntity(
-                                pushStepX, pushStepY, pushStepZ
-                            );
+                            entity.moveEntity( pushStepX, pushStepY, pushStepZ );
                         }
                     }
                 }

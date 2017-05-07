@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,8 +24,8 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class BlockGeneric extends Block implements
@@ -43,12 +42,13 @@ public abstract class BlockGeneric extends Block implements
     protected abstract TileGeneric createTile( int damage );
 
     @Override
-    public final void dropBlockAsItemWithChance( World world, BlockPos pos, IBlockState state, float chance, int fortune )
+    public final void dropBlockAsItemWithChance( World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, float chance, int fortune )
     {
     }
 
+    @Nonnull
     @Override
-    public final List<ItemStack> getDrops( IBlockAccess world, BlockPos pos, IBlockState state, int fortune )
+    public final List<ItemStack> getDrops( IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune )
     {
         ArrayList<ItemStack> drops = new ArrayList<ItemStack>( 1 );
         TileEntity tile = world.getTileEntity( pos );
@@ -60,6 +60,7 @@ public abstract class BlockGeneric extends Block implements
         return drops;
     }
 
+    @Nonnull
     @Override
     public final IBlockState onBlockPlaced( World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int damage, EntityLivingBase placer )
     {
@@ -67,7 +68,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final boolean removedByPlayer( IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest )
+    public final boolean removedByPlayer( @Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest )
     {
         if( !world.isRemote )
         {
@@ -94,10 +95,8 @@ public abstract class BlockGeneric extends Block implements
         // Drop items
         if( drops.size() > 0 )
         {
-            Iterator<ItemStack> it = drops.iterator();
-            while( it.hasNext() )
+            for (ItemStack item : drops)
             {
-                ItemStack item = it.next();
                 dropItem( world, pos, item );
             }
         }
@@ -109,7 +108,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final void breakBlock( World world, BlockPos pos, IBlockState newState )
+    public final void breakBlock( @Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState newState )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
@@ -121,8 +120,9 @@ public abstract class BlockGeneric extends Block implements
         world.removeTileEntity( pos );
     }
 
+    @Nonnull
     @Override
-    public final ItemStack getPickBlock( IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player )
+    public final ItemStack getPickBlock( @Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
@@ -134,7 +134,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    protected final ItemStack createStackedBlock( IBlockState state )
+    protected final ItemStack createStackedBlock( @Nonnull IBlockState state )
     {
         return null;
     }
@@ -152,6 +152,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final void neighborChanged( IBlockState state, World world, BlockPos pos, Block block )
     {
         TileEntity tile = world.getTileEntity( pos );
@@ -174,7 +175,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final boolean isSideSolid( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side )
+    public final boolean isSideSolid( IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
@@ -192,7 +193,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public float getExplosionResistance( World world, BlockPos pos, Entity exploder, Explosion explosion )
+    public float getExplosionResistance( World world, BlockPos pos, @Nonnull Entity exploder, Explosion explosion )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
@@ -206,7 +207,9 @@ public abstract class BlockGeneric extends Block implements
         return super.getExplosionResistance( exploder );
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public final AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
@@ -218,14 +221,17 @@ public abstract class BlockGeneric extends Block implements
         return FULL_BLOCK_AABB;
     }
 
+    @Nonnull
     @Override
-    public AxisAlignedBB getSelectedBoundingBox( IBlockState state, World worldIn, BlockPos pos )
+    @Deprecated
+    public final AxisAlignedBB getSelectedBoundingBox( IBlockState state, @Nonnull World world, @Nonnull BlockPos pos )
     {
-        return getBoundingBox( state, worldIn, pos ).offset( pos );
+        return getBoundingBox( state, world, pos ).offset( pos );
     }
 
     @Override
-    public final AxisAlignedBB getCollisionBoundingBox( IBlockState state, World world, BlockPos pos )
+    @Deprecated
+    public final AxisAlignedBB getCollisionBoundingBox( IBlockState state, @Nonnull World world, @Nonnull BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
@@ -252,7 +258,8 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public final void addCollisionBoxToList( IBlockState state, World world, BlockPos pos, AxisAlignedBB bigBox, List<AxisAlignedBB> list, Entity entity )
+    @Deprecated
+    public final void addCollisionBoxToList( IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB bigBox, @Nonnull List<AxisAlignedBB> list, Entity entity )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric && tile.hasWorldObj() )
@@ -266,10 +273,8 @@ public abstract class BlockGeneric extends Block implements
             // Add collision bounds to list
             if( collision.size() > 0 )
             {
-                Iterator<AxisAlignedBB> it = collision.iterator();
-                while( it.hasNext() )
+                for (AxisAlignedBB localBounds : collision)
                 {
-                    AxisAlignedBB localBounds = it.next();
                     addCollisionBoxToList( pos, bigBox, list, localBounds );
                 }
             }
@@ -277,6 +282,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final boolean canProvidePower( IBlockState state )
     {
         return true;
@@ -295,6 +301,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final int getStrongPower( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing oppositeSide )
     {
         TileEntity tile = world.getTileEntity( pos );
@@ -307,6 +314,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final int getWeakPower( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing oppositeSide )
     {
         return getStrongPower( state, world, pos, oppositeSide );
@@ -335,6 +343,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public boolean eventReceived( IBlockState state, World world, BlockPos pos, int eventID, int eventParameter )
     {
         if( world.isRemote )
@@ -349,14 +358,16 @@ public abstract class BlockGeneric extends Block implements
         return true;
     }
 
+    @Nonnull
     @Override
-    public final TileEntity createTileEntity( World world, IBlockState state )
+    public final TileEntity createTileEntity( @Nonnull World world, @Nonnull IBlockState state )
     {
         return createTile( state );
     }
 
+    @Nonnull
     @Override
-    public final TileEntity createNewTileEntity( World world, int damage )
+    public final TileEntity createNewTileEntity( @Nonnull World world, int damage )
     {
         return createTile( damage );
     }

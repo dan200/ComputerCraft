@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,7 +10,6 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
-import dan200.computercraft.api.turtle.TurtleUpgradeType;
 import dan200.computercraft.shared.computer.blocks.TileComputerBase;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.IComputer;
@@ -18,7 +17,10 @@ import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.turtle.apis.TurtleAPI;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
-import dan200.computercraft.shared.util.*;
+import dan200.computercraft.shared.util.Colour;
+import dan200.computercraft.shared.util.InventoryUtil;
+import dan200.computercraft.shared.util.RedstoneUtil;
+import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,12 +30,19 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class TileTurtle extends TileComputerBase
@@ -144,7 +153,7 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public void getDroppedItems( List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
     {
         IComputer computer = getComputer();
         if( !creative || (computer != null && computer.getLabel() != null) )
@@ -196,7 +205,8 @@ public class TileTurtle extends TileComputerBase
                         m_brain.setDyeColour( -1 );
                         if( !player.capabilities.isCreativeMode )
                         {
-                            currentItem.setItem( Items.BUCKET );
+                            player.setHeldItem( EnumHand.MAIN_HAND, new ItemStack( Items.BUCKET ) );
+                            player.inventory.markDirty();
                         }
                     }
                 }
@@ -235,14 +245,11 @@ public class TileTurtle extends TileComputerBase
         }
         else
         {
-            if( exploder != null && ( exploder instanceof EntityLivingBase || exploder instanceof EntityFireball ) )
-            {
-                return true;
-            }
-            return false;
+            return exploder != null && (exploder instanceof EntityLivingBase || exploder instanceof EntityFireball);
         }
     }
 
+    @Nonnull
     @Override
     public AxisAlignedBB getBounds()
     {
@@ -293,7 +300,7 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public void onNeighbourTileEntityChange(BlockPos neighbour)
+    public void onNeighbourTileEntityChange( @Nonnull BlockPos neighbour)
     {
         if ( m_moveState == MoveState.NOT_MOVED )
         {
@@ -342,6 +349,7 @@ public class TileTurtle extends TileComputerBase
         m_brain.readFromNBT( nbttagcompound );
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
@@ -539,6 +547,7 @@ public class TileTurtle extends TileComputerBase
         }
     }
 
+    @Nonnull
     @Override
     public String getName()
     {
@@ -569,6 +578,7 @@ public class TileTurtle extends TileComputerBase
         return false;
     }
 
+    @Nonnull
     @Override
     public ITextComponent getDisplayName()
     {
@@ -589,17 +599,17 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public void openInventory( EntityPlayer player )
+    public void openInventory( @Nonnull EntityPlayer player )
     {
     }
 
     @Override
-    public void closeInventory( EntityPlayer player )
+    public void closeInventory( @Nonnull EntityPlayer player )
     {
     }
 
     @Override
-    public boolean isItemValidForSlot( int slot, ItemStack stack )
+    public boolean isItemValidForSlot( int slot, @Nonnull ItemStack stack )
     {
         return true;
     }
@@ -625,7 +635,7 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public boolean isUseableByPlayer( EntityPlayer player )
+    public boolean isUseableByPlayer( @Nonnull EntityPlayer player )
     {
         return isUsable( player, false );
     }
@@ -666,14 +676,14 @@ public class TileTurtle extends TileComputerBase
     // Networking stuff
 
     @Override
-    public void writeDescription( NBTTagCompound nbttagcompound )
+    public void writeDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.writeDescription( nbttagcompound );
         m_brain.writeDescription( nbttagcompound );
     }
 
     @Override
-    public void readDescription( NBTTagCompound nbttagcompound )
+    public void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
         m_brain.readDescription( nbttagcompound );
@@ -691,11 +701,7 @@ public class TileTurtle extends TileComputerBase
             case 5:    upgrade = getUpgrade( TurtleSide.Left ); break;
             default: return false;
         }
-        if( upgrade != null && upgrade.getType().isPeripheral() )
-        {
-            return true;
-        }
-        return false;
+        return upgrade != null && upgrade.getType().isPeripheral();
     }
 
     public void transferStateFrom( TileTurtle copy )

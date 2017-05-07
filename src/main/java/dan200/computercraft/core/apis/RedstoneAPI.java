@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,6 +10,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.computer.Computer;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +46,7 @@ public class RedstoneAPI implements ILuaAPI
     {
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -67,7 +69,7 @@ public class RedstoneAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {
@@ -89,7 +91,7 @@ public class RedstoneAPI implements ILuaAPI
                     throw new LuaException( "Expected string, boolean" );
                 }
                 int side = parseSide( args );
-                boolean output = ((Boolean)args[1]).booleanValue();
+                boolean output = (Boolean) args[ 1 ];
                 m_environment.setOutput( side, output ? 15 : 0 );
                 return null;
             }

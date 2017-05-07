@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -8,6 +8,8 @@ package dan200.computercraft.shared.turtle.core;
 
 import com.google.common.base.Optional;
 import dan200.computercraft.api.turtle.*;
+
+import javax.annotation.Nonnull;
 
 public class TurtleToolCommand implements ITurtleCommand
 {
@@ -22,8 +24,9 @@ public class TurtleToolCommand implements ITurtleCommand
         m_side = side;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         TurtleCommandResult firstFailure = null;
         for( TurtleSide side : TurtleSide.values() )
