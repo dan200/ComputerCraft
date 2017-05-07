@@ -232,14 +232,6 @@ public class MonitorPeripheral implements IPeripheral
                 // setPaletteColour/setPaletteColor
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
 
-                if(args.length >= 1 && args[0] instanceof HashMap )
-                {
-                    @SuppressWarnings( { "unchecked" } ) // There isn't really a nice way around this :(
-                    HashMap<Object, Object> colourTbl = (HashMap<Object, Object>)args[0];
-                    dan200.computercraft.core.apis.TermAPI.setColour( terminal, colourTbl );
-                    return null;
-                }
-
                 if(args.length == 2 && args[0] instanceof Double && args[1] instanceof Double)
                 {
                     int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args, true );
@@ -259,7 +251,7 @@ public class MonitorPeripheral implements IPeripheral
                     return null;
                 }
 
-                throw new LuaException( "Expected table or number, number, number, number" );
+                throw new LuaException( "Expected number, number or number, number, number, number" );
             }
             case 22:
             case 23:

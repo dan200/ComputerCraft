@@ -120,50 +120,6 @@ public class TermAPI implements ILuaAPI
         }
     }
 
-    public static void setColour( Terminal terminal, HashMap<Object, Object> colours) throws LuaException
-    {
-        final double lg2 = Math.log( 2 );
-
-        for(Map.Entry<Object, Object> e : colours.entrySet())
-        {
-            if(e.getKey() instanceof Double)
-            {
-                int index = 15 - (int)( Math.log( (Double)e.getKey() ) / lg2 );
-
-                try
-                {
-                    if (e.getValue() instanceof HashMap)
-                    {
-                        @SuppressWarnings({ "unchecked" }) // There isn't really a nice way around this :(
-                        HashMap<Object, Object> colour = (HashMap<Object, Object>) e.getValue();
-
-                        setColour(
-                                terminal,
-                                index,
-                                ( (Double)colour.get( 1.0 ) ).floatValue(),
-                                ( (Double)colour.get( 2.0 ) ).floatValue(),
-                                ( (Double)colour.get( 3.0 ) ).floatValue()
-                        );
-                    }
-                    else if (e.getValue() instanceof Double)
-                    {
-                        float[] rgb = Palette.decodeRGB8( ((Double)e.getValue()).intValue() );
-
-                        setColour(
-                                terminal,
-                                index,
-                                rgb[0], rgb[1], rgb[2]
-                        );
-                    }
-                }
-                catch(ClassCastException cce)
-                {
-                    throw new LuaException( "Malformed colour table " + cce.getMessage() );
-                }
-            }
-        }
-    }
-
     @Override
     public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
     {
@@ -337,14 +293,6 @@ public class TermAPI implements ILuaAPI
             case 20:
             {
                 // setPaletteColour/setPaletteColor
-                if(args.length >= 1 && args[0] instanceof HashMap)
-                {
-                    @SuppressWarnings( { "unchecked" } ) // There isn't really a nice way around this :(
-                    HashMap<Object, Object> colourTbl = (HashMap<Object, Object>)args[0];
-                    setColour( m_terminal, colourTbl );
-                    return null;
-                }
-
                 if(args.length == 2 && args[0] instanceof Double && args[1] instanceof Double)
                 {
                     int colour = 15 - parseColour( args, true );
@@ -364,7 +312,7 @@ public class TermAPI implements ILuaAPI
                     return null;
                 }
 
-                throw new LuaException( "Expected table or number, number or number, number, number, number" );
+                throw new LuaException( "Expected number, number or number, number, number, number" );
             }
             case 21:
             case 22:

@@ -107,7 +107,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function updatePalette()
-        return parent.setPaletteColour( tPalette )
+        for k,v in pairs( tPalette ) do
+            parent.setPaletteColour( k, table.unpack( v ) )
+        end
     end
 
     local function internalBlit( sText, sTextColor, sBackgroundColor )
@@ -287,19 +289,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.setPaletteColour( colour, r, g, b )
-        if type(colour) == "table" then
-            for k,v in pairs(colour) do
-                if type(v) == "number" then
-                    local vr, vg, vb = colours.rgb8( v )
-                    tPalette[k] = { vr, vg, vb }
-                    parent.setPaletteColour( k, vr, vg, vb )
-                elseif type(v) == "table" then
-                    tPalette[k] = v
-                    parent.setPaletteColour( k, table.unpack( v ) )
-                end
-            end
-            return
-        elseif type(colour) == "number" and type(r) == "number" and g == nil and b == nil then
+        if type(colour) == "number" and type(r) == "number" and g == nil and b == nil then
             tPalette[ colour ] = { colours.rgb8( r ) }
         elseif type(colour) == "number" and type(r) == "number" and type(g) == "number" and type(b) == "number" then
             local tCol = tPalette[ colour ]
