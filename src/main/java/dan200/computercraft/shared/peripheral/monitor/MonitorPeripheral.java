@@ -231,12 +231,6 @@ public class MonitorPeripheral implements IPeripheral
             {
                 // setPaletteColour/setPaletteColor
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
-                boolean isColour = m_monitor.getTerminal().isColour();
-
-                if( !isColour )
-                {
-                    throw new LuaException( "Colour not supported" );
-                }
 
                 if(args.length >= 1 && args[0] instanceof HashMap )
                 {

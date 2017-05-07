@@ -337,12 +337,6 @@ public class TermAPI implements ILuaAPI
             case 20:
             {
                 // setPaletteColour/setPaletteColor
-                if( !m_environment.isColour() )
-                {
-                    // Make sure you can't circumvent greyscale terminals with this function.
-                    throw new LuaException( "Colour not supported" );
-                }
-
                 if(args.length >= 1 && args[0] instanceof HashMap)
                 {
                     @SuppressWarnings( { "unchecked" } ) // There isn't really a nice way around this :(
@@ -353,7 +347,7 @@ public class TermAPI implements ILuaAPI
 
                 if(args.length == 2 && args[0] instanceof Double && args[1] instanceof Double)
                 {
-                    int colour = 15 - parseColour( args, m_environment.isColour() );
+                    int colour = 15 - parseColour( args, true );
                     int hex = ((Double)args[1]).intValue();
                     float[] rgb = Palette.decodeRGB8( hex );
                     setColour( m_terminal, colour, rgb[0], rgb[1], rgb[2] );
@@ -362,7 +356,7 @@ public class TermAPI implements ILuaAPI
 
                 if(args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
                 {
-                    int colour = 15 - parseColour( args, m_environment.isColour() );
+                    int colour = 15 - parseColour( args, true );
                     float r = ((Double)args[1]).floatValue();
                     float g = ((Double)args[2]).floatValue();
                     float b = ((Double)args[3]).floatValue();

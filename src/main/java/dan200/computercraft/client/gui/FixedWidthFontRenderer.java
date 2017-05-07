@@ -7,7 +7,6 @@
 package dan200.computercraft.client.gui;
 
 import dan200.computercraft.core.terminal.TextBuffer;
-import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.Palette;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -16,6 +15,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Arrays;
 
 public class FixedWidthFontRenderer
 {
@@ -32,12 +33,21 @@ public class FixedWidthFontRenderer
         m_textureManager = textureManager;
     }
 
-    private void drawChar( VertexBuffer renderer, double x, double y, int index, int color, Palette p )
+    private static void greyscaleify( float[] rgb )
+    {
+        Arrays.fill(rgb, ( rgb[0] + rgb[1] + rgb[2] ) / 3.0f);
+    }
+
+    private void drawChar( VertexBuffer renderer, double x, double y, int index, int color, Palette p, boolean greyscale )
     {
         int column = index % 16;
         int row = index / 16;
 
         float[] colour = p.getColour( 15 - color );
+        if(greyscale)
+        {
+            greyscaleify( colour );
+        }
         float r = colour[0];
         float g = colour[1];
         float b = colour[2];
@@ -50,9 +60,13 @@ public class FixedWidthFontRenderer
         renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
     }
 
-    private void drawQuad( VertexBuffer renderer, double x, double y, int color, double width, Palette p )
+    private void drawQuad( VertexBuffer renderer, double x, double y, int color, double width, Palette p, boolean greyscale )
     {
         float[] colour = p.getColour( 15 - color );
+        if(greyscale)
+        {
+            greyscaleify( colour );
+        }
         float r = colour[0];
         float g = colour[1];
         float b = colour[2];
@@ -83,7 +97,7 @@ public class FixedWidthFontRenderer
             {
                 colour1 = 15;
             }
-            drawQuad( renderer, x - leftMarginSize, y, colour1, leftMarginSize, p );
+            drawQuad( renderer, x - leftMarginSize, y, colour1, leftMarginSize, p, greyScale );
         }
         if( rightMarginSize > 0.0 )
         {
@@ -92,7 +106,7 @@ public class FixedWidthFontRenderer
             {
                 colour2 = 15;
             }
-            drawQuad( renderer, x + backgroundColour.length() * FONT_WIDTH, y, colour2, rightMarginSize, p );
+            drawQuad( renderer, x + backgroundColour.length() * FONT_WIDTH, y, colour2, rightMarginSize, p, greyScale );
         }
         for( int i = 0; i < backgroundColour.length(); i++ )
         {
@@ -101,7 +115,7 @@ public class FixedWidthFontRenderer
             {
                 colour = 15;
             }
-            drawQuad( renderer, x + i * FONT_WIDTH, y, colour, FONT_WIDTH, p );
+            drawQuad( renderer, x + i * FONT_WIDTH, y, colour, FONT_WIDTH, p, greyScale );
         }
         GlStateManager.disableTexture2D();
         tessellator.draw();
@@ -129,7 +143,7 @@ public class FixedWidthFontRenderer
             {
                 index = (int)'?';
             }
-            drawChar( renderer, x + i * FONT_WIDTH, y, index, colour, p );
+            drawChar( renderer, x + i * FONT_WIDTH, y, index, colour, p, greyScale );
         }
         tessellator.draw();
     }
