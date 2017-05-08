@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,7 +104,7 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
         {
             @Nonnull
             @Override
-            public IBakedModel handleItemState( @Nonnull IBakedModel originalModel, ItemStack stack, @Nonnull World world, @Nonnull EntityLivingBase entity)
+            public IBakedModel handleItemState( @Nonnull IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity)
             {
                 ItemTurtleBase turtle = (ItemTurtleBase) stack.getItem();
                 ComputerFamily family = turtle.getFamily( stack );
