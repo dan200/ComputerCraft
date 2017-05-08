@@ -40,7 +40,7 @@ public class TurtleCraftCommand implements ITurtleCommand
             // Store the results
             for( ItemStack stack : results )
             {
-                ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getItemHandler(), turtle.getSelectedSlot() );
                 if( remainder != null )
                 {
                     // Drop the remainder

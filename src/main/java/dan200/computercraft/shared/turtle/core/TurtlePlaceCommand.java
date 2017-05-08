@@ -227,7 +227,7 @@ public class TurtlePlaceCommand implements ITurtleCommand
             @Override
             public void consumeDrop( Entity entity, ItemStack drop )
             {
-                ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
                 if( remainder != null )
                 {
                     WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );

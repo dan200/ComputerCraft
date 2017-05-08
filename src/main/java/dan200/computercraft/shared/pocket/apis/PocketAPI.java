@@ -18,6 +18,7 @@ import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import javax.annotation.Nonnull;
 
@@ -100,7 +101,7 @@ public class PocketAPI implements ILuaAPI
                             ItemStack stack = previousUpgrade.getCraftingItem();
                             if( stack != null )
                             {
-                                stack = InventoryUtil.storeItems( stack, inventory, 0, 36, inventory.currentItem );
+                                stack = InventoryUtil.storeItems( stack, new PlayerMainInvWrapper( inventory ), inventory.currentItem );
                                 if( stack != null )
                                 {
                                     WorldUtil.dropItemStack( stack, player.worldObj, player.posX, player.posY, player.posZ );
@@ -139,7 +140,7 @@ public class PocketAPI implements ILuaAPI
                         ItemStack stack = previousUpgrade.getCraftingItem();
                         if( stack != null )
                         {
-                            stack = InventoryUtil.storeItems( stack, inventory, 0, 36, inventory.currentItem );
+                            stack = InventoryUtil.storeItems( stack, new PlayerMainInvWrapper( inventory ), inventory.currentItem );
                             if( stack != null )
                             {
                                 WorldUtil.dropItemStack( stack, player.worldObj, player.posX, player.posY, player.posZ );

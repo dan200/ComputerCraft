@@ -14,6 +14,7 @@ import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
@@ -33,7 +34,7 @@ public class TurtleEquipCommand implements ITurtleCommand
         // Determine the upgrade to equipLeft
         ITurtleUpgrade newUpgrade;
         ItemStack newUpgradeStack;
-        IInventory inventory = turtle.getInventory();
+        IItemHandler inventory = turtle.getItemHandler();
         ItemStack selectedStack = inventory.getStackInSlot( turtle.getSelectedSlot() );
         if( selectedStack != null )
         {
@@ -68,19 +69,17 @@ public class TurtleEquipCommand implements ITurtleCommand
         {
             // Consume new upgrades item
             InventoryUtil.takeItems( 1, inventory, turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
-            inventory.markDirty();
         }
         if( oldUpgradeStack != null )
         {
             // Store old upgrades item
-            ItemStack remainder = InventoryUtil.storeItems( oldUpgradeStack, inventory, 0, inventory.getSizeInventory(), turtle.getSelectedSlot() );
+            ItemStack remainder = InventoryUtil.storeItems( oldUpgradeStack, inventory, turtle.getSelectedSlot() );
             if( remainder != null )
             {
                 // If there's no room for the items, drop them
                 BlockPos position = turtle.getPosition();
                 WorldUtil.dropItemStack( remainder, turtle.getWorld(), position, turtle.getDirection() );
             }
-            inventory.markDirty();
         }
         turtle.setUpgrade( m_side, newUpgrade );
 
