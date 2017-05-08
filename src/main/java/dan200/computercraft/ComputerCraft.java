@@ -20,6 +20,8 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.core.filesystem.ComboMount;
 import dan200.computercraft.core.filesystem.FileMount;
 import dan200.computercraft.core.filesystem.JarMount;
+import dan200.computercraft.core.logger.Log4JLogger;
+import dan200.computercraft.core.logger.Logger;
 import dan200.computercraft.shared.common.DefaultBundledRedstoneProvider;
 import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
 import dan200.computercraft.shared.computer.blocks.BlockComputer;
@@ -231,6 +233,8 @@ public class ComputerCraft
     @Mod.EventHandler
     public void preInit( FMLPreInitializationEvent event )
     {
+        Logger.setInstance( new Log4JLogger( event.getModLog() ) );
+
         // Load config
         Config.config = new Configuration( event.getSuggestedConfigurationFile() );
         Config.config.load();
