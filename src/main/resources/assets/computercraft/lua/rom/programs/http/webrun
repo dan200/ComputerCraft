@@ -1,37 +1,40 @@
-local Arg = {...}
+--Made by Wilma456
+local tArgs = {...}
 
-if not Arg[1] then
+if not tArgs[1] then
   print("Usage: webrun <url> <args>")
   return 1
 end
 
 if not http then
-print("Please enable http in the config")
-return 2
-end
-
-local test,text = http.checkURL(Arg[1])
-if test == false then
-  print("[Error]"..text)
+  print("Please enable http in the config")
   return 3
 end
 
-local data = http.get(Arg[1])
+local test, text = http.checkURL(tArgs[1])
+if test == false then
+  print("[Error]"..text)
+  return 4
+end
+
+local data = http.get(tArgs[1])
 if not(data) then
   print("Error while getting the program")
-  return 4
+  return 5
 end
 
 local program = data.readAll()
 data.close()
-local run,err = load(program)
+local run, err = load(program)
 if not(run) then
-  term.setTextColour(colors.red)
+  local oldcolor = term.getTextColor()
+  term.setTextColor(colors.red)
   print(err)
-  return 5
+  term.setTextColor(oldcolor)
+  return 6
 end
 
-table.remove(Arg,1)
-run(table.unpack(Arg))
+table.remove(tArgs,1)
+run(table.unpack(tArgs))
 
 return 0
