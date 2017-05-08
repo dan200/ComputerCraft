@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -26,17 +26,33 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.*;
 
 public class TileCable extends TileModemBase
     implements INetwork
 {
+    private static final double MIN = 0.375;
+    private static final double MAX = 1 - MIN;
+
+    private static final AxisAlignedBB BOX_CENTRE = new AxisAlignedBB( MIN, MIN, MIN, MAX, MAX, MAX );
+    private static final AxisAlignedBB[] BOXES = new AxisAlignedBB[]{
+        new AxisAlignedBB( MIN, 0, MIN, MAX, MIN, MAX ),   // Down
+        new AxisAlignedBB( MIN, MAX, MIN, MAX, 1, MAX ),   // Up
+        new AxisAlignedBB( MIN, MIN, 0, MAX, MAX, MIN ),   // North
+        new AxisAlignedBB( MIN, MIN, MAX, MAX, MAX, 1 ),   // South
+        new AxisAlignedBB( 0, MIN, MIN, MIN, MAX, MAX ),   // West
+        new AxisAlignedBB( MAX, MIN, MIN, 1, MAX, MAX ),   // East
+    };
+
     // Statics
 
     private static class Peripheral extends ModemPeripheral
@@ -80,6 +96,7 @@ public class TileCable extends TileModemBase
             return new Vec3d( (double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5 );
         }
 
+        @Nonnull
         @Override
         public String[] getMethodNames()
         {
@@ -104,7 +121,7 @@ public class TileCable extends TileModemBase
         }
 
         @Override
-        public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException
+        public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
         {
             String[] methods = super.getMethodNames();
             switch( method - methods.length )
@@ -116,10 +133,8 @@ public class TileCable extends TileModemBase
                     {
                         int idx = 1;
                         Map<Object,Object> table = new HashMap<Object,Object>();
-                        Iterator<String> it = m_entity.m_peripheralWrappersByName.keySet().iterator();
-                        while( it.hasNext() )
+                        for( String name : m_entity.m_peripheralWrappersByName.keySet() )
                         {
-                            String name = it.next();
                             table.put( idx++, name );
                         }
                         return new Object[] { table };
@@ -173,15 +188,13 @@ public class TileCable extends TileModemBase
         }
 
         @Override
-        public void attach( IComputerAccess computer )
+        public void attach( @Nonnull IComputerAccess computer )
         {
             super.attach( computer );
             synchronized( m_entity.m_peripheralsByName )
             {
-                Iterator<String> it = m_entity.m_peripheralsByName.keySet().iterator();
-                while( it.hasNext() )
+                for (String periphName : m_entity.m_peripheralsByName.keySet())
                 {
-                    String periphName = it.next();
                     IPeripheral peripheral = m_entity.m_peripheralsByName.get( periphName );
                     if( peripheral != null )
                     {
@@ -192,14 +205,12 @@ public class TileCable extends TileModemBase
         }
 
         @Override
-        public synchronized void detach( IComputerAccess computer )
+        public synchronized void detach( @Nonnull IComputerAccess computer )
         {
             synchronized( m_entity.m_peripheralsByName )
             {
-                Iterator<String> it = m_entity.m_peripheralsByName.keySet().iterator();
-                while( it.hasNext() )
+                for (String periphName : m_entity.m_peripheralsByName.keySet())
                 {
-                    String periphName = it.next();
                     m_entity.detachPeripheral( periphName );
                 }
             }
@@ -222,13 +233,13 @@ public class TileCable extends TileModemBase
 
     // Members
 
-    private Map<Integer, Set<IReceiver>> m_receivers;
-    private Queue<Packet> m_transmitQueue;
+    private final Map<Integer, Set<IReceiver>> m_receivers;
+    private final Queue<Packet> m_transmitQueue;
     
     private boolean m_peripheralAccessAllowed;
     private int m_attachedPeripheralID;
     
-    private Map<String, IPeripheral> m_peripheralsByName;
+    private final Map<String, IPeripheral> m_peripheralsByName;
     private Map<String, RemotePeripheralWrapper> m_peripheralWrappersByName;
     private boolean m_peripheralsKnown;
     private boolean m_destroyed;
@@ -266,7 +277,7 @@ public class TileCable extends TileModemBase
     public EnumFacing getDirection()
     {
         IBlockState state = getBlockState();
-        BlockCableModemVariant modem = (BlockCableModemVariant)state.getValue( BlockCable.Properties.MODEM );
+        BlockCableModemVariant modem = state.getValue( BlockCable.Properties.MODEM );
         if( modem != BlockCableModemVariant.None )
         {
             return modem.getFacing();
@@ -281,7 +292,7 @@ public class TileCable extends TileModemBase
     public void setDirection( EnumFacing dir )
     {
         IBlockState state = getBlockState();
-        BlockCableModemVariant modem = ( BlockCableModemVariant )state.getValue( BlockCable.Properties.MODEM );
+        BlockCableModemVariant modem = state.getValue( BlockCable.Properties.MODEM );
         if( modem != BlockCableModemVariant.None )
         {
             setBlockState( state.withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.fromFacing( dir ) ) );
@@ -289,7 +300,7 @@ public class TileCable extends TileModemBase
     }
 
     @Override
-    public void getDroppedItems( List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
     {
         if( !creative )
         {
@@ -396,6 +407,7 @@ public class TileCable extends TileModemBase
         return new AxisAlignedBB( xMin, yMin, zMin, xMax, yMax, zMax );
     }
     
+    @Nonnull
     @Override
     public AxisAlignedBB getBounds()
     {
@@ -415,20 +427,13 @@ public class TileCable extends TileModemBase
             {
                 AxisAlignedBB modem = getModemBounds();
                 AxisAlignedBB cable = getCableBounds();
-                return new AxisAlignedBB(
-                    Math.min( modem.minX, cable.minX ),
-                    Math.min( modem.minY, cable.minY ),
-                    Math.min( modem.minZ, cable.minZ ),
-                    Math.max( modem.maxX, cable.maxX ),
-                    Math.max( modem.maxY, cable.maxY ),
-                    Math.max( modem.maxZ, cable.maxZ )
-                );
+                return modem.union( cable );
             }
         }
     }
 
     @Override
-    public void getCollisionBounds( List<AxisAlignedBB> bounds )
+    public void getCollisionBounds( @Nonnull List<AxisAlignedBB> bounds )
     {
         PeripheralType type = getPeripheralType();
         if( type == PeripheralType.WiredModem || type == PeripheralType.WiredModemWithCable )
@@ -437,7 +442,15 @@ public class TileCable extends TileModemBase
         }
         if( type == PeripheralType.Cable || type == PeripheralType.WiredModemWithCable )
         {
-            bounds.add( getCableBounds() );
+            bounds.add( BOX_CENTRE );
+            BlockPos pos = getPos();
+            for (EnumFacing facing : EnumFacing.VALUES)
+            {
+                if( BlockCable.isCable( worldObj, pos.offset( facing ) ) )
+                {
+                    bounds.add( BOXES[ facing.ordinal() ] );
+                }
+            }
         }
     }
 
@@ -489,7 +502,8 @@ public class TileCable extends TileModemBase
         m_attachedPeripheralID = nbttagcompound.getInteger( "peripheralID" );
     }
 
-    @Override    
+    @Nonnull
+    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
         // Write properties
@@ -738,11 +752,9 @@ public class TileCable extends TileModemBase
             Set<IReceiver> receivers = m_receivers.get( packet.channel );
             if( receivers != null )
             {
-                Iterator<IReceiver> it = receivers.iterator();
-                while( it.hasNext() )
+                for( IReceiver receiver : receivers )
                 {
-                    IReceiver receiver = it.next();
-                    receiver.receiveSameDimension( packet.replyChannel, packet.payload, (double)distanceTravelled, packet.senderObject );
+                    receiver.receiveSameDimension( packet.replyChannel, packet.payload, (double) distanceTravelled, packet.senderObject );
                 }
             }
         }
@@ -814,25 +826,25 @@ public class TileCable extends TileModemBase
         // IComputerAccess implementation
 
         @Override
-        public String mount( String desiredLocation, IMount mount )
+        public String mount( @Nonnull String desiredLocation, @Nonnull IMount mount )
         {
             return m_computer.mount( desiredLocation, mount, m_name );
         }
 
         @Override
-        public String mount( String desiredLocation, IMount mount, String driveName )
+        public String mount( @Nonnull String desiredLocation, @Nonnull IMount mount, @Nonnull String driveName )
         {
             return m_computer.mount( desiredLocation, mount, driveName );
         }
 
         @Override
-        public String mountWritable( String desiredLocation, IWritableMount mount )
+        public String mountWritable( @Nonnull String desiredLocation, @Nonnull IWritableMount mount )
         {
             return m_computer.mountWritable( desiredLocation, mount, m_name );
         }
 
         @Override
-        public String mountWritable( String desiredLocation, IWritableMount mount, String driveName )
+        public String mountWritable( @Nonnull String desiredLocation, @Nonnull IWritableMount mount, @Nonnull String driveName )
         {
             return m_computer.mountWritable( desiredLocation, mount, driveName );
         }
@@ -850,11 +862,12 @@ public class TileCable extends TileModemBase
         }
         
         @Override
-        public void queueEvent( String event, Object[] arguments )
+        public void queueEvent( @Nonnull String event, Object[] arguments )
         {
             m_computer.queueEvent( event, arguments );
         }
         
+        @Nonnull
         @Override
         public String getAttachmentName()
         {
@@ -901,10 +914,8 @@ public class TileCable extends TileModemBase
             }
 
             // Attach all the new peripherals
-            Iterator<String> it2 = newPeripheralsByName.keySet().iterator();
-            while( it2.hasNext() )
+            for( String periphName : newPeripheralsByName.keySet() )
             {
-                String periphName = it2.next();
                 if( !m_peripheralsByName.containsKey( periphName ) )
                 {
                     IPeripheral peripheral = newPeripheralsByName.get( periphName );
@@ -975,9 +986,9 @@ public class TileCable extends TileModemBase
     
     // Generic network search stuff
     
-    private static interface ICableVisitor
+    private interface ICableVisitor
     {
-        public void visit( TileCable modem, int distance );
+        void visit( TileCable modem, int distance );
     }
     
     private static class SearchLoc

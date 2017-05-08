@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -16,9 +16,9 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,8 +32,9 @@ public class TurtleInspectCommand implements ITurtleCommand
         m_direction = direction;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Get world direction from direction
         EnumFacing direction = m_direction.toWorldDir( turtle );
@@ -49,7 +50,7 @@ public class TurtleInspectCommand implements ITurtleCommand
             {
                 IBlockState state = world.getBlockState( newPosition );
                 Block block = state.getBlock();
-                String name = ((ResourceLocation)Block.REGISTRY.getNameForObject( block )).toString();
+                String name = Block.REGISTRY.getNameForObject( block ).toString();
                 int metadata = block.getMetaFromState( state );
 
                 Map<Object, Object> table = new HashMap<Object, Object>();
@@ -57,9 +58,8 @@ public class TurtleInspectCommand implements ITurtleCommand
                 table.put( "metadata", metadata );
 
                 Map<Object, Object> stateTable = new HashMap<Object, Object>();
-                for( Object o : block.getActualState( state, world, newPosition ).getProperties().entrySet() )
+                for( ImmutableMap.Entry<IProperty<?>, ?> entry : state.getActualState( world, newPosition ).getProperties().entrySet() )
                 {
-                    ImmutableMap.Entry<IProperty, Object> entry = (ImmutableMap.Entry<IProperty, Object>)o;
                     String propertyName = entry.getKey().getName();
                     Object value = entry.getValue();
                     if( value instanceof String || value instanceof Number || value instanceof Boolean )

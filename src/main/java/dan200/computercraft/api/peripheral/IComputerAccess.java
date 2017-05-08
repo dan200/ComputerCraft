@@ -11,6 +11,9 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * The interface passed to peripherals by computers or turtles, providing methods
  * that they can call. This should not be implemented by your classes. Do not interact
@@ -33,7 +36,8 @@ public interface IComputerAccess
      * @see #unmount(String)
      * @see IMount
      */
-    public String mount( String desiredLocation, IMount mount );
+    @Nullable
+    String mount( @Nonnull String desiredLocation, @Nonnull IMount mount );
 
     /**
      * Mount a mount onto the computer's file system in a read only mode.
@@ -51,7 +55,8 @@ public interface IComputerAccess
      * @see #unmount(String)
      * @see IMount
      */
-    public String mount( String desiredLocation, IMount mount, String driveName );
+    @Nullable
+    String mount( @Nonnull String desiredLocation, @Nonnull IMount mount, @Nonnull String driveName );
 
     /**
      * Mount a mount onto the computer's file system in a writable mode.
@@ -67,7 +72,8 @@ public interface IComputerAccess
      * @see #unmount(String)
      * @see IMount
      */
-    public String mountWritable( String desiredLocation, IWritableMount mount );
+    @Nullable
+    String mountWritable( @Nonnull String desiredLocation, @Nonnull IWritableMount mount );
 
     /**
      * Mount a mount onto the computer's file system in a writable mode.
@@ -84,7 +90,7 @@ public interface IComputerAccess
      * @see #unmount(String)
      * @see IMount
      */
-    public String mountWritable( String desiredLocation, IWritableMount mount, String driveName );
+    String mountWritable( @Nonnull String desiredLocation, @Nonnull IWritableMount mount, @Nonnull String driveName );
 
     /**
      * Unmounts a directory previously mounted onto the computers file system by {@link #mount(String, IMount)}
@@ -104,7 +110,7 @@ public interface IComputerAccess
      * @see #mount(String, IMount)
      * @see #mountWritable(String, IWritableMount)
      */
-    public void unmount( String location );
+    void unmount( @Nullable String location );
 
     /**
      * Returns the numerical ID of this computer.
@@ -114,7 +120,7 @@ public interface IComputerAccess
      *
      * @return The identifier.
      */
-    public int getID();
+    int getID();
 
     /**
      * Causes an event to be raised on this computer, which the computer can respond to by calling
@@ -134,7 +140,7 @@ public interface IComputerAccess
      * @throws RuntimeException If the peripheral has been detached.
      * @see dan200.computercraft.api.peripheral.IPeripheral#callMethod
      */
-    public void queueEvent( String event, Object[] arguments );
+    void queueEvent( @Nonnull String event, @Nullable Object[] arguments );
 
     /**
      * Get a string, unique to the computer, by which the computer refers to this peripheral.
@@ -146,5 +152,6 @@ public interface IComputerAccess
      * @return A string unique to the computer, but not globally.
      * @throws RuntimeException If the peripheral has been detached.
      */
-    public String getAttachmentName();
+    @Nonnull
+    String getAttachmentName();
 }

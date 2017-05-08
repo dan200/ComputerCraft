@@ -1,11 +1,10 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
 package dan200.computercraft.shared.turtle.upgrades;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -26,8 +25,7 @@ public class TurtleShovel extends TurtleTool
         if( super.canBreakBlock( world, pos ) )
         {
             IBlockState state = world.getBlockState( pos );
-            Block block = state.getBlock();
-            Material material = block.getMaterial( state );
+            Material material = state.getMaterial( );
             return
                     material == Material.GROUND ||
                     material == Material.SAND ||

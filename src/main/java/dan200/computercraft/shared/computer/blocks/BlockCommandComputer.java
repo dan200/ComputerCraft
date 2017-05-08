@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -9,10 +9,8 @@ package dan200.computercraft.shared.computer.blocks;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.IComputer;
-import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
 import dan200.computercraft.shared.util.DirectionUtil;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -25,6 +23,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class BlockCommandComputer extends BlockComputerBase
 {
     // Statics
@@ -32,7 +32,7 @@ public class BlockCommandComputer extends BlockComputerBase
     public static class Properties
     {
         public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-        public static final PropertyEnum<ComputerState> STATE = PropertyEnum.<ComputerState>create("state", ComputerState.class);
+        public static final PropertyEnum<ComputerState> STATE = PropertyEnum.create("state", ComputerState.class);
     }
 
     // Members
@@ -50,16 +50,16 @@ public class BlockCommandComputer extends BlockComputerBase
         );
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {
-            Properties.FACING,
-            Properties.STATE
-        });
+        return new BlockStateContainer(this, Properties.FACING, Properties.STATE );
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         EnumFacing dir = EnumFacing.getFront( meta & 0x7 );
@@ -73,11 +73,13 @@ public class BlockCommandComputer extends BlockComputerBase
     @Override
     public int getMetaFromState( IBlockState state )
     {
-        return ((EnumFacing)state.getValue( Properties.FACING )).getIndex();
+        return state.getValue( Properties.FACING ).getIndex();
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    @Deprecated
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof IComputerTile )

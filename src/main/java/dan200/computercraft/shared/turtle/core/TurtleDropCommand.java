@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -12,14 +12,13 @@ import dan200.computercraft.api.turtle.TurtleAnimation;
 import dan200.computercraft.api.turtle.TurtleCommandResult;
 import dan200.computercraft.shared.util.InventoryUtil;
 import dan200.computercraft.shared.util.WorldUtil;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class TurtleDropCommand implements ITurtleCommand
 {
@@ -32,8 +31,9 @@ public class TurtleDropCommand implements ITurtleCommand
         m_quantity = quantity;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Dropping nothing is easy
         if( m_quantity == 0 )

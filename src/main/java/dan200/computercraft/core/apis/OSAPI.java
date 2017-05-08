@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,10 +10,8 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.shared.util.StringUtil;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import javax.annotation.Nonnull;
+import java.util.*;
 
 public class OSAPI implements ILuaAPI
 {
@@ -50,7 +48,7 @@ public class OSAPI implements ILuaAPI
         }
 
         @Override
-        public int compareTo( Alarm o )
+        public int compareTo( @Nonnull Alarm o )
         {
             double t = (double)m_day * 24.0 + m_time;
             double ot = (double)m_day * 24.0 + m_time;
@@ -169,6 +167,7 @@ public class OSAPI implements ILuaAPI
         }
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -188,11 +187,38 @@ public class OSAPI implements ILuaAPI
             "day",
             "cancelTimer",
             "cancelAlarm",
+            "epoch"
         };
     }
 
+    private float getTimeForCalendar(Calendar c)
+    {
+        float time = c.get(Calendar.HOUR_OF_DAY);
+        time += (float)c.get(Calendar.MINUTE) / 60.0f;
+        time += (float)c.get(Calendar.SECOND) / (60.0f * 60.0f);
+        return time;
+    }
+
+    private int getDayForCalendar(Calendar c)
+    {
+        GregorianCalendar g = (c instanceof GregorianCalendar) ? (GregorianCalendar)c : new GregorianCalendar();
+        int year = c.get(Calendar.YEAR);
+        int day = 0;
+        for( int y=1970; y<year; ++y )
+        {
+            day += g.isLeapYear(y) ? 366 : 365;
+        }
+        day += c.get(Calendar.DAY_OF_YEAR);
+        return day;
+    }
+
+    private long getEpochForCalendar(Calendar c)
+    {
+        return c.getTime().getTime();
+    }
+
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {
@@ -293,18 +319,63 @@ public class OSAPI implements ILuaAPI
             }
             case 11:
             {
-                // m_time
-                synchronized( m_alarms )
-                {
-                    return new Object[] { m_time };
+                // time
+                String param = "ingame";
+                if (args.length > 0 && args[0] != null) {
+                    if (!(args[0] instanceof String)) {
+                        throw new LuaException("Expected string");
+                    }
+                    param = (String)args[0];
+                }
+
+                if (param.equals("utc")) {
+                    // Get Hour of day (UTC)
+                    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                    return new Object[] {getTimeForCalendar(c)};
+
+                } else if (param.equals("local")) {
+                    // Get Hour of day (local time)
+                    Calendar c = Calendar.getInstance();
+                    return new Object[] {getTimeForCalendar(c)};
+
+                } else if (param.equals("ingame")) {
+                    // Get ingame hour
+                    synchronized (m_alarms) {
+                        return new Object[]{m_time};
+                    }
+
+                } else {
+                    throw new LuaException("Unsupported operation");
                 }
             }
             case 12:
             {
                 // day
-                synchronized( m_alarms )
-                {
-                    return new Object[] { m_day };
+                String param = "ingame";
+                if (args.length > 0 && args[0] != null) {
+                    if (!(args[0] instanceof String)) {
+                        throw new LuaException("Expected string");
+                    }
+                    param = (String)args[0];
+                }
+                if (param.equals("utc")) {
+                    // Get numbers of days since 1970-01-01 (utc)
+                    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                    return new Object[] {getDayForCalendar(c)};
+
+                } else if (param.equals("local")) {
+                    // Get numbers of days since 1970-01-01 (local time)
+                    Calendar c = Calendar.getInstance();
+                    return new Object[] {getDayForCalendar(c)};
+
+                } else if (param.equals("ingame")){
+                    // Get game day
+                    synchronized (m_alarms) {
+                        return new Object[]{m_day};
+                    }
+
+                } else {
+                    throw new LuaException("Unsupported operation");
                 }
             }
             case 13:
@@ -340,6 +411,38 @@ public class OSAPI implements ILuaAPI
                     }
                 }
                 return null;
+            }
+            case 15:
+            {
+                // epoch
+                String param = "ingame";
+                if (args.length > 0 && args[0] != null) {
+                    if (!(args[0] instanceof String)) {
+                        throw new LuaException("Expected string");
+                    }
+                    param = (String)args[0];
+                }
+                if (param.equals("utc")) {
+                    // Get utc epoch
+                    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                    return new Object[] {getEpochForCalendar(c)};
+
+                } else if (param.equals("local")) {
+                    // Get local epoch
+                    Calendar c = Calendar.getInstance();
+                    return new Object[] {getEpochForCalendar(c)};
+
+                } else if (param.equals("ingame")){
+                    // Get in-game epoch
+                    synchronized (m_alarms) {
+                        return new Object[] {
+                            m_day * 86400000 + (int)(m_time * 3600000.0f)
+                        };
+                    }
+
+                } else {
+                    throw new LuaException("Unsupported operation");
+                }
             }
             default:
             {

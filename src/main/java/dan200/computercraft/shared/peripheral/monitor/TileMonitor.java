@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -25,6 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -111,6 +112,7 @@ public class TileMonitor extends TilePeripheralBase
         return false;
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT( NBTTagCompound nbttagcompound )
     {
@@ -206,7 +208,7 @@ public class TileMonitor extends TilePeripheralBase
     // Networking stuff
 
     @Override
-    public void writeDescription( NBTTagCompound nbttagcompound )
+    public void writeDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.writeDescription( nbttagcompound );
         nbttagcompound.setInteger( "xIndex", m_xIndex );
@@ -219,7 +221,7 @@ public class TileMonitor extends TilePeripheralBase
     }
 
     @Override
-    public final void readDescription( NBTTagCompound nbttagcompound )
+    public final void readDescription( @Nonnull NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );
 
@@ -815,6 +817,7 @@ public class TileMonitor extends TilePeripheralBase
         }
     }
     
+    @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox()
     {
@@ -840,7 +843,7 @@ public class TileMonitor extends TilePeripheralBase
     }
 
     @Override
-    public boolean shouldRefresh( World world, BlockPos pos, IBlockState oldState, IBlockState newState )
+    public boolean shouldRefresh( World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState )
     {
         if( super.shouldRefresh( world, pos, oldState, newState ) )
         {

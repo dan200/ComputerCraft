@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -18,6 +18,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ContainerTurtle extends Container
@@ -107,12 +108,11 @@ public class ContainerTurtle extends Container
         super.detectAndSendChanges();
         
         int selectedSlot = m_turtle.getSelectedSlot();
-        for( int i=0; i<listeners.size(); ++i )
+        for( IContainerListener listener : listeners )
         {
-            IContainerListener icrafting = (IContainerListener)listeners.get(i);
             if( m_selectedSlot != selectedSlot )
             {
-                icrafting.sendProgressBarUpdate( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
+                listener.sendProgressBarUpdate( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
             }
         }
         m_selectedSlot = selectedSlot;
@@ -133,7 +133,7 @@ public class ContainerTurtle extends Container
     }
     
     @Override
-    public boolean canInteractWith( EntityPlayer player )
+    public boolean canInteractWith( @Nonnull EntityPlayer player )
     {
         TileTurtle turtle = ((TurtleBrain)m_turtle).getOwner();
         if( turtle != null )
@@ -145,7 +145,7 @@ public class ContainerTurtle extends Container
 
     protected ItemStack tryItemMerge( EntityPlayer player, int slotNum, int firstSlot, int lastSlot, boolean reverse )
     {
-        Slot slot = (Slot)inventorySlots.get( slotNum );
+        Slot slot = inventorySlots.get( slotNum );
         ItemStack originalStack = null;
         if( slot != null && slot.getHasStack() )
         {

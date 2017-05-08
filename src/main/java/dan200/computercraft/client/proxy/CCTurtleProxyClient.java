@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -13,16 +13,19 @@ import dan200.computercraft.client.render.TurtleSmartItemModel;
 import dan200.computercraft.shared.proxy.CCTurtleProxyCommon;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
+import dan200.computercraft.shared.turtle.items.ItemTurtleBase;
+import dan200.computercraft.shared.util.Colour;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -32,11 +35,10 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.io.IOException;
+import javax.annotation.Nonnull;
 
 public class CCTurtleProxyClient extends CCTurtleProxyCommon
 {
@@ -56,8 +58,9 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         {
             private ModelResourceLocation turtle_dynamic = new ModelResourceLocation( "computercraft:turtle_dynamic", "inventory" );
 
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 return turtle_dynamic;
             }
@@ -65,15 +68,18 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         String[] turtleModelNames = new String[] {
             "turtle_dynamic",
             "CC-Turtle", "CC-TurtleAdvanced",
-            "turtle_black", "turtle_red", "turtle_green", "turtle_brown",
-            "turtle_blue", "turtle_purple", "turtle_cyan", "turtle_lightGrey",
-            "turtle_grey", "turtle_pink", "turtle_lime", "turtle_yellow",
-            "turtle_lightBlue", "turtle_magenta", "turtle_orange", "turtle_white",
+            "turtle_white",
             "turtle_elf_overlay"
         };
         registerItemModel( ComputerCraft.Blocks.turtle, turtleMeshDefinition, turtleModelNames );
         registerItemModel( ComputerCraft.Blocks.turtleExpanded, turtleMeshDefinition, turtleModelNames );
         registerItemModel( ComputerCraft.Blocks.turtleAdvanced, turtleMeshDefinition, turtleModelNames );
+
+        // Setup turtle colours
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler(
+            new TurtleItemColour(),
+            ComputerCraft.Blocks.turtle, ComputerCraft.Blocks.turtleExpanded, ComputerCraft.Blocks.turtleAdvanced
+        );
 
         // Setup renderers
         ClientRegistry.bindTileEntitySpecialRenderer( TileTurtle.class, new TileEntityTurtleRenderer() );
@@ -179,6 +185,22 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
                 new ModelResourceLocation( "computercraft:" + name, "inventory" ),
                 smartModel
             );
+        }
+    }
+
+    private static class TurtleItemColour implements IItemColor
+    {
+        @Override
+        public int getColorFromItemstack( @Nonnull ItemStack stack, int tintIndex )
+        {
+            if( tintIndex == 0 )
+            {
+                ItemTurtleBase turtle = (ItemTurtleBase) stack.getItem();
+                Colour colour = turtle.getColour( stack );
+                if( colour != null ) return colour.getHex();
+            }
+
+            return 0xFFFFFF;
         }
     }
 }

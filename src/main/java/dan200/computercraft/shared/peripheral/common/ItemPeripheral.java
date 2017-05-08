@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -13,6 +13,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemPeripheral extends ItemPeripheralBase
@@ -68,7 +69,7 @@ public class ItemPeripheral extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( Item itemID, CreativeTabs tabs, List list )
+    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( PeripheralItemFactory.create( PeripheralType.DiskDrive, null, 1 ) );
         list.add( PeripheralItemFactory.create( PeripheralType.Printer, null, 1 ) );

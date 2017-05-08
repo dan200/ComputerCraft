@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class TurtleMoveCommand implements ITurtleCommand
@@ -30,8 +31,9 @@ public class TurtleMoveCommand implements ITurtleCommand
         m_direction = direction;
     }
 
+    @Nonnull
     @Override
-    public TurtleCommandResult execute( ITurtleAccess turtle )
+    public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Get world direction from direction
         EnumFacing direction = m_direction.toWorldDir( turtle );
@@ -70,10 +72,9 @@ public class TurtleMoveCommand implements ITurtleCommand
             if( ComputerCraft.turtlesCanPush && m_direction != MoveDirection.Up && m_direction != MoveDirection.Down )
             {
                 // Check there is space for all the pushable entities to be pushed
-                List list = oldWorld.getEntitiesWithinAABBExcludingEntity( (Entity)null, aabb );
-                for( int i=0; i<list.size(); ++i )
+                List<Entity> list = oldWorld.getEntitiesWithinAABBExcludingEntity( null, aabb );
+                for( Entity entity : list )
                 {
-                    Entity entity = (Entity)list.get( i );
                     if( !entity.isDead && entity.preventEntitySpawning )
                     {
                         AxisAlignedBB entityBB = entity.getEntityBoundingBox();

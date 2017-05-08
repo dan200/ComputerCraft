@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -17,8 +17,8 @@ import dan200.computercraft.core.apis.ILuaAPI;
 import dan200.computercraft.shared.turtle.core.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +58,7 @@ public class TurtleAPI implements ILuaAPI
     {
     }
        
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -181,7 +182,7 @@ public class TurtleAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( ILuaContext context, int method, Object[] args ) throws LuaException, InterruptedException
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException, InterruptedException
     {
         switch( method )
         {
@@ -478,7 +479,7 @@ public class TurtleAPI implements ILuaAPI
                 if( stack != null && stack.stackSize > 0 )
                 {
                     Item item = stack.getItem();
-                    String name = ((ResourceLocation)Item.REGISTRY.getNameForObject( item )).toString();
+                    String name = Item.REGISTRY.getNameForObject( item ).toString();
                     int damage = stack.getItemDamage();
                     int count = stack.stackSize;
 

@@ -111,6 +111,16 @@ function shell.resolve( _sPath )
 	end
 end
 
+local function pathWithExtension( _sPath, _sExt )
+    local nLen = #sPath
+    local sEndChar = string.sub( _sPath, nLen, nLen )
+    -- Remove any trailing slashes so we can add an extension to the path safely
+    if sEndChar == "/" or sEndChar == "\\" then
+        _sPath = string.sub( _sPath, 1, nLen - 1 )
+    end
+    return _sPath .. "." .. _sExt
+end
+
 function shell.resolveProgram( _sCommand )
 	-- Substitute aliases firsts
 	if tAliases[ _sCommand ] ~= nil then
@@ -123,7 +133,12 @@ function shell.resolveProgram( _sCommand )
     	local sPath = fs.combine( "", _sCommand )
     	if fs.exists( sPath ) and not fs.isDir( sPath ) then
 			return sPath
-    	end
+    	else
+            local sPathLua = pathWithExtension( sPath, "lua" )
+            if fs.exists( sPathLua ) and not fs.isDir( sPathLua ) then
+                return sPathLua
+            end
+        end
 		return nil
     end
     
@@ -132,7 +147,12 @@ function shell.resolveProgram( _sCommand )
     	sPath = fs.combine( shell.resolve( sPath ), _sCommand )
     	if fs.exists( sPath ) and not fs.isDir( sPath ) then
 			return sPath
-    	end
+    	else
+            local sPathLua = pathWithExtension( sPath, "lua" )
+            if fs.exists( sPathLua ) and not fs.isDir( sPathLua ) then
+                return sPathLua
+            end
+        end
     end
 	
 	-- Not found

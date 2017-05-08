@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -17,6 +17,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public abstract class BlockPeripheralBase extends BlockDirectional
 {
     public BlockPeripheralBase()
@@ -30,19 +32,21 @@ public abstract class BlockPeripheralBase extends BlockDirectional
     protected abstract TilePeripheralBase createTile( PeripheralType type );
 
     @Override
+    @Deprecated
     public final boolean isOpaqueCube( IBlockState state )
     {
         return false;
     }
 
     @Override
+    @Deprecated
     public final boolean isFullCube( IBlockState state )
     {
         return false;
     }
 
     @Override
-    public final boolean canPlaceBlockOnSide( World world, BlockPos pos, EnumFacing side )
+    public final boolean canPlaceBlockOnSide( @Nonnull World world, @Nonnull BlockPos pos, EnumFacing side )
     {
         return true; // ItemPeripheralBase handles this
     }

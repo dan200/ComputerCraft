@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -21,10 +21,10 @@ import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class LuaJLuaMachine implements ILuaMachine
@@ -128,9 +128,9 @@ public class LuaJLuaMachine implements ILuaMachine
         // Add the methods of an API to the global table
         LuaTable table = wrapLuaObject( api );
         String[] names = api.getNames();
-        for( int i=0; i<names.length; ++i )
+        for( String name : names )
         {
-            m_globals.set( names[i], table );
+            m_globals.set( name, table );
         }
     }
     
@@ -146,7 +146,7 @@ public class LuaJLuaMachine implements ILuaMachine
         try
         {
             // Read the whole bios into a string
-            String biosText = null;
+            String biosText;
             try
             {
                 InputStreamReader isr;
@@ -316,8 +316,6 @@ public class LuaJLuaMachine implements ILuaMachine
             throw new LuaError( abortMessage );
         }
     }
-
-    private static long s_nextUnusedTaskID = 0;
     
     private LuaTable wrapLuaObject( ILuaObject object )
     {
@@ -335,10 +333,11 @@ public class LuaJLuaMachine implements ILuaMachine
                     {
                         tryAbort();
                         Object[] arguments = toObjects( _args, 1 );
-                        Object[] results = null;
+                        Object[] results;
                         try
                         {
                             results = apiObject.callMethod( new ILuaContext() {
+                                @Nonnull
                                 @Override
                                 public Object[] pullEvent( String filter ) throws LuaException, InterruptedException
                                 {
@@ -350,12 +349,14 @@ public class LuaJLuaMachine implements ILuaMachine
                                     return results;
                                 }
                                 
+                                @Nonnull
                                 @Override
                                 public Object[] pullEventRaw( String filter ) throws InterruptedException
                                 {
                                     return yield( new Object[] { filter } );
                                 }
                                 
+                                @Nonnull
                                 @Override
                                 public Object[] yield( Object[] yieldArgs ) throws InterruptedException
                                 {
@@ -372,7 +373,7 @@ public class LuaJLuaMachine implements ILuaMachine
                                 }
 
                                 @Override
-                                public long issueMainThreadTask( final ILuaTask task ) throws LuaException
+                                public long issueMainThreadTask( @Nonnull final ILuaTask task ) throws LuaException
                                 {
                                     // Issue command
                                     final long taskID = MainThread.getUniqueTaskID();
@@ -395,10 +396,7 @@ public class LuaJLuaMachine implements ILuaMachine
                                                     Object[] eventArguments = new Object[ results.length + 2 ];
                                                     eventArguments[ 0 ] = taskID;
                                                     eventArguments[ 1 ] = true;
-                                                    for( int i = 0; i < results.length; ++i )
-                                                    {
-                                                        eventArguments[ i + 2 ] = results[ i ];
-                                                    }
+                                                    System.arraycopy( results, 0, eventArguments, 2, results.length );
                                                     m_computer.queueEvent( "task_complete", eventArguments );
                                                 }
                                                 else
@@ -431,7 +429,7 @@ public class LuaJLuaMachine implements ILuaMachine
                                 }
 
                                 @Override
-                                public Object[] executeMainThreadTask( final ILuaTask task ) throws LuaException, InterruptedException
+                                public Object[] executeMainThreadTask( @Nonnull final ILuaTask task ) throws LuaException, InterruptedException
                                 {
                                     // Issue task
                                     final long taskID = issueMainThreadTask( task );
@@ -448,10 +446,7 @@ public class LuaJLuaMachine implements ILuaMachine
                                                 if( (Boolean)response[ 2 ] )
                                                 {
                                                     // Extract the return values from the event and return them
-                                                    for( int i = 0; i < returnValues.length; ++i )
-                                                    {
-                                                        returnValues[ i ] = response[ i + 3 ];
-                                                    }
+                                                    System.arraycopy( response, 3, returnValues, 0, returnValues.length );
                                                     return returnValues;
                                                 }
                                                 else
@@ -506,7 +501,7 @@ public class LuaJLuaMachine implements ILuaMachine
         }
         else if( object instanceof Boolean )
         {
-            boolean b = ((Boolean)object).booleanValue();
+            boolean b = (Boolean) object;
             return LuaValue.valueOf( b );
         }
         else if( object instanceof String )
@@ -534,10 +529,8 @@ public class LuaJLuaMachine implements ILuaMachine
                 m_valuesInProgress.put( object, table );
 
                 // Convert all keys
-                Iterator it = ((Map)object).entrySet().iterator();
-                while( it.hasNext() )
+                for( Map.Entry<?, ?> pair : ((Map<?, ?>) object).entrySet() )
                 {
-                    Map.Entry pair = (Map.Entry)it.next();
                     LuaValue key = toValue( pair.getKey() );
                     LuaValue value = toValue( pair.getValue() );
                     if( !key.isnil() && !value.isnil() )
@@ -558,8 +551,7 @@ public class LuaJLuaMachine implements ILuaMachine
         }
         else if( object instanceof ILuaObject )
         {
-            LuaValue table = wrapLuaObject( (ILuaObject)object );
-            return table;
+            return wrapLuaObject( (ILuaObject)object );
         }
         else
         {
@@ -627,7 +619,7 @@ public class LuaJLuaMachine implements ILuaMachine
                     {
                         return m_objectsInProgress.get( value );
                     }
-                    Map table = new HashMap();
+                    Map<Object, Object> table = new HashMap<Object, Object>();
                     m_objectsInProgress.put( value, table );
 
                     // Convert all keys

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -13,7 +13,7 @@ import java.lang.reflect.Modifier;
 
 public class ReflectionUtil
 {
-    public static Class getOptionalClass( String name )
+    public static Class<?> getOptionalClass( String name )
     {
         try
         {
@@ -26,20 +26,20 @@ public class ReflectionUtil
         return null;
     }
 
-    public static Class getOptionalInnerClass( Class enclosingClass, String name )
+    public static Class<?> getOptionalInnerClass( Class<?> enclosingClass, String name )
     {
         if( enclosingClass != null )
         {
             try
             {
-                Class[] declaredClasses = enclosingClass.getDeclaredClasses();
+                Class<?>[] declaredClasses = enclosingClass.getDeclaredClasses();
                 if( declaredClasses != null )
                 {
-                    for( int i=0; i<declaredClasses.length; ++i )
+                    for( Class<?> declaredClass : declaredClasses )
                     {
-                        if( declaredClasses[i].getSimpleName().equals( name ) )
+                        if( declaredClass.getSimpleName().equals( name ) )
                         {
-                            return declaredClasses[i];
+                            return declaredClass;
                         }
                     }
                 }
@@ -52,7 +52,7 @@ public class ReflectionUtil
         return null;
     }
 
-    public static Method getOptionalMethod( Class clazz, String name, Class[] arguments )
+    public static Method getOptionalMethod( Class<?> clazz, String name, Class<?>[] arguments )
     {
         if( clazz != null )
         {
@@ -68,7 +68,7 @@ public class ReflectionUtil
         return null;
     }
 
-    public static Constructor getOptionalConstructor( Class clazz, Class[] arguments )
+    public static <T> Constructor<T> getOptionalConstructor( Class<T> clazz, Class<?>[] arguments )
     {
         if( clazz != null )
         {
@@ -84,7 +84,7 @@ public class ReflectionUtil
         return null;
     }
 
-    public static Field getOptionalField( Class clazz, String name )
+    public static Field getOptionalField( Class<?> clazz, String name )
     {
         if( clazz != null )
         {
@@ -97,7 +97,7 @@ public class ReflectionUtil
                     {
                         field.setAccessible( true );
                     }
-                    catch( Exception e )
+                    catch( Exception ignored )
                     {
                     }
                 }
@@ -111,16 +111,16 @@ public class ReflectionUtil
         return null;
     }
 
-    public static <T> T safeNew( Constructor constructor, Object[] arguments, Class<T> resultClass )
+    public static <T> T safeNew( Constructor<T> constructor, Object[] arguments, Class<T> resultClass )
     {
         if( constructor != null )
         {
             try
             {
-                Object result = constructor.newInstance( arguments );
+                T result = constructor.newInstance( arguments );
                 if( result != null && resultClass.isInstance( result ) )
                 {
-                    return (T)result;
+                    return result;
                 }
             }
             catch( Exception e )
@@ -131,7 +131,7 @@ public class ReflectionUtil
         return null;
     }
 
-    public static boolean safeInstanceOf( Object object, Class clazz )
+    public static boolean safeInstanceOf( Object object, Class<?> clazz )
     {
         if( clazz != null )
         {
@@ -158,6 +158,7 @@ public class ReflectionUtil
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T safeInvoke( Method method, Object object, Object[] arguments, Class<T> resultClass )
     {
         if( method != null )
@@ -182,6 +183,7 @@ public class ReflectionUtil
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T safeGet( Field field, Object object, Class<T> resultClass )
     {
         if( field != null )

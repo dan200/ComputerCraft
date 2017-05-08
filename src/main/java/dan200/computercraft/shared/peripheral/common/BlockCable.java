@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -10,16 +10,17 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.modem.TileCable;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+
+import javax.annotation.Nonnull;
 
 public class BlockCable extends BlockPeripheralBase
 {
@@ -27,7 +28,7 @@ public class BlockCable extends BlockPeripheralBase
 
     public static class Properties
     {
-        public static final PropertyEnum<BlockCableModemVariant> MODEM = PropertyEnum.<BlockCableModemVariant>create( "modem", BlockCableModemVariant.class );
+        public static final PropertyEnum<BlockCableModemVariant> MODEM = PropertyEnum.create( "modem", BlockCableModemVariant.class );
         public static final PropertyBool CABLE = PropertyBool.create( "cable" );
         public static final PropertyBool NORTH = PropertyBool.create( "north" );
         public static final PropertyBool SOUTH = PropertyBool.create( "south" );
@@ -73,10 +74,11 @@ public class BlockCable extends BlockPeripheralBase
         );
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {
+        return new BlockStateContainer( this,
             Properties.MODEM,
             Properties.CABLE,
             Properties.NORTH,
@@ -84,11 +86,13 @@ public class BlockCable extends BlockPeripheralBase
             Properties.EAST,
             Properties.WEST,
             Properties.UP,
-            Properties.DOWN,
-        });
+            Properties.DOWN
+        );
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         IBlockState state = getDefaultState();
@@ -114,8 +118,8 @@ public class BlockCable extends BlockPeripheralBase
     public int getMetaFromState( IBlockState state )
     {
         int meta = 0;
-        boolean cable = (Boolean)state.getValue( Properties.CABLE );
-        BlockCableModemVariant modem = (BlockCableModemVariant)state.getValue( Properties.MODEM );
+        boolean cable = state.getValue( Properties.CABLE );
+        BlockCableModemVariant modem = state.getValue( Properties.MODEM );
         if( cable && modem != BlockCableModemVariant.None )
         {
             meta = 6 + modem.getFacing().getIndex();
@@ -160,11 +164,11 @@ public class BlockCable extends BlockPeripheralBase
 
     private boolean doesConnect( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing dir )
     {
-        if( !((Boolean)state.getValue( Properties.CABLE )) )
+        if( !state.getValue( Properties.CABLE ) )
         {
             return false;
         }
-        else if( ((BlockCableModemVariant)state.getValue( Properties.MODEM )).getFacing() == dir )
+        else if( state.getValue( Properties.MODEM ).getFacing() == dir )
         {
             return true;
         }
@@ -174,8 +178,10 @@ public class BlockCable extends BlockPeripheralBase
         }
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    @Deprecated
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
         state = state.withProperty( Properties.NORTH, doesConnect( state, world, pos, EnumFacing.NORTH ) );
         state = state.withProperty( Properties.SOUTH, doesConnect( state, world, pos, EnumFacing.SOUTH ) );
@@ -196,7 +202,7 @@ public class BlockCable extends BlockPeripheralBase
             anim = 0;
         }
 
-        BlockCableModemVariant modem = ((BlockCableModemVariant)state.getValue( Properties.MODEM ));
+        BlockCableModemVariant modem = state.getValue( Properties.MODEM );
         if( modem != BlockCableModemVariant.None )
         {
             modem = BlockCableModemVariant.values()[
@@ -209,7 +215,8 @@ public class BlockCable extends BlockPeripheralBase
     }
 
     @Override
-    public boolean shouldSideBeRendered( IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side )
+    @Deprecated
+    public boolean shouldSideBeRendered( IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side )
     {
         return true;
     }
@@ -223,8 +230,8 @@ public class BlockCable extends BlockPeripheralBase
     @Override
     public PeripheralType getPeripheralType( IBlockState state )
     {
-        boolean cable = (Boolean)state.getValue( Properties.CABLE );
-        BlockCableModemVariant modem = (BlockCableModemVariant)state.getValue( Properties.MODEM );
+        boolean cable = state.getValue( Properties.CABLE );
+        BlockCableModemVariant modem = state.getValue( Properties.MODEM );
         if( cable && modem != BlockCableModemVariant.None )
         {
             return PeripheralType.WiredModemWithCable;

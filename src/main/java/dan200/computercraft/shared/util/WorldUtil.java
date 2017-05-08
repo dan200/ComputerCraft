@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -6,8 +6,6 @@
 
 package dan200.computercraft.shared.util;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -27,16 +25,7 @@ public class WorldUtil
 
     public static boolean isLiquidBlock( World world, BlockPos pos )
     {
-        if( isBlockInWorld( world, pos ) )
-        {
-            IBlockState state = world.getBlockState( pos );
-            Block block = state.getBlock();
-            if( block != null )
-            {
-                return block.getMaterial( state ).isLiquid();
-            }
-        }
-        return false;
+        return isBlockInWorld( world, pos ) && world.getBlockState( pos ).getMaterial().isLiquid();
     }
 
     public static BlockPos moveCoords( BlockPos pos, EnumFacing dir )
@@ -71,10 +60,9 @@ public class WorldUtil
 
         Entity closest = null;
         double closestDist = 99.0;
-        List list = world.getEntitiesWithinAABBExcludingEntity( null, bigBox );
-        for( int i=0; i<list.size(); i++ )
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity( null, bigBox );
+        for( Entity entity : list )
         {
-            Entity entity = (net.minecraft.entity.Entity)list.get(i);
             if( entity.isDead || !entity.canBeCollidedWith() )
             {
                 continue;

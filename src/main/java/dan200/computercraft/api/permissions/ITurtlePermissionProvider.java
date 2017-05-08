@@ -9,6 +9,8 @@ package dan200.computercraft.api.permissions;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 /**
  * This interface is used to restrict where turtles can move or build.
  *
@@ -25,7 +27,7 @@ public interface ITurtlePermissionProvider
      * @param pos   The location of the block.
      * @return Whether the turtle can move into this block.
      */
-    public boolean isBlockEnterable( World world, BlockPos pos );
+    boolean isBlockEnterable( @Nonnull World world, @Nonnull BlockPos pos );
 
     /**
      * Determine whether a block can be modified by a turtle.
@@ -36,5 +38,5 @@ public interface ITurtlePermissionProvider
      * @param pos   The location of the block.
      * @return Whether the turtle can modify this block.
      */
-    public boolean isBlockEditable( World world, BlockPos pos );
+    boolean isBlockEditable( @Nonnull World world, @Nonnull BlockPos pos );
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -14,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class DiskRecipe implements IRecipe
 {
     public DiskRecipe()
@@ -21,7 +23,7 @@ public class DiskRecipe implements IRecipe
     }
 
     @Override
-    public boolean matches( InventoryCrafting inventory, World world )
+    public boolean matches( @Nonnull InventoryCrafting inventory, @Nonnull World world )
     {
         boolean diskFound = false;
         boolean paperFound = false;
@@ -75,7 +77,7 @@ public class DiskRecipe implements IRecipe
     }
 
     @Override
-    public ItemStack getCraftingResult(InventoryCrafting par1InventoryCrafting)
+    public ItemStack getCraftingResult( @Nonnull InventoryCrafting par1InventoryCrafting)
     {
         int diskID = -1;
         String diskLabel = null;
@@ -83,7 +85,7 @@ public class DiskRecipe implements IRecipe
         int[] var3 = new int[3];
         int var4 = 0;
         int var5 = 0;
-        ItemDiskLegacy var6 = null;
+        ItemDiskLegacy var6;
         int var7;
         int var9;
         float var10;
@@ -153,8 +155,9 @@ public class DiskRecipe implements IRecipe
         return ItemDiskLegacy.createFromIDAndColour( -1, null, Colour.Blue.getHex() );
     }
 
+    @Nonnull
     @Override
-    public ItemStack[] getRemainingItems( InventoryCrafting inventoryCrafting )
+    public ItemStack[] getRemainingItems( @Nonnull InventoryCrafting inventoryCrafting )
     {
         ItemStack[] results = new ItemStack[ inventoryCrafting.getSizeInventory() ];
         for (int i = 0; i < results.length; ++i)

@@ -9,6 +9,9 @@ package dan200.computercraft.api.lua;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * An interface for representing custom objects returned by {@link IPeripheral#callMethod(IComputerAccess, ILuaContext, int, Object[])}
  * calls.
@@ -24,7 +27,8 @@ public interface ILuaObject
      * @return The method names this object provides.
      * @see IPeripheral#getMethodNames()
      */
-    public String[] getMethodNames();
+    @Nonnull
+    String[] getMethodNames();
 
     /**
      * Called when a user calls one of the methods that this object implements. This works the same as
@@ -47,5 +51,6 @@ public interface ILuaObject
      *                              intercepted, or the computer will leak memory and end up in a broken state.w
      * @see IPeripheral#callMethod(IComputerAccess, ILuaContext, int, Object[])
      */
-    public Object[] callMethod( ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException;
+    @Nullable
+    Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException;
 }

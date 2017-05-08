@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -8,14 +8,11 @@ package dan200.computercraft.shared.turtle.blocks;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.blocks.BlockComputerBase;
-import dan200.computercraft.shared.computer.blocks.TileCommandComputer;
 import dan200.computercraft.shared.computer.blocks.TileComputerBase;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.util.DirectionUtil;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,6 +24,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class BlockTurtle extends BlockComputerBase
 {
     // Statics
@@ -34,7 +33,6 @@ public class BlockTurtle extends BlockComputerBase
     public static class Properties
     {
         public static final PropertyDirection FACING = PropertyDirection.create( "facing", EnumFacing.Plane.HORIZONTAL );
-        public static final PropertyEnum<BlockTurtleDyeVariant> DYE = PropertyEnum.<BlockTurtleDyeVariant>create( "dye", BlockTurtleDyeVariant.class );
     }
 
     public static BlockTurtle createTurtleBlock()
@@ -52,38 +50,41 @@ public class BlockTurtle extends BlockComputerBase
         setCreativeTab( ComputerCraft.mainCreativeTab );
         setDefaultState( this.blockState.getBaseState()
             .withProperty( Properties.FACING, EnumFacing.NORTH )
-            .withProperty( Properties.DYE, BlockTurtleDyeVariant.None )
         );
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType( IBlockState state )
     {
         return EnumBlockRenderType.INVISIBLE;
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube( IBlockState state )
     {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullCube( IBlockState state )
     {
         return false;
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {
-            Properties.FACING,
-            Properties.DYE
-        });
+        return new BlockStateContainer(this, Properties.FACING );
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta( int meta )
     {
         return getDefaultState();
@@ -95,21 +96,12 @@ public class BlockTurtle extends BlockComputerBase
         return 0;
     }
 
+    @Nonnull
     @Override
-    public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+    @Deprecated
+    public IBlockState getActualState( @Nonnull IBlockState state, IBlockAccess world, BlockPos pos )
     {
-        state = state.withProperty( Properties.FACING, getDirection( world, pos ) );
-        TileEntity tile = world.getTileEntity( pos );
-        if( tile != null && tile instanceof ITurtleTile )
-        {
-            ITurtleTile turtle = (ITurtleTile)tile;
-            state = state.withProperty( Properties.DYE, BlockTurtleDyeVariant.fromColour( turtle.getColour() ) );
-        }
-        else
-        {
-            state = state.withProperty( Properties.DYE, BlockTurtleDyeVariant.None );
-        }
-        return state;
+        return state.withProperty( Properties.FACING, getDirection( world, pos ) );
     }
 
     @Override

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -21,7 +21,6 @@ import dan200.computercraft.core.terminal.Terminal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Computer
@@ -30,7 +29,7 @@ public class Computer
         "bottom", "top", "back", "front", "right", "left",
     };
     
-    private static enum State
+    private enum State
     {
         Off,
         Starting,
@@ -187,26 +186,26 @@ public class Computer
     private boolean m_blinking;
 
     private ILuaMachine m_machine;
-    private List<ILuaAPI> m_apis;
-    private APIEnvironment m_apiEnvironment;
+    private final List<ILuaAPI> m_apis;
+    private final APIEnvironment m_apiEnvironment;
     
-    private Terminal m_terminal;
+    private final Terminal m_terminal;
     private FileSystem m_fileSystem;
     private IWritableMount m_rootMount;
 
-    private int[] m_internalOutput;
-    private int[] m_internalBundledOutput;
+    private final int[] m_internalOutput;
+    private final int[] m_internalBundledOutput;
     private boolean m_internalOutputChanged;
 
-    private int[] m_externalOutput;
-    private int[] m_externalBundledOutput;
+    private final int[] m_externalOutput;
+    private final int[] m_externalBundledOutput;
     private boolean m_externalOutputChanged;
 
-    private int[] m_input;
-    private int[] m_bundledInput;
+    private final int[] m_input;
+    private final int[] m_bundledInput;
     private boolean m_inputChanged;
         
-    private IPeripheral[] m_peripherals;
+    private final IPeripheral[] m_peripherals;
 
     public Computer( IComputerEnvironment environment, Terminal terminal, int id )
     {
@@ -370,10 +369,8 @@ public class Computer
                 // Advance our APIs
                 synchronized( m_apis )
                 {
-                    Iterator<ILuaAPI> it = m_apis.iterator();
-                    while( it.hasNext() )
+                    for(ILuaAPI api : m_apis)
                     {
-                        ILuaAPI api = it.next();
                         api.advance( _dt );
                     }
                 }
@@ -628,10 +625,8 @@ public class Computer
         ILuaMachine machine = new LuaJLuaMachine( this );
         
         // Add the APIs
-        Iterator<ILuaAPI> it = m_apis.iterator();
-        while( it.hasNext() )
+        for(ILuaAPI api : m_apis)
         {
-            ILuaAPI api = it.next();
             machine.addAPI( api );
             api.startup();
         }
@@ -794,10 +789,8 @@ public class Computer
                     // Shutdown our APIs
                     synchronized( m_apis )
                     {
-                        Iterator<ILuaAPI> it = m_apis.iterator();
-                        while( it.hasNext() )
+                        for(ILuaAPI api : m_apis)
                         {
-                            ILuaAPI api = it.next();
                             api.shutdown();
                         }
                     }

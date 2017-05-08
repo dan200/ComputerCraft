@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -21,7 +21,7 @@ import net.minecraft.util.text.*;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +53,7 @@ public class TileCommandComputer extends TileComputer
 
         // ICommandSender
 
+        @Nonnull
         @Override
         public ITextComponent getDisplayName()
         {
@@ -69,7 +70,7 @@ public class TileCommandComputer extends TileComputer
         }
 
         @Override
-        public void addChatMessage( ITextComponent chatComponent )
+        public void addChatMessage( @Nonnull ITextComponent chatComponent )
         {
             m_outputTable.put( m_outputTable.size() + 1, chatComponent.getUnformattedText() );
         }
@@ -80,12 +81,14 @@ public class TileCommandComputer extends TileComputer
             return level <= 2;
         }
 
+        @Nonnull
         @Override
         public BlockPos getPosition()
         {
             return TileCommandComputer.this.getPos();
         }
 
+        @Nonnull
         @Override
         public Vec3d getPositionVector()
         {
@@ -93,6 +96,7 @@ public class TileCommandComputer extends TileComputer
             return new Vec3d( pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5 );
         }
 
+        @Nonnull
         @Override
         public World getEntityWorld()
         {
@@ -126,7 +130,7 @@ public class TileCommandComputer extends TileComputer
         }
 
         @Override
-        public void fillInInfo( ByteBuf buf )
+        public void fillInInfo( @Nonnull ByteBuf buf )
         {
         }
     }
@@ -142,7 +146,7 @@ public class TileCommandComputer extends TileComputer
     public EnumFacing getDirection()
     {
         IBlockState state = getBlockState();
-        return (EnumFacing)state.getValue( BlockCommandComputer.Properties.FACING );
+        return state.getValue( BlockCommandComputer.Properties.FACING );
     }
 
     @Override

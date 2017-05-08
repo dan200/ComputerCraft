@@ -16,6 +16,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * The interface passed to turtle by turtles, providing methods that they can call.
  *
@@ -29,14 +32,16 @@ public interface ITurtleAccess
      *
      * @return the world in which the turtle resides.
      */
-    public World getWorld();
+    @Nonnull
+    World getWorld();
 
     /**
      * Returns a vector containing the integer co-ordinates at which the turtle resides.
      *
      * @return a vector containing the integer co-ordinates at which the turtle resides.
      */
-    public BlockPos getPosition();
+    @Nonnull
+    BlockPos getPosition();
 
     /**
      * Attempt to move this turtle to a new position.
@@ -51,7 +56,7 @@ public interface ITurtleAccess
      * {@link dan200.computercraft.api.permissions.ITurtlePermissionProvider#isBlockEnterable(World, BlockPos)}.
      * @throws UnsupportedOperationException When attempting to teleport on the client side.
      */
-    public boolean teleportTo( World world, BlockPos pos );
+    boolean teleportTo( @Nonnull World world, @Nonnull BlockPos pos );
 
     /**
      * Returns a vector containing the floating point co-ordinates at which the turtle is rendered.
@@ -61,7 +66,8 @@ public interface ITurtleAccess
      * @return A vector containing the floating point co-ordinates at which the turtle resides.
      * @see #getVisualYaw(float)
      */
-    public Vec3d getVisualPosition( float f );
+    @Nonnull
+    Vec3d getVisualPosition( float f );
 
     /**
      * Returns the yaw the turtle is facing when it is rendered.
@@ -70,7 +76,7 @@ public interface ITurtleAccess
      * @return The yaw the turtle is facing.
      * @see #getVisualPosition(float)
      */
-    public float getVisualYaw( float f );
+    float getVisualYaw( float f );
 
     /**
      * Returns the world direction the turtle is currently facing.
@@ -78,7 +84,8 @@ public interface ITurtleAccess
      * @return The world direction the turtle is currently facing.
      * @see #setDirection(EnumFacing)
      */
-    public EnumFacing getDirection();
+    @Nonnull
+    EnumFacing getDirection();
 
     /**
      * Set the direction the turtle is facing. Note that this will not play a rotation animation, you will also need to
@@ -87,7 +94,7 @@ public interface ITurtleAccess
      * @param dir The new direction to set. This should be on either the x or z axis (so north, south, east or west).
      * @see #getDirection()
      */
-    public void setDirection( EnumFacing dir );
+    void setDirection( @Nonnull EnumFacing dir );
 
     /**
      * Get the currently selected slot in the turtle's inventory.
@@ -96,7 +103,7 @@ public interface ITurtleAccess
      * @see #getInventory()
      * @see #setSelectedSlot(int)
      */
-    public int getSelectedSlot();
+    int getSelectedSlot();
 
     /**
      * Set the currently selected slot in the turtle's inventory.
@@ -107,7 +114,7 @@ public interface ITurtleAccess
      * @see #getInventory()
      * @see #getSelectedSlot()
      */
-    public void setSelectedSlot( int slot );
+    void setSelectedSlot( int slot );
 
     /**
      * Sets the colour of the turtle, as if the player had dyed it with a dye item.
@@ -116,7 +123,7 @@ public interface ITurtleAccess
      *                  the dye from the turtle.
      * @see #getDyeColour()
      */
-    public void setDyeColour( int dyeColour );
+    void setDyeColour( int dyeColour );
 
     /**
      * Gets the colour the turtle has been dyed.
@@ -125,14 +132,15 @@ public interface ITurtleAccess
      * is clean.
      * @see #getDyeColour()
      */
-    public int getDyeColour();
+    int getDyeColour();
 
     /**
      * Get the inventory of this turtle
      *
      * @return This turtle's inventory
      */
-    public IInventory getInventory();
+    @Nonnull
+    IInventory getInventory();
 
     /**
      * Determine whether this turtle will require fuel when performing actions.
@@ -141,7 +149,7 @@ public interface ITurtleAccess
      * @see #getFuelLevel()
      * @see #setFuelLevel(int)
      */
-    public boolean isFuelNeeded();
+    boolean isFuelNeeded();
 
     /**
      * Get the current fuel level of this turtle.
@@ -150,7 +158,7 @@ public interface ITurtleAccess
      * @see #isFuelNeeded()
      * @see #setFuelLevel(int)
      */
-    public int getFuelLevel();
+    int getFuelLevel();
 
     /**
      * Set the fuel level to a new value. It is generally preferred to use {@link #consumeFuel(int)}} or {@link #addFuel(int)}
@@ -162,14 +170,14 @@ public interface ITurtleAccess
      * @see #addFuel(int)
      * @see #consumeFuel(int)
      */
-    public void setFuelLevel( int fuel );
+    void setFuelLevel( int fuel );
 
     /**
      * Get the maximum amount of fuel a turtle can hold.
      *
      * @return The turtle's fuel limit.
      */
-    public int getFuelLimit();
+    int getFuelLimit();
 
     /**
      * Removes some fuel from the turtles fuel supply. Negative numbers can be passed in to INCREASE the fuel level of the turtle.
@@ -179,7 +187,7 @@ public interface ITurtleAccess
      * greater than the current fuel level of the turtle. No fuel will be consumed if {@code false} is returned.
      * @throws UnsupportedOperationException When attempting to consume fuel on the client side.
      */
-    public boolean consumeFuel( int fuel );
+    boolean consumeFuel( int fuel );
 
     /**
      * Increase the turtle's fuel level by the given amount.
@@ -187,7 +195,7 @@ public interface ITurtleAccess
      * @param fuel The amount to refuel with.
      * @throws UnsupportedOperationException When attempting to refuel on the client side.
      */
-    public void addFuel( int fuel );
+    void addFuel( int fuel );
 
     /**
      * Adds a custom command to the turtles command queue. Unlike peripheral methods, these custom commands will be executed
@@ -209,7 +217,8 @@ public interface ITurtleAccess
      * @see ITurtleCommand
      * @see ILuaContext#pullEvent(String)
      */
-    public Object[] executeCommand( ILuaContext context, ITurtleCommand command ) throws LuaException, InterruptedException;
+    @Nonnull
+    Object[] executeCommand( @Nonnull ILuaContext context, @Nonnull ITurtleCommand command ) throws LuaException, InterruptedException;
 
     /**
      * Start playing a specific animation. This will prevent other turtle commands from executing until
@@ -219,7 +228,7 @@ public interface ITurtleAccess
      * @throws UnsupportedOperationException When attempting to execute play an animation on the client side.
      * @see TurtleAnimation
      */
-    public void playAnimation( TurtleAnimation animation );
+    void playAnimation( @Nonnull TurtleAnimation animation );
 
     /**
      * Returns the turtle on the specified side of the turtle, if there is one.
@@ -228,7 +237,8 @@ public interface ITurtleAccess
      * @return The upgrade on the specified side of the turtle, if there is one.
      * @see #setUpgrade(TurtleSide, ITurtleUpgrade)
      */
-    public ITurtleUpgrade getUpgrade( TurtleSide side );
+    @Nullable
+    ITurtleUpgrade getUpgrade( @Nonnull TurtleSide side );
 
     /**
      * Set the upgrade for a given side, resetting peripherals and clearing upgrade specific data.
@@ -237,7 +247,7 @@ public interface ITurtleAccess
      * @param upgrade The upgrade to set, may be {@code null} to clear.
      * @see #getUpgrade(TurtleSide)
      */
-    public void setUpgrade( TurtleSide side, ITurtleUpgrade upgrade );
+    void setUpgrade( @Nonnull TurtleSide side, @Nullable ITurtleUpgrade upgrade );
 
     /**
      * Returns the peripheral created by the upgrade on the specified side of the turtle, if there is one.
@@ -245,7 +255,8 @@ public interface ITurtleAccess
      * @param side The side to get the peripheral from.
      * @return The peripheral created by the upgrade on the specified side of the turtle, {@code null} if none exists.
      */
-    public IPeripheral getPeripheral( TurtleSide side );
+    @Nullable
+    IPeripheral getPeripheral( @Nonnull TurtleSide side );
 
     /**
      * Get an upgrade-specific NBT compound, which can be used to store arbitrary data.
@@ -257,7 +268,8 @@ public interface ITurtleAccess
      * @return The upgrade-specific data.
      * @see #updateUpgradeNBTData(TurtleSide)
      */
-    public NBTTagCompound getUpgradeNBTData( TurtleSide side );
+    @Nonnull
+    NBTTagCompound getUpgradeNBTData( @Nullable TurtleSide side );
 
     /**
      * Mark the upgrade-specific data as dirty on a specific side. This is required for the data to be synced to the
@@ -266,5 +278,5 @@ public interface ITurtleAccess
      * @param side The side to mark dirty.
      * @see #updateUpgradeNBTData(TurtleSide)
      */
-    public void updateUpgradeNBTData( TurtleSide side );
+    void updateUpgradeNBTData( @Nonnull TurtleSide side );
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -18,6 +18,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class TurtleInventoryCrafting extends InventoryCrafting
@@ -201,6 +202,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
         return m_turtle.getInventory().getStackInSlot( i );
     }
 
+    @Nonnull
     @Override
     public String getName()
     {
@@ -213,6 +215,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
         return false;
     }
 
+    @Nonnull
     @Override
     public ITextComponent getDisplayName()
     {

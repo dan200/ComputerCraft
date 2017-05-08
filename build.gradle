@@ -80,7 +80,7 @@ jar {
     configurations.shade.each {
         from(it.isDirectory() ? it : zipTree(it)) { exclude 'META-INF', 'META-INF/**' }
     }
-	
+    
     into("api", { from (sourceSets.main.java) {
         include "dan200/computercraft/api/**/*.java"
     }})
@@ -98,5 +98,11 @@ task countLines {
         new File(sourceSets.main.resources.srcDirs[0], 'assets/computercraft/lua')
             .eachFileRecurse(groovy.io.FileType.FILES,{ lualines += (it.text =~ /\n/).count })
         println "Lua: $lualines"
+    }
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint"
     }
 }

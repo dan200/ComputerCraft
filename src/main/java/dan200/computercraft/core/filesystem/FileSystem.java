@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -11,7 +11,6 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 
 import java.io.*;
-import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -292,7 +291,7 @@ public class FileSystem
     }
 
     private final Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
-    private final WeakHashMap<IMountedFile, Object> m_openFiles = new WeakHashMap<IMountedFile, Object>();
+    private final Set<IMountedFile> m_openFiles = Collections.newSetFromMap( new WeakHashMap<IMountedFile, Boolean>() );
     
     public FileSystem( String rootLabel, IMount rootMount ) throws FileSystemException
     {
@@ -309,7 +308,7 @@ public class FileSystem
         // Close all dangling open files
         synchronized( m_openFiles )
         {
-            for(IMountedFile file : m_openFiles.keySet())
+            for(IMountedFile file : m_openFiles)
             {
                 try {
                     file.close();
@@ -328,7 +327,7 @@ public class FileSystem
             throw new NullPointerException();
         }
         location = sanitizePath( location );
-        if( location.indexOf( ".." ) != -1 ) {
+        if( location.contains( ".." ) ) {
             throw new FileSystemException( "Cannot mount below the root" );
         }                    
         mount( new MountWrapper( label, location, mount ) );
@@ -428,10 +427,10 @@ public class FileSystem
         mount.list( path, list );
         
         // Add any mounts that are mounted at this location
-        Iterator<MountWrapper> it = m_mounts.values().iterator();
-        while( it.hasNext() ) {
-            MountWrapper otherMount = it.next();
-            if( getDirectory( otherMount.getLocation() ).equals( path ) ) {
+        for( MountWrapper otherMount : m_mounts.values() )
+        {
+            if( getDirectory( otherMount.getLocation() ).equals( path ) )
+            {
                 list.add( getName( otherMount.getLocation() ) );
             }
         }
@@ -446,9 +445,8 @@ public class FileSystem
     private void findIn( String dir, List<String> matches, Pattern wildPattern ) throws FileSystemException
     {
         String[] list = list( dir );
-        for( int i=0; i<list.length; ++i )
+        for( String entry : list )
         {
-            String entry = list[i];
             String entryPath = dir.isEmpty() ? entry : (dir + "/" + entry);
             if( wildPattern.matcher( entryPath ).matches() )
             {
@@ -667,7 +665,7 @@ public class FileSystem
                 throw new FileSystemException("Too many files already open");
             }
 
-            m_openFiles.put( file, null );
+            m_openFiles.add( file );
             return file;
         }
     }
@@ -911,7 +909,7 @@ public class FileSystem
             char c = path.charAt(i);
             if( c >= 32 && Arrays.binarySearch( specialChars, c ) < 0 && (allowWildcards || c != '*') )
             {
-                cleanName.append((char)c);
+                cleanName.append( c );
             }
         }
         path = cleanName.toString();
@@ -919,30 +917,42 @@ public class FileSystem
         // Collapse the string into its component parts, removing ..'s
         String[] parts = path.split("/");
         Stack<String> outputParts = new Stack<String>();
-        for( int n=0; n<parts.length; ++n ) {
-            String part = parts[n];
-            if( part.length() == 0 || part.equals(".") )
+        for( String part : parts )
+        {
+            if( part.length() == 0 || part.equals( "." ) )
             {
                 // . is redundant
                 continue;
-            } else if( part.equals("..") || part.equals( "..." ) ) {
+            }
+            else if( part.equals( ".." ) || part.equals( "..." ) )
+            {
                 // .. or ... can cancel out the last folder entered
-                if( !outputParts.empty() ) {
+                if( !outputParts.empty() )
+                {
                     String top = outputParts.peek();
-                    if( !top.equals("..") ) {
+                    if( !top.equals( ".." ) )
+                    {
                         outputParts.pop();
-                    } else {
-                        outputParts.push("..");
                     }
-                } else {
-                    outputParts.push("..");
+                    else
+                    {
+                        outputParts.push( ".." );
+                    }
                 }
-            } else if (part.length() >= 255) {
+                else
+                {
+                    outputParts.push( ".." );
+                }
+            }
+            else if( part.length() >= 255 )
+            {
                 // If part length > 255 and it is the last part
-                outputParts.push( part.substring(0, 255) );
-            } else {
+                outputParts.push( part.substring( 0, 255 ) );
+            }
+            else
+            {
                 // Anything else we add to the stack
-                outputParts.push(part);
+                outputParts.push( part );
             }
         }
         

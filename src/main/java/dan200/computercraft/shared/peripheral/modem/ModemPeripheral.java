@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -13,8 +13,8 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public abstract class ModemPeripheral
@@ -84,7 +84,7 @@ public abstract class ModemPeripheral
     
     private INetwork m_network;
     private IComputerAccess m_computer;
-    private Map<Integer, IReceiver> m_channels;
+    private final Map<Integer, IReceiver> m_channels;
 
     private boolean m_open;
     private boolean m_changed;
@@ -106,10 +106,9 @@ public abstract class ModemPeripheral
             // Leave old network
             if( m_network != null )
             {
-                Iterator<IReceiver> it = m_channels.values().iterator();
-                while( it.hasNext() )
+                for( IReceiver iReceiver : m_channels.values() )
                 {
-                    m_network.removeReceiver( it.next() );
+                    m_network.removeReceiver( iReceiver );
                 }
             }
 
@@ -119,10 +118,9 @@ public abstract class ModemPeripheral
             // Join new network
             if( m_network != null )
             {
-                Iterator<IReceiver> it = m_channels.values().iterator();
-                while( it.hasNext() )
+                for( IReceiver iReceiver : m_channels.values() )
                 {
-                    m_network.addReceiver( it.next() );
+                    m_network.addReceiver( iReceiver );
                 }
             }
         }
@@ -203,12 +201,14 @@ public abstract class ModemPeripheral
     
     // IPeripheral implementation
 
+    @Nonnull
     @Override
     public String getType()
     {
         return "modem";
     }
        
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -237,7 +237,7 @@ public abstract class ModemPeripheral
     }
     
     @Override
-    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException
+    public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
     {
         switch( method )
         {
@@ -312,10 +312,9 @@ public abstract class ModemPeripheral
                     {
                         if( m_network != null )
                         {
-                            Iterator<IReceiver> it = m_channels.values().iterator();
-                            while( it.hasNext() )
+                            for( IReceiver iReceiver : m_channels.values() )
                             {
-                                m_network.removeReceiver( it.next() );
+                                m_network.removeReceiver( iReceiver );
                             }
                         }
                         m_channels.clear();
@@ -366,7 +365,7 @@ public abstract class ModemPeripheral
     }
     
     @Override
-    public synchronized void attach( IComputerAccess computer )
+    public synchronized void attach( @Nonnull IComputerAccess computer )
     {
         m_computer = computer;
         setNetwork( getNetwork() );
@@ -374,14 +373,13 @@ public abstract class ModemPeripheral
     }
     
     @Override
-    public synchronized void detach( IComputerAccess computer )
+    public synchronized void detach( @Nonnull IComputerAccess computer )
     {
         if( m_network != null )
         {
-            Iterator<IReceiver> it = m_channels.values().iterator();
-            while( it.hasNext() )
+            for( IReceiver iReceiver : m_channels.values() )
             {
-                m_network.removeReceiver( it.next() );
+                m_network.removeReceiver( iReceiver );
             }
             m_channels.clear();
             m_network = null;

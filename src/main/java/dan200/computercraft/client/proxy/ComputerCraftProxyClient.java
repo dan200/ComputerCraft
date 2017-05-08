@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -25,6 +25,7 @@ import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.proxy.ComputerCraftProxyCommon;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.entity.TurtleVisionCamera;
+import dan200.computercraft.shared.util.Colour;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -48,13 +49,12 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +88,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             private ModelResourceLocation computer = new ModelResourceLocation( "computercraft:CC-Computer", "inventory" );
             private ModelResourceLocation advanced_computer = new ModelResourceLocation( "computercraft:advanced_computer", "inventory" );
 
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 ItemComputer itemComputer = (ItemComputer) stack.getItem();
                 ComputerFamily family = itemComputer.getFamily( stack.getItemDamage() );
@@ -117,19 +118,15 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             private ModelResourceLocation pocket_computer_off = new ModelResourceLocation( "computercraft:pocketComputer", "inventory" );
             private ModelResourceLocation pocket_computer_on = new ModelResourceLocation( "computercraft:pocket_computer_on", "inventory" );
             private ModelResourceLocation pocket_computer_blinking = new ModelResourceLocation( "computercraft:pocket_computer_blinking", "inventory" );
-            private ModelResourceLocation pocket_computer_on_modem_on = new ModelResourceLocation( "computercraft:pocket_computer_on_modem_on", "inventory" );
-            private ModelResourceLocation pocket_computer_blinking_modem_on = new ModelResourceLocation( "computercraft:pocket_computer_blinking_modem_on", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_off = new ModelResourceLocation( "computercraft:advanced_pocket_computer_off", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_on = new ModelResourceLocation( "computercraft:advanced_pocket_computer_on", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_blinking = new ModelResourceLocation( "computercraft:advanced_pocket_computer_blinking", "inventory" );
-            private ModelResourceLocation advanced_pocket_computer_on_modem_on = new ModelResourceLocation( "computercraft:advanced_pocket_computer_on_modem_on", "inventory" );
-            private ModelResourceLocation advanced_pocket_computer_blinking_modem_on = new ModelResourceLocation( "computercraft:advanced_pocket_computer_blinking_modem_on", "inventory" );
 
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 ItemPocketComputer itemPocketComputer = (ItemPocketComputer)stack.getItem();
-                boolean modemOn = itemPocketComputer.getModemState( stack );
                 switch( itemPocketComputer.getFamily( stack ) )
                 {
                     case Advanced:
@@ -143,11 +140,11 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                             }
                             case On:
                             {
-                                return modemOn ? advanced_pocket_computer_on_modem_on : advanced_pocket_computer_on;
+                                return advanced_pocket_computer_on;
                             }
                             case Blinking:
                             {
-                                return modemOn ? advanced_pocket_computer_blinking_modem_on : advanced_pocket_computer_blinking;
+                                return advanced_pocket_computer_blinking;
                             }
                         }
                     }
@@ -163,24 +160,36 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                             }
                             case On:
                             {
-                                return modemOn ? pocket_computer_on_modem_on : pocket_computer_on;
+                                return pocket_computer_on;
                             }
                             case Blinking:
                             {
-                                return modemOn ? pocket_computer_blinking_modem_on : pocket_computer_blinking;
+                                return pocket_computer_blinking;
                             }
                         }
                     }
                 }
             }
         }, new String[] {
-            "pocketComputer", "pocket_computer_on", "pocket_computer_blinking", "pocket_computer_on_modem_on", "pocket_computer_blinking_modem_on",
-            "advanced_pocket_computer_off", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking", "advanced_pocket_computer_on_modem_on", "advanced_pocket_computer_blinking_modem_on",
+            "pocketComputer", "pocket_computer_on", "pocket_computer_blinking",
+            "advanced_pocket_computer_off", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking",
         } );
 
         // Setup
-		mc.getItemColors().registerItemColorHandler(new DiskColorHandler(ComputerCraft.Items.disk), ComputerCraft.Items.disk);
-		mc.getItemColors().registerItemColorHandler(new DiskColorHandler(ComputerCraft.Items.diskExpanded), ComputerCraft.Items.diskExpanded);
+        mc.getItemColors().registerItemColorHandler( new DiskColorHandler( ComputerCraft.Items.disk ), ComputerCraft.Items.disk );
+        mc.getItemColors().registerItemColorHandler( new DiskColorHandler( ComputerCraft.Items.diskExpanded ), ComputerCraft.Items.diskExpanded );
+
+        mc.getItemColors().registerItemColorHandler( new IItemColor()
+        {
+            @Override
+            public int getColorFromItemstack( @Nonnull ItemStack stack, int layout )
+            {
+                if( layout != 1 ) return 0xFFFFFF;
+
+                Colour colour = Colour.fromInt( ComputerCraft.Items.pocketComputer.getLightState( stack ) );
+                return colour == null ? Colour.Black.getHex() : colour.getHex();
+            }
+        }, ComputerCraft.Items.pocketComputer );
 
         // Setup renderers
         ClientRegistry.bindTileEntitySpecialRenderer( TileMonitor.class, new TileEntityMonitorRenderer() );
@@ -212,8 +221,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         ModelBakery.registerItemVariants( item, new ResourceLocation( "computercraft", name ) );
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, new ItemMeshDefinition()
         {
+            @Nonnull
             @Override
-            public ModelResourceLocation getModelLocation( ItemStack stack )
+            public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
                 return res;
             }
@@ -269,10 +279,10 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     @Override
     public String getRecordInfo( ItemStack recordStack )
     {
-        List info = new ArrayList(1);
+        List<String> info = new ArrayList<String>( 1 );
         recordStack.getItem().addInformation( recordStack, null, info, false );
         if( info.size() > 0 ) {
-            return info.get(0).toString();
+            return info.get( 0 );
         } else {
             return super.getRecordInfo( recordStack );
         }
@@ -394,7 +404,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                 {
                     ComputerCraft.clientComputerRegistry.add( instanceID, new ClientComputer( instanceID ) );
                 }
-                ComputerCraft.clientComputerRegistry.get( instanceID ).handlePacket( packet, (EntityPlayer) player );
+                ComputerCraft.clientComputerRegistry.get( instanceID ).handlePacket( packet, player );
                 break;
             }
             case ComputerCraftPacket.ComputerDeleted:
@@ -412,7 +422,6 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     private void registerForgeHandlers()
     {
         ForgeHandlers handlers = new ForgeHandlers();
-        FMLCommonHandler.instance().bus().register( handlers );
         MinecraftForge.EVENT_BUS.register( handlers );
     }
 
@@ -513,7 +522,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 		}
 
 		@Override
-		public int getColorFromItemstack(ItemStack stack, int layer)
+		public int getColorFromItemstack( @Nonnull ItemStack stack, int layer)
 		{
 			return layer == 0 ? 0xFFFFFF : disk.getColor(stack);
 		}

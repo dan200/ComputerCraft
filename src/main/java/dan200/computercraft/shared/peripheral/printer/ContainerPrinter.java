@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -13,6 +13,8 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
 
 public class ContainerPrinter extends Container
 {
@@ -75,12 +77,11 @@ public class ContainerPrinter extends Container
         if( !m_printer.getWorld().isRemote )
         {
             boolean printing = m_printer.isPrinting();
-            for (int i=0; i<listeners.size(); ++i)
+            for( IContainerListener listener : listeners )
             {
-                IContainerListener icrafting = (IContainerListener)listeners.get(i);
                 if( printing != m_lastPrinting )
                 {
-                    icrafting.sendProgressBarUpdate( this, 0, printing ? 1 : 0 );
+                    listener.sendProgressBarUpdate( this, 0, printing ? 1 : 0 );
                 }
             }
             m_lastPrinting = printing;
@@ -97,7 +98,7 @@ public class ContainerPrinter extends Container
     }
 
     @Override
-    public boolean canInteractWith( EntityPlayer player )
+    public boolean canInteractWith( @Nonnull EntityPlayer player )
     {
         return m_printer.isUseableByPlayer( player );
     }
@@ -106,7 +107,7 @@ public class ContainerPrinter extends Container
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot)inventorySlots.get(i);
+        Slot slot = inventorySlots.get(i);
         if( slot != null && slot.getHasStack() )
         {
             ItemStack itemstack1 = slot.getStack();

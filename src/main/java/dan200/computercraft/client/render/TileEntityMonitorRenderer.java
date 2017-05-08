@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -14,6 +14,7 @@ import dan200.computercraft.shared.common.ClientTerminal;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.DirectionUtil;
+import dan200.computercraft.shared.util.Palette;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -24,6 +25,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMonitor>
 {
     public TileEntityMonitorRenderer()
@@ -31,7 +34,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
     }
 
     @Override
-    public void renderTileEntityAt( TileMonitor tileEntity, double posX, double posY, double posZ, float f, int i )
+    public void renderTileEntityAt( @Nonnull TileMonitor tileEntity, double posX, double posY, double posZ, float f, int i )
     {
         if( tileEntity != null )
         {
@@ -100,10 +103,13 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             // Draw the contents
             GlStateManager.depthMask( false );
             GlStateManager.disableLighting();
+            mc.entityRenderer.disableLightmap();
             try
             {
                 if( terminal != null )
                 {
+                    Palette palette = terminal.getPalette();
+
                     // Allocate display lists
                     if( origin.m_renderDisplayList < 0 )
                     {
@@ -144,9 +150,9 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                 {
                                     GlStateManager.scale( 1.0, marginSquash, 1.0 );
                                     GlStateManager.translate( 0.0, -marginYSize / marginSquash, 0.0 );
-                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( 0 ), marginXSize, marginXSize, greyscale );
+                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( 0 ), marginXSize, marginXSize, greyscale, palette );
                                     GlStateManager.translate( 0.0, ( marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT ) / marginSquash, 0.0 );
-                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( height - 1 ), marginXSize, marginXSize, greyscale );
+                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( height - 1 ), marginXSize, marginXSize, greyscale, palette );
                                 }
                                 finally
                                 {
@@ -160,7 +166,8 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                             0, FixedWidthFontRenderer.FONT_HEIGHT * y,
                                             terminal.getBackgroundColourLine( y ),
                                             marginXSize, marginXSize,
-                                            greyscale
+                                            greyscale,
+                                            palette
                                     );
                                 }
                             }
@@ -186,7 +193,8 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                             0, FixedWidthFontRenderer.FONT_HEIGHT * y,
                                             terminal.getLine( y ),
                                             terminal.getTextColourLine( y ),
-                                            greyscale
+                                            greyscale,
+                                            palette
                                     );
                                 }
                             }
@@ -216,7 +224,8 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                             FixedWidthFontRenderer.FONT_HEIGHT * cursorY,
                                             cursorColour, null,
                                             0, 0,
-                                            greyscale
+                                            greyscale,
+                                            palette
                                     );
                                 }
                             }
@@ -256,6 +265,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             finally
             {
                 GlStateManager.depthMask( true );
+                mc.entityRenderer.enableLightmap();
                 GlStateManager.enableLighting();
             }
 

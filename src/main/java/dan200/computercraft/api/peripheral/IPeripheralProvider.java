@@ -10,6 +10,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This interface is used to create peripheral implementations for blocks.
  *
@@ -26,5 +29,6 @@ public interface IPeripheralProvider
      * @return A peripheral, or {@code null} if there is not a peripheral here you'd like to handle.
      * @see dan200.computercraft.api.ComputerCraftAPI#registerPeripheralProvider(IPeripheralProvider)
      */
-    public IPeripheral getPeripheral( World world, BlockPos pos, EnumFacing side );
+    @Nullable
+    IPeripheral getPeripheral( @Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side );
 }

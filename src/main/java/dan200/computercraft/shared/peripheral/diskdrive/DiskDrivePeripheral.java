@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -16,6 +16,8 @@ import dan200.computercraft.shared.util.StringUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class DiskDrivePeripheral implements IPeripheral
 {
     private final TileDiskDrive m_diskDrive;
@@ -25,12 +27,14 @@ public class DiskDrivePeripheral implements IPeripheral
         m_diskDrive = diskDrive;
     }
 
+    @Nonnull
     @Override
     public String getType()
     {
         return "drive";
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -50,7 +54,7 @@ public class DiskDrivePeripheral implements IPeripheral
     }
 
     @Override
-    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws LuaException
+    public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException
     {
         switch( method )
         {
@@ -174,13 +178,13 @@ public class DiskDrivePeripheral implements IPeripheral
     }
 
     @Override
-    public void attach( IComputerAccess computer )
+    public void attach( @Nonnull IComputerAccess computer )
     {
         m_diskDrive.mount( computer );
     }
 
     @Override
-    public void detach( IComputerAccess computer )
+    public void detach( @Nonnull IComputerAccess computer )
     {
         m_diskDrive.unmount( computer );
     }
