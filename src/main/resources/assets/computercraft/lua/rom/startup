@@ -33,6 +33,7 @@ shell.setAlias( "rm", "delete" )
 shell.setAlias( "clr", "clear" )
 shell.setAlias( "rs", "redstone" )
 shell.setAlias( "sh", "shell" )
+shell.setAlias( "whereis", "which" )
 if term.isColor() then
     shell.setAlias( "background", "bg" )
     shell.setAlias( "foreground", "fg" )
@@ -168,6 +169,11 @@ local function completeSet( shell, nIndex, sText, tPreviousText )
         return completeMultipleChoice( sText, settings.getNames(), true )
     end
 end
+local function completeWhich( shell, nIndex, sText, tPreviousText )
+    if nIndex == 1 then
+        return shell.completeProgram( sText )
+    end
+end
 shell.setCompletionFunction( "rom/programs/alias", completeAlias )
 shell.setCompletionFunction( "rom/programs/cd", completeDir )
 shell.setCompletionFunction( "rom/programs/copy", completeEitherEither )
@@ -194,6 +200,7 @@ shell.setCompletionFunction( "rom/programs/fun/dj", completeDJ )
 shell.setCompletionFunction( "rom/programs/fun/advanced/paint", completeFile )
 shell.setCompletionFunction( "rom/programs/http/pastebin", completePastebin )
 shell.setCompletionFunction( "rom/programs/rednet/chat", completeChat )
+shell.setCompletionFunction( "rom/programs/which", completeWhich )
 
 -- Run autorun files
 if fs.exists( "/rom/autorun" ) and fs.isDir( "/rom/autorun" ) then
