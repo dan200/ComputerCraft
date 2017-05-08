@@ -13,13 +13,13 @@ end
 
 local test, text = http.checkURL(tArgs[1])
 if test == false then
-  print("[Error]"..text)
+  printError("[Error]"..text)
   return 4
 end
 
 local data = http.get(tArgs[1])
 if not(data) then
-  print("Error while getting the program")
+  printError("Error while getting the program")
   return 5
 end
 
@@ -27,10 +27,7 @@ local program = data.readAll()
 data.close()
 local run, err = load(program)
 if not(run) then
-  local oldcolor = term.getTextColor()
-  term.setTextColor(colors.red)
-  print(err)
-  term.setTextColor(oldcolor)
+  printError(err)
   return 6
 end
 

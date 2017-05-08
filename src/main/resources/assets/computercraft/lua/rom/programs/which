@@ -1,12 +1,13 @@
 --Made by Wilma456
-local Arg = {...}
-if Arg[1] == nil then
+local tArgs = {...}
+if tArgs[1] == nil then
 	print("Usage: which <command>")
-	return
+	return 1
 end
-local path = shell.resolveProgram(Arg[1])
+local path = shell.resolveProgram(tArgs[1])
 if path == nil then
-	print("Can't find command "..Arg[1])
-	return
+	printError("Can't find command "..tArgs[1])
+	return 3
 end
-print(Arg[1].." is /"..path)
+print(tArgs[1].." is /"..path)
+return 0
