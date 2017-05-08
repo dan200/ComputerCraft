@@ -11,6 +11,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.ILuaAPI;
+import dan200.computercraft.core.logger.Logger;
 import dan200.computercraft.shared.computer.blocks.TileCommandComputer;
 import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
@@ -98,6 +99,7 @@ public class CommandAPI implements ILuaAPI
             }
             catch( Throwable t )
             {
+                Logger.error( "Error running command.", t );
                 return new Object[]{ false, createOutput( "Java Exception Thrown: " + t.toString() ) };
             }
         }
@@ -208,6 +210,7 @@ public class CommandAPI implements ILuaAPI
                                 catch( Throwable t )
                                 {
                                     // Ignore buggy command
+                                    Logger.error( "Error running command.", t );
                                 }
                             }
                         }

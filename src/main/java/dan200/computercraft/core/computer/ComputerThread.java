@@ -6,6 +6,8 @@
 
 package dan200.computercraft.core.computer;
 
+import dan200.computercraft.core.logger.Logger;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.WeakHashMap;
@@ -106,8 +108,7 @@ public class ComputerThread
                                         try {
                                             task.execute();
                                         } catch( Throwable e ) {
-                                            System.out.println( "ComputerCraft: Error running task." );
-                                            e.printStackTrace();
+                                            Logger.error( "Error running task", e );
                                         }
                                     }
                                 } );
@@ -139,7 +140,7 @@ public class ComputerThread
                                     // Step 3: abandon
                                     if( worker.isAlive() )
                                     {
-                                        //System.out.println( "computercraft: Warning! Failed to abort Computer " + computercraft.getDescription() + ". Dangling lua thread could cause errors." );
+                                        Logger.warn( "Failed to abort Computer " + computer.getID() + ". Dangling lua thread could cause errors." );
                                         worker.interrupt();
                                     }
                                 }                

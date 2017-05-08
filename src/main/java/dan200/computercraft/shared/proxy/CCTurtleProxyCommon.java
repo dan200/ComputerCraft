@@ -8,6 +8,7 @@ package dan200.computercraft.shared.proxy;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.core.logger.Logger;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
 import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
@@ -83,7 +84,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         int id = upgrade.getLegacyUpgradeID();
         if( id >= 0 && id < 64 )
         {
-            throw new RuntimeException( "Error registering '"+upgrade.getUnlocalisedAdjective()+" Turtle'. Legacy UpgradeID '"+id+"' is reserved by ComputerCraft" );
+            throw Logger.loggedError( "Error registering '" + upgrade.getUnlocalisedAdjective() + " Turtle'. Legacy UpgradeID '" + id + "' is reserved by ComputerCraft" );
         }
         
         // Register
@@ -117,6 +118,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             }
             catch( Exception e )
             {
+                Logger.error("Error checking stackability of items", e);
             }
         }
         return null;
@@ -253,13 +255,13 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         {
             if( legacyID >= Short.MAX_VALUE )
             {
-                throw new RuntimeException( "Error registering '"+upgrade.getUnlocalisedAdjective()+" Turtle'. UpgradeID '"+legacyID+"' is out of range" );
+                throw Logger.loggedError( "Error registering '" + upgrade.getUnlocalisedAdjective() + " Turtle'. UpgradeID '" + legacyID + "' is out of range" );
             }
 
             ITurtleUpgrade existing = m_legacyTurtleUpgrades.get( legacyID );
             if( existing != null )
             {
-                throw new RuntimeException( "Error registering '" + upgrade.getUnlocalisedAdjective() + " Turtle'. UpgradeID '" + legacyID + "' is already registered by '" + existing.getUnlocalisedAdjective() + " Turtle'" );
+                throw Logger.loggedError( "Error registering '" + upgrade.getUnlocalisedAdjective() + " Turtle'. UpgradeID '" + legacyID + "' is already registered by '" + existing.getUnlocalisedAdjective() + " Turtle'" );
             }
         }
 
@@ -267,7 +269,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         ITurtleUpgrade existing = m_turtleUpgrades.get( id );
         if( existing != null )
         {
-            throw new RuntimeException( "Error registering '" + upgrade.getUnlocalisedAdjective() + " Turtle'. UpgradeID '" + id + "' is already registered by '" + existing.getUnlocalisedAdjective() + " Turtle'" );
+            throw Logger.loggedError( "Error registering '" + upgrade.getUnlocalisedAdjective() + " Turtle'. UpgradeID '" + id + "' is already registered by '" + existing.getUnlocalisedAdjective() + " Turtle'" );
         }
 
         // Register

@@ -609,7 +609,7 @@ public class ComputerCraft
             }
             catch( Exception e )
             {
-                // mod misbehaved, ignore it
+                Logger.error( "Peripheral provider " + peripheralProvider + " errored.", e );
             }
         }
         return null;
@@ -653,7 +653,7 @@ public class ComputerCraft
             }
             catch( Exception e )
             {
-                // mod misbehaved, ignore it
+                Logger.error( "Bundled redstone provider " + bundledRedstoneProvider + " errored.", e );
             }
         }
         return combinedSignal;
@@ -677,6 +677,7 @@ public class ComputerCraft
                 catch( Exception e )
                 {
                     // mod misbehaved, ignore it
+                    Logger.error( "Media provider " + mediaProvider + " errored.", e );
                 }
             }
             return null;

@@ -1,5 +1,7 @@
 package dan200.computercraft.shared.util;
 
+import dan200.computercraft.core.logger.Logger;
+
 import java.io.*;
 
 public class IDAssigner
@@ -50,6 +52,7 @@ public class IDAssigner
                     }
                     catch( NumberFormatException e )
                     {
+                        Logger.error( "Unexpected file '" + content + "' in '" + location.getAbsolutePath() + "'", e );
                     }
                 }
             }
@@ -82,7 +85,7 @@ public class IDAssigner
             }
             catch( IOException e )
             {
-                e.printStackTrace();
+                Logger.error( "Cannot open ID file '" + lastidFile + "'", e );
                 return 0;
             }
 
@@ -92,7 +95,7 @@ public class IDAssigner
             }
             catch( NumberFormatException e )
             {
-                e.printStackTrace();
+                Logger.error( "Cannot parse ID file '" + lastidFile + "', perhaps it is corrupt?", e );
                 return 0;
             }
         }
@@ -107,8 +110,7 @@ public class IDAssigner
         }
         catch( IOException e )
         {
-            System.out.println( "An error occured while trying to create the computer folder. Please check you have relevant permissions." );
-            e.printStackTrace();
+            Logger.error( "An error occured while trying to create the computer folder. Please check you have relevant permissions.", e );
         }
         
         return id;
