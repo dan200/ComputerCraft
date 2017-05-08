@@ -6,6 +6,7 @@
 
 package dan200.computercraft.shared.peripheral.speaker;
 
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
 import net.minecraft.util.EnumFacing;
@@ -18,20 +19,21 @@ public class TileSpeaker extends TilePeripheralBase
     // Members
     private SpeakerPeripheral m_peripheral;
 
-    @Override
-    public synchronized void update()
+    public TileSpeaker()
     {
-        if (m_peripheral != null)
-        {
-            m_peripheral.updateClock();
-        }
+        super();
+        m_peripheral = new SpeakerPeripheral(this);
+    }
 
+    @Override
+    public synchronized void update() {
+        m_peripheral.updateClock();
     }
 
     // IPeripheralTile implementation
+
     public IPeripheral getPeripheral(EnumFacing side)
     {
-        m_peripheral = new SpeakerPeripheral(this);
         return m_peripheral;
     }
 

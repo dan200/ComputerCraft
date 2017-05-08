@@ -16,7 +16,7 @@ import net.minecraft.util.SoundEvent;
 
 public class SpeakerPeripheral implements IPeripheral {
 
-    private final TileSpeaker m_speaker;
+    private TileSpeaker m_speaker;
     private long m_clock;
     private long m_lastPlayTime;
 
@@ -27,11 +27,10 @@ public class SpeakerPeripheral implements IPeripheral {
         m_lastPlayTime = 0;
     }
 
-    protected void updateClock()
+    void updateClock()
     {
         m_clock++;
     }
-
 
     /* IPeripheral implementations */
 
@@ -80,7 +79,6 @@ public class SpeakerPeripheral implements IPeripheral {
     @Override
     public Object[] callMethod(IComputerAccess computerAccess, ILuaContext context, int methodIndex, Object[] args) throws LuaException
     {
-
         switch (methodIndex)
         {
             // playsound
@@ -96,7 +94,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
             default:
             {
-                return null;
+                throw new LuaException("Method index out of range!");
             }
 
         }

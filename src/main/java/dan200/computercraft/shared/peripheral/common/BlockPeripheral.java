@@ -334,6 +334,7 @@ public class BlockPeripheral extends BlockPeripheralBase
                 break;
             }
             case Speaker: {
+                state = state.withProperty( Properties.FACING, dir );
                 break;
             }
             case Monitor:
