@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "computercraft:items/pageBundle"
+        "layer0": "computercraft:items/page_bundle"
     }
 }

@@ -28,7 +28,7 @@ import java.io.IOException;
 public class GuiTurtle extends GuiContainer
 {
     private static final ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/turtle.png" );
-    private static final ResourceLocation backgroundAdvanced = new ResourceLocation( "computercraft", "textures/gui/turtle2.png" );
+    private static final ResourceLocation backgroundAdvanced = new ResourceLocation( "computercraft", "textures/gui/turtle_advanced.png" );
     
     protected World m_world;
     protected ContainerTurtle m_container;
