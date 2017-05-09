@@ -1,8 +1,89 @@
 {
     "parent": "block/orientable",
     "textures": {
-        "front": "computercraft:blocks/commandComputerFront",
-        "side": "computercraft:blocks/commandComputerSide",
-        "top": "computercraft:blocks/commandComputerTop"
-    }
+        "0": "computercraft:blocks/commandComputerSide",
+        "1": "computercraft:blocks/commandComputerFront",
+        "2": "computercraft:blocks/commandComputerTop"
+    },
+    "elements": [
+        {
+            "name": "Cube",
+            "from": [ 0.0, 0.0, 0.0 ], 
+            "to": [ 16.0, 16.0, 15.0 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+                "east": { "texture": "#0", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+                "south": { "texture": "#1", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+                "west": { "texture": "#0", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+                "up": { "texture": "#2", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+                "down": { "texture": "#2", "uv": [ 0.0, 0.0, 16.0, 16.0 ] }
+            }
+        },
+        {
+            "name": "OutlineL1",
+            "from": [ 0.0, 0.0, 15.0 ], 
+            "to": [ 1.0, 16.0, 15.5 ], 
+            "faces": {
+                "north": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 16.0 ] },
+                "east": { "texture": "#1", "uv": [ 0.0, 0.0, 0.5, 16.0 ] },
+                "south": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 16.0 ] },
+                "west": { "texture": "#1", "uv": [ 0.0, 0.0, 0.5, 16.0 ] },
+                "up": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 0.5 ] },
+                "down": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 0.5 ] }
+            }
+        },
+        {
+            "name": "OutlineR1",
+            "from": [ 15.0, 0.0, 15.0 ], 
+            "to": [ 16.0, 16.0, 15.5 ], 
+            "faces": {
+                "north": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 16.0 ] },
+                "east": { "texture": "#1", "uv": [ 0.0, 0.0, 0.5, 16.0 ] },
+                "south": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 16.0 ] },
+                "west": { "texture": "#1", "uv": [ 0.0, 0.0, 0.5, 16.0 ] },
+                "up": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 0.5 ] },
+                "down": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 0.5 ] }
+            }
+        },
+        {
+            "name": "OutlineB1",
+            "from": [ 1.0, 0.0, 15.0 ], 
+            "to": [ 15.0, 1.0, 15.5 ], 
+            "faces": {
+                "north": { "texture": "#1", "uv": [ 0.0, 0.0, 14.0, 1.0 ] },
+                "east": { "texture": "#1", "uv": [ 0.0, 0.0, 0.5, 1.0 ] },
+                "south": { "texture": "#1", "uv": [ 0.0, 0.0, 14.0, 1.0 ] },
+                "west": { "texture": "#1", "uv": [ 0.0, 0.0, 0.5, 1.0 ] },
+                "up": { "texture": "#1", "uv": [ 0.0, 0.0, 14.0, 0.5 ] },
+                "down": { "texture": "#1", "uv": [ 0.0, 0.0, 14.0, 0.5 ] }
+            }
+        },
+        {
+            "name": "OutlineT1",
+            "from": [ 1.0, 15.0, 15.0 ], 
+            "to": [ 15.0, 16.0, 15.5 ], 
+            "faces": {
+                "north": { "texture": "#1", "uv": [ 0.0, 0.0, 14.0, 1.0 ] },
+                "east": { "texture": "#1", "uv": [ 0.0, 0.0, 0.5, 1.0 ] },
+                "south": { "texture": "#1", "uv": [ 0.0, 0.0, 14.0, 1.0 ] },
+                "west": { "texture": "#1", "uv": [ 0.0, 0.0, 0.5, 1.0 ] },
+                "up": { "texture": "#1", "uv": [ 0.0, 0.0, 14.0, 0.5 ] },
+                "down": { "texture": "#1", "uv": [ 0.0, 0.0, 14.0, 0.5 ] }
+            }
+        },
+        {
+            "name": "Power1",
+            "from": [ 12.0, 2.0, 15.0 ], 
+            "to": [ 14.0, 3.0, 15.3 ], 
+            "faces": {
+                "north": { "texture": "#1", "uv": [ 12.0, 13.0, 14.0, 14.0 ] },
+                "east": { "texture": "#1", "uv": [ 12.0, 13.0, 12.3, 14.0 ] },
+                "south": { "texture": "#1", "uv": [ 12.0, 13.0, 14.0, 14.0 ] },
+                "west": { "texture": "#1", "uv": [ 13.0, 13.0, 13.3, 14.0 ] },
+                "up": { "texture": "#1", "uv": [ 12.0, 13.0, 14.0, 13.3 ] },
+                "down": { "texture": "#1", "uv": [ 12.0, 13.0, 14.0, 13.3 ] }
+            }
+        }
+    ]
+
 }
