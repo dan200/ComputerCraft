@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemCommandComputer extends ItemComputer
@@ -52,7 +53,7 @@ public class ItemCommandComputer extends ItemComputer
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
+    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Command ) );
     }
