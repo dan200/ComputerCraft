@@ -1,0 +1,3 @@
+if fs.isDir("/bin") then
+	shell.setPath(shell.path()..":/bin")
+end
