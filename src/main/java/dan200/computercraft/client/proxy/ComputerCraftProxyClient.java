@@ -8,6 +8,7 @@ package dan200.computercraft.client.proxy;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.client.gui.*;
+import dan200.computercraft.client.render.RenderOverlayCable;
 import dan200.computercraft.client.render.TileEntityMonitorRenderer;
 import dan200.computercraft.shared.computer.blocks.ComputerState;
 import dan200.computercraft.shared.computer.blocks.TileComputer;
@@ -442,6 +443,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     {
         ForgeHandlers handlers = new ForgeHandlers();
         MinecraftForge.EVENT_BUS.register( handlers );
+        MinecraftForge.EVENT_BUS.register( new RenderOverlayCable() );
     }
 
     public class ForgeHandlers
