@@ -8,8 +8,16 @@ local tHostnames = {}
 
 function open( sModem )
 	if type( sModem ) ~= "string" then
-		error( "expected string", 2 )
+	    for key,value in ipairs({"left","right","up","bottom","back","front"}) do
+            	if peripheral.getType(value) == "modem" then
+                	sModem = value
+                	break
+            	end
+            end
 	end
+	if sModem == nil then
+        	error("No modem found")
+   	end
 	if peripheral.getType( sModem ) ~= "modem" then	
 		error( "No such modem: "..sModem, 2 )
 	end
