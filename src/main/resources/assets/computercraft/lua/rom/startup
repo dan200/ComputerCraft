@@ -246,7 +246,6 @@ if settings.get( "shell.allow_disk_startup" ) then
     end
 end
 if type( tUserStartups ) == "table" then
-    table.sort( tUserStartups )
     for _,v in pairs( tUserStartups ) do
         shell.run( v )
     end
