@@ -106,3 +106,6 @@ gradle.projectsEvaluated {
         options.compilerArgs << "-Xlint"
     }
 }
+
+runClient { outputs.upToDateWhen { false } }
+runServer { outputs.upToDateWhen { false } }
