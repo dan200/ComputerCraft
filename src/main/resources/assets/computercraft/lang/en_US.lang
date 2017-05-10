@@ -37,6 +37,7 @@ upgrade.minecraft:diamond_hoe.adjective=Farming
 upgrade.computercraft:wireless_modem.adjective=Wireless
 upgrade.minecraft:crafting_table.adjective=Crafty
 upgrade.computercraft:advanced_modem.adjective=Ender
+upgrade.computercraft:speaker.adjective=Noisy
 
 gui.computercraft:wired_modem.peripheral_connected=Peripheral "%s" connected to network
 gui.computercraft:wired_modem.peripheral_disconnected=Peripheral "%s" disconnected from network

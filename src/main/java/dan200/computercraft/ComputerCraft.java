@@ -164,6 +164,7 @@ public class ComputerCraft
         public static TurtleAxe diamondAxe;
         public static TurtleHoe diamondHoe;
         public static TurtleModem advancedModem;
+        public static TurtleSpeaker turtleSpeaker;
     }
 
     public static class PocketUpgrades

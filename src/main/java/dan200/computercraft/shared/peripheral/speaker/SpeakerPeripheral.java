@@ -13,6 +13,8 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class SpeakerPeripheral implements IPeripheral {
 
@@ -20,16 +22,31 @@ public class SpeakerPeripheral implements IPeripheral {
     private long m_clock;
     private long m_lastPlayTime;
 
-    public SpeakerPeripheral(TileSpeaker speaker)
+    public SpeakerPeripheral()
     {
-        m_speaker = speaker;
         m_clock = 0;
         m_lastPlayTime = 0;
     }
 
-    void updateClock()
+    public SpeakerPeripheral(TileSpeaker speaker)
+    {
+        this();
+        m_speaker = speaker;
+    }
+
+    public void updateClock()
     {
         m_clock++;
+    }
+
+    public World getWorld()
+    {
+        return m_speaker.getWorld();
+    }
+
+    public BlockPos getPos()
+    {
+        return m_speaker.getPos();
     }
 
     /* IPeripheral implementations */
@@ -197,7 +214,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
             if (SoundEvent.REGISTRY.containsKey(resourceName))
             {
-                m_speaker.getWorld().playSound(null, m_speaker.getPos(), new SoundEvent(resourceName), SoundCategory.RECORDS, volume, pitch);
+               getWorld().playSound(null, getPos(), new SoundEvent(resourceName), SoundCategory.RECORDS, volume, pitch);
                 m_lastPlayTime = m_clock;
                 return new Object[]{true}; // Success, return true
             }

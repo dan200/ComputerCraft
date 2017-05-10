@@ -6,18 +6,17 @@
 
 package dan200.computercraft.shared.peripheral.speaker;
 
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
-import net.minecraft.util.EnumFacing;
+        import dan200.computercraft.api.peripheral.IPeripheral;
+        import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
+        import net.minecraft.util.EnumFacing;
 
 public class TileSpeaker extends TilePeripheralBase
 {
     // Statics
-    public static final int MIN_TICKS_BETWEEN_SOUNDS = 1;
+    static final int MIN_TICKS_BETWEEN_SOUNDS = 1;
 
     // Members
-    private SpeakerPeripheral m_peripheral;
+    private SpeakerPeripheral m_peripheral; // TODO what happens when multiple computers wrap one peripheral?
 
     public TileSpeaker()
     {
