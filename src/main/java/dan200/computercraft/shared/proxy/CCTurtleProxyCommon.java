@@ -14,6 +14,7 @@ import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.blocks.TileTurtleAdvanced;
 import dan200.computercraft.shared.turtle.blocks.TileTurtleExpanded;
+import dan200.computercraft.shared.turtle.core.TurtlePlayer;
 import dan200.computercraft.shared.turtle.items.ItemTurtleAdvanced;
 import dan200.computercraft.shared.turtle.items.ItemTurtleLegacy;
 import dan200.computercraft.shared.turtle.items.ItemTurtleNormal;
@@ -38,6 +39,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 
@@ -61,6 +63,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     @Override        
     public void preInit()
     {
+        EntityRegistry.registerModEntity(TurtlePlayer.class, "turtlePlayer", 0, ComputerCraft.instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false);
         registerItems();
     }
     

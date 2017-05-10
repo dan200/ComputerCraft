@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemAdvancedModem extends ItemPeripheralBase
@@ -49,7 +50,7 @@ public class ItemAdvancedModem extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
+    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( PeripheralItemFactory.create( PeripheralType.AdvancedModem, null, 1 ) );
     }

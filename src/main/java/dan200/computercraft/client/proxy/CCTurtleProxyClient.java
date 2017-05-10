@@ -32,6 +32,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -42,16 +43,12 @@ import javax.annotation.Nonnull;
 
 public class CCTurtleProxyClient extends CCTurtleProxyCommon
 {
-    public CCTurtleProxyClient()
-    {
-    }
-    
     // IComputerCraftProxy implementation
     
     @Override        
-    public void init()
+    public void preInit()
     {    
-        super.init();
+        super.preInit();
 
         // Register item models
         ItemMeshDefinition turtleMeshDefinition = new ItemMeshDefinition()
@@ -67,13 +64,22 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         };
         String[] turtleModelNames = new String[] {
             "turtle_dynamic",
-            "CC-Turtle", "CC-TurtleAdvanced",
+            "turtle", "turtle_advanced",
             "turtle_white",
             "turtle_elf_overlay"
         };
         registerItemModel( ComputerCraft.Blocks.turtle, turtleMeshDefinition, turtleModelNames );
         registerItemModel( ComputerCraft.Blocks.turtleExpanded, turtleMeshDefinition, turtleModelNames );
         registerItemModel( ComputerCraft.Blocks.turtleAdvanced, turtleMeshDefinition, turtleModelNames );
+
+        // Setup client forge handlers
+        registerForgeHandlers();
+    }
+
+    @Override
+    public void init()
+    {
+        super.init();
 
         // Setup turtle colours
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler(
@@ -83,9 +89,6 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
 
         // Setup renderers
         ClientRegistry.bindTileEntitySpecialRenderer( TileTurtle.class, new TileEntityTurtleRenderer() );
-
-        // Setup client forge handlers
-        registerForgeHandlers();
     }
 
     private void registerItemModel( Block block, ItemMeshDefinition definition, String[] names )
@@ -101,7 +104,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
             resources[i] = new ResourceLocation( "computercraft:" + names[i] );
         }
         ModelBakery.registerItemVariants( item, resources );
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, definition );
+        ModelLoader.setCustomMeshDefinition( item, definition );
     }
 
     private void registerForgeHandlers()
@@ -137,7 +140,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         @SubscribeEvent
         public void onTextureStitchEvent( TextureStitchEvent.Pre event )
         {
-            event.getMap().registerSprite( new ResourceLocation( "computercraft", "blocks/craftyUpgrade" ) );
+            event.getMap().registerSprite( new ResourceLocation( "computercraft", "blocks/crafty_upgrade" ) );
         }
 
         @SubscribeEvent
