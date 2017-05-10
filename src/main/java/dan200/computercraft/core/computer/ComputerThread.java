@@ -93,6 +93,13 @@ public class ComputerThread
                 }
             }
         }
+
+        synchronized( s_taskLock )
+        {
+            s_computerTaskQueues.clear();
+            s_computerTasksActive.clear();
+            s_computerTasksActiveSet.clear();
+        }
     }
 
     /**
@@ -157,10 +164,11 @@ public class ComputerThread
             }
             catch( InterruptedException ignored )
             {
+                Thread.currentThread().interrupt();
             }
         }
 
-        private void execute( BlockingQueue<ITask> queue )
+        private void execute( BlockingQueue<ITask> queue ) throws InterruptedException
         {
             ITask task = queue.remove();
 
@@ -207,20 +215,19 @@ public class ComputerThread
                     }
                 }
             }
-            catch( InterruptedException ignored )
+            finally
             {
-            }
-
-            // Re-add it back onto the queue or remove it
-            synchronized( s_taskLock )
-            {
-                if( queue.isEmpty() )
+                // Re-add it back onto the queue or remove it
+                synchronized( s_taskLock )
                 {
-                    s_computerTasksActiveSet.remove( queue );
-                }
-                else
-                {
-                    s_computerTasksActive.add( queue );
+                    if( queue.isEmpty() )
+                    {
+                        s_computerTasksActiveSet.remove( queue );
+                    }
+                    else
+                    {
+                        s_computerTasksActive.add( queue );
+                    }
                 }
             }
         }
@@ -248,7 +255,7 @@ public class ComputerThread
                     {
                         task.execute();
                     }
-                    catch( Throwable e )
+                    catch( RuntimeException e )
                     {
                         ComputerCraft.log.error( "Error running task.", e );
                     }
@@ -259,6 +266,7 @@ public class ComputerThread
             catch( InterruptedException e )
             {
                 ComputerCraft.log.error( "Error running task.", e );
+                Thread.currentThread().interrupt();
             }
         }
 
