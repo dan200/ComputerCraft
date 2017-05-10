@@ -215,12 +215,15 @@ local function findStartups( sBaseDir )
     local sStartupNode = shell.resolveProgram( sBasePath )
     if sStartupNode then
         tStartups = { sStartupNode }
-    else
-        if fs.isDir( sBasePath ) then
+    end
+    -- It's possible that there is a startup directory and a startup.lua file, so this has to be
+    -- executed even if a file has already been found.
+    if fs.isDir( sBasePath ) then
+        if tStartups == nil then
             tStartups = {}
-            for _,v in pairs( fs.list( sBasePath ) ) do
-                tStartups[ #tStartups + 1 ] = shell.resolveProgram( "/" .. fs.combine( sBasePath, v ) )
-            end
+        end
+        for _,v in pairs( fs.list( sBasePath ) ) do
+            tStartups[ #tStartups + 1 ] = shell.resolveProgram( "/" .. fs.combine( sBasePath, v ) )
         end
     end
     return tStartups
