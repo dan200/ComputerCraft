@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -9,7 +9,7 @@ import dan200.computercraft.shared.util.Palette;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class Terminal
-{    
+{
     private static final String base16 = "0123456789abcdef";
 
     private int m_cursorX;
@@ -33,7 +33,7 @@ public class Terminal
     {
         m_width = width;
         m_height = height;
-        
+
         m_cursorColour = 0;
         m_cursorBackgroundColour = 15;
 
@@ -46,11 +46,11 @@ public class Terminal
             m_textColour[i] = new TextBuffer( base16.charAt( m_cursorColour ), m_width );
             m_backgroundColour[i] = new TextBuffer( base16.charAt( m_cursorBackgroundColour ), m_width );
         }
-                
+
         m_cursorX = 0;
         m_cursorY = 0;
         m_cursorBlink = false;
-        
+
         m_changed = false;
 
         m_palette = new Palette();
@@ -67,22 +67,22 @@ public class Terminal
         m_changed = true;
         m_palette.resetColours();
     }
-    
+
     public int getWidth() {
         return m_width;
     }
-    
+
     public int getHeight() {
         return m_height;
     }
-    
+
     public void resize( int width, int height )
     {
-        if( width == m_width && height == m_height ) 
+        if( width == m_width && height == m_height )
         {
             return;
         }
-        
+
         int oldHeight = m_height;
         int oldWidth = m_width;
         TextBuffer[] oldText = m_text;
@@ -121,7 +121,7 @@ public class Terminal
         }
         m_changed = true;
     }
-    
+
     public void setCursorPos( int x, int y )
     {
         if( m_cursorX != x || m_cursorY != y )
@@ -131,7 +131,7 @@ public class Terminal
             m_changed = true;
         }
     }
-    
+
     public void setCursorBlink( boolean blink )
     {
         if( m_cursorBlink != blink )
@@ -140,7 +140,7 @@ public class Terminal
             m_changed = true;
         }
     }
-    
+
     public void setTextColour( int colour )
     {
         if( m_cursorColour != colour )
@@ -149,7 +149,7 @@ public class Terminal
             m_changed = true;
         }
     }
-    
+
     public void setBackgroundColour( int colour )
     {
         if( m_cursorBackgroundColour != colour )
@@ -158,27 +158,27 @@ public class Terminal
             m_changed = true;
         }
     }
-    
+
     public int getCursorX()
     {
         return m_cursorX;
     }
-    
+
     public int getCursorY()
     {
         return m_cursorY;
     }
-    
+
     public boolean getCursorBlink()
     {
         return m_cursorBlink;
     }
-    
+
     public int getTextColour()
     {
         return m_cursorColour;
     }
-    
+
     public int getBackgroundColour()
     {
         return m_cursorBackgroundColour;
@@ -214,7 +214,7 @@ public class Terminal
             m_changed = true;
         }
     }
-    
+
     public void scroll( int yDiff )
     {
         if( yDiff != 0 )
@@ -244,7 +244,7 @@ public class Terminal
             m_changed = true;
         }
     }
-    
+
     public void clear()
     {
         for( int y = 0; y < m_height; ++y )
@@ -267,7 +267,7 @@ public class Terminal
             m_changed = true;
         }
     }
-        
+
     public TextBuffer getLine( int y )
     {
         if( y >= 0 && y < m_height )
@@ -284,7 +284,7 @@ public class Terminal
         m_backgroundColour[y].write( backgroundColour );
         m_changed = true;
     }
-    
+
     public TextBuffer getTextColourLine( int y )
     {
         if( y>=0 && y<m_height )

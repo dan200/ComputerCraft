@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -23,32 +23,32 @@ public class RecordMedia implements IMedia
     public RecordMedia()
     {
     }
-     
+
     @Override
     public String getLabel( @Nonnull ItemStack stack )
     {
         return getAudioTitle( stack );
     }
-    
+
     @Override
     public boolean setLabel( @Nonnull ItemStack stack, String label )
     {
         return false;
     }
-    
+
     @Override
     public String getAudioTitle( @Nonnull ItemStack stack )
     {
         return ComputerCraft.getRecordInfo( stack );
     }
-    
+
     @Override
     public SoundEvent getAudio( @Nonnull ItemStack stack )
     {
         ItemRecord itemRecord = (ItemRecord)stack.getItem();
         return ObfuscationReflectionHelper.getPrivateValue(ItemRecord.class, itemRecord, "field_185076_b");
     }
-    
+
     @Override
     public IMount createDataMount( @Nonnull ItemStack stack, @Nonnull World world )
     {

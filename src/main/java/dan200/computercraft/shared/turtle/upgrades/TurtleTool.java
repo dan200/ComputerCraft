@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -142,7 +142,7 @@ public class TurtleTool implements ITurtleUpgrade
         Block block = state.getBlock();
         return !block.isAir( state, world, pos ) && block != Blocks.BEDROCK && state.getBlockHardness( world, pos ) > -1.0F;
     }
-    
+
     protected boolean canHarvestBlock( World world, BlockPos pos )
     {
         Block block = world.getBlockState( pos ).getBlock();
@@ -150,12 +150,12 @@ public class TurtleTool implements ITurtleUpgrade
         turtlePlayer.loadInventory( m_item.copy() );
         return ForgeHooks.canHarvestBlock( block, turtlePlayer, world, pos );
     }
-    
+
     protected float getDamageMultiplier()
     {
         return 3.0f;
     }
-    
+
     private TurtleCommandResult attack( final ITurtleAccess turtle, EnumFacing direction )
     {
         // Create a fake player, and orient it appropriately
@@ -230,7 +230,7 @@ public class TurtleTool implements ITurtleUpgrade
 
         return TurtleCommandResult.failure( "Nothing to attack here" );
     }
-    
+
     private TurtleCommandResult dig( ITurtleAccess turtle, EnumFacing direction )
     {
         // Get ready to dig

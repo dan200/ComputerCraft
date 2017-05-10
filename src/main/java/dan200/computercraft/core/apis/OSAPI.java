@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -25,7 +25,7 @@ public class OSAPI implements ILuaAPI
 
     private int m_nextTimerToken;
     private int m_nextAlarmToken;
-    
+
     private static class Timer
     {
         public int m_ticksLeft;
@@ -35,7 +35,7 @@ public class OSAPI implements ILuaAPI
             m_ticksLeft = ticksLeft;
         }
     }
-    
+
     private class Alarm implements Comparable<Alarm>
     {
         public final double m_time;
@@ -61,7 +61,7 @@ public class OSAPI implements ILuaAPI
             }
         }
     }
-    
+
     public OSAPI( IAPIEnvironment environment )
     {
         m_apiEnvironment = environment;
@@ -70,9 +70,9 @@ public class OSAPI implements ILuaAPI
         m_timers = new HashMap<Integer, Timer>();
         m_alarms = new HashMap<Integer, Alarm>();
     }
-    
+
     // ILuaAPI implementation
-    
+
     @Override
     public String[] getNames()
     {
@@ -80,7 +80,7 @@ public class OSAPI implements ILuaAPI
             "os"
         };
     }
-    
+
     @Override
     public void startup()
     {
@@ -98,7 +98,7 @@ public class OSAPI implements ILuaAPI
             m_alarms.clear();
         }
     }
-    
+
     @Override
     public void advance( double dt )
     {
@@ -106,7 +106,7 @@ public class OSAPI implements ILuaAPI
         {
             // Update the clock
             m_clock++;
-            
+
             // Countdown all of our active timers
             Iterator<Map.Entry<Integer, Timer>> it = m_timers.entrySet().iterator();
             while( it.hasNext() )
@@ -122,7 +122,7 @@ public class OSAPI implements ILuaAPI
                 }
             }
         }
-        
+
         // Wait for all of our alarms
         synchronized( m_alarms )
         {
@@ -130,7 +130,7 @@ public class OSAPI implements ILuaAPI
             int previousDay = m_day;
             double time = m_apiEnvironment.getComputerEnvironment().getTimeOfDay();
             int day =  m_apiEnvironment.getComputerEnvironment().getDay();
-            
+
             if( time > previousTime || day > previousDay )
             {
                 double now = (double)m_day * 24.0 + m_time;
@@ -152,7 +152,7 @@ public class OSAPI implements ILuaAPI
             m_day = day;
         }
     }
-    
+
     @Override
     public void shutdown( )
     {
@@ -160,7 +160,7 @@ public class OSAPI implements ILuaAPI
         {
             m_timers.clear();
         }
-        
+
         synchronized( m_alarms )
         {
             m_alarms.clear();
@@ -257,7 +257,7 @@ public class OSAPI implements ILuaAPI
                 if( time < 0.0 || time >= 24.0 )
                 {
                     throw new LuaException( "Number out of range" );
-                }                
+                }
                 synchronized( m_alarms )
                 {
                     int day = (time > m_time) ? m_day : (m_day + 1);
@@ -457,12 +457,12 @@ public class OSAPI implements ILuaAPI
     {
         m_apiEnvironment.queueEvent( event, args );
     }
-    
+
     private Object[] trimArray( Object[] array, int skip )
     {
         return Arrays.copyOfRange( array, skip, array.length );
     }
-    
+
     private int getComputerID()
     {
         return m_apiEnvironment.getComputerID();

@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -21,7 +21,7 @@ public class TurtleRecipe implements IRecipe
 {
     private final Item[] m_recipe;
     private final ComputerFamily m_family;
-    
+
     public TurtleRecipe( Item[] recipe, ComputerFamily family )
     {
         m_recipe = recipe;
@@ -33,7 +33,7 @@ public class TurtleRecipe implements IRecipe
     {
         return 9;
     }
-    
+
     @Override
     public ItemStack getRecipeOutput()
     {
@@ -79,7 +79,7 @@ public class TurtleRecipe implements IRecipe
                 }
             }
         }
-        
+
         // Build a turtle with the same ID the computer had
         // Construct the new stack
         if( m_family != ComputerFamily.Beginners )

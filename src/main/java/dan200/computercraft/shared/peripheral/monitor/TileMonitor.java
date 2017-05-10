@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -37,7 +37,7 @@ public class TileMonitor extends TilePeripheralBase
     public static final double RENDER_BORDER = (2.0 / 16.0);
     public static final double RENDER_MARGIN = (0.5 / 16.0);
     public static final double RENDER_PIXEL_SCALE = (1.0 / 64.0);
-    
+
     private static final int MAX_WIDTH = 8;
     private static final int MAX_HEIGHT = 6;
 
@@ -70,13 +70,13 @@ public class TileMonitor extends TilePeripheralBase
         m_destroyed = false;
         m_ignoreMe = false;
         m_textScale = 2;
-        
+
         m_width = 1;
         m_height = 1;
         m_xIndex = 0;
         m_yIndex = 0;
         m_changed = false;
-        
+
         m_dir = 2;
     }
 
@@ -326,7 +326,7 @@ public class TileMonitor extends TilePeripheralBase
             }
         }
     }
-    
+
     private void destroyTerminal()
     {
         ((ServerTerminal)getLocalTerminal()).delete();
@@ -349,7 +349,7 @@ public class TileMonitor extends TilePeripheralBase
     {
         return m_dir;
     }
-    
+
     public void setDir( int dir )
     {
         m_dir = dir;
@@ -373,12 +373,12 @@ public class TileMonitor extends TilePeripheralBase
         }
         return EnumFacing.WEST;
     }
-    
+
     private EnumFacing getDown()
     {
         int dir = getDir();
         if (dir <= 5) return EnumFacing.UP;
-        
+
         switch( dir ) {
             // up facing
             case 8: return EnumFacing.NORTH;
@@ -393,27 +393,27 @@ public class TileMonitor extends TilePeripheralBase
         }
         return EnumFacing.NORTH;
     }
-    
+
     public int getWidth()
     {
         return m_width;
     }
-    
+
     public int getHeight()
     {
         return m_height;
     }
-    
+
     public int getXIndex()
     {
         return m_xIndex;
     }
-    
+
     public int getYIndex()
     {
         return m_yIndex;
     }
-    
+
     private TileMonitor getSimilarMonitorAt( BlockPos pos )
     {
         if( pos.equals( getPos() ) )
@@ -438,7 +438,7 @@ public class TileMonitor extends TilePeripheralBase
                     }
                 }
             }
-            
+
         }
         return null;
     }
@@ -454,7 +454,7 @@ public class TileMonitor extends TilePeripheralBase
             pos.offset( right, xOffset ).offset( down, yOffset )
         );
     }
-    
+
     public TileMonitor getOrigin()
     {
         return getNeighbour( 0, 0 );
@@ -511,7 +511,7 @@ public class TileMonitor extends TilePeripheralBase
         }
         return false;
     }
-    
+
     private boolean mergeRight()
     {
         TileMonitor right = getNeighbour( m_width,0 );
@@ -531,7 +531,7 @@ public class TileMonitor extends TilePeripheralBase
         }
         return false;
     }
-    
+
     private boolean mergeUp()
     {
         TileMonitor above = getNeighbour( 0,m_height );
@@ -551,7 +551,7 @@ public class TileMonitor extends TilePeripheralBase
         }
         return false;
     }
-    
+
     private boolean mergeDown()
     {
         TileMonitor below = getNeighbour( 0,-1 );
@@ -571,12 +571,12 @@ public class TileMonitor extends TilePeripheralBase
         }
         return false;
     }
-    
+
     public void expand()
     {
         while( mergeLeft() || mergeRight() || mergeUp() || mergeDown() ) {}
     }
-    
+
     public void contractNeighbours()
     {
         m_ignoreMe = true;
@@ -606,12 +606,12 @@ public class TileMonitor extends TilePeripheralBase
         }
         m_ignoreMe = false;
     }
-    
+
     public void contract()
     {
         int height = m_height;
         int width = m_width;
-        
+
         TileMonitor origin = getOrigin();
         if( origin == null )
         {
@@ -637,7 +637,7 @@ public class TileMonitor extends TilePeripheralBase
             }
             return;
         }
-        
+
         for( int y=0; y<height; ++y )
         {
             for( int x=0; x<width; ++x )
@@ -650,7 +650,7 @@ public class TileMonitor extends TilePeripheralBase
                     TileMonitor left = null;
                     TileMonitor right = null;
                     TileMonitor below = null;
-                    
+
                        if( y > 0 ) {
                         above = origin;
                         above.resize( width, y );
@@ -682,11 +682,11 @@ public class TileMonitor extends TilePeripheralBase
                         below.expand();
                     }
                     return;
-                }                
+                }
             }
         }
     }
-    
+
     public void monitorTouched( float xPos, float yPos, float zPos )
     {
         int side = getDir();
@@ -697,7 +697,7 @@ public class TileMonitor extends TilePeripheralBase
         {
             return;
         }
-        
+
         Terminal originTerminal = getTerminal().getTerminal();
         if( originTerminal == null )
         {
@@ -707,13 +707,13 @@ public class TileMonitor extends TilePeripheralBase
         {
             return;
         }
-        
+
         double xCharWidth = ((double)m_width - ((RENDER_BORDER + RENDER_MARGIN) * 2.0)) / ((double)originTerminal.getWidth());
         double yCharHeight = ((double)m_height - ((RENDER_BORDER + RENDER_MARGIN) * 2.0)) / ((double)originTerminal.getHeight());
-         
+
         int xCharPos = (int)Math.min((double)originTerminal.getWidth(), Math.max(((pair.x - RENDER_BORDER - RENDER_MARGIN) / xCharWidth) + 1.0, 1.0));
         int yCharPos = (int)Math.min((double)originTerminal.getHeight(), Math.max(((pair.y - RENDER_BORDER - RENDER_MARGIN) / yCharHeight) + 1.0, 1.0));
-        
+
         for( int y=0; y<m_height; ++y )
         {
             for( int x=0; x<m_width; ++x )
@@ -726,7 +726,7 @@ public class TileMonitor extends TilePeripheralBase
             }
         }
     }
-    
+
     private void queueTouchEvent( int xCharPos, int yCharPos )
     {
         for( IComputerAccess computer : m_computers )
@@ -736,12 +736,12 @@ public class TileMonitor extends TilePeripheralBase
             } );
         }
     }
-    
+
     private void queueSizeChangedEvent()
     {
         m_sizeChangedQueued = true;
     }
-    
+
     private XYPair convertToXY( float xPos, float yPos, float zPos, int side )
     {
         switch (side)
@@ -774,7 +774,7 @@ public class TileMonitor extends TilePeripheralBase
             return new XYPair( xPos, zPos );
         }
     }
-    
+
     public void addComputer( IComputerAccess computer )
     {
         synchronized( this )
@@ -793,7 +793,7 @@ public class TileMonitor extends TilePeripheralBase
             }
         }
     }
-    
+
     public void removeComputer( IComputerAccess computer )
     {
         synchronized( this )
@@ -804,7 +804,7 @@ public class TileMonitor extends TilePeripheralBase
             }
         }
     }
-    
+
     public static class XYPair
     {
         public final float x;
@@ -816,7 +816,7 @@ public class TileMonitor extends TilePeripheralBase
             this.y = y;
         }
     }
-    
+
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox()

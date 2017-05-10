@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -27,7 +27,7 @@ public class PrintoutRecipe implements IRecipe
     {
         return 3;
     }
-    
+
     @Override
     public ItemStack getRecipeOutput()
     {
@@ -94,14 +94,14 @@ public class PrintoutRecipe implements IRecipe
                 }
             }
         }
-        
+
         // Build some pages with what was passed in
         if( numPages <= ItemPrintout.MAX_PAGES && stringFound && printoutFound && numPrintouts >= (leatherFound ? 1 : 2) )
         {
             String[] text = new String[ numPages * ItemPrintout.LINES_PER_PAGE ];
             String[] colours = new String[ numPages * ItemPrintout.LINES_PER_PAGE ];
             int line = 0;
-            
+
             for( int printout=0; printout<numPrintouts; ++printout )
             {
                 ItemStack stack = printouts[printout];
@@ -128,13 +128,13 @@ public class PrintoutRecipe implements IRecipe
                     }
                 }
             }
-            
+
             String title = null;
             if( printouts[0].getItem() instanceof ItemPrintout )
             {
                 title = ItemPrintout.getTitle( printouts[0] );
             }
-            
+
             if( leatherFound )
             {
                 return ItemPrintout.createBookFromTitleAndText( title, text, colours );

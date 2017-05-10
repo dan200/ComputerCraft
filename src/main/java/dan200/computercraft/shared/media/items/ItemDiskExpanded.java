@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ItemDiskExpanded extends ItemDiskLegacy
-{    
+{
     public ItemDiskExpanded()
     {
     }
@@ -20,7 +20,7 @@ public class ItemDiskExpanded extends ItemDiskLegacy
     public static ItemStack createFromIDAndColour( int id, String label, int colour )
     {
         ItemStack stack = new ItemStack( ComputerCraft.Items.diskExpanded, 1, 0 );
-        
+
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt == null )
         {
@@ -32,8 +32,8 @@ public class ItemDiskExpanded extends ItemDiskLegacy
         ComputerCraft.Items.diskExpanded.setLabel( stack, label );
         return stack;
     }
-    
-    @Override    
+
+    @Override
     public int getDiskID( ItemStack stack )
     {
         NBTTagCompound nbt = stack.getTagCompound();
@@ -44,7 +44,7 @@ public class ItemDiskExpanded extends ItemDiskLegacy
         return -1;
     }
 
-    @Override    
+    @Override
     protected void setDiskID( ItemStack stack, int id )
     {
         if( id >= 0 )
@@ -58,7 +58,7 @@ public class ItemDiskExpanded extends ItemDiskLegacy
             nbt.setInteger( "diskID", id );
         }
     }
-    
+
     public int getColor( ItemStack stack )
     {
         NBTTagCompound nbt = stack.getTagCompound();

@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -26,7 +26,7 @@ public class TileWirelessModem extends TileModemBase
     private static class Peripheral extends WirelessModemPeripheral
     {
         private TileModemBase m_entity;
-        
+
         public Peripheral( TileModemBase entity )
         {
             super( false );
@@ -38,7 +38,7 @@ public class TileWirelessModem extends TileModemBase
         {
             return m_entity.getWorld();
         }
-        
+
         @Override
         protected Vec3d getPosition()
         {

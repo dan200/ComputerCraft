@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -61,14 +61,14 @@ public class TurtleCraftingTable implements ITurtleUpgrade
     {
         return "upgrade.minecraft:crafting_table.adjective";
     }
-    
+
     @Nonnull
     @Override
     public TurtleUpgradeType getType()
     {
         return TurtleUpgradeType.Peripheral;
     }
-    
+
     @Override
     public ItemStack getCraftingItem()
     {

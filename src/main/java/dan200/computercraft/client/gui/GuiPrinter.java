@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 public class GuiPrinter extends GuiContainer
 {
     private static final ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/printer.png" );
-    
+
     private TilePrinter m_printer;
     private ContainerPrinter m_container;
 
@@ -44,7 +44,7 @@ public class GuiPrinter extends GuiContainer
         int startX = (width - xSize) / 2;
         int startY = (height - ySize) / 2;
         drawTexturedModalRect(startX, startY, 0, 0, xSize, ySize);
-        
+
         boolean printing = m_container.isPrinting();
         if( printing )
         {

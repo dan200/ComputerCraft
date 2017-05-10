@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -79,7 +79,7 @@ public class TilePrinter extends TilePeripheralBase
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
-            
+
         // Read page
         synchronized( m_page )
         {
@@ -87,7 +87,7 @@ public class TilePrinter extends TilePeripheralBase
             m_pageTitle = nbttagcompound.getString( "pageTitle" );
             m_page.readFromNBT( nbttagcompound );
         }
-        
+
         // Read inventory
         synchronized( m_inventory )
         {
@@ -117,7 +117,7 @@ public class TilePrinter extends TilePeripheralBase
             nbttagcompound.setString( "pageTitle", m_pageTitle );
             m_page.writeToNBT( nbttagcompound );
         }
-        
+
         // Write inventory
         synchronized( m_inventory )
         {
@@ -157,14 +157,14 @@ public class TilePrinter extends TilePeripheralBase
     }
 
     // IInventory implementation
-    
-    @Override    
+
+    @Override
     public int getSizeInventory()
     {
         return m_inventory.length;
     }
 
-    @Override    
+    @Override
     public ItemStack getStackInSlot(int i)
     {
         synchronized( m_inventory )
@@ -173,7 +173,7 @@ public class TilePrinter extends TilePeripheralBase
         }
     }
 
-    @Override    
+    @Override
     public ItemStack removeStackFromSlot(int i)
     {
         synchronized( m_inventory )
@@ -184,8 +184,8 @@ public class TilePrinter extends TilePeripheralBase
             return result;
         }
     }
-    
-    @Override    
+
+    @Override
     public ItemStack decrStackSize(int i, int j)
     {
         synchronized( m_inventory )
@@ -194,7 +194,7 @@ public class TilePrinter extends TilePeripheralBase
             {
                 return null;
             }
-            
+
             if( m_inventory[i].stackSize <= j )
             {
                 ItemStack itemstack = m_inventory[i];
@@ -203,7 +203,7 @@ public class TilePrinter extends TilePeripheralBase
                 updateAnim();
                 return itemstack;
             }
-            
+
             ItemStack part = m_inventory[i].splitStack(j);
             if( m_inventory[i].stackSize == 0 )
             {
@@ -215,9 +215,9 @@ public class TilePrinter extends TilePeripheralBase
         }
     }
 
-    @Override    
+    @Override
     public void setInventorySlotContents( int i, ItemStack stack )
-    {                    
+    {
         synchronized( m_inventory )
         {
             m_inventory[i] = stack;
@@ -275,18 +275,18 @@ public class TilePrinter extends TilePeripheralBase
         }
     }
 
-    @Override    
+    @Override
     public int getInventoryStackLimit()
     {
         return 64;
     }
 
-    @Override    
+    @Override
     public void openInventory( @Nonnull EntityPlayer player )
     {
     }
-    
-    @Override    
+
+    @Override
     public void closeInventory( @Nonnull EntityPlayer player )
     {
     }
@@ -321,7 +321,7 @@ public class TilePrinter extends TilePeripheralBase
     }
 
     // ISidedInventory implementation
-    
+
     @Nonnull
     @Override
     public int[] getSlotsForFace( @Nonnull EnumFacing side )
@@ -333,7 +333,7 @@ public class TilePrinter extends TilePeripheralBase
             default: return sideSlots;     // Sides (Ink)
         }
     }
-    
+
     @Override
     public boolean canInsertItem( int slot, @Nonnull ItemStack itemstack, @Nonnull EnumFacing face )
     {
@@ -431,7 +431,7 @@ public class TilePrinter extends TilePeripheralBase
             m_pageTitle = title;
         }
     }
-    
+
     private boolean isInk( ItemStack stack )
     {
         return (stack.getItem() == Items.DYE);
@@ -451,9 +451,9 @@ public class TilePrinter extends TilePeripheralBase
             return inkStack != null && isInk( inkStack ) && getPaperLevel() > 0;
         }
     }
-    
+
     private boolean inputPage()
-    {        
+    {
         synchronized( m_inventory )
         {
             ItemStack inkStack = m_inventory[0];
@@ -461,7 +461,7 @@ public class TilePrinter extends TilePeripheralBase
             {
                 return false;
             }
-            
+
             for( int i=1; i<7; ++i )
             {
                 ItemStack paperStack = m_inventory[i];
@@ -473,7 +473,7 @@ public class TilePrinter extends TilePeripheralBase
                     {
                         m_inventory[0] = null;
                     }
-                                        
+
                     // Decrement paper
                     paperStack.stackSize--;
                     if( paperStack.stackSize <= 0 )
@@ -481,7 +481,7 @@ public class TilePrinter extends TilePeripheralBase
                         m_inventory[i] = null;
                         updateAnim();
                     }
-                    
+
                     // Setup the new page
                     int colour = inkStack.getItemDamage();
                     if( colour >= 0 && colour < 16 ) {
@@ -489,7 +489,7 @@ public class TilePrinter extends TilePeripheralBase
                     } else {
                         m_page.setTextColour( 15 );
                     }
-                    
+
                     m_page.clear();
                     if( paperStack.getItem() instanceof ItemPrintout )
                     {
@@ -506,7 +506,7 @@ public class TilePrinter extends TilePeripheralBase
                         m_pageTitle = "";
                     }
                     m_page.setCursorPos( 0, 0 );
-                    
+
                     markDirty();
                     m_printing = true;
                     return true;
@@ -515,9 +515,9 @@ public class TilePrinter extends TilePeripheralBase
             return false;
         }
     }
-    
+
     private boolean outputPage()
-    {        
+    {
         synchronized( m_page )
         {
             int height = m_page.getHeight();
@@ -528,7 +528,7 @@ public class TilePrinter extends TilePeripheralBase
                 lines[i] = m_page.getLine(i).toString();
                 colours[i] = m_page.getTextColourLine(i).toString();
             }
-            
+
             ItemStack stack = ItemPrintout.createSingleFromTitleAndText( m_pageTitle, lines, colours );
             synchronized( m_inventory )
             {
@@ -547,14 +547,14 @@ public class TilePrinter extends TilePeripheralBase
     {
         synchronized( m_inventory )
         {
-            for( int i=0; i<13; ++i ) 
+            for( int i=0; i<13; ++i )
             {
                 ItemStack stack = m_inventory[i];
                 if( stack != null )
                 {
                     // Remove the stack from the inventory
                     setInventorySlotContents( i, null );
-        
+
                     // Spawn the item in the world
                     BlockPos pos = getPos();
                     double x = (double)pos.getX() + 0.5;
@@ -569,7 +569,7 @@ public class TilePrinter extends TilePeripheralBase
             }
         }
     }
-    
+
     private void updateAnim()
     {
         synchronized( m_inventory )

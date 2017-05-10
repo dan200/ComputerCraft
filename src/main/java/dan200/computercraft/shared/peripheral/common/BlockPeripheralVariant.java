@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -138,7 +138,7 @@ public enum BlockPeripheralVariant implements IStringSerializable
     {
         return m_name;
     }
-    
+
     public PeripheralType getPeripheralType()
     {
         return m_peripheralType;

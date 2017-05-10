@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -28,7 +28,7 @@ import java.util.List;
 public class ItemComputer extends ItemComputerBase
 {
     public static int HIGHEST_DAMAGE_VALUE_ID = 16382;
-    
+
     public ItemComputer( Block block )
     {
         super( block );

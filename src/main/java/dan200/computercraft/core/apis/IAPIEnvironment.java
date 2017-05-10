@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -18,13 +18,13 @@ public interface IAPIEnvironment
     {
         void onPeripheralChanged( int side, IPeripheral newPeripheral );
     }
-    
+
     Computer getComputer();
     int getComputerID();
     IComputerEnvironment getComputerEnvironment();
     Terminal getTerminal();
     FileSystem getFileSystem();
-    
+
     void shutdown();
     void reboot();
     void queueEvent( String event, Object[] args );
@@ -36,7 +36,7 @@ public interface IAPIEnvironment
     void setBundledOutput( int side, int output );
     int getBundledOutput( int side );
     int getBundledInput( int side );
-    
+
     void setPeripheralChangeListener( IPeripheralChangeListener listener );
     IPeripheral getPeripheral( int side );
 

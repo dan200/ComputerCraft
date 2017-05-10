@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -46,7 +46,7 @@ import net.minecraftforge.oredict.RecipeSorter;
 import java.util.*;
 
 public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
-{    
+{
     private Map<Integer, ITurtleUpgrade> m_legacyTurtleUpgrades;
     private Map<String, ITurtleUpgrade> m_turtleUpgrades;
     private Map<Entity, IEntityDropConsumer> m_dropConsumers;
@@ -57,17 +57,17 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         m_turtleUpgrades = new HashMap<String, ITurtleUpgrade>();
         m_dropConsumers = new WeakHashMap<Entity, IEntityDropConsumer>();
     }
-    
+
     // ICCTurtleProxy implementation
-    
-    @Override        
+
+    @Override
     public void preInit()
     {
         EntityRegistry.registerModEntity(TurtlePlayer.class, "turtlePlayer", 0, ComputerCraft.instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false);
         registerItems();
     }
-    
-    @Override        
+
+    @Override
     public void init()
     {
         registerForgeHandlers();
@@ -83,7 +83,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         {
             throw new RuntimeException( "Error registering '"+upgrade.getUnlocalisedAdjective()+" Turtle'. Legacy UpgradeID '"+id+"' is reserved by ComputerCraft" );
         }
-        
+
         // Register
         registerTurtleUpgradeInternal( upgrade );
     }
@@ -99,7 +99,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     {
         return m_legacyTurtleUpgrades.get( legacyId );
     }
-    
+
     @Override
     public ITurtleUpgrade getTurtleUpgrade( ItemStack stack )
     {
@@ -136,7 +136,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             return true;
         }
     }
-    
+
     private void addAllUpgradedTurtles( ComputerFamily family, List<ItemStack> list )
     {
         ItemStack basicStack = TurtleItemFactory.create( -1, null, null, family, null, null, 0, null );
@@ -165,14 +165,14 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             }
         }
     }
-    
+
     @Override
     public void addAllUpgradedTurtles( List<ItemStack> list )
     {
         addAllUpgradedTurtles( ComputerFamily.Normal, list );
         addAllUpgradedTurtles( ComputerFamily.Advanced, list );
     }
-    
+
     @Override
     public void setEntityDropConsumer( Entity entity, IEntityDropConsumer consumer )
     {
@@ -183,7 +183,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                 entity,
                 "captureDrops"
             );
-            
+
             if( !captured )
             {
                 ObfuscationReflectionHelper.setPrivateValue(
@@ -192,21 +192,21 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                     Boolean.TRUE,
                     "captureDrops"
                 );
-                
+
                 ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
                     Entity.class,
                     entity,
                     "capturedDrops"
                 );
-                
+
                 if( items == null || items.size() == 0 )
                 {
                     m_dropConsumers.put( entity, consumer );
                 }
             }
         }
-    }    
-    
+    }
+
     @Override
     public void clearEntityDropConsumer( Entity entity )
     {
@@ -217,7 +217,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                     entity,
                     "captureDrops"
             );
-            
+
             if( captured )
             {
                 ObfuscationReflectionHelper.setPrivateValue(
@@ -226,13 +226,13 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                     Boolean.FALSE,
                     "captureDrops"
                 );
-                
+
                 ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
                     Entity.class,
                     entity,
                     "capturedDrops"
                 );
-                
+
                 if( items != null )
                 {
                     dispatchEntityDrops( entity, items );
@@ -323,7 +323,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             }
         }
     }
-    
+
     private void registerItems()
     {
         // Blocks
@@ -418,27 +418,27 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         GameRegistry.registerTileEntity( TileTurtleExpanded.class, "turtleex" );
         GameRegistry.registerTileEntity( TileTurtleAdvanced.class, "turtleadv" );
     }
-    
+
     private void registerForgeHandlers()
     {
         ForgeHandlers handlers = new ForgeHandlers();
         MinecraftForge.EVENT_BUS.register( handlers );
     }
-        
+
     public class ForgeHandlers
     {
         private ForgeHandlers()
         {
         }
 
-        // Forge event responses 
+        // Forge event responses
         @SubscribeEvent
         public void onEntityLivingDrops( LivingDropsEvent event )
         {
             dispatchEntityDrops( event.getEntity(), event.getDrops() );
         }
     }
-    
+
     private void dispatchEntityDrops( Entity entity, java.util.List<EntityItem> drops )
     {
         IEntityDropConsumer consumer = m_dropConsumers.get( entity );

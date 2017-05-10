@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -33,7 +33,7 @@ public class TurtleUpgradeRecipe implements IRecipe
     {
         return 3;
     }
-    
+
     @Override
     public ItemStack getRecipeOutput()
     {
@@ -67,7 +67,7 @@ public class TurtleUpgradeRecipe implements IRecipe
                         if( finishedRow ) {
                             return null;
                         }
-                        
+
                         if( item.getItem() instanceof ITurtleItem ) {
                             // Item is a turtle
                             if( turtle == null ) {
@@ -92,7 +92,7 @@ public class TurtleUpgradeRecipe implements IRecipe
                         }
                     }
                 }
-                
+
                 // If we found anything, check we found a turtle too
                 if( turtle == null && (leftItem != null || rightItem != null) )
                 {
@@ -111,7 +111,7 @@ public class TurtleUpgradeRecipe implements IRecipe
                 }
             }
         }
-        
+
         // See if we found a turtle + one or more items
         if( turtle == null || (leftItem == null && rightItem == null))
         {

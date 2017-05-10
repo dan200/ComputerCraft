@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -29,7 +29,7 @@ public class TermAPI implements ILuaAPI
         m_terminal = _environment.getTerminal();
         m_environment = _environment.getComputerEnvironment();
     }
-    
+
     @Override
     public String[] getNames()
     {
@@ -47,7 +47,7 @@ public class TermAPI implements ILuaAPI
     public void advance( double _dt )
     {
     }
-    
+
     @Override
     public void shutdown( )
     {
@@ -83,13 +83,13 @@ public class TermAPI implements ILuaAPI
             "getPaletteColor"
         };
     }
-    
+
     public static int parseColour( Object[] args ) throws LuaException
     {
         if( args.length < 1 || args[0] == null || !(args[0] instanceof Double) )
         {
             throw new LuaException( "Expected number" );
-        }            
+        }
         int colour = (int)((Double)args[0]).doubleValue();
         if( colour <= 0 )
         {
@@ -133,7 +133,7 @@ public class TermAPI implements ILuaAPI
                 } else {
                     text = "";
                 }
-                
+
                 synchronized( m_terminal )
                 {
                     m_terminal.write( text );
@@ -148,7 +148,7 @@ public class TermAPI implements ILuaAPI
                 {
                     throw new LuaException( "Expected number" );
                 }
-                
+
                 int y = (int)((Double)args[0]).doubleValue();
                 synchronized( m_terminal )
                 {
@@ -204,7 +204,7 @@ public class TermAPI implements ILuaAPI
                 {
                     width = m_terminal.getWidth();
                     height = m_terminal.getHeight();
-                }                
+                }
                 return new Object[] { width, height };
             }
             case 6:
@@ -338,7 +338,7 @@ public class TermAPI implements ILuaAPI
             }
         }
     }
-    
+
     private static int getHighestBit( int group )
     {
         int bit = 0;

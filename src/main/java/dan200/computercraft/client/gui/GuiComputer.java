@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -158,7 +158,7 @@ public class GuiComputer extends GuiContainer
 
            // Draw terminal
         m_terminal.draw( this.mc, startX, startY, mouseX, mouseY );
-        
+
         // Draw a border around the terminal
         GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
         switch( m_family )

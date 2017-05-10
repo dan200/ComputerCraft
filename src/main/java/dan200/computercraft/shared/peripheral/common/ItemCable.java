@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -93,7 +93,7 @@ public class ItemCable extends ItemPeripheralBase
                     world.setBlockState( pos, existingState.withProperty( BlockCable.Properties.CABLE, true ), 3 );
                     world.playSound( null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, ComputerCraft.Blocks.cable.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (ComputerCraft.Blocks.cable.getSoundType().getVolume() + 1.0F ) / 2.0F, ComputerCraft.Blocks.cable.getSoundType().getPitch() * 0.8F);
                     stack.stackSize--;
-                    
+
                     TileEntity tile = world.getTileEntity( pos );
                     if( tile != null && tile instanceof TileCable )
                     {
@@ -156,7 +156,7 @@ public class ItemCable extends ItemPeripheralBase
                 }
             }
         }
-        
+
         return super.onItemUse( stack, player, world, pos, hand, side, fx, fy, fz );
     }
 

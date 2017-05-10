@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -22,7 +22,7 @@ public class RedstoneAPI implements ILuaAPI
     {
         m_environment = environment;
     }
-    
+
     @Override
     public String[] getNames()
     {
@@ -40,7 +40,7 @@ public class RedstoneAPI implements ILuaAPI
     public void advance( double _dt )
     {
     }
-    
+
     @Override
     public void shutdown( )
     {
@@ -180,7 +180,7 @@ public class RedstoneAPI implements ILuaAPI
             }
         }
     }
-    
+
     private int parseSide( Object[] args ) throws LuaException
     {
         if( args.length < 1 || args[0] == null || !(args[0] instanceof String) )

@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -33,9 +33,9 @@ public abstract class TileModemBase extends TilePeripheralBase
     {
         m_modem = createPeripheral();
     }
-    
+
     protected abstract ModemPeripheral createPeripheral();
-            
+
     @Override
     public synchronized void destroy()
     {
@@ -84,7 +84,7 @@ public abstract class TileModemBase extends TilePeripheralBase
             updateAnim();
         }
     }
-    
+
     protected void updateAnim()
     {
         if( m_modem.isActive() )

@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -292,10 +292,10 @@ public class WidgetTerminal extends Widget
 
     @Override
     public void update()
-    {                
+    {
         // Handle special keys
         if( m_focus && !m_locked && (Keyboard.isKeyDown( 29 ) || Keyboard.isKeyDown( 157 )) )
-        {            
+        {
             // Ctrl+T for terminate
             if( Keyboard.isKeyDown( 20 ) )
             {
@@ -312,7 +312,7 @@ public class WidgetTerminal extends Widget
             {
                 m_terminateTimer = 0.0f;
             }
-            
+
             // Ctrl+R for reboot
             if( Keyboard.isKeyDown(19) )
             {

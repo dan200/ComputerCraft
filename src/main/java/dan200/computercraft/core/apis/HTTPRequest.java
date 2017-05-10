@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -227,18 +227,18 @@ public class HTTPRequest
         thread.setDaemon(true);
         thread.start();
     }
-    
+
     public String getURL() {
         return m_urlString;
     }
-    
+
     public void cancel()
     {
         synchronized(m_lock) {
             m_cancelled = true;
         }
     }
-    
+
     public boolean isComplete()
     {
         synchronized(m_lock) {
@@ -264,24 +264,24 @@ public class HTTPRequest
             return m_success;
         }
     }
-    
+
     public BufferedReader getContents()
     {
         String result;
         synchronized(m_lock) {
             result = m_result;
         }
-        
+
         if( result != null ) {
             return new BufferedReader( new StringReader( result ) );
         }
         return null;
     }
-    
+
     private final Object m_lock = new Object();
     private final URL m_url;
     private final String m_urlString;
-    
+
     private boolean m_complete;
     private boolean m_cancelled;
     private boolean m_success;

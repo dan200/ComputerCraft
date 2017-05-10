@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -37,7 +37,7 @@ public class LuaJLuaMachine implements ILuaMachine
     private LuaValue m_coroutine_create;
     private LuaValue m_coroutine_resume;
     private LuaValue m_coroutine_yield;
-    
+
     private LuaValue m_mainRoutine;
     private String m_eventFilter;
     private String m_softAbortMessage;
@@ -57,10 +57,10 @@ public class LuaJLuaMachine implements ILuaMachine
 
         LuaValue coroutine = m_globals.get("coroutine");
         final LuaValue native_coroutine_create = coroutine.get("create");
-        
+
         LuaValue debug = m_globals.get("debug");
         final LuaValue debug_sethook = debug.get("sethook");
-        
+
         coroutine.set("create", new OneArgFunction() {
             @Override
             public LuaValue call( LuaValue value )
@@ -82,21 +82,21 @@ public class LuaJLuaMachine implements ILuaMachine
                     LuaValue.NIL,
                     LuaValue.valueOf(100000)
                 } );
-                return thread;                
+                return thread;
             }
         });
-        
+
         m_coroutine_create = coroutine.get("create");
         m_coroutine_resume = coroutine.get("resume");
         m_coroutine_yield = coroutine.get("yield");
-        
+
         // Remove globals we don't want to expose
         m_globals.set( "collectgarbage", LuaValue.NIL );
         m_globals.set( "dofile", LuaValue.NIL );
         m_globals.set( "loadfile", LuaValue.NIL );
         m_globals.set( "module", LuaValue.NIL );
         m_globals.set( "require", LuaValue.NIL );
-        m_globals.set( "package", LuaValue.NIL );        
+        m_globals.set( "package", LuaValue.NIL );
         m_globals.set( "io", LuaValue.NIL );
         m_globals.set( "os", LuaValue.NIL );
         m_globals.set( "print", LuaValue.NIL );
@@ -121,7 +121,7 @@ public class LuaJLuaMachine implements ILuaMachine
         m_softAbortMessage = null;
         m_hardAbortMessage = null;
     }
-    
+
     @Override
     public void addAPI( ILuaAPI api )
     {
@@ -133,7 +133,7 @@ public class LuaJLuaMachine implements ILuaMachine
             m_globals.set( name, table );
         }
     }
-    
+
     @Override
     public void loadBios( InputStream bios )
     {
@@ -142,7 +142,7 @@ public class LuaJLuaMachine implements ILuaMachine
         {
             return;
         }
-        
+
         try
         {
             // Read the whole bios into a string
@@ -174,9 +174,9 @@ public class LuaJLuaMachine implements ILuaMachine
             {
                 throw new LuaError( "Could not read file" );
             }
-            
+
             // Load it
-            LuaValue program = m_assert.call( m_loadString.call( 
+            LuaValue program = m_assert.call( m_loadString.call(
                 toValue( biosText ), toValue( "bios.lua" )
             ));
             m_mainRoutine = m_coroutine_create.call( program );
@@ -190,7 +190,7 @@ public class LuaJLuaMachine implements ILuaMachine
             }
         }
     }
-    
+
     @Override
     public void handleEvent( String eventName, Object[] arguments )
     {
@@ -203,9 +203,9 @@ public class LuaJLuaMachine implements ILuaMachine
         {
             return;
         }
-        
+
         try
-        {            
+        {
             LuaValue[] resumeArgs;
             if( eventName != null )
             {
@@ -218,9 +218,9 @@ public class LuaJLuaMachine implements ILuaMachine
                 resumeArgs = new LuaValue[1];
                 resumeArgs[0] = m_mainRoutine;
             }
-            
+
             Varargs results = m_coroutine_resume.invoke( LuaValue.varargsOf( resumeArgs ) );
-            if( m_hardAbortMessage != null ) 
+            if( m_hardAbortMessage != null )
             {
                 throw new LuaError( m_hardAbortMessage );
             }
@@ -240,7 +240,7 @@ public class LuaJLuaMachine implements ILuaMachine
                     m_eventFilter = null;
                 }
             }
-                        
+
             LuaThread mainThread = (LuaThread)m_mainRoutine;
             if( mainThread.getStatus().equals("dead") )
             {
@@ -259,13 +259,13 @@ public class LuaJLuaMachine implements ILuaMachine
         }
     }
 
-    @Override    
+    @Override
     public void softAbort( String abortMessage )
     {
         m_softAbortMessage = abortMessage;
     }
 
-    @Override    
+    @Override
     public void hardAbort( String abortMessage )
     {
         m_softAbortMessage = abortMessage;
@@ -277,19 +277,19 @@ public class LuaJLuaMachine implements ILuaMachine
     {
         return false;
     }
-    
+
     @Override
     public boolean restoreState( InputStream input )
     {
         return false;
     }
-    
+
     @Override
     public boolean isFinished()
     {
         return (m_mainRoutine == null);
     }
-    
+
     @Override
     public void unload()
     {
@@ -300,14 +300,14 @@ public class LuaJLuaMachine implements ILuaMachine
             m_mainRoutine = null;
         }
     }
-        
+
     private void tryAbort() throws LuaError
     {
 //        while( m_stopped )
 //        {
 //            m_coroutine_yield.call();
 //        }
-        
+
         String abortMessage = m_softAbortMessage;
         if( abortMessage != null )
         {
@@ -316,7 +316,7 @@ public class LuaJLuaMachine implements ILuaMachine
             throw new LuaError( abortMessage );
         }
     }
-    
+
     private LuaTable wrapLuaObject( ILuaObject object )
     {
         LuaTable table = new LuaTable();
@@ -348,14 +348,14 @@ public class LuaJLuaMachine implements ILuaMachine
                                     }
                                     return results;
                                 }
-                                
+
                                 @Nonnull
                                 @Override
                                 public Object[] pullEventRaw( String filter ) throws InterruptedException
                                 {
                                     return yield( new Object[] { filter } );
                                 }
-                                
+
                                 @Nonnull
                                 @Override
                                 public Object[] yield( Object[] yieldArgs ) throws InterruptedException
@@ -471,7 +471,7 @@ public class LuaJLuaMachine implements ILuaMachine
                         catch( InterruptedException e )
                         {
                             throw new OrphanedThread();
-                        } 
+                        }
                         catch( LuaException e )
                         {
                             throw new LuaError( e.getMessage(), e.getLevel() );
@@ -556,16 +556,16 @@ public class LuaJLuaMachine implements ILuaMachine
         else
         {
             return LuaValue.NIL;
-        }        
+        }
     }
 
     private LuaValue[] toValues( Object[] objects, int leaveEmpty )
     {
-        if( objects == null || objects.length == 0 ) 
+        if( objects == null || objects.length == 0 )
         {
             return new LuaValue[ leaveEmpty ];
         }
-        
+
         LuaValue[] values = new LuaValue[objects.length + leaveEmpty];
         for( int i=0; i<values.length; ++i )
         {
@@ -585,7 +585,7 @@ public class LuaJLuaMachine implements ILuaMachine
         switch( value.type() )
         {
             case LuaValue.TNIL:
-            case LuaValue.TNONE: 
+            case LuaValue.TNONE:
             {
                 return null;
             }
@@ -656,9 +656,9 @@ public class LuaJLuaMachine implements ILuaMachine
             {
                 return null;
             }
-        }        
+        }
     }
-    
+
     private Object[] toObjects( Varargs values, int startIdx )
     {
         int count = values.narg();

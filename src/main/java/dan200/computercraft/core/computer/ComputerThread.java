@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.WeakHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-    
+
 public class ComputerThread
 {
     private static final Object m_lock;
-    
+
     private static Thread m_thread;
     private static final WeakHashMap <Object, LinkedBlockingQueue<ITask>> m_computerTasks;
     private static final ArrayList <LinkedBlockingQueue<ITask>> m_computerTasksActive;
@@ -24,10 +24,10 @@ public class ComputerThread
 
     private static boolean m_running;
     private static boolean m_stopped;
-    
+
     static
     {
-        m_lock = new Object();    
+        m_lock = new Object();
         m_thread = null;
         m_computerTasks = new WeakHashMap<Object, LinkedBlockingQueue<ITask>>();
         m_computerTasksPending = new ArrayList<LinkedBlockingQueue<ITask>>();
@@ -37,7 +37,7 @@ public class ComputerThread
         m_running = false;
         m_stopped = false;
     }
-        
+
     public static void start()
     {
         synchronized( m_lock )
@@ -47,7 +47,7 @@ public class ComputerThread
                 m_stopped = false;
                 return;
             }
-        
+
             m_thread = new Thread( new Runnable() {
                 public void run()
                 {
@@ -61,7 +61,7 @@ public class ComputerThread
                                 while(it.hasNext())
                                 {
                                     LinkedBlockingQueue<ITask> queue = it.next();
-                                    
+
                                     if (!m_computerTasksActive.contains(queue))
                                     {
                                         m_computerTasksActive.add(queue);
@@ -74,18 +74,18 @@ public class ComputerThread
                                 */
                             }
                         }
-                        
+
                         Iterator<LinkedBlockingQueue<ITask>> it = m_computerTasksActive.iterator();
-                        
+
                         while (it.hasNext())
                         {
                             LinkedBlockingQueue<ITask> queue = it.next();
-                            
+
                             if (queue == null || queue.isEmpty()) // we don't need the blocking part of the queue. Null check to ensure it exists due to a weird NPE I got
                             {
                                 continue;
                             }
-                            
+
                             synchronized( m_lock )
                             {
                                 if( m_stopped )
@@ -95,7 +95,7 @@ public class ComputerThread
                                     return;
                                 }
                             }
-                            
+
                             try
                             {
                                 final ITask task = queue.take();
@@ -111,12 +111,12 @@ public class ComputerThread
                                         }
                                     }
                                 } );
-                                
+
                                 // Run the task
                                 worker.setDaemon(true);
                                 worker.start();
                                 worker.join( 7000 );
-                                
+
                                 if( worker.isAlive() )
                                 {
                                     // Task ran for too long
@@ -127,7 +127,7 @@ public class ComputerThread
                                         // Step 1: Soft abort
                                         computer.abort( false );
                                         worker.join( 1500 );
-                                
+
                                         if( worker.isAlive() )
                                         {
                                             // Step 2: Hard abort
@@ -135,14 +135,14 @@ public class ComputerThread
                                             worker.join( 1500 );
                                         }
                                     }
-                                    
+
                                     // Step 3: abandon
                                     if( worker.isAlive() )
                                     {
                                         //System.out.println( "computercraft: Warning! Failed to abort Computer " + computercraft.getDescription() + ". Dangling lua thread could cause errors." );
                                         worker.interrupt();
                                     }
-                                }                
+                                }
                             }
                             catch( InterruptedException e )
                             {
@@ -157,12 +157,12 @@ public class ComputerThread
                                 }
                             }
                         }
-                        
+
                         while (m_computerTasksActive.isEmpty() && m_computerTasksPending.isEmpty())
                         {
                             synchronized (m_monitor)
                             {
-                                try 
+                                try
                                 {
                                     m_monitor.wait();
                                 }
@@ -180,7 +180,7 @@ public class ComputerThread
             m_running = true;
         }
     }
-    
+
     public static void stop()
     {
         synchronized( m_lock )
@@ -192,23 +192,23 @@ public class ComputerThread
             }
         }
     }
-    
+
     public static void queueTask( ITask _task, Computer computer )
     {
         Object queueObject = computer;
-        
+
         if (queueObject == null)
         {
             queueObject = m_defaultQueue;
         }
-        
+
         LinkedBlockingQueue<ITask> queue = m_computerTasks.get(queueObject);
 
         if (queue == null)
         {
             m_computerTasks.put(queueObject, queue = new LinkedBlockingQueue<ITask>(256));
         }
-        
+
         synchronized ( m_computerTasksPending )
         {
             if( queue.offer( _task ) )
@@ -223,7 +223,7 @@ public class ComputerThread
                 //System.out.println( "Event queue overflow" );
             }
         }
-        
+
         synchronized (m_monitor)
         {
             m_monitor.notify();

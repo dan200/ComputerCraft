@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -58,7 +58,7 @@ public class TileCable extends TileModemBase
     private static class Peripheral extends ModemPeripheral
     {
         private TileCable m_entity;
-        
+
         public Peripheral( TileCable entity )
         {
             m_entity = entity;
@@ -235,30 +235,30 @@ public class TileCable extends TileModemBase
 
     private final Map<Integer, Set<IReceiver>> m_receivers;
     private final Queue<Packet> m_transmitQueue;
-    
+
     private boolean m_peripheralAccessAllowed;
     private int m_attachedPeripheralID;
-    
+
     private final Map<String, IPeripheral> m_peripheralsByName;
     private Map<String, RemotePeripheralWrapper> m_peripheralWrappersByName;
     private boolean m_peripheralsKnown;
     private boolean m_destroyed;
-    
+
     private int m_lastSearchID;
-    
+
     public TileCable()
     {
         m_receivers = new HashMap<Integer, Set<IReceiver>>();
         m_transmitQueue = new LinkedList<Packet>();
-        
+
         m_peripheralAccessAllowed = false;
         m_attachedPeripheralID = -1;
-        
+
         m_peripheralsByName = new HashMap<String, IPeripheral>();
         m_peripheralWrappersByName = new HashMap<String, RemotePeripheralWrapper>();
         m_peripheralsKnown = false;
         m_destroyed = false;
-        
+
         m_lastSearchID = 0;
     }
 
@@ -368,9 +368,9 @@ public class TileCable extends TileModemBase
 
     public AxisAlignedBB getModemBounds()
     {
-        return super.getBounds();    
+        return super.getBounds();
     }
-    
+
     public AxisAlignedBB getCableBounds()
     {
         double xMin = 0.375;
@@ -406,7 +406,7 @@ public class TileCable extends TileModemBase
         }
         return new AxisAlignedBB( xMin, yMin, zMin, xMax, yMax, zMax );
     }
-    
+
     @Nonnull
     @Override
     public AxisAlignedBB getBounds()
@@ -512,7 +512,7 @@ public class TileCable extends TileModemBase
         nbttagcompound.setInteger( "peripheralID", m_attachedPeripheralID );
         return nbttagcompound;
     }
-    
+
     @Override
     protected ModemPeripheral createPeripheral()
     {
@@ -551,7 +551,7 @@ public class TileCable extends TileModemBase
     {
         super.update();
         if( !worldObj.isRemote )
-        {        
+        {
             synchronized( m_peripheralsByName )
             {
                 if( !m_peripheralsKnown )
@@ -573,9 +573,9 @@ public class TileCable extends TileModemBase
             }
         }
     }
-    
+
     // INetwork implementation
-    
+
     @Override
     public void addReceiver( IReceiver receiver )
     {
@@ -591,7 +591,7 @@ public class TileCable extends TileModemBase
             receivers.add( receiver );
         }
     }
-    
+
     @Override
     public void removeReceiver( IReceiver receiver )
     {
@@ -605,7 +605,7 @@ public class TileCable extends TileModemBase
             }
         }
     }
-    
+
     @Override
     public void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
     {
@@ -619,17 +619,17 @@ public class TileCable extends TileModemBase
             m_transmitQueue.offer(p);
         }
     }
-    
+
     @Override
     public boolean isWireless()
     {
         return false;
     }
-        
+
     private void attachPeripheral( String periphName, IPeripheral peripheral )
     {
         if( !m_peripheralWrappersByName.containsKey( periphName ) )
-        { 
+        {
             RemotePeripheralWrapper wrapper = new RemotePeripheralWrapper( peripheral, m_modem.getComputer(), periphName );
             m_peripheralWrappersByName.put( periphName, wrapper );
             wrapper.attach();
@@ -639,7 +639,7 @@ public class TileCable extends TileModemBase
     private void detachPeripheral( String periphName )
     {
         if( m_peripheralWrappersByName.containsKey( periphName ) )
-        { 
+        {
             RemotePeripheralWrapper wrapper = m_peripheralWrappersByName.get( periphName );
             m_peripheralWrappersByName.remove( periphName );
             wrapper.detach();
@@ -658,7 +658,7 @@ public class TileCable extends TileModemBase
         }
         return null;
     }
-    
+
     private String[] getMethodNamesRemote( String remoteName )
     {
         synchronized( m_peripheralsByName )
@@ -671,7 +671,7 @@ public class TileCable extends TileModemBase
         }
         return null;
     }
-    
+
     private Object[] callMethodRemote( String remoteName, ILuaContext context, String method, Object[] arguments ) throws LuaException, InterruptedException
     {
         RemotePeripheralWrapper wrapper;
@@ -722,11 +722,11 @@ public class TileCable extends TileModemBase
             }
         }
     }
-        
+
     // private stuff
-        
+
     // Packet sending
-    
+
     private class Packet
     {
         public int channel;
@@ -734,7 +734,7 @@ public class TileCable extends TileModemBase
         public Object payload;
         public Object senderObject;
     }
-        
+
     private void dispatchPacket( final Packet packet )
     {
         searchNetwork( new ICableVisitor() {
@@ -744,7 +744,7 @@ public class TileCable extends TileModemBase
             }
         } );
     }
-    
+
     private void receivePacket( Packet packet, int distanceTravelled )
     {
         synchronized( m_receivers )
@@ -759,19 +759,19 @@ public class TileCable extends TileModemBase
             }
         }
     }
-    
+
     // Remote peripheral control
-    
+
     private static class RemotePeripheralWrapper implements IComputerAccess
     {
         private IPeripheral m_peripheral;
         private IComputerAccess m_computer;
         private String m_name;
-        
+
         private String m_type;
         private String[] m_methods;
         private Map<String, Integer> m_methodMap;
-                
+
         public RemotePeripheralWrapper( IPeripheral peripheral, IComputerAccess computer, String name )
         {
             m_peripheral = peripheral;
@@ -782,7 +782,7 @@ public class TileCable extends TileModemBase
             m_methods = peripheral.getMethodNames();
             assert( m_type != null );
             assert( m_methods != null );
-            
+
             m_methodMap = new HashMap<String, Integer>();
             for( int i=0; i<m_methods.length; ++i ) {
                 if( m_methods[i] != null ) {
@@ -790,7 +790,7 @@ public class TileCable extends TileModemBase
                 }
             }
         }
-        
+
         public void attach()
         {
             m_peripheral.attach( this );
@@ -854,19 +854,19 @@ public class TileCable extends TileModemBase
         {
             m_computer.unmount( location );
         }
-    
+
         @Override
         public int getID()
         {
             return m_computer.getID();
         }
-        
+
         @Override
         public void queueEvent( @Nonnull String event, Object[] arguments )
         {
             m_computer.queueEvent( event, arguments );
         }
-        
+
         @Nonnull
         @Override
         public String getAttachmentName()
@@ -907,7 +907,7 @@ public class TileCable extends TileModemBase
             {
                 String periphName = it.next();
                 if( !newPeripheralsByName.containsKey( periphName ) )
-                {                    
+                {
                     detachPeripheral( periphName );
                     it.remove();
                 }
@@ -932,7 +932,7 @@ public class TileCable extends TileModemBase
             //System.out.println( m_peripheralsByName.size()+" connected" );
         }
     }
-    
+
     public void togglePeripheralAccess()
     {
         if( !m_peripheralAccessAllowed )
@@ -948,10 +948,10 @@ public class TileCable extends TileModemBase
         {
             m_peripheralAccessAllowed = false;
         }
-        updateAnim(); 
+        updateAnim();
         networkChanged();
     }
-    
+
     public String getConnectedPeripheralName()
     {
         IPeripheral periph = getConnectedPeripheral();
@@ -969,7 +969,7 @@ public class TileCable extends TileModemBase
         }
         return null;
     }
-    
+
     private IPeripheral getConnectedPeripheral()
     {
         if( m_peripheralAccessAllowed )
@@ -983,21 +983,21 @@ public class TileCable extends TileModemBase
         }
         return null;
     }
-    
+
     // Generic network search stuff
-    
+
     private interface ICableVisitor
     {
         void visit( TileCable modem, int distance );
     }
-    
+
     private static class SearchLoc
     {
         public World world;
         public BlockPos pos;
         public int distanceTravelled;
     }
-    
+
     private static void enqueue( Queue<SearchLoc> queue, World world, BlockPos pos, int distanceTravelled )
     {
         int y = pos.getY();
@@ -1010,14 +1010,14 @@ public class TileCable extends TileModemBase
             queue.offer( loc );
         }
     }
-    
+
     private static void visitBlock( Queue<SearchLoc> queue, SearchLoc location, int searchID, ICableVisitor visitor )
     {
         if( location.distanceTravelled >= 256 )
         {
             return;
         }
-        
+
         TileEntity tile = location.world.getTileEntity( location.pos );
         if( tile != null && tile instanceof TileCable )
         {
@@ -1026,7 +1026,7 @@ public class TileCable extends TileModemBase
             {
                 modem.m_lastSearchID = searchID;
                 visitor.visit( modem, location.distanceTravelled + 1 );
-                
+
                 enqueue( queue, location.world, location.pos.up(), location.distanceTravelled + 1 );
                 enqueue( queue, location.world, location.pos.down(), location.distanceTravelled + 1 );
                 enqueue( queue, location.world, location.pos.south(), location.distanceTravelled + 1 );
@@ -1042,7 +1042,7 @@ public class TileCable extends TileModemBase
         int searchID = ++s_nextUniqueSearchID;
         Queue<SearchLoc> queue = new LinkedList<SearchLoc>();
         enqueue( queue, worldObj, getPos(), 1 );
-        
+
         int visited = 0;
         while( queue.peek() != null )
         {

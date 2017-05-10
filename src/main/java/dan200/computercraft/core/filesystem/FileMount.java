@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -15,37 +15,37 @@ import java.util.List;
 public class FileMount implements IWritableMount
 {
     private static int MINIMUM_FILE_SIZE = 500;
-    
+
     private class CountingOutputStream extends OutputStream
     {
         private OutputStream m_innerStream;
         private long m_ignoredBytesLeft;
-        
+
         public CountingOutputStream( OutputStream innerStream, long bytesToIgnore )
         {
             m_innerStream = innerStream;
             m_ignoredBytesLeft = bytesToIgnore;
         }
-        
+
         @Override
         public void close() throws IOException
         {
             m_innerStream.close();
         }
-        
+
         @Override
         public void flush() throws IOException
         {
             m_innerStream.flush();
         }
-        
+
         @Override
         public void write( @Nonnull byte[] b ) throws IOException
         {
             count( b.length );
             m_innerStream.write( b );
         }
-        
+
         @Override
         public void write( @Nonnull byte[] b, int off, int len ) throws IOException
         {
@@ -67,7 +67,7 @@ public class FileMount implements IWritableMount
             {
                 long newBytes = -m_ignoredBytesLeft;
                 m_ignoredBytesLeft = 0;
-                
+
                 long bytesLeft = m_capacity - m_usedSpace;
                 if( newBytes > bytesLeft )
                 {
@@ -80,11 +80,11 @@ public class FileMount implements IWritableMount
             }
         }
     }
-    
+
     private File m_rootPath;
     private long m_capacity;
     private long m_usedSpace;
-    
+
     public FileMount( File rootPath, long capacity )
     {
         m_rootPath = rootPath;
@@ -93,7 +93,7 @@ public class FileMount implements IWritableMount
     }
 
     // IMount implementation
-    
+
     @Override
     public boolean exists( @Nonnull String path ) throws IOException
     {
@@ -107,7 +107,7 @@ public class FileMount implements IWritableMount
             return file.exists();
         }
     }
-    
+
     @Override
     public boolean isDirectory( @Nonnull String path ) throws IOException
     {
@@ -121,7 +121,7 @@ public class FileMount implements IWritableMount
             return file.exists() && file.isDirectory();
         }
     }
-    
+
     @Override
     public void list( @Nonnull String path, @Nonnull List<String> contents ) throws IOException
     {
@@ -150,7 +150,7 @@ public class FileMount implements IWritableMount
             {
                 throw new IOException( "Not a directory" );
             }
-        }    
+        }
     }
 
     @Override
@@ -180,7 +180,7 @@ public class FileMount implements IWritableMount
         }
         throw new IOException( "No such file" );
     }
-    
+
     @Nonnull
     @Override
     public InputStream openForRead( @Nonnull String path ) throws IOException
@@ -195,9 +195,9 @@ public class FileMount implements IWritableMount
         }
         throw new IOException( "No such file" );
     }
-    
+
     // IWritableMount implementation
-    
+
     @Override
     public void makeDirectory( @Nonnull String path ) throws IOException
     {
@@ -224,7 +224,7 @@ public class FileMount implements IWritableMount
             {
                 throw new IOException( "Out of space" );
             }
-            
+
             boolean success = file.mkdirs();
             if( success )
             {
@@ -236,7 +236,7 @@ public class FileMount implements IWritableMount
             }
         }
     }
-    
+
     @Override
     public void delete( @Nonnull String path ) throws IOException
     {
@@ -244,7 +244,7 @@ public class FileMount implements IWritableMount
         {
             throw new IOException( "Access denied" );
         }
-        
+
         if( created() )
         {
             File file = getRealPath( path );
@@ -254,7 +254,7 @@ public class FileMount implements IWritableMount
             }
         }
     }
-    
+
     private void deleteRecursively( File file ) throws IOException
     {
         // Empty directories first
@@ -266,7 +266,7 @@ public class FileMount implements IWritableMount
                 deleteRecursively( new File( file, aChildren ) );
             }
         }
-        
+
         // Then delete
         long fileSize = file.isDirectory() ? 0 : file.length();
         boolean success = file.delete();
@@ -279,7 +279,7 @@ public class FileMount implements IWritableMount
             throw new IOException( "Access denied" );
         }
     }
-    
+
     @Nonnull
     @Override
     public OutputStream openForWrite( @Nonnull String path ) throws IOException
@@ -311,7 +311,7 @@ public class FileMount implements IWritableMount
             return new CountingOutputStream( new FileOutputStream( file, false ), MINIMUM_FILE_SIZE );
         }
     }
-    
+
     @Nonnull
     @Override
     public OutputStream openForAppend( @Nonnull String path ) throws IOException
@@ -337,23 +337,23 @@ public class FileMount implements IWritableMount
             throw new IOException( "No such file" );
         }
     }
-    
+
     @Override
     public long getRemainingSpace() throws IOException
     {
         return Math.max( m_capacity - m_usedSpace, 0 );
     }
-    
+
     public File getRealPath( String path )
     {
         return new File( m_rootPath, path );
     }
-    
+
     private boolean created()
     {
         return m_rootPath.exists();
     }
-    
+
     private void create() throws IOException
     {
         if( !m_rootPath.exists() )
@@ -365,7 +365,7 @@ public class FileMount implements IWritableMount
             }
         }
     }
-    
+
     private long measureUsedSpace( File file )
     {
         if( !file.exists() )

@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 
 // Contributed by Nia
 // Based on LuaBit (http://luaforge.net/projects/bit)
- 
+
 public class BitAPI implements ILuaAPI
 {
     private static final int BNOT                    = 0;
@@ -23,7 +23,7 @@ public class BitAPI implements ILuaAPI
     private static final int BRSHIFT                  = 4;
     private static final int BLSHIFT                  = 5;
     private static final int BLOGIC_RSHIFT              = 6;
- 
+
     private static int checkInt( Object o, int count ) throws LuaException
     {
         if( o instanceof Number )
@@ -42,11 +42,11 @@ public class BitAPI implements ILuaAPI
             }
         }
     }
-    
+
     public BitAPI( IAPIEnvironment _environment )
     {
     }
-    
+
     @Override
     public String[] getNames()
     {
@@ -64,12 +64,12 @@ public class BitAPI implements ILuaAPI
     public void advance( double _dt )
     {
     }
-    
+
     @Override
     public void shutdown( )
     {
     }
-    
+
     @Nonnull
     @Override
     public String[] getMethodNames() {
@@ -78,13 +78,13 @@ public class BitAPI implements ILuaAPI
             "brshift", "blshift", "blogic_rshift"
         };
     }
-    
+
     @Override
     public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         Object a = args.length>0?args[0]:null;
         Object b = args.length>1?args[1]:null;
- 
+
         int ret = 0;
         switch(method) {
             case BNOT:
@@ -109,7 +109,7 @@ public class BitAPI implements ILuaAPI
                 ret = checkInt(a, 2) >>> checkInt(b, 2);
                 break;
         }
-        
+
         return new Object[]{ ret&0xFFFFFFFFL };
     }
 }

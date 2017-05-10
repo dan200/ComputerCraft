@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -159,13 +159,13 @@ public class FixedWidthFontRenderer
             // Draw the quads
             drawStringBackgroundPart( x, y, backgroundColour, leftMarginSize, rightMarginSize, greyScale, p );
         }
-    
+
         // Draw text
         if( s != null && textColour != null )
         {
             // Bind the font texture
             m_textureManager.bindTexture( font );
-            
+
             // Draw the quads
             drawStringTextPart( x, y, s, textColour, greyScale, p );
         }

@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -22,7 +22,7 @@ public class ContainerDiskDrive extends Container
     {
         m_diskDrive = diskDrive;
         addSlotToContainer(new Slot( m_diskDrive, 0, 8 + 4 * 18, 35));
-        
+
         for(int j = 0; j < 3; j++)
         {
             for(int i1 = 0; i1 < 9; i1++)
@@ -63,7 +63,7 @@ public class ContainerDiskDrive extends Container
             {
                 return null;
             }
-            
+
             if(itemstack1.stackSize == 0)
             {
                 slot.putStack(null);
@@ -72,7 +72,7 @@ public class ContainerDiskDrive extends Container
             {
                 slot.onSlotChanged();
             }
-            
+
             if(itemstack1.stackSize != itemstack.stackSize)
             {
                 slot.onPickupFromSlot(player, itemstack1);

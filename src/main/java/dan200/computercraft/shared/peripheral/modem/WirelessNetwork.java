@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -28,9 +28,9 @@ public class WirelessNetwork implements INetwork
     {
         s_universalNetwork = null;
     }
-    
+
     private Map<Integer, Set<IReceiver>> m_receivers;
-    
+
     private WirelessNetwork()
     {
         m_receivers = new HashMap<Integer, Set<IReceiver>>();
@@ -48,7 +48,7 @@ public class WirelessNetwork implements INetwork
         }
         receivers.add( receiver );
     }
-    
+
     @Override
     public synchronized void removeReceiver( IReceiver receiver )
     {
@@ -59,7 +59,7 @@ public class WirelessNetwork implements INetwork
             receivers.remove( receiver );
         }
     }
-    
+
     @Override
     public synchronized void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
     {
@@ -72,7 +72,7 @@ public class WirelessNetwork implements INetwork
             }
         }
     }
-        
+
     private void tryTransmit( IReceiver receiver, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
     {
         if( receiver.getWorld() == world )
