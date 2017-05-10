@@ -22,6 +22,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemComputer extends ItemComputerBase
@@ -72,7 +73,7 @@ public class ItemComputer extends ItemComputerBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
+    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Normal ) );
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Advanced ) );

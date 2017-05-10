@@ -24,6 +24,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemCable extends ItemPeripheralBase
@@ -63,7 +64,7 @@ public class ItemCable extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nonnull CreativeTabs tabs, @Nonnull List<ItemStack> list )
+    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
     {
         list.add( PeripheralItemFactory.create( PeripheralType.WiredModem, null, 1 ) );
         list.add( PeripheralItemFactory.create( PeripheralType.Cable, null, 1 ) );

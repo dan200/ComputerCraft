@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class WidgetTerminal extends Widget
 {
-    private static final ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/termBackground.png" );
+    private static final ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/term_background.png" );
     private static float TERMINATE_TIME = 0.5f;
 
     private final IComputerContainer m_computer;

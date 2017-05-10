@@ -46,6 +46,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -65,27 +67,19 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     private long m_renderFrame;
     private FixedWidthFontRenderer m_fixedWidthFontRenderer;
 
-    public ComputerCraftProxyClient()
-    {
-    }
-
     // IComputerCraftProxy implementation
 
     @Override
-    public void init()
+    public void preInit()
     {
-        super.init();
+        super.preInit();
         m_tick = 0;
         m_renderFrame = 0;
-
-        // Load textures
-        Minecraft mc = Minecraft.getMinecraft();
-        m_fixedWidthFontRenderer = new FixedWidthFontRenderer( mc.getTextureManager() );
 
         // Register item models
         registerItemModel( ComputerCraft.Blocks.computer, new ItemMeshDefinition()
         {
-            private ModelResourceLocation computer = new ModelResourceLocation( "computercraft:CC-Computer", "inventory" );
+            private ModelResourceLocation computer = new ModelResourceLocation( "computercraft:computer", "inventory" );
             private ModelResourceLocation advanced_computer = new ModelResourceLocation( "computercraft:advanced_computer", "inventory" );
 
             @Nonnull
@@ -96,26 +90,26 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                 ComputerFamily family = itemComputer.getFamily( stack.getItemDamage() );
                 return ( family == ComputerFamily.Advanced ) ? advanced_computer : computer;
             }
-        }, new String[]{ "CC-Computer", "advanced_computer" } );
-        registerItemModel( ComputerCraft.Blocks.peripheral, 0, "CC-Peripheral" );
+        }, new String[]{ "computer", "advanced_computer" } );
+        registerItemModel( ComputerCraft.Blocks.peripheral, 0, "peripheral" );
         registerItemModel( ComputerCraft.Blocks.peripheral, 1, "wireless_modem" );
         registerItemModel( ComputerCraft.Blocks.peripheral, 2, "monitor" );
         registerItemModel( ComputerCraft.Blocks.peripheral, 3, "printer" );
         registerItemModel( ComputerCraft.Blocks.peripheral, 4, "advanced_monitor" );
-        registerItemModel( ComputerCraft.Blocks.cable, 0, "CC-Cable" );
+        registerItemModel( ComputerCraft.Blocks.cable, 0, "cable" );
         registerItemModel( ComputerCraft.Blocks.cable, 1, "wired_modem" );
         registerItemModel( ComputerCraft.Blocks.commandComputer, "command_computer" );
         registerItemModel( ComputerCraft.Blocks.advancedModem, "advanced_modem" );
 
         registerItemModel( ComputerCraft.Items.disk, "disk" );
-        registerItemModel( ComputerCraft.Items.diskExpanded, "diskExpanded" );
-        registerItemModel( ComputerCraft.Items.treasureDisk, "treasureDisk" );
+        registerItemModel( ComputerCraft.Items.diskExpanded, "disk_expanded" );
+        registerItemModel( ComputerCraft.Items.treasureDisk, "treasure_disk" );
         registerItemModel( ComputerCraft.Items.printout, 0, "printout" );
         registerItemModel( ComputerCraft.Items.printout, 1, "pages" );
         registerItemModel( ComputerCraft.Items.printout, 2, "book" );
         registerItemModel( ComputerCraft.Items.pocketComputer, new ItemMeshDefinition()
         {
-            private ModelResourceLocation pocket_computer_off = new ModelResourceLocation( "computercraft:pocketComputer", "inventory" );
+            private ModelResourceLocation pocket_computer_off = new ModelResourceLocation( "computercraft:pocket_computer", "inventory" );
             private ModelResourceLocation pocket_computer_on = new ModelResourceLocation( "computercraft:pocket_computer_on", "inventory" );
             private ModelResourceLocation pocket_computer_blinking = new ModelResourceLocation( "computercraft:pocket_computer_blinking", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_off = new ModelResourceLocation( "computercraft:advanced_pocket_computer_off", "inventory" );
@@ -171,9 +165,22 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                 }
             }
         }, new String[] {
-            "pocketComputer", "pocket_computer_on", "pocket_computer_blinking",
+            "pocket_computer", "pocket_computer_on", "pocket_computer_blinking",
             "advanced_pocket_computer_off", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking",
         } );
+
+        // Setup client forge handlers
+        registerForgeHandlers();
+    }
+
+    @Override
+    public void init()
+    {
+        super.init();
+
+        // Load textures
+        Minecraft mc = Minecraft.getMinecraft();
+        m_fixedWidthFontRenderer = new FixedWidthFontRenderer( mc.getTextureManager() );
 
         // Setup
         mc.getItemColors().registerItemColorHandler( new DiskColorHandler( ComputerCraft.Items.disk ), ComputerCraft.Items.disk );
@@ -193,9 +200,6 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 
         // Setup renderers
         ClientRegistry.bindTileEntitySpecialRenderer( TileMonitor.class, new TileEntityMonitorRenderer() );
-
-        // Setup client forge handlers
-        registerForgeHandlers();
     }
 
     private void registerItemModel( Block block, int damage, String name )
@@ -207,7 +211,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     {
         ModelResourceLocation res = new ModelResourceLocation( "computercraft:" + name, "inventory" );
         ModelBakery.registerItemVariants( item, new ResourceLocation( "computercraft", name ) );
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, damage, res );
+        ModelLoader.setCustomModelResourceLocation( item, damage, res );
     }
 
     private void registerItemModel( Block block, String name )
@@ -219,7 +223,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     {
         final ModelResourceLocation res = new ModelResourceLocation( "computercraft:" + name, "inventory" );
         ModelBakery.registerItemVariants( item, new ResourceLocation( "computercraft", name ) );
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, new ItemMeshDefinition()
+        ModelLoader.setCustomMeshDefinition( item, new ItemMeshDefinition()
         {
             @Nonnull
             @Override
@@ -243,7 +247,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             resources[i] = new ResourceLocation( "computercraft", names[i] );
         }
         ModelBakery.registerItemVariants( item, resources );
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, definition );
+        ModelLoader.setCustomMeshDefinition( item, definition );
     }
 
     @Override

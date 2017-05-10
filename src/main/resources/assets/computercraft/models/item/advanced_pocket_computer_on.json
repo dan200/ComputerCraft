@@ -1,7 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "computercraft:items/pocketComputerOnAdvanced",
-        "layer1": "computercraft:items/pocketComputerLight"
+        "layer0": "computercraft:items/pocket_computer_on_advanced",
+        "layer1": "computercraft:items/pocket_computer_light"
     }
 }
