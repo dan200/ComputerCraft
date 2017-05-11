@@ -39,7 +39,7 @@ public class BlockComputer extends BlockComputerBase
     }
 
     // Members
-
+    
     public BlockComputer()
     {
         super( Material.ROCK );

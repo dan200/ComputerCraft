@@ -44,7 +44,7 @@ public class GuiPrinter extends GuiContainer
         int startX = (width - xSize) / 2;
         int startY = (height - ySize) / 2;
         drawTexturedModalRect(startX, startY, 0, 0, xSize, ySize);
-
+        
         boolean printing = m_container.isPrinting();
         if( printing )
         {

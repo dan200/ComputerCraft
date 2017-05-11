@@ -185,7 +185,7 @@ public class GuiPrintout extends GuiContainer
             drawTexturedModalRect( startX + m_page*8 + xSize/2, startY, 24 + xSize / 2, 0, xSize / 2, ySize);
             drawTexturedModalRect( startX + m_page*8 + (xSize - 12), startY, 24 + xSize + 12, 0, 12, ySize);
         }
-        else
+        else 
         {
             drawTexturedModalRect( startX + (m_pages - 1)*8 + (xSize - 12), startY, 24 + xSize + 12, 0, 12, ySize);
             for( int n=m_pages-2; n>=m_page; --n )

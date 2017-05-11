@@ -47,7 +47,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
 
     @Override
     public void preInit()
-    {
+    {    
         super.preInit();
 
         // Register item models

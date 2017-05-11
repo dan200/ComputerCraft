@@ -17,16 +17,16 @@ import java.util.List;
 import java.util.Set;
 
 public class ComboMount implements IMount
-{
+{    
     private IMount[] m_parts;
-
+    
     public ComboMount( IMount[] parts )
     {
         m_parts = parts;
     }
-
+    
     // IMount implementation
-
+    
     @Override
     public boolean exists( @Nonnull String path ) throws IOException
     {
@@ -40,7 +40,7 @@ public class ComboMount implements IMount
         }
         return false;
     }
-
+    
     @Override
     public boolean isDirectory( @Nonnull String path ) throws IOException
     {
@@ -54,7 +54,7 @@ public class ComboMount implements IMount
         }
         return false;
     }
-
+    
     @Override
     public void list( @Nonnull String path, @Nonnull List<String> contents ) throws IOException
     {
@@ -74,7 +74,7 @@ public class ComboMount implements IMount
                 foundDirs++;
             }
         }
-
+        
         if( foundDirs == 1 )
         {
             // We found one directory, so we know it already doesn't contain duplicates
@@ -97,7 +97,7 @@ public class ComboMount implements IMount
             throw new IOException( "Not a directory" );
         }
     }
-
+    
     @Override
     public long getSize( @Nonnull String path ) throws IOException
     {

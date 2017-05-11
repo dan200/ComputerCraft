@@ -281,7 +281,7 @@ public class HTTPRequest
     private final Object m_lock = new Object();
     private final URL m_url;
     private final String m_urlString;
-
+    
     private boolean m_complete;
     private boolean m_cancelled;
     private boolean m_success;

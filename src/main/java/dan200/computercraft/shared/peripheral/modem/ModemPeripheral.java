@@ -19,20 +19,20 @@ import java.util.Map;
 
 public abstract class ModemPeripheral
     implements IPeripheral
-{
+{    
     private static class SingleChannelReceiver implements IReceiver
     {
         private ModemPeripheral m_owner;
         private int m_channel;
-
+        
         public SingleChannelReceiver( ModemPeripheral owner, int channel )
         {
             m_owner = owner;
             m_channel = channel;
         }
-
+        
         // IReceiver implementation
-
+        
         @Override
         public int getChannel()
         {
@@ -50,7 +50,7 @@ public abstract class ModemPeripheral
         {
             return m_owner.getWorldPosition();
         }
-
+        
         @Override
         public boolean isInterdimensional()
         {
@@ -81,7 +81,7 @@ public abstract class ModemPeripheral
             }
         }
     }
-
+    
     private INetwork m_network;
     private IComputerAccess m_computer;
     private final Map<Integer, IReceiver> m_channels;
@@ -93,7 +93,7 @@ public abstract class ModemPeripheral
     {
         m_network = null;
         m_computer = null;
-
+        
         m_channels = new HashMap<Integer, IReceiver>();
         m_open = false;
         m_changed = true;
@@ -134,14 +134,14 @@ public abstract class ModemPeripheral
     protected abstract World getWorld();
 
     protected abstract Vec3d getPosition();
-
+        
     public synchronized void destroy()
     {
         setNetwork( null );
         m_channels.clear();
         m_open = false;
     }
-
+    
     public synchronized boolean pollChanged()
     {
         if( m_changed )
@@ -151,7 +151,7 @@ public abstract class ModemPeripheral
         }
         return false;
     }
-
+    
     protected abstract double getTransmitRange();
 
     protected abstract boolean isInterdimensional();
@@ -165,12 +165,12 @@ public abstract class ModemPeripheral
     {
         return getPosition();
     }
-
+    
     public synchronized double getReceiveRange()
     {
         return getTransmitRange();
     }
-
+    
     public void receiveSameDimension( int channel, int replyChannel, Object payload, double distance )
     {
         synchronized (m_channels)
@@ -198,7 +198,7 @@ public abstract class ModemPeripheral
     }
 
     protected abstract INetwork getNetwork();
-
+    
     // IPeripheral implementation
 
     @Nonnull
@@ -207,7 +207,7 @@ public abstract class ModemPeripheral
     {
         return "modem";
     }
-
+       
     @Nonnull
     @Override
     public String[] getMethodNames()
@@ -221,7 +221,7 @@ public abstract class ModemPeripheral
             "isWireless",
         };
     }
-
+    
     private static int parseChannel( Object[] arguments, int index ) throws LuaException
     {
         if( arguments.length <= index || !(arguments[index] instanceof Double) )
@@ -235,7 +235,7 @@ public abstract class ModemPeripheral
         }
         return channel;
     }
-
+    
     @Override
     public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
     {
@@ -253,7 +253,7 @@ public abstract class ModemPeripheral
                         {
                             throw new LuaException( "Too many open channels" );
                         }
-
+                    
                         IReceiver receiver = new SingleChannelReceiver( this, channel );
                         m_channels.put( channel, receiver );
                         if( m_network != null )
@@ -293,7 +293,7 @@ public abstract class ModemPeripheral
                             m_network.removeReceiver( receiver );
                         }
                         m_channels.remove( channel );
-
+                        
                         if( m_channels.size() == 0 )
                         {
                             m_open = false;
@@ -318,7 +318,7 @@ public abstract class ModemPeripheral
                             }
                         }
                         m_channels.clear();
-
+                        
                         if( m_open )
                         {
                             m_open = false;
@@ -363,7 +363,7 @@ public abstract class ModemPeripheral
             }
         }
     }
-
+    
     @Override
     public synchronized void attach( @Nonnull IComputerAccess computer )
     {
@@ -371,7 +371,7 @@ public abstract class ModemPeripheral
         setNetwork( getNetwork() );
         m_open = !m_channels.isEmpty();
     }
-
+    
     @Override
     public synchronized void detach( @Nonnull IComputerAccess computer )
     {
@@ -386,10 +386,10 @@ public abstract class ModemPeripheral
         }
 
         m_computer = null;
-
+            
         if( m_open )
         {
-            m_open = false;
+            m_open = false;        
             m_changed = true;
         }
     }

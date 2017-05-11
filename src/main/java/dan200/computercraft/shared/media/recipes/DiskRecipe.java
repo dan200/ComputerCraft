@@ -63,7 +63,7 @@ public class DiskRecipe implements IRecipe
                     {
                         return false;
                     }
-
+                    
                     redstoneFound = true;
                 }
                 else
@@ -72,7 +72,7 @@ public class DiskRecipe implements IRecipe
                 }
             }
         }
-
+        
         return (redstoneFound && paperFound) || (diskFound && dyeFound);
     }
 
@@ -115,7 +115,7 @@ public class DiskRecipe implements IRecipe
                     var4 += Math.max(var16, Math.max(var15, var17));
                     var3[0] += var16;
                     var3[1] += var15;
-                    var3[2] += var17;
+                    var3[2] += var17;                 
                     ++var5;
                 }
                 else if (!(var8.getItem() != Items.PAPER || var8.getItem() != Items.REDSTONE))
@@ -124,12 +124,12 @@ public class DiskRecipe implements IRecipe
                 }
             }
         }
-
+        
         if( !dyeFound )
         {
             return ItemDiskLegacy.createFromIDAndColour( diskID, diskLabel, Colour.Blue.getHex() );
         }
-
+        
         var7 = var3[0] / var5;
         int var13 = var3[1] / var5;
         var9 = var3[2] / var5;

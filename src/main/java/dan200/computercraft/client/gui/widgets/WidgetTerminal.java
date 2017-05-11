@@ -312,7 +312,7 @@ public class WidgetTerminal extends Widget
             {
                 m_terminateTimer = 0.0f;
             }
-
+            
             // Ctrl+R for reboot
             if( Keyboard.isKeyDown(19) )
             {

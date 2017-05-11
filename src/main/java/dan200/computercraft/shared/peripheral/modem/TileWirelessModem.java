@@ -26,7 +26,7 @@ public class TileWirelessModem extends TileModemBase
     private static class Peripheral extends WirelessModemPeripheral
     {
         private TileModemBase m_entity;
-
+        
         public Peripheral( TileModemBase entity )
         {
             super( false );
@@ -38,7 +38,7 @@ public class TileWirelessModem extends TileModemBase
         {
             return m_entity.getWorld();
         }
-
+        
         @Override
         protected Vec3d getPosition()
         {

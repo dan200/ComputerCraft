@@ -26,9 +26,9 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
     public ComputerCraftProxyServer()
     {
     }
-
+    
     // IComputerCraftProxy implementation
-
+    
     @Override
     public void init()
     {
@@ -64,7 +64,7 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
     {
         return null;
     }
-
+    
     @Override
     public void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos )
     {
@@ -75,7 +75,7 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
     {
         return null;
     }
-
+    
     @Override
     public Object getComputerGUI( TileComputer computer )
     {

@@ -28,7 +28,7 @@ import java.util.List;
 public class ItemComputer extends ItemComputerBase
 {
     public static int HIGHEST_DAMAGE_VALUE_ID = 16382;
-
+    
     public ItemComputer( Block block )
     {
         super( block );

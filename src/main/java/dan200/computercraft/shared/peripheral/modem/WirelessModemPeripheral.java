@@ -24,7 +24,7 @@ public abstract class WirelessModemPeripheral extends ModemPeripheral
     {
         return m_advanced;
     }
-
+    
     @Override
     protected double getTransmitRange()
     {
@@ -54,7 +54,7 @@ public abstract class WirelessModemPeripheral extends ModemPeripheral
             return 0.0;
         }
     }
-
+    
     @Override
     protected INetwork getNetwork()
     {

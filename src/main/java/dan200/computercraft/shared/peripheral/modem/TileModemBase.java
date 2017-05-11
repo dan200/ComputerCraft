@@ -33,9 +33,9 @@ public abstract class TileModemBase extends TilePeripheralBase
     {
         m_modem = createPeripheral();
     }
-
+    
     protected abstract ModemPeripheral createPeripheral();
-
+            
     @Override
     public synchronized void destroy()
     {
@@ -84,7 +84,7 @@ public abstract class TileModemBase extends TilePeripheralBase
             updateAnim();
         }
     }
-
+    
     protected void updateAnim()
     {
         if( m_modem.isActive() )

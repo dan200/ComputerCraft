@@ -21,14 +21,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class JarMount implements IMount
-{
+{    
     private class FileInZip
     {
         private String m_path;
         private boolean m_directory;
         private long m_size;
         private Map<String, FileInZip> m_children;
-
+        
         public FileInZip( String path, boolean directory, long size )
         {
             m_path = path;
@@ -36,41 +36,41 @@ public class JarMount implements IMount
             m_size = m_directory ? 0 : size;
             m_children = new LinkedHashMap<String, FileInZip>();
         }
-
+        
         public String getPath()
         {
             return m_path;
         }
-
+        
         public boolean isDirectory()
         {
             return m_directory;
         }
-
+                
         public long getSize()
         {
             return m_size;
         }
-
+        
         public void list( List<String> contents )
         {
             contents.addAll( m_children.keySet() );
         }
-
+                
         public void insertChild( FileInZip child )
         {
             String localPath = FileSystem.toLocal( child.getPath(), m_path );
             m_children.put( localPath, child );
         }
 
-        public FileInZip getFile( String path )
+        public FileInZip getFile( String path ) 
         {
             // If we've reached the target, return this
             if( path.equals( m_path ) )
             {
                 return this;
             }
-
+            
             // Otherwise, get the next component of the path
             String localPath = FileSystem.toLocal( path, m_path );
             int slash = localPath.indexOf("/");
@@ -85,17 +85,17 @@ public class JarMount implements IMount
             {
                 return subFile.getFile( path );
             }
-
+            
             return null;
         }
-
+        
         public FileInZip getParent( String path )
         {
             if( path.length() == 0 )
             {
                 return null;
             }
-
+            
             FileInZip file = getFile( FileSystem.getDirectory( path ) );
             if( file.isDirectory() )
             {
@@ -104,7 +104,7 @@ public class JarMount implements IMount
             return null;
         }
     }
-
+    
     private ZipFile m_zipFile;
     private FileInZip m_root;
     private String m_rootPath;
@@ -115,7 +115,7 @@ public class JarMount implements IMount
         {
             throw new FileNotFoundException();
         }
-
+        
         // Open the zip file
         try
         {
@@ -125,13 +125,13 @@ public class JarMount implements IMount
         {
             throw new IOException( "Error loading zip file" );
         }
-
+    
         if( m_zipFile.getEntry( subPath ) == null )
         {
             m_zipFile.close();
             throw new IOException( "Zip does not contain path" );
         }
-
+    
         // Read in all the entries
         Enumeration<? extends ZipEntry> zipEntries = m_zipFile.entries();
         while( zipEntries.hasMoreElements() )
@@ -139,7 +139,7 @@ public class JarMount implements IMount
             ZipEntry entry = zipEntries.nextElement();
             String entryName = entry.getName();
             if( entryName.startsWith( subPath ) )
-            {
+            {                    
                 entryName = FileSystem.toLocal( entryName, subPath );
                 if( m_root == null )
                 {
@@ -169,19 +169,19 @@ public class JarMount implements IMount
                         // TODO: handle this case. The code currently assumes we find folders before their contents
                     }
                 }
-            }
+            }            
         }
     }
-
+    
     // IMount implementation
-
+    
     @Override
     public boolean exists( @Nonnull String path ) throws IOException
     {
         FileInZip file = m_root.getFile( path );
         return file != null;
     }
-
+    
     @Override
     public boolean isDirectory( @Nonnull String path ) throws IOException
     {
@@ -192,7 +192,7 @@ public class JarMount implements IMount
         }
         return false;
     }
-
+    
     @Override
     public void list( @Nonnull String path, @Nonnull List<String> contents ) throws IOException
     {
@@ -206,7 +206,7 @@ public class JarMount implements IMount
             throw new IOException( "Not a directory" );
         }
     }
-
+    
     @Override
     public long getSize( @Nonnull String path ) throws IOException
     {

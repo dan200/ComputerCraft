@@ -15,7 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
+ 
 public class ComputerCraftPacket
 {
     // Packet types

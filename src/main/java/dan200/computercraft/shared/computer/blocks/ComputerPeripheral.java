@@ -25,7 +25,7 @@ public class ComputerPeripheral
         m_type = type;
         m_computer = computer;
     }
-
+        
     // IPeripheral implementation
 
     @Nonnull

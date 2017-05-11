@@ -113,7 +113,7 @@ public class CommandBlockPeripheral implements IPeripheral
 
     @Override
     public void attach( @Nonnull IComputerAccess computer )
-    {
+    {    
     }
 
     @Override

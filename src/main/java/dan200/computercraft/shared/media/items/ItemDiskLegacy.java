@@ -33,7 +33,7 @@ public class ItemDiskLegacy extends Item
         setUnlocalizedName( "computercraft:disk" );
         setCreativeTab( ComputerCraft.mainCreativeTab  );
     }
-
+    
     @Override
     public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List<ItemStack> list )
     {
@@ -46,20 +46,20 @@ public class ItemDiskLegacy extends Item
             }
         }
     }
-
+            
     public static ItemStack createFromIDAndColour( int id, String label, int colour )
     {
         if( colour != Colour.Blue.getHex() )
         {
             return ItemDiskExpanded.createFromIDAndColour( id, label, colour );
         }
-
+        
         ItemStack stack = new ItemStack( ComputerCraft.Items.disk, 1 );
         ComputerCraft.Items.disk.setDiskID( stack, id );
         ComputerCraft.Items.disk.setLabel( stack, label );
         return stack;
     }
-
+    
     public int getDiskID( ItemStack stack )
     {
         int damage = stack.getItemDamage();
@@ -103,7 +103,7 @@ public class ItemDiskLegacy extends Item
         }
         return null;
     }
-
+    
     @Override
     public boolean setLabel( @Nonnull ItemStack stack, String label )
     {
@@ -117,19 +117,19 @@ public class ItemDiskLegacy extends Item
         }
         return true;
     }
-
+    
     @Override
     public String getAudioTitle( @Nonnull ItemStack stack )
     {
         return null;
     }
-
+    
     @Override
     public SoundEvent getAudio( @Nonnull ItemStack stack )
     {
         return null;
     }
-
+    
     @Override
     public IMount createDataMount( @Nonnull ItemStack stack, @Nonnull World world )
     {

@@ -159,13 +159,13 @@ public class FixedWidthFontRenderer
             // Draw the quads
             drawStringBackgroundPart( x, y, backgroundColour, leftMarginSize, rightMarginSize, greyScale, p );
         }
-
+    
         // Draw text
         if( s != null && textColour != null )
         {
             // Bind the font texture
             m_textureManager.bindTexture( font );
-            
+
             // Draw the quads
             drawStringTextPart( x, y, s, textColour, greyScale, p );
         }
