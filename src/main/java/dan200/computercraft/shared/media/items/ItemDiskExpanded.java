@@ -44,7 +44,7 @@ public class ItemDiskExpanded extends ItemDiskLegacy
         return -1;
     }
 
-    @Override    
+    @Override
     protected void setDiskID( ItemStack stack, int id )
     {
         if( id >= 0 )
@@ -58,10 +58,18 @@ public class ItemDiskExpanded extends ItemDiskLegacy
             nbt.setInteger( "diskID", id );
         }
     }
-    
-    public int getColor( ItemStack stack )
+
+    @Override
+    public int getColour( ItemStack stack )
     {
         NBTTagCompound nbt = stack.getTagCompound();
-           return nbt != null && nbt.hasKey("color") ? nbt.getInteger("color") : Colour.values()[ Math.min(15, stack.getItemDamage()) ].getHex();
+        if( nbt != null && nbt.hasKey( "color" ) )
+        {
+            return nbt.getInteger( "color" );
+        }
+        else
+        {
+            return Colour.values()[ Math.min( 15, stack.getItemDamage() ) ].getHex();
+        }
     }
 }

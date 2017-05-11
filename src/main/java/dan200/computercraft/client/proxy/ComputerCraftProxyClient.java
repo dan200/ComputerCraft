@@ -47,7 +47,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -515,20 +514,20 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         }
     }
 
-	@SideOnly(Side.CLIENT)
-	private static class DiskColorHandler implements IItemColor
-	{
-		private final ItemDiskLegacy disk;
+    @SideOnly(Side.CLIENT)
+    private static class DiskColorHandler implements IItemColor
+    {
+        private final ItemDiskLegacy disk;
 
-		private DiskColorHandler(ItemDiskLegacy disk)
-		{
-			this.disk = disk;
-		}
+        private DiskColorHandler( ItemDiskLegacy disk )
+        {
+            this.disk = disk;
+        }
 
-		@Override
-		public int getColorFromItemstack( @Nonnull ItemStack stack, int layer)
-		{
-			return layer == 0 ? 0xFFFFFF : disk.getColor(stack);
-		}
-	}
+        @Override
+        public int getColorFromItemstack( @Nonnull ItemStack stack, int layer )
+        {
+            return layer == 0 ? 0xFFFFFF : disk.getColour( stack );
+        }
+    }
 }

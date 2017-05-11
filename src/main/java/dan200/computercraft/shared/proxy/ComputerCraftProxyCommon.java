@@ -10,6 +10,7 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.core.computer.MainThread;
+import dan200.computercraft.shared.common.ColourableRecipe;
 import dan200.computercraft.shared.common.DefaultBundledRedstoneProvider;
 import dan200.computercraft.shared.common.TileGeneric;
 import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
@@ -276,6 +277,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         RecipeSorter.register( "computercraft:impostor", ImpostorRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
         RecipeSorter.register( "computercraft:impostor_shapeless", ImpostorShapelessRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless" );
         RecipeSorter.register( "computercraft:disk", DiskRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless" );
+        RecipeSorter.register( "computercraft:colour", ColourableRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless" );
         RecipeSorter.register( "computercraft:printout", PrintoutRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless" );
         RecipeSorter.register( "computercraft:pocket_computer_upgrade", PocketComputerUpgradeRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless" );
 
@@ -374,6 +376,9 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
 
         // Disk
         GameRegistry.addRecipe( new DiskRecipe() );
+
+        // Colourable items (turtles, disks)
+        GameRegistry.addRecipe( new ColourableRecipe() );
 
         // Impostor Disk recipes (to fool NEI)
         ItemStack paper = new ItemStack( Items.PAPER, 1 );
