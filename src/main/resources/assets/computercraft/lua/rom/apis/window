@@ -270,31 +270,19 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function setTextColor( color )
-        nTextColor = color
-        if bVisible then
-            updateCursorColor()
+        if type(color) == "number" then
+	    nTextColor = color
+            if bVisible then
+               updateCursorColor()
+            end
+        else
+           error("Color must be a number")
         end
     end
 
-    function window.setTextColor( color )
-		for key,value in pairs(colors) do
-			if value == color then
-        		 setTextColor( color )
-				return
-			end
-		end
-		error("Color doesn't exists")
-    end
+    window.setTextColor = setTextColor
 
-    function window.setTextColour( color )
-		for key,value in pairs(colors) do
-			if value == color then
-        		 setTextColor( color )
-				return
-			end
-		end
-		error("Colour doesn't exists")
-    end
+    window.setTextColour = setTextColor
 
     function window.setPaletteColour( colour, r, g, b )
         local tCol
@@ -324,28 +312,16 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     window.getPaletteColor = window.getPaletteColour
 
     local function setBackgroundColor( color )
-        nBackgroundColor = color
+	if type(color) == "number" then
+	   nBackgroundColor = color
+        else
+           error("Color must be a number")
+        end
     end
 
-    function window.setBackgroundColor( color )
-		for key,value in pairs(colors) do
-			if value == color then
-        		setBackgroundColor( color )
-				return
-			end
-		end
-		error("Color doesn't exists")
-    end
+    window.setBackgroundColor = setBackgroundColor
 
-    function window.setBackgroundColour( color )
-		for key,value in pairs(colors) do
-			if value == color then
-        		setBackgroundColor( color )
-				return
-			end
-		end
-		error("Colour doesn't exists")
-    end
+    window.setBackgroundColour = setBackgroundColor
 
     function window.getSize()
         return nWidth, nHeight
