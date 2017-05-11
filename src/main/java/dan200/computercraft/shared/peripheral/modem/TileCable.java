@@ -1061,4 +1061,10 @@ public class TileCable extends TileModemBase
         }
         //System.out.println( "Visited "+visited+" common" );
     }
+
+    @Override
+    public boolean canRenderBreaking()
+    {
+        return true;
+    }
 }
