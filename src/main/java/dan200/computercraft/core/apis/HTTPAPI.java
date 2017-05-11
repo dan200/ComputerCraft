@@ -19,13 +19,13 @@ public class HTTPAPI implements ILuaAPI
 {
     private final IAPIEnvironment m_apiEnvironment;
     private final List<HTTPRequest> m_httpRequests;
-
+    
     public HTTPAPI( IAPIEnvironment environment )
     {
         m_apiEnvironment = environment;
         m_httpRequests = new ArrayList<HTTPRequest>();
     }
-
+    
     @Override
     public String[] getNames()
     {
@@ -42,7 +42,7 @@ public class HTTPAPI implements ILuaAPI
     @Override
     public void advance( double _dt )
     {
-        // Wait for all of our http requests
+        // Wait for all of our http requests 
         synchronized( m_httpRequests )
         {
             Iterator<HTTPRequest> it = m_httpRequests.iterator();
@@ -69,7 +69,7 @@ public class HTTPAPI implements ILuaAPI
             }
         }
     }
-
+    
     private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode, final Map<String, String> responseHeaders )
     {
         return new ILuaObject() {
@@ -85,7 +85,7 @@ public class HTTPAPI implements ILuaAPI
                     "getResponseHeaders",
                 };
             }
-
+            
             @Override
             public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
             {

@@ -88,25 +88,25 @@ public class ContainerTurtle extends Container
     {
         return m_selectedSlot;
     }
-
+    
     private void sendStateToPlayer( IContainerListener icrafting )
     {
         int selectedSlot = m_turtle.getSelectedSlot();
         icrafting.sendProgressBarUpdate( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
     }
-
+                        
     @Override
     public void addListener( IContainerListener crafting )
     {
         super.addListener( crafting );
         sendStateToPlayer( crafting );
     }
-
+    
     @Override
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
-
+        
         int selectedSlot = m_turtle.getSelectedSlot();
         for( IContainerListener listener : listeners )
         {
@@ -117,7 +117,7 @@ public class ContainerTurtle extends Container
         }
         m_selectedSlot = selectedSlot;
     }
-
+    
     @Override
     public void updateProgressBar( int id, int value )
     {
@@ -131,7 +131,7 @@ public class ContainerTurtle extends Container
             }
         }
     }
-
+    
     @Override
     public boolean canInteractWith( @Nonnull EntityPlayer player )
     {

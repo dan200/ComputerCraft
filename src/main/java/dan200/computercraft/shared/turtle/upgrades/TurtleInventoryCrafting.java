@@ -91,7 +91,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
             {
                 return results;
             }
-
+        
             // Find out how many we can craft
             int numToCraft = 1;
             int size = getSizeInventory();
@@ -106,9 +106,9 @@ public class TurtleInventoryCrafting extends InventoryCrafting
                         minStackSize = stack.stackSize;
                     }
                 }
-
+                
                 if( minStackSize > 1 )
-                {
+                {            
                     numToCraft = Math.min( minStackSize, result.getMaxStackSize() / result.stackSize );
                     numToCraft = Math.min( numToCraft, maxCount );
                     result.stackSize = result.stackSize * numToCraft;
@@ -149,7 +149,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
             }
             return results;
         }
-
+        
         return null;
     }
 
@@ -188,7 +188,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
     }
 
     // IInventory implementation
-
+    
     @Override
     public int getSizeInventory()
     {

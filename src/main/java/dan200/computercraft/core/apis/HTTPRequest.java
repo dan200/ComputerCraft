@@ -227,18 +227,18 @@ public class HTTPRequest
         thread.setDaemon(true);
         thread.start();
     }
-
+    
     public String getURL() {
         return m_urlString;
     }
-
+    
     public void cancel()
     {
         synchronized(m_lock) {
             m_cancelled = true;
         }
     }
-
+    
     public boolean isComplete()
     {
         synchronized(m_lock) {
@@ -264,20 +264,20 @@ public class HTTPRequest
             return m_success;
         }
     }
-
+    
     public BufferedReader getContents()
     {
         String result;
         synchronized(m_lock) {
             result = m_result;
         }
-
+        
         if( result != null ) {
             return new BufferedReader( new StringReader( result ) );
         }
         return null;
     }
-
+    
     private final Object m_lock = new Object();
     private final URL m_url;
     private final String m_urlString;

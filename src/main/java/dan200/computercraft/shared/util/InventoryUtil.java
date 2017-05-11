@@ -43,7 +43,7 @@ public class InventoryUtil
         {
             return true;
         }
-
+        
         if( a != null && b != null && a.getItem() == b.getItem() )
         {
             if( a.getItemDamage() == b.getItemDamage() )
@@ -127,9 +127,9 @@ public class InventoryUtil
         }
         return null;
     }
-
+    
     // Methods for placing into inventories:
-
+    
     public static ItemStack storeItems( ItemStack itemstack, IInventory inventory, int start, int range, int begin )
     {
         int[] slots = makeSlotList( start, range, begin );
@@ -151,15 +151,15 @@ public class InventoryUtil
         int[] slots = makeSlotList( 0, inventory.getSizeInventory(), 0 ); // TODO: optimise this out?
         return storeItems( itemstack, inventory, slots, side );
     }
-
+    
     // Methods for taking out of inventories
-
+    
     public static ItemStack takeItems( int count, IInventory inventory, int start, int range, int begin )
     {
         int[] slots = makeSlotList( start, range, begin );
         return takeItems( count, inventory, slots, null );
     }
-
+        
     public static ItemStack takeItems( int count, IInventory inventory, EnumFacing side )
     {
         // Try ISidedInventory
@@ -175,7 +175,7 @@ public class InventoryUtil
         int[] slots = makeSlotList( 0, inventory.getSizeInventory(), 0 );
         return takeItems( count, inventory, slots, side );
     }
-
+    
     // Private methods
 
     private static int[] makeSlotList( int start, int range, int begin )
@@ -184,7 +184,7 @@ public class InventoryUtil
         {
             return null;
         }
-
+        
         int[] slots = new int[range];
         for( int n=0; n<slots.length; ++n )
         {
@@ -192,7 +192,7 @@ public class InventoryUtil
         }
         return slots;
     }
-
+        
     private static ItemStack storeItems( ItemStack stack, IInventory inventory, int[] slots, EnumFacing face )
     {
         if( slots == null || slots.length == 0 )

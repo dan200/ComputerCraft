@@ -52,12 +52,12 @@ public class TurtleAPI implements ILuaAPI
     public void advance( double _dt )
     {
     }
-
+    
     @Override
     public void shutdown( )
     {
     }
-
+       
     @Nonnull
     @Override
     public String[] getMethodNames()
@@ -107,7 +107,7 @@ public class TurtleAPI implements ILuaAPI
             "getItemDetail",
         };
     }
-
+    
     private Object[] tryCommand( ILuaContext context, ITurtleCommand command ) throws LuaException, InterruptedException
     {
         return m_turtle.executeCommand( context, command );
@@ -139,7 +139,7 @@ public class TurtleAPI implements ILuaAPI
             throw new LuaException( "Slot number " + slot + " out of range" );
         }
     }
-
+    
     private int parseCount( Object[] arguments, int index ) throws LuaException
     {
         if( arguments.length <= index || !(arguments[index] instanceof Number) )

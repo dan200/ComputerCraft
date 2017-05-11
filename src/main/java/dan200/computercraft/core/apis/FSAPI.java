@@ -23,13 +23,13 @@ public class FSAPI implements ILuaAPI
 {
     private IAPIEnvironment m_env;
     private FileSystem m_fileSystem;
-
+    
     public FSAPI( IAPIEnvironment _env )
     {
         m_env = _env;
         m_fileSystem = null;
     }
-
+    
     @Override
     public String[] getNames()
     {
@@ -48,7 +48,7 @@ public class FSAPI implements ILuaAPI
     public void advance( double _dt )
     {
     }
-
+    
     @Override
     public void shutdown( )
     {
@@ -261,35 +261,35 @@ public class FSAPI implements ILuaAPI
                         // Open the file for reading, then create a wrapper around the reader
                         IMountedFileNormal reader = m_fileSystem.openForRead( path );
                         return wrapBufferedReader( reader );
-
+                        
                     } else if( mode.equals( "w" ) ) {
                         // Open the file for writing, then create a wrapper around the writer
                         IMountedFileNormal writer = m_fileSystem.openForWrite( path, false );
                         return wrapBufferedWriter( writer );
-
+                    
                     } else if( mode.equals( "a" ) ) {
                         // Open the file for appending, then create a wrapper around the writer
                         IMountedFileNormal writer = m_fileSystem.openForWrite( path, true );
                         return wrapBufferedWriter( writer );
-
+                                            
                     } else if( mode.equals( "rb" ) ) {
                         // Open the file for binary reading, then create a wrapper around the reader
                         IMountedFileBinary reader = m_fileSystem.openForBinaryRead( path );
                         return wrapInputStream( reader );
-
+                        
                     } else if( mode.equals( "wb" ) ) {
                         // Open the file for binary writing, then create a wrapper around the writer
                         IMountedFileBinary writer = m_fileSystem.openForBinaryWrite( path, false );
                         return wrapOutputStream( writer );
-
+                    
                     } else if( mode.equals( "ab" ) ) {
                         // Open the file for binary appending, then create a wrapper around the reader
                         IMountedFileBinary writer = m_fileSystem.openForBinaryWrite( path, true );
                         return wrapOutputStream( writer );
-
+                        
                     } else {
                         throw new LuaException( "Unsupported mode" );
-
+                        
                     }
                 } catch( FileSystemException e ) {
                     return null;
@@ -368,7 +368,7 @@ public class FSAPI implements ILuaAPI
             }
         }
     }
-
+    
     private static Object[] wrapBufferedReader( final IMountedFileNormal reader )
     {
         return new Object[] { new ILuaObject() {
@@ -382,7 +382,7 @@ public class FSAPI implements ILuaAPI
                     "close"
                 };
             }
-
+            
             @Override
             public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
             {
@@ -453,7 +453,7 @@ public class FSAPI implements ILuaAPI
                     "flush"
                 };
             }
-
+            
             @Override
             public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
             {
@@ -519,10 +519,10 @@ public class FSAPI implements ILuaAPI
             }
         } };
     }
-
+    
     private static Object[] wrapInputStream( final IMountedFileBinary reader )
     {
-
+        
         return new Object[] { new ILuaObject() {
 
             @Nonnull
@@ -573,8 +573,8 @@ public class FSAPI implements ILuaAPI
     }
 
     private static Object[] wrapOutputStream( final IMountedFileBinary writer )
-    {
-
+    {        
+        
         return new Object[] { new ILuaObject() {
 
             @Nonnull

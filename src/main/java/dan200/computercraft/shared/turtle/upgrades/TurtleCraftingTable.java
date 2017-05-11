@@ -61,14 +61,14 @@ public class TurtleCraftingTable implements ITurtleUpgrade
     {
         return "upgrade.minecraft:crafting_table.adjective";
     }
-
+    
     @Nonnull
     @Override
     public TurtleUpgradeType getType()
     {
         return TurtleUpgradeType.Peripheral;
     }
-
+    
     @Override
     public ItemStack getCraftingItem()
     {

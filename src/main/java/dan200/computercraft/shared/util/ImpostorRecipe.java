@@ -24,7 +24,7 @@ public class ImpostorRecipe extends ShapedRecipes
     {
         return false;
     }
-
+    
     @Override
     public ItemStack getCraftingResult( @Nonnull InventoryCrafting _inventory )
     {

@@ -106,7 +106,7 @@ public class TurtleModem implements ITurtleUpgrade
     {
         return m_legacyID;
     }
-
+    
     @Nonnull
     @Override
     public String getUnlocalisedAdjective()
@@ -120,14 +120,14 @@ public class TurtleModem implements ITurtleUpgrade
             return "upgrade.computercraft:wireless_modem.adjective";
         }
     }
-
+    
     @Nonnull
     @Override
     public TurtleUpgradeType getType()
     {
         return TurtleUpgradeType.Peripheral;
     }
-
+    
     @Override
     public ItemStack getCraftingItem()
     {

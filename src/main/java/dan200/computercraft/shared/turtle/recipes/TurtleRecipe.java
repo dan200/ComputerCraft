@@ -21,7 +21,7 @@ public class TurtleRecipe implements IRecipe
 {
     private final Item[] m_recipe;
     private final ComputerFamily m_family;
-
+    
     public TurtleRecipe( Item[] recipe, ComputerFamily family )
     {
         m_recipe = recipe;
@@ -33,7 +33,7 @@ public class TurtleRecipe implements IRecipe
     {
         return 9;
     }
-
+    
     @Override
     public ItemStack getRecipeOutput()
     {
@@ -79,7 +79,7 @@ public class TurtleRecipe implements IRecipe
                 }
             }
         }
-
+        
         // Build a turtle with the same ID the computer had
         // Construct the new stack
         if( m_family != ComputerFamily.Beginners )
