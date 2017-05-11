@@ -277,11 +277,23 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.setTextColor( color )
-        setTextColor( color )
+		for key,value in pairs(colors) do
+			if value == color then
+        		 setTextColor( color )
+				return
+			end
+		end
+		error("Color doesn't exists")
     end
 
     function window.setTextColour( color )
-        setTextColor( color )
+		for key,value in pairs(colors) do
+			if value == color then
+        		 setTextColor( color )
+				return
+			end
+		end
+		error("Colour doesn't exists")
     end
 
     function window.setPaletteColour( colour, r, g, b )
@@ -316,11 +328,23 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.setBackgroundColor( color )
-        setBackgroundColor( color )
+		for key,value in pairs(colors) do
+			if value == color then
+        		setBackgroundColor( color )
+				return
+			end
+		end
+		error("Color doesn't exists")
     end
 
     function window.setBackgroundColour( color )
-        setBackgroundColor( color )
+		for key,value in pairs(colors) do
+			if value == color then
+        		setBackgroundColor( color )
+				return
+			end
+		end
+		error("Colour doesn't exists")
     end
 
     function window.getSize()
