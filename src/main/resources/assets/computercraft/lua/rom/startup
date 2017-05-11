@@ -223,7 +223,7 @@ local function findStartups( sBaseDir )
             tStartups = {}
         end
         for _,v in pairs( fs.list( sBasePath ) ) do
-            tStartups[ #tStartups + 1 ] = shell.resolveProgram( "/" .. fs.combine( sBasePath, v ) )
+            tStartups[ #tStartups + 1 ] = "/" .. fs.combine( sBasePath, v )
         end
     end
     return tStartups
