@@ -1,10 +1,14 @@
 package dan200.computercraft.shared.util;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class ColourUtils
+import javax.annotation.Nonnull;
+
+public final class ColourUtils
 {
     private static final String[] DYES = new String[] {
         "dyeBlack", "dyeRed", "dyeGreen", "dyeBrown",
@@ -34,4 +38,37 @@ public class ColourUtils
 
         return -1;
     }
+
+    public static int getHexColour( @Nonnull NBTTagCompound tag )
+    {
+        if( tag.hasKey( "colourIndex", Constants.NBT.TAG_ANY_NUMERIC ) )
+        {
+            return Colour.VALUES[ tag.getInteger( "colourIndex" ) & 0xF ].getHex();
+        }
+        else if( tag.hasKey( "colour", Constants.NBT.TAG_ANY_NUMERIC ) )
+        {
+            return tag.getInteger( "colour" );
+        }
+        else if( tag.hasKey( "color", Constants.NBT.TAG_ANY_NUMERIC ) )
+        {
+            return tag.getInteger( "color" );
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    public static Colour getColour( @Nonnull NBTTagCompound tag )
+    {
+        if( tag.hasKey( "colourIndex", Constants.NBT.TAG_ANY_NUMERIC ) )
+        {
+            return Colour.fromInt( tag.getInteger( "colourIndex" ) & 0xF );
+        }
+        else
+        {
+            return null;
+        }
+    }
+
 }

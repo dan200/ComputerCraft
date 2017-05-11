@@ -16,10 +16,7 @@ import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.IComputer;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
-import dan200.computercraft.shared.util.Colour;
-import dan200.computercraft.shared.util.DirectionUtil;
-import dan200.computercraft.shared.util.Holiday;
-import dan200.computercraft.shared.util.HolidayUtil;
+import dan200.computercraft.shared.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -117,6 +114,7 @@ public class TurtleBrain implements ITurtleAccess
     private int m_selectedSlot;
     private int m_fuelLevel;
     private Colour m_colour;
+    private int m_colourHex;
     private ResourceLocation m_overlay;
 
     private int m_instanceID;
@@ -139,6 +137,7 @@ public class TurtleBrain implements ITurtleAccess
         m_selectedSlot = 0;
         m_fuelLevel = 0;
         m_colour = null;
+        m_colourHex = -1;
         m_overlay = null;
 
         m_instanceID = -1;
@@ -218,14 +217,8 @@ public class TurtleBrain implements ITurtleAccess
         }
 
         // Read colour
-        if( nbttagcompound.hasKey( "colourIndex" ) )
-        {
-            m_colour = Colour.values()[ nbttagcompound.getInteger( "colourIndex" ) ];
-        }
-        else
-        {
-            m_colour = null;
-        }
+        m_colour = ColourUtils.getColour( nbttagcompound );
+        m_colourHex = ColourUtils.getHexColour( nbttagcompound );
 
         // Read overlay
         if( nbttagcompound.hasKey( "overlay_mod" ) )
@@ -328,6 +321,10 @@ public class TurtleBrain implements ITurtleAccess
         {
             nbttagcompound.setInteger( "colourIndex", m_colour.ordinal() );
         }
+        else if( m_colourHex != -1 )
+        {
+            nbttagcompound.setInteger( "colour", m_colourHex );
+        }
 
         // Write overlay
         if( m_overlay != null )
@@ -387,6 +384,10 @@ public class TurtleBrain implements ITurtleAccess
         {
             nbttagcompound.setInteger( "colourIndex", m_colour.ordinal() );
         }
+        else if( m_colourHex != -1 )
+        {
+            nbttagcompound.setInteger( "colour", m_colourHex );
+        }
 
         // Overlay
         if( m_overlay != null )
@@ -438,14 +439,8 @@ public class TurtleBrain implements ITurtleAccess
         }
 
         // Colour
-        if( nbttagcompound.hasKey( "colourIndex" ) )
-        {
-            m_colour = Colour.values()[ nbttagcompound.getInteger( "colourIndex" ) ];
-        }
-        else
-        {
-            m_colour = null;
-        }
+        m_colourHex = ColourUtils.getHexColour( nbttagcompound );
+        m_colour = ColourUtils.getColour( nbttagcompound );
 
         // Overlay
         if( nbttagcompound.hasKey( "overlay_mod" ) && nbttagcompound.hasKey( "overlay_path" ) )
@@ -779,7 +774,7 @@ public class TurtleBrain implements ITurtleAccess
     @Override
     public int getDyeColour()
     {
-        return (m_colour != null) ? m_colour.ordinal() : -1;
+        return m_colour != null ? m_colour.ordinal() : -1;
     }
 
     public ResourceLocation getOverlay()
@@ -807,8 +802,35 @@ public class TurtleBrain implements ITurtleAccess
         if( m_colour != newColour )
         {
             m_colour = newColour;
+            m_colourHex = newColour == null ? -1 : newColour.getHex();
             m_owner.updateBlock();
         }
+    }
+
+    @Override
+    public void setColour( int colour )
+    {
+        if( colour >= 0 && colour <= 0xFFFFFF )
+        {
+            if( m_colourHex != colour )
+            {
+                m_colourHex = colour;
+                m_colour = Colour.fromHex( colour );
+                m_owner.updateBlock();
+            }
+        }
+        else if( m_colourHex != -1 )
+        {
+            m_colourHex = -1;
+            m_colour = null;
+            m_owner.updateBlock();
+        }
+    }
+
+    @Override
+    public int getColour()
+    {
+        return m_colourHex;
     }
 
     @Override
