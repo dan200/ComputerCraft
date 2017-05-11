@@ -58,6 +58,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -75,6 +76,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -96,7 +98,7 @@ import java.util.zip.ZipFile;
 )
 public class ComputerCraft
 {
-    public static final String MOD_ID = "ComputerCraft";
+    public static final String MOD_ID = "computercraft";
     public static final String LOWER_ID = "computercraft";
 
     // GUI IDs
@@ -462,7 +464,7 @@ public class ComputerCraft
         proxy.playRecord( record, recordInfo, world, pos );
     }
 
-    public static String getRecordInfo( ItemStack recordStack )
+    public static String getRecordInfo( @Nonnull ItemStack recordStack )
     {
         return proxy.getRecordInfo( recordStack );
     }
@@ -714,9 +716,9 @@ public class ComputerCraft
         return combinedSignal;
     }
 
-    public static IMedia getMedia( ItemStack stack )
+    public static IMedia getMedia( @Nonnull ItemStack stack )
     {
-        if( stack != null )
+        if( !stack.isEmpty() )
         {
             // Try the handlers in order:
             for( IMediaProvider mediaProvider : mediaProviders )
@@ -744,14 +746,14 @@ public class ComputerCraft
         return pocketUpgrades.get( id );
     }
 
-    public static IPocketUpgrade getPocketUpgrade( ItemStack stack )
+    public static IPocketUpgrade getPocketUpgrade( @Nonnull ItemStack stack )
     {
-        if( stack == null ) return null;
+        if( stack.isEmpty() ) return null;
 
         for (IPocketUpgrade upgrade : pocketUpgrades.values())
         {
             ItemStack craftingStack = upgrade.getCraftingItem();
-            if( craftingStack != null && InventoryUtil.areItemsStackable( stack, craftingStack ) )
+            if( !craftingStack.isEmpty() && InventoryUtil.areItemsStackable( stack, craftingStack ) )
             {
                 return upgrade;
             }
@@ -1010,12 +1012,12 @@ public class ComputerCraft
         return turtleProxy.getTurtleUpgrade( legacyID );
     }
 
-    public static ITurtleUpgrade getTurtleUpgrade( ItemStack item )
+    public static ITurtleUpgrade getTurtleUpgrade( @Nonnull ItemStack item )
     {
         return turtleProxy.getTurtleUpgrade( item );
     }
 
-    public static void addAllUpgradedTurtles( List<ItemStack> list )
+    public static void addAllUpgradedTurtles( NonNullList<ItemStack> list )
     {
         turtleProxy.addAllUpgradedTurtles( list );
     }

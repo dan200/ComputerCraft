@@ -301,7 +301,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     }
 
     @Override
-    public String getRecordInfo( ItemStack recordStack )
+    public String getRecordInfo( @Nonnull ItemStack recordStack )
     {
         List<String> info = new ArrayList<String>( 1 );
         recordStack.getItem().addInformation( recordStack, null, info, false );
@@ -351,7 +351,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     public Object getPrintoutGUI( EntityPlayer player, EnumHand hand )
     {
         ContainerHeldItem container = new ContainerHeldItem( player, hand );
-        if( container.getStack() != null && container.getStack().getItem() instanceof ItemPrintout )
+        if( container.getStack().getItem() instanceof ItemPrintout )
         {
             return new GuiPrintout( container );
         }
@@ -362,7 +362,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     public Object getPocketComputerGUI( EntityPlayer player, EnumHand hand )
     {
         ContainerPocketComputer container = new ContainerPocketComputer( player, hand );
-        if( container.getStack() != null && container.getStack().getItem() instanceof ItemPocketComputer )
+        if( container.getStack().getItem() instanceof ItemPocketComputer )
         {
             return new GuiPocketComputer( container );
         }

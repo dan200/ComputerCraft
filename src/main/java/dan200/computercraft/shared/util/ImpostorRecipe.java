@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 
 public class ImpostorRecipe extends ShapedRecipes
 {
-    public ImpostorRecipe( int width, int height, ItemStack[] ingredients, ItemStack result )
+    public ImpostorRecipe( int width, int height, ItemStack[] ingredients, @Nonnull ItemStack result )
     {
         super( width, height, ingredients, result );
     }
@@ -25,9 +25,10 @@ public class ImpostorRecipe extends ShapedRecipes
         return false;
     }
     
+    @Nonnull
     @Override
     public ItemStack getCraftingResult( @Nonnull InventoryCrafting _inventory )
     {
-        return null;
+        return ItemStack.EMPTY;
     }
 }

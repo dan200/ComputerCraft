@@ -103,7 +103,7 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
         {
             @Nonnull
             @Override
-            public IBakedModel handleItemState( @Nonnull IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity)
+            public IBakedModel handleItemState( @Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity)
             {
                 ItemTurtleBase turtle = (ItemTurtleBase) stack.getItem();
                 ComputerFamily family = turtle.getFamily( stack );

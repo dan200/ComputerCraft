@@ -13,8 +13,11 @@ import dan200.computercraft.shared.computer.core.IComputer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ComputerItemFactory
 {
+    @Nonnull
     public static ItemStack create( IComputerTile computerTile )
     {
         IComputer computer = computerTile.getComputer();
@@ -30,6 +33,7 @@ public class ComputerItemFactory
         }
     }
 
+    @Nonnull
     public static ItemStack create( int id, String label, ComputerFamily family )
     {
         ItemComputer computer = ((ItemComputer)Item.getItemFromBlock( ComputerCraft.Blocks.computer ));
@@ -46,6 +50,6 @@ public class ComputerItemFactory
                 return commandComputer.create( id, label, family );
             }
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 }

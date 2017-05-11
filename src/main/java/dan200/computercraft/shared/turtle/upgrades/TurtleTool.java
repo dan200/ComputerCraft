@@ -88,6 +88,7 @@ public class TurtleTool implements ITurtleUpgrade
         return TurtleUpgradeType.Tool;
     }
 
+    @Nonnull
     @Override
     public ItemStack getCraftingItem()
     {
@@ -187,10 +188,10 @@ public class TurtleTool implements ITurtleUpgrade
             ComputerCraft.setEntityDropConsumer( hitEntity, new IEntityDropConsumer()
             {
                 @Override
-                public void consumeDrop( Entity entity, ItemStack drop )
+                public void consumeDrop( Entity entity, @Nonnull ItemStack drop )
                 {
                     ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
-                    if( remainder != null )
+                    if( !remainder.isEmpty() )
                     {
                         WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );
                     }
@@ -283,7 +284,7 @@ public class TurtleTool implements ITurtleUpgrade
                     for( ItemStack stack : items )
                     {
                         ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getItemHandler(), turtle.getSelectedSlot() );
-                        if( remainder != null )
+                        if( !remainder.isEmpty() )
                         {
                             // If there's no room for the items, drop them
                             WorldUtil.dropItemStack( remainder, world, position, direction );

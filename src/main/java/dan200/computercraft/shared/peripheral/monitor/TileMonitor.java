@@ -86,7 +86,7 @@ public class TileMonitor extends TilePeripheralBase
         if( !m_destroyed )
         {
             m_destroyed = true;
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 contractNeighbours();
             }
@@ -103,7 +103,7 @@ public class TileMonitor extends TilePeripheralBase
     {
         if( !player.isSneaking() && getFront() == side )
         {
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 monitorTouched( hitX, hitY, hitZ );
             }
@@ -141,7 +141,7 @@ public class TileMonitor extends TilePeripheralBase
     {
         super.update();
 
-        if( !worldObj.isRemote )
+        if( !getWorld().isRemote )
         {
             if( m_sizeChangedQueued )
             {
@@ -264,7 +264,7 @@ public class TileMonitor extends TilePeripheralBase
 
     private ITerminal getLocalTerminal()
     {
-        if( !worldObj.isRemote )
+        if( !getWorld().isRemote )
         {
             if( m_serverTerminal == null )
             {
@@ -422,11 +422,12 @@ public class TileMonitor extends TilePeripheralBase
         }
 
         int y = pos.getY();
-        if( worldObj != null && y >= 0 && y < worldObj.getHeight() )
+        World world = getWorld();
+        if( world != null && y >= 0 && y < world.getHeight() )
         {
-            if( worldObj.isBlockLoaded( pos ) )
+            if( world.isBlockLoaded( pos ) )
             {
-                TileEntity tile = worldObj.getTileEntity( pos );
+                TileEntity tile = world.getTileEntity( pos );
                 if( tile != null && tile instanceof TileMonitor )
                 {
                     TileMonitor monitor = (TileMonitor)tile;

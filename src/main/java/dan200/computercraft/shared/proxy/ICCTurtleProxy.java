@@ -11,8 +11,9 @@ import dan200.computercraft.shared.util.IEntityDropConsumer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
+import net.minecraft.util.NonNullList;
 
-import java.util.List;
+import javax.annotation.Nonnull;
 
 public interface ICCTurtleProxy
 {
@@ -23,8 +24,8 @@ public interface ICCTurtleProxy
     void registerTurtleUpgrade( ITurtleUpgrade upgrade );
     ITurtleUpgrade getTurtleUpgrade( String id );
     ITurtleUpgrade getTurtleUpgrade( int legacyId );
-    ITurtleUpgrade getTurtleUpgrade( ItemStack item );
-    void addAllUpgradedTurtles( List<ItemStack> list );
+    ITurtleUpgrade getTurtleUpgrade( @Nonnull ItemStack item );
+    void addAllUpgradedTurtles( NonNullList<ItemStack> list );
 
     void setEntityDropConsumer( Entity entity, IEntityDropConsumer consumer );
     void clearEntityDropConsumer( Entity entity );

@@ -16,6 +16,8 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
+
 public abstract class Widget extends Gui
 {
     private WidgetContainer m_parent;
@@ -322,9 +324,9 @@ public abstract class Widget extends Gui
         }
     }
 
-    protected void drawItemStack( int x, int y, ItemStack stack )
+    protected void drawItemStack( int x, int y, @Nonnull ItemStack stack )
     {
-        if( stack != null )
+        if( !stack.isEmpty() )
         {
             GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
             GlStateManager.enableLighting();

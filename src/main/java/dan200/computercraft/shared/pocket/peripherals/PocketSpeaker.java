@@ -40,7 +40,7 @@ public class PocketSpeaker implements IPocketUpgrade
         return "upgrade.computercraft:speaker.adjective";
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public ItemStack getCraftingItem()
     {

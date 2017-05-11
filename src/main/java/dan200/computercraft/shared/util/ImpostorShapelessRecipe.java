@@ -11,12 +11,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ImpostorShapelessRecipe extends ShapelessRecipes
 {
-    public ImpostorShapelessRecipe( ItemStack result, ItemStack[] ingredients )
+    public ImpostorShapelessRecipe( @Nonnull ItemStack result, ItemStack[] ingredients )
     {
         super( result, new ArrayList<ItemStack>(Arrays.asList( ingredients )));
     }
@@ -27,9 +28,10 @@ public class ImpostorShapelessRecipe extends ShapelessRecipes
         return false;
     }
 
+    @Nonnull
     @Override
     public ItemStack getCraftingResult( InventoryCrafting _inventory )
     {
-        return null;
+        return ItemStack.EMPTY;
     }
 }

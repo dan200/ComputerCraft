@@ -20,6 +20,7 @@ import dan200.computercraft.shared.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -286,11 +287,11 @@ public class TurtleBrain implements ITurtleAccess
         m_upgradeNBTData.clear();
         if( nbttagcompound.hasKey( "leftUpgradeNBT" ) )
         {
-            m_upgradeNBTData.put( TurtleSide.Left, (NBTTagCompound) nbttagcompound.getCompoundTag( "leftUpgradeNBT" ).copy() );
+            m_upgradeNBTData.put( TurtleSide.Left, nbttagcompound.getCompoundTag( "leftUpgradeNBT" ).copy() );
         }
         if( nbttagcompound.hasKey( "rightUpgradeNBT" ) )
         {
-            m_upgradeNBTData.put( TurtleSide.Right, (NBTTagCompound) nbttagcompound.getCompoundTag( "rightUpgradeNBT" ).copy() );
+            m_upgradeNBTData.put( TurtleSide.Right, nbttagcompound.getCompoundTag( "rightUpgradeNBT" ).copy() );
         }
     }
 
@@ -420,11 +421,11 @@ public class TurtleBrain implements ITurtleAccess
         m_upgradeNBTData.clear();
         if( nbttagcompound.hasKey( "leftUpgradeNBT" ) )
         {
-            m_upgradeNBTData.put( TurtleSide.Left, (NBTTagCompound) nbttagcompound.getCompoundTag( "leftUpgradeNBT" ).copy() );
+            m_upgradeNBTData.put( TurtleSide.Left, nbttagcompound.getCompoundTag( "leftUpgradeNBT" ).copy() );
         }
         if( nbttagcompound.hasKey( "rightUpgradeNBT" ) )
         {
-            m_upgradeNBTData.put( TurtleSide.Right, (NBTTagCompound)nbttagcompound.getCompoundTag( "rightUpgradeNBT" ).copy() );
+            m_upgradeNBTData.put( TurtleSide.Right, nbttagcompound.getCompoundTag( "rightUpgradeNBT" ).copy() );
         }
 
         // Colour
@@ -515,7 +516,7 @@ public class TurtleBrain implements ITurtleAccess
                     {
                         // Copy the old turtle state into the new turtle
                         TileTurtle newTurtle = (TileTurtle)newTile;
-                        newTurtle.setWorldObj( world );
+                        newTurtle.setWorld( world );
                         newTurtle.setPos( pos );
                         newTurtle.transferStateFrom( oldOwner );
                         newTurtle.createServerComputer().setWorld( world );
@@ -1160,7 +1161,7 @@ public class TurtleBrain implements ITurtleAccess
                         double pushStepZ = (double) moveDir.getFrontOffsetZ() * pushStep;
                         for (Entity entity : list)
                         {
-                            entity.moveEntity( pushStepX, pushStepY, pushStepZ );
+                            entity.move( MoverType.PISTON, pushStepX, pushStepY, pushStepZ );
                         }
                     }
                 }

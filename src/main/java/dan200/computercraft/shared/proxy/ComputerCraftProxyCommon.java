@@ -85,6 +85,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 
 public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
@@ -126,7 +127,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
     public abstract Object getFixedWidthFontRenderer();
 
     @Override
-    public String getRecordInfo( ItemStack recordStack )
+    public String getRecordInfo( @Nonnull ItemStack recordStack )
     {
         Item item = recordStack.getItem();
         if (item instanceof ItemRecord)
@@ -500,27 +501,27 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
             if( !domain.equalsIgnoreCase( ComputerCraft.MOD_ID ) ) continue;
 
             String key = mapping.resourceLocation.getResourcePath();
-            if( key.equals( "CC-Computer" ) )
+            if( key.equalsIgnoreCase( "CC-Computer" ) )
             {
                 remap( mapping, ComputerCraft.Blocks.computer );
             }
-            else if( key.equals( "CC-Peripheral" ) )
+            else if( key.equalsIgnoreCase( "CC-Peripheral" ) )
             {
                 remap( mapping, ComputerCraft.Blocks.peripheral );
             }
-            else if( key.equals( "CC-Cable" ) )
+            else if( key.equalsIgnoreCase( "CC-Cable" ) )
             {
                 remap( mapping, ComputerCraft.Blocks.cable );
             }
-            else if( key.equals( "diskExpanded" ) )
+            else if( key.equalsIgnoreCase( "diskExpanded" ) )
             {
                 mapping.remap( ComputerCraft.Items.diskExpanded );
             }
-            else if( key.equals( "treasureDisk" ) )
+            else if( key.equalsIgnoreCase( "treasureDisk" ) )
             {
                 mapping.remap( ComputerCraft.Items.treasureDisk );
             }
-            else if( key.equals( "pocketComputer" ) )
+            else if( key.equalsIgnoreCase( "pocketComputer" ) )
             {
                 mapping.remap( ComputerCraft.Items.pocketComputer );
             }

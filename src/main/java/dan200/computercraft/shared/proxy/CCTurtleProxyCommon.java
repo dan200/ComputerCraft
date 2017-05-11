@@ -37,6 +37,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -46,6 +47,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
@@ -66,7 +68,10 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     @Override        
     public void preInit()
     {
-        EntityRegistry.registerModEntity(TurtlePlayer.class, "turtlePlayer", 0, ComputerCraft.instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false);
+        EntityRegistry.registerModEntity(
+            new ResourceLocation( ComputerCraft.MOD_ID, "turtle_player" ), TurtlePlayer.class, "turtle_player",
+            0, ComputerCraft.instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false
+        );
         registerItems();
     }
     
@@ -106,7 +111,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     }
     
     @Override
-    public ITurtleUpgrade getTurtleUpgrade( ItemStack stack )
+    public ITurtleUpgrade getTurtleUpgrade( @Nonnull ItemStack stack )
     {
         for( ITurtleUpgrade upgrade : m_turtleUpgrades.values() )
         {
@@ -143,10 +148,10 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         }
     }
     
-    private void addAllUpgradedTurtles( ComputerFamily family, List<ItemStack> list )
+    private void addAllUpgradedTurtles( ComputerFamily family, NonNullList<ItemStack> list )
     {
         ItemStack basicStack = TurtleItemFactory.create( -1, null, -1, family, null, null, 0, null );
-        if( basicStack != null )
+        if( !basicStack.isEmpty() )
         {
             list.add( basicStack );
         }
@@ -166,7 +171,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         if ( isUpgradeSuitableForFamily( family, upgrade ) )
         {
             ItemStack stack = TurtleItemFactory.create( -1, null, -1, family, upgrade, null, 0, null );
-            if( stack != null )
+            if( !stack.isEmpty() )
             {
                 list.add( stack );
             }
@@ -174,7 +179,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     }
     
     @Override
-    public void addAllUpgradedTurtles( List<ItemStack> list )
+    public void addAllUpgradedTurtles( NonNullList<ItemStack> list )
     {
         addAllUpgradedTurtles( ComputerFamily.Normal, list );
         addAllUpgradedTurtles( ComputerFamily.Advanced, list );
@@ -276,7 +281,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                 }
 
                 ItemStack baseTurtle = TurtleItemFactory.create( -1, null, -1, family, null, null, 0, null );
-                if( baseTurtle != null )
+                if( !baseTurtle.isEmpty() )
                 {
                     ItemStack craftedTurtle = TurtleItemFactory.create( -1, null, -1, family, upgrade, null, 0, null );
                     ItemStack craftedTurtleFlipped = TurtleItemFactory.create( -1, null, -1, family, null, upgrade, 0, null );
@@ -405,15 +410,15 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             if( !domain.equalsIgnoreCase( ComputerCraft.MOD_ID ) ) continue;
 
             String key = mapping.resourceLocation.getResourcePath();
-            if( key.equals( "CC-Turtle" ) )
+            if( key.equalsIgnoreCase( "CC-Turtle" ) )
             {
                 remap( mapping, ComputerCraft.Blocks.turtle );
             }
-            else if( key.equals( "CC-TurtleExpanded" ) )
+            else if( key.equalsIgnoreCase( "CC-TurtleExpanded" ) )
             {
                 remap( mapping, ComputerCraft.Blocks.turtleExpanded );
             }
-            else if( key.equals( "CC-TurtleAdvanced" ) )
+            else if( key.equalsIgnoreCase( "CC-TurtleAdvanced" ) )
             {
                 remap( mapping, ComputerCraft.Blocks.turtleAdvanced );
             }

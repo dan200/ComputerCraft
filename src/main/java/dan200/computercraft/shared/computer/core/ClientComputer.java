@@ -169,7 +169,7 @@ public class ClientComputer extends ClientTerminal
         m_blinking = nbttagcompound.getBoolean( "blinking" );
         if( nbttagcompound.hasKey( "userData" ) )
         {
-            m_userData = (NBTTagCompound)(nbttagcompound.getCompoundTag( "userData" )).copy();
+            m_userData = nbttagcompound.getCompoundTag( "userData" ).copy();
         }
         else
         {

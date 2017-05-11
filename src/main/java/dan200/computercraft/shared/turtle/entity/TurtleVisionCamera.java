@@ -88,21 +88,23 @@ public class TurtleVisionCamera extends EntityLivingBase
 
     // EntityLivingBase overrides:
 
+    @Nonnull
     @Override
     public ItemStack getHeldItem( EnumHand hand )
     {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public void setItemStackToSlot( @Nonnull EntityEquipmentSlot slot, ItemStack stack)
+    public void setItemStackToSlot( @Nonnull EntityEquipmentSlot slot, @Nonnull ItemStack stack )
     {
     }
 
+    @Nonnull
     @Override
-    public ItemStack getItemStackFromSlot( @Nonnull EntityEquipmentSlot slot)
+    public ItemStack getItemStackFromSlot( @Nonnull EntityEquipmentSlot slot )
     {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Nonnull

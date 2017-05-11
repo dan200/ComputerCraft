@@ -23,7 +23,7 @@ public class ContainerPocketComputer extends ContainerHeldItem
     public IComputer getComputer()
     {
         ItemStack stack = getStack();
-        if( stack != null && stack.getItem() instanceof ItemPocketComputer )
+        if( !stack.isEmpty() && stack.getItem() instanceof ItemPocketComputer )
         {
             return ((ItemPocketComputer) stack.getItem()).getServerComputer( stack );
         }

@@ -114,6 +114,7 @@ public class TurtleSpeaker implements ITurtleUpgrade
         return TurtleUpgradeType.Peripheral;
     }
 
+    @Nonnull
     @Override
     public ItemStack getCraftingItem()
     {
