@@ -359,6 +359,7 @@ public class TileCable extends TileModemBase
                     ((BlockGeneric)getBlockType()).dropItem( getWorld(), getPos(), PeripheralItemFactory.create( PeripheralType.WiredModem, getLabel(), 1 ) );
                     setLabel( null );
                     setBlockState( getBlockState().withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.None ) );
+                    modemChanged();
                     break;
                 }
             }
@@ -682,7 +683,7 @@ public class TileCable extends TileModemBase
     {
         if( !getWorld().isRemote )
         {
-            if( !m_destroyed )
+            if( !m_destroyed && getPeripheralType() != PeripheralType.WiredModem)
             {
                 // If this modem is alive, rebuild the network
                 searchNetwork( ( modem, distance ) ->
@@ -711,6 +712,25 @@ public class TileCable extends TileModemBase
                 }
             }
         }
+    }
+
+    public void modemChanged()
+    {
+        if( getWorld().isRemote ) return;
+
+        PeripheralType type = getPeripheralType();
+        if( type == PeripheralType.Cable )
+        {
+            m_attachedPeripheralID = -1;
+        }
+
+        if( type != PeripheralType.WiredModemWithCable && m_peripheralAccessAllowed )
+        {
+            m_peripheralAccessAllowed = false;
+        }
+
+        markDirty();
+        updateAnim();
     }
         
     // private stuff
