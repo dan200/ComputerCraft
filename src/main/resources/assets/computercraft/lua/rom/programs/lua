@@ -44,7 +44,9 @@ while bRunning do
 		end
         return nil
 	end )
-	table.insert( tCommandHistory, s )
+	if s:match("%S") and tCommandHistory[#tCommandHistory] ~= s then
+		table.insert( tCommandHistory, s )
+	end
 	
 	local nForcePrint = 0
 	local func, e = load( s, "lua", "t", tEnv )
