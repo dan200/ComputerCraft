@@ -8,6 +8,7 @@ package dan200.computercraft.shared.proxy;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
 import dan200.computercraft.shared.peripheral.speaker.SpeakerPeripheral;
@@ -155,6 +156,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         addUpgradedTurtle( family, ComputerCraft.Upgrades.craftingTable, list );
         addUpgradedTurtle( family, ComputerCraft.Upgrades.wirelessModem, list );
         addUpgradedTurtle( family, ComputerCraft.Upgrades.advancedModem, list );
+        addUpgradedTurtle( family, ComputerCraft.Upgrades.turtleSpeaker, list );
     }
 
     private void addUpgradedTurtle( ComputerFamily family, ITurtleUpgrade upgrade, List<ItemStack> list )
