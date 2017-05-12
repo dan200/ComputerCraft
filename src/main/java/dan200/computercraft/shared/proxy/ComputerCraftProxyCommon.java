@@ -49,6 +49,7 @@ import dan200.computercraft.shared.pocket.inventory.ContainerPocketComputer;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
 import dan200.computercraft.shared.pocket.peripherals.PocketModem;
+import dan200.computercraft.shared.pocket.peripherals.PocketSpeaker;
 import dan200.computercraft.shared.pocket.recipes.PocketComputerUpgradeRecipe;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.inventory.ContainerTurtle;
@@ -452,6 +453,9 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         ComputerCraftAPI.registerPocketUpgrade( ComputerCraft.PocketUpgrades.wirelessModem );
         ComputerCraft.PocketUpgrades.advancedModem = new PocketModem( true );
         ComputerCraftAPI.registerPocketUpgrade( ComputerCraft.PocketUpgrades.advancedModem );
+
+        ComputerCraft.PocketUpgrades.pocketSpeaker = new PocketSpeaker();
+        ComputerCraftAPI.registerPocketUpgrade( ComputerCraft.PocketUpgrades.pocketSpeaker );
 
         // Wireless Pocket Computer
         GameRegistry.addRecipe( new PocketComputerUpgradeRecipe() );

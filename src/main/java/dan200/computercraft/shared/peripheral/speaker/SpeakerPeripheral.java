@@ -6,6 +6,7 @@
 
 package dan200.computercraft.shared.peripheral.speaker;
 
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -21,11 +22,13 @@ public class SpeakerPeripheral implements IPeripheral {
     private TileSpeaker m_speaker;
     private long m_clock;
     private long m_lastPlayTime;
+    private int m_notesThisTick;
 
     public SpeakerPeripheral()
     {
         m_clock = 0;
         m_lastPlayTime = 0;
+        m_notesThisTick = 0;
     }
 
     public SpeakerPeripheral(TileSpeaker speaker)
@@ -34,9 +37,9 @@ public class SpeakerPeripheral implements IPeripheral {
         m_speaker = speaker;
     }
 
-    public void updateClock()
-    {
+    public void update() {
         m_clock++;
+        m_notesThisTick = 0;
     }
 
     public World getWorld()
@@ -100,7 +103,7 @@ public class SpeakerPeripheral implements IPeripheral {
         {
             // playsound
             case 0: {
-                return playSound(args);
+                return playSound(args, false);
             }
 
             // playnote
@@ -162,11 +165,15 @@ public class SpeakerPeripheral implements IPeripheral {
             throw new LuaException("Expected string, number (optional), number (optional)");
         }
 
-        return playSound(new Object[] {"block.note." + arguments[0], volume, Math.pow(2d, (pitch - 12) / 12d)});
+        // If the resource location for noteblock notes changes, this method call will need to be updated
+        Object[] returnValue = playSound(new Object[] {"block.note." + arguments[0], volume, Math.pow(2d, (pitch - 12) / 12d)}, true);
+        m_notesThisTick++;
+
+        return returnValue;
 
     }
 
-    private Object[] playSound(Object[] arguments) throws LuaException
+    private Object[] playSound(Object[] arguments, boolean isNote) throws LuaException
     {
 
         float volume = 1f;
@@ -209,7 +216,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
         ResourceLocation resourceName = new ResourceLocation((String) arguments[0]);
 
-        if (m_clock - m_lastPlayTime > TileSpeaker.MIN_TICKS_BETWEEN_SOUNDS)
+        if (m_clock - m_lastPlayTime > TileSpeaker.MIN_TICKS_BETWEEN_SOUNDS || ((m_clock - m_lastPlayTime == 0) && (m_notesThisTick < ComputerCraft.maxNotesPerTick) && isNote))
         {
 
             if (SoundEvent.REGISTRY.containsKey(resourceName))

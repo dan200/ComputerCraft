@@ -26,7 +26,7 @@ public class TileSpeaker extends TilePeripheralBase
 
     @Override
     public synchronized void update() {
-        m_peripheral.updateClock();
+        m_peripheral.update();
     }
 
     // IPeripheralTile implementation

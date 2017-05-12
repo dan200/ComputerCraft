@@ -40,6 +40,7 @@ import dan200.computercraft.shared.peripheral.modem.WirelessNetwork;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.peripherals.PocketModem;
+import dan200.computercraft.shared.pocket.peripherals.PocketSpeaker;
 import dan200.computercraft.shared.proxy.ICCTurtleProxy;
 import dan200.computercraft.shared.proxy.IComputerCraftProxy;
 import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
@@ -132,6 +133,8 @@ public class ComputerCraft
     public static int floppySpaceLimit = 125 * 1000;
     public static int maximumFilesOpen = 128;
 
+    public static int maxNotesPerTick = 8;
+
     // Blocks and Items
     public static class Blocks
     {
@@ -171,6 +174,7 @@ public class ComputerCraft
     {
         public static PocketModem wirelessModem;
         public static PocketModem advancedModem;
+        public static PocketSpeaker pocketSpeaker;
     }
 
     public static class Config {
@@ -196,6 +200,8 @@ public class ComputerCraft
         public static Property computerSpaceLimit;
         public static Property floppySpaceLimit;
         public static Property maximumFilesOpen;
+        public static Property maxNotesPerTick;
+
     }
 
     // Registries
@@ -287,6 +293,9 @@ public class ComputerCraft
         Config.turtlesCanPush = Config.config.get( Configuration.CATEGORY_GENERAL, "turtlesCanPush", turtlesCanPush );
         Config.turtlesCanPush.setComment( "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so" );
 
+        Config.maxNotesPerTick = Config.config.get( Configuration.CATEGORY_GENERAL, "maxNotesPerTick", maxNotesPerTick );
+        Config.maxNotesPerTick.setComment( "Maximum amount of sounds a speaker can play at once" );
+
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
             property.setLanguageKey( "gui.computercraft:config." + CaseFormat.LOWER_CAMEL.to( CaseFormat.LOWER_UNDERSCORE, property.getName() ) );
@@ -325,6 +334,8 @@ public class ComputerCraft
         advancedTurtleFuelLimit = Config.advancedTurtleFuelLimit.getInt();
         turtlesObeyBlockProtection = Config.turtlesObeyBlockProtection.getBoolean();
         turtlesCanPush = Config.turtlesCanPush.getBoolean();
+
+        maximumFilesOpen = Math.max(1, Config.maximumFilesOpen.getInt());
 
         Config.config.save();
     }
@@ -704,7 +715,7 @@ public class ComputerCraft
     public static Iterable<IPocketUpgrade> getVanillaPocketUpgrades() {
         List<IPocketUpgrade> upgrades = new ArrayList<IPocketUpgrade>();
         for(IPocketUpgrade upgrade : pocketUpgrades.values()) {
-            if(upgrade instanceof PocketModem) {
+            if(upgrade instanceof PocketModem || upgrade instanceof PocketSpeaker) {
                 upgrades.add( upgrade );
             }
         }

@@ -24,7 +24,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
-
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 
@@ -39,6 +38,12 @@ public class TurtleSpeaker implements ITurtleUpgrade
         {
             super();
             m_turtle = turtle;
+        }
+
+        @Override
+        public void update()
+        {
+            super.update();
         }
 
         @Override
@@ -67,9 +72,8 @@ public class TurtleSpeaker implements ITurtleUpgrade
     }
 
     // Members
-    ResourceLocation m_id;
-    int m_legacyID;
-    Peripheral m_peripheral;
+    private ResourceLocation m_id;
+    private int m_legacyID;
 
     @SideOnly( Side.CLIENT )
     private ModelResourceLocation m_leftModel;
@@ -77,7 +81,7 @@ public class TurtleSpeaker implements ITurtleUpgrade
     @SideOnly( Side.CLIENT )
     private ModelResourceLocation m_rightModel;
 
-    public TurtleSpeaker(ResourceLocation id, int legacyId )
+    public TurtleSpeaker(ResourceLocation id, int legacyId)
     {
         m_id = id;
         m_legacyID = legacyId;
@@ -119,15 +123,14 @@ public class TurtleSpeaker implements ITurtleUpgrade
     @Override
     public IPeripheral createPeripheral( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
     {
-        m_peripheral = new TurtleSpeaker.Peripheral( turtle );
-        return m_peripheral; // TODO does this go in constructor?
+        return new TurtleSpeaker.Peripheral(turtle);
     }
 
     @Nonnull
     @Override
     public TurtleCommandResult useTool(@Nonnull ITurtleAccess turtleAccess, @Nonnull TurtleSide turtleSide, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction)
     {
-        return null;
+        return TurtleCommandResult.failure();
     }
 
     @SideOnly( Side.CLIENT )
@@ -161,8 +164,12 @@ public class TurtleSpeaker implements ITurtleUpgrade
     }
 
     @Override
-    public void update(@Nonnull ITurtleAccess turtleAccess, @Nonnull TurtleSide turtleSide)
+    public void update(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide turtleSide)
     {
-        m_peripheral.updateClock();
+        if (turtle.getPeripheral(turtleSide) instanceof Peripheral)
+        {
+            Peripheral peripheral = (Peripheral) turtle.getPeripheral(turtleSide);
+            peripheral.update();
+        }
     }
 }
