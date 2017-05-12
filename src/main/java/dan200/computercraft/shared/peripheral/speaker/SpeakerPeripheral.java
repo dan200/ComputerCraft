@@ -202,7 +202,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
         if (arguments.length > 2)
         {
-            if (!(arguments[1] instanceof Double))  // Arg wrong type
+            if (!(arguments[2] instanceof Double))  // Arg wrong type
             {
                 throw new LuaException("Expected string, number (optional), number (optional)");
             }
