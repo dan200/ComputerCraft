@@ -90,6 +90,7 @@ import java.util.Map;
 public class ComputerCraft
 {
     public static final String MOD_ID = "ComputerCraft";
+    public static final String LOWER_ID = "computercraft";
 
     // GUI IDs
     public static final int diskDriveGUIID = 100;
@@ -332,6 +333,14 @@ public class ComputerCraft
     {
         proxy.init();
         turtleProxy.init();
+    }
+
+
+    @Mod.EventHandler
+    public void onMissingMappings( FMLMissingMappingsEvent event )
+    {
+        proxy.remap( event );
+        turtleProxy.remap( event );
     }
 
     @Mod.EventHandler

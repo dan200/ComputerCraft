@@ -34,10 +34,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -329,14 +331,14 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         // Blocks
         // Turtle
         ComputerCraft.Blocks.turtle = BlockTurtle.createTurtleBlock();
-        registerBlock( ComputerCraft.Blocks.turtle, new ItemTurtleLegacy(ComputerCraft.Blocks.turtle), "CC-Turtle" );
+        registerBlock( ComputerCraft.Blocks.turtle, new ItemTurtleLegacy(ComputerCraft.Blocks.turtle), "turtle" );
 
         ComputerCraft.Blocks.turtleExpanded = BlockTurtle.createTurtleBlock();
-        registerBlock( ComputerCraft.Blocks.turtleExpanded, new ItemTurtleNormal( ComputerCraft.Blocks.turtleExpanded ), "CC-TurtleExpanded" );
+        registerBlock( ComputerCraft.Blocks.turtleExpanded, new ItemTurtleNormal( ComputerCraft.Blocks.turtleExpanded ), "turtle_expanded" );
 
         // Advanced Turtle
         ComputerCraft.Blocks.turtleAdvanced = BlockTurtle.createTurtleBlock();
-        registerBlock( ComputerCraft.Blocks.turtleAdvanced, new ItemTurtleAdvanced( ComputerCraft.Blocks.turtleAdvanced ), "CC-TurtleAdvanced" );
+        registerBlock( ComputerCraft.Blocks.turtleAdvanced, new ItemTurtleAdvanced( ComputerCraft.Blocks.turtleAdvanced ), "turtle_advanced" );
 
         // Recipe types
         RecipeSorter.register( "computercraft:turtle", TurtleRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
@@ -406,17 +408,60 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.advancedModem );
     }
 
-    private void registerBlock( Block block, Item item, String name) {
+    @Override
+    public void remap( FMLMissingMappingsEvent mappings )
+    {
+        // We have to use mappings.getAll() as the mod ID is upper case but the domain lower.
+        for( FMLMissingMappingsEvent.MissingMapping mapping : mappings.getAll() )
+        {
+            String domain = mapping.resourceLocation.getResourceDomain();
+            if( !domain.equalsIgnoreCase( ComputerCraft.MOD_ID ) ) continue;
+
+            String key = mapping.resourceLocation.getResourcePath();
+            if( key.equals( "CC-Turtle" ) )
+            {
+                remap( mapping, ComputerCraft.Blocks.turtle );
+            }
+            else if( key.equals( "CC-TurtleExpanded" ) )
+            {
+                remap( mapping, ComputerCraft.Blocks.turtleExpanded );
+            }
+            else if( key.equals( "CC-TurtleAdvanced" ) )
+            {
+                remap( mapping, ComputerCraft.Blocks.turtleAdvanced );
+            }
+        }
+    }
+
+    private static void remap( FMLMissingMappingsEvent.MissingMapping mapping, Block block )
+    {
+        if( mapping.type == GameRegistry.Type.BLOCK )
+        {
+            mapping.remap( block );
+        }
+        else
+        {
+            mapping.remap( Item.getItemFromBlock( block ) );
+        }
+    }
+
+    private void registerBlock( Block block, Item item, String name )
+    {
         GameRegistry.register( block.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
         GameRegistry.register( item.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
+    }
+
+    private void registerTileEntity( Class<? extends TileEntity> klass, String name )
+    {
+        GameRegistry.registerTileEntityWithAlternatives( klass, ComputerCraft.LOWER_ID + " : " + name, name );
     }
 
     private void registerTileEntities()
     {
         // TileEntities
-        GameRegistry.registerTileEntity( TileTurtle.class, "turtle" );
-        GameRegistry.registerTileEntity( TileTurtleExpanded.class, "turtleex" );
-        GameRegistry.registerTileEntity( TileTurtleAdvanced.class, "turtleadv" );
+        registerTileEntity( TileTurtle.class, "turtle" );
+        registerTileEntity( TileTurtleExpanded.class, "turtleex" );
+        registerTileEntity( TileTurtleAdvanced.class, "turtleadv" );
     }
     
     private void registerForgeHandlers()
