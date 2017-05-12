@@ -292,10 +292,10 @@ public class WidgetTerminal extends Widget
 
     @Override
     public void update()
-    {
+    {                
         // Handle special keys
         if( m_focus && !m_locked && (Keyboard.isKeyDown( 29 ) || Keyboard.isKeyDown( 157 )) )
-        {
+        {            
             // Ctrl+T for terminate
             if( Keyboard.isKeyDown( 20 ) )
             {

@@ -111,7 +111,7 @@ public abstract class TilePeripheralBase extends TileGeneric
     {
         return m_anim;
     }
-
+    
     public synchronized void setAnim( int anim )
     {
         if( anim != m_anim )
@@ -121,7 +121,7 @@ public abstract class TilePeripheralBase extends TileGeneric
         }
     }
 
-    @Override
+    @Override    
     public synchronized void update()
     {
         if( m_changed )
@@ -130,8 +130,8 @@ public abstract class TilePeripheralBase extends TileGeneric
             m_changed = false;
         }
     }
-
-    @Override
+            
+    @Override    
     public void readFromNBT( NBTTagCompound nbttagcompound )
     {
         // Read properties

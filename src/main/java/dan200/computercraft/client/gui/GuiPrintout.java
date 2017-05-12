@@ -21,10 +21,10 @@ import java.io.IOException;
 public class GuiPrintout extends GuiContainer
 {
     private static final ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/printout.png" );
-
+    
     private static final int xSize = 172;
     private static final int ySize = 209;
-
+    
     private final boolean m_book;
     private final int m_pages;
     private final TextBuffer[] m_text;
@@ -114,7 +114,7 @@ public class GuiPrintout extends GuiContainer
                 m_page = m_page + 1;
             }
         }
-        else if (mouseWheelChange > 0)
+        else if (mouseWheelChange > 0) 
         {
             // Down
             if( m_page > 0 )
@@ -139,21 +139,21 @@ public class GuiPrintout extends GuiContainer
     {
         // Draw background
         drawDefaultBackground();
-
+        
         // Draw the printout
         GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
         this.mc.getTextureManager().bindTexture( background );
-
+        
         int startY = (height - ySize) / 2;
         //int startX = (width - xSize) / 2 - (m_page * 8);
         int startX = (width - (xSize + (m_pages - 1)*8)) / 2;
-
+        
         if( m_book )
         {
             // Border
             drawTexturedModalRect( startX - 8, startY - 8, xSize + 48, 0, 12, ySize + 24);
             drawTexturedModalRect( startX + xSize + (m_pages - 1)*8 - 4, startY - 8, xSize + 48 + 12, 0, 12, ySize + 24);
-
+            
             drawTexturedModalRect( startX, startY - 8, 0, ySize, xSize, 12);
             drawTexturedModalRect( startX, startY + ySize - 4, 0, ySize + 12, xSize, 12);
             for( int n=1; n<m_pages; ++n )
@@ -162,10 +162,10 @@ public class GuiPrintout extends GuiContainer
                 drawTexturedModalRect( startX + xSize + (n-1)*8, startY + ySize - 4, 0, ySize + 12, 8, 12);
             }
         }
-
+            
         // Left half
         if( m_page == 0 )
-        {
+        {            
             drawTexturedModalRect( startX, startY, 24, 0, xSize / 2, ySize);
             drawTexturedModalRect( startX, startY, 0, 0, 12, ySize);
         }
@@ -174,11 +174,11 @@ public class GuiPrintout extends GuiContainer
             drawTexturedModalRect( startX, startY, 0, 0, 12, ySize);
             for( int n=1; n<m_page; ++n )
             {
-                drawTexturedModalRect( startX + n*8, startY, 12, 0, 12, ySize);
+                drawTexturedModalRect( startX + n*8, startY, 12, 0, 12, ySize);                
             }
             drawTexturedModalRect( startX + m_page*8, startY, 24, 0, xSize / 2, ySize);
         }
-
+        
         // Right half
         if( m_page == (m_pages - 1) )
         {

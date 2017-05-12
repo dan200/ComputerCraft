@@ -165,7 +165,7 @@ public class FixedWidthFontRenderer
         {
             // Bind the font texture
             m_textureManager.bindTexture( font );
-
+            
             // Draw the quads
             drawStringTextPart( x, y, s, textColour, greyScale, p );
         }

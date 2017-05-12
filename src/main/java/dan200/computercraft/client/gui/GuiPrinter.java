@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 public class GuiPrinter extends GuiContainer
 {
     private static final ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/printer.png" );
-
+    
     private TilePrinter m_printer;
     private ContainerPrinter m_container;
 

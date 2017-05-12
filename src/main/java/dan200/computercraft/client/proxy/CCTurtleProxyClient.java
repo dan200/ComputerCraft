@@ -44,8 +44,8 @@ import javax.annotation.Nonnull;
 public class CCTurtleProxyClient extends CCTurtleProxyCommon
 {
     // IComputerCraftProxy implementation
-
-    @Override
+    
+    @Override        
     public void preInit()
     {    
         super.preInit();
