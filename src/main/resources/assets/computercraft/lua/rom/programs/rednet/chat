@@ -392,7 +392,7 @@ elseif sCommand == "join" then
                 promptWindow.setTextColor( textColour )
 
                 local sChat = read( nil, tSendHistory )
-                if string.match( sChat, "^/logout" ) then
+                if not sChat or string.match( sChat, "^/logout" ) then
                     break
                 else
                     rednet.send( nHostID, {
