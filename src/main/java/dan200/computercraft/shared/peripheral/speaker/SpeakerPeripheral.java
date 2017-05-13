@@ -102,7 +102,8 @@ public class SpeakerPeripheral implements IPeripheral {
         switch (methodIndex)
         {
             // playsound
-            case 0: {
+            case 0:
+            {
                 return playSound(args, false);
             }
 
