@@ -10,6 +10,7 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.modem.TileCable;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -88,8 +89,10 @@ public class ItemCable extends ItemPeripheralBase
             {
                 if( !stack.isEmpty() )
                 {
-                    world.setBlockState( pos, existingState.withProperty( BlockCable.Properties.CABLE, true ), 3 );
-                    world.playSound( null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, ComputerCraft.Blocks.cable.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (ComputerCraft.Blocks.cable.getSoundType().getVolume() + 1.0F ) / 2.0F, ComputerCraft.Blocks.cable.getSoundType().getPitch() * 0.8F);
+                    IBlockState newState = existingState.withProperty( BlockCable.Properties.CABLE, true );
+                    world.setBlockState( pos, newState, 3 );
+                    SoundType soundType = newState.getBlock().getSoundType( newState, world, pos, player );
+                    world.playSound( null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F );
                     stack.shrink( 1 );
                     
                     TileEntity tile = world.getTileEntity( pos );
@@ -118,8 +121,10 @@ public class ItemCable extends ItemPeripheralBase
                 {
                     if( !stack.isEmpty() )
                     {
-                        world.setBlockState( offset, offsetExistingState.withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.fromFacing( side.getOpposite() ) ), 3 );
-                        world.playSound( null, offset.getX() + 0.5, offset.getY() + 0.5, offset.getZ() + 0.5, ComputerCraft.Blocks.cable.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (ComputerCraft.Blocks.cable.getSoundType().getVolume() + 1.0F ) / 2.0F, ComputerCraft.Blocks.cable.getSoundType().getPitch() * 0.8F);
+                        IBlockState newState = offsetExistingState.withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.fromFacing( side.getOpposite() ) );
+                        world.setBlockState( offset, newState, 3 );
+                        SoundType soundType = newState.getBlock().getSoundType( newState, world, offset, player );
+                        world.playSound( null, offset.getX() + 0.5, offset.getY() + 0.5, offset.getZ() + 0.5, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F );
                         stack.shrink( 1 );
 
                         TileEntity tile = world.getTileEntity( offset );
@@ -138,8 +143,10 @@ public class ItemCable extends ItemPeripheralBase
                 {
                     if( !stack.isEmpty() )
                     {
-                        world.setBlockState( offset, offsetExistingState.withProperty( BlockCable.Properties.CABLE, true ), 3 );
-                        world.playSound( null, offset.getX() + 0.5, offset.getY() + 0.5, offset.getZ() + 0.5, ComputerCraft.Blocks.cable.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (ComputerCraft.Blocks.cable.getSoundType().getVolume() + 1.0F ) / 2.0F, ComputerCraft.Blocks.cable.getSoundType().getPitch() * 0.8F);
+                        IBlockState newState = offsetExistingState.withProperty( BlockCable.Properties.CABLE, true );
+                        world.setBlockState( offset, newState, 3 );
+                        SoundType soundType = newState.getBlock().getSoundType( newState, world, offset, player );
+                        world.playSound( null, offset.getX() + 0.5, offset.getY() + 0.5, offset.getZ() + 0.5, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F );
                         stack.shrink( 1 );
 
                         TileEntity tile = world.getTileEntity( offset );
