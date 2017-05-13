@@ -180,7 +180,11 @@ function shell.programs( _bIncludeHidden )
 	-- Sort and return
 	local tItemList = {}
 	for sItem, b in pairs( tItems ) do
-		table.insert( tItemList, sItem )
+	    if sItem:find(".lua") == sItem:len()-3 then
+	        table.insert( tItemList, sItem:sub(1,-5) )
+            else
+	        table.insert( tItemList, sItem )
+	    end
 	end
 	table.sort( tItemList )
 	return tItemList
