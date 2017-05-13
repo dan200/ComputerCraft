@@ -118,30 +118,11 @@ public interface ITurtleAccess
     void setSelectedSlot( int slot );
 
     /**
-     * Sets the colour of the turtle, as if the player had dyed it with a dye item.
-     *
-     * @param dyeColour 0-15 to dye the turtle one of the 16 standard Minecraft <em>dye</em> colours, or -1 to remove
-     *                  the dye from the turtle.
-     * @see #getDyeColour()
-     * @see #setColour(int)
-     */
-    void setDyeColour( int dyeColour );
-
-    /**
-     * Gets the colour the turtle has been dyed.
-     *
-     * @return 0-15 if the turtle has been dyed one of the 16 standard Minecraft <em>dye</em> colours, -1 if the turtle
-     * is clean or has no corresponding dye.
-     * @see #setDyeColour(int)
-     * @see #getColour()
-     */
-    int getDyeColour();
-
-    /**
      * Set the colour of the turtle to a RGB number.
      *
      * @param colour The colour this turtle should be changed to. This should be a RGB colour between {@code 0x000000}
      *               and {@code 0xFFFFFF} or -1 to reset to the default colour.
+     * @see #getColour()
      */
     void setColour( int colour );
 
@@ -150,6 +131,7 @@ public interface ITurtleAccess
      *
      * @return The colour this turtle is. This will be a RGB colour between {@code 0x000000} and {@code 0xFFFFFF} or
      * -1 if it has no colour.
+     * @see #setColour(int)
      */
     int getColour();
 

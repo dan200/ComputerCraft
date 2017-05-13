@@ -113,7 +113,6 @@ public class TurtleBrain implements ITurtleAccess
 
     private int m_selectedSlot;
     private int m_fuelLevel;
-    private Colour m_colour;
     private int m_colourHex;
     private ResourceLocation m_overlay;
 
@@ -136,7 +135,6 @@ public class TurtleBrain implements ITurtleAccess
 
         m_selectedSlot = 0;
         m_fuelLevel = 0;
-        m_colour = null;
         m_colourHex = -1;
         m_overlay = null;
 
@@ -217,7 +215,6 @@ public class TurtleBrain implements ITurtleAccess
         }
 
         // Read colour
-        m_colour = ColourUtils.getColour( nbttagcompound );
         m_colourHex = ColourUtils.getHexColour( nbttagcompound );
 
         // Read overlay
@@ -317,11 +314,7 @@ public class TurtleBrain implements ITurtleAccess
         }
 
         // Write colour
-        if( m_colour != null )
-        {
-            nbttagcompound.setInteger( "colourIndex", m_colour.ordinal() );
-        }
-        else if( m_colourHex != -1 )
+        if( m_colourHex != -1 )
         {
             nbttagcompound.setInteger( "colour", m_colourHex );
         }
@@ -380,11 +373,7 @@ public class TurtleBrain implements ITurtleAccess
         }
 
         // Colour
-        if( m_colour != null )
-        {
-            nbttagcompound.setInteger( "colourIndex", m_colour.ordinal() );
-        }
-        else if( m_colourHex != -1 )
+        if( m_colourHex != -1 )
         {
             nbttagcompound.setInteger( "colour", m_colourHex );
         }
@@ -440,7 +429,6 @@ public class TurtleBrain implements ITurtleAccess
 
         // Colour
         m_colourHex = ColourUtils.getHexColour( nbttagcompound );
-        m_colour = ColourUtils.getColour( nbttagcompound );
 
         // Overlay
         if( nbttagcompound.hasKey( "overlay_mod" ) && nbttagcompound.hasKey( "overlay_path" ) )
@@ -771,12 +759,6 @@ public class TurtleBrain implements ITurtleAccess
         m_owner.updateBlock();
     }
 
-    @Override
-    public int getDyeColour()
-    {
-        return m_colour != null ? m_colour.ordinal() : -1;
-    }
-
     public ResourceLocation getOverlay()
     {
         return m_overlay;
@@ -791,18 +773,23 @@ public class TurtleBrain implements ITurtleAccess
         }
     }
 
-    @Override
+    public int getDyeColour()
+    {
+        if( m_colourHex == -1 ) return -1;
+        Colour colour = Colour.fromHex( m_colourHex );
+        return colour == null ? -1 : colour.ordinal();
+    }
+
     public void setDyeColour( int dyeColour )
     {
-        Colour newColour = null;
+        int newColour = -1;
         if( dyeColour >= 0 && dyeColour < 16 )
         {
-            newColour = Colour.values()[ dyeColour ];
+            newColour = Colour.values()[ dyeColour ].getHex();
         }
-        if( m_colour != newColour )
+        if( m_colourHex != newColour )
         {
-            m_colour = newColour;
-            m_colourHex = newColour == null ? -1 : newColour.getHex();
+            m_colourHex = newColour;
             m_owner.updateBlock();
         }
     }
@@ -815,14 +802,12 @@ public class TurtleBrain implements ITurtleAccess
             if( m_colourHex != colour )
             {
                 m_colourHex = colour;
-                m_colour = Colour.fromHex( colour );
                 m_owner.updateBlock();
             }
         }
         else if( m_colourHex != -1 )
         {
             m_colourHex = -1;
-            m_colour = null;
             m_owner.updateBlock();
         }
     }
