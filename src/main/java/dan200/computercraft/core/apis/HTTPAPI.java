@@ -73,6 +73,7 @@ public class HTTPAPI implements ILuaAPI
     private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode, final Map<String, String> responseHeaders )
     {
         return new ILuaObject() {
+            private boolean open = true;
             @Nonnull
             @Override
             public String[] getMethodNames()
@@ -94,6 +95,7 @@ public class HTTPAPI implements ILuaAPI
                     case 0:
                     {
                         // readLine
+                        if( !open ) throw new LuaException( "attempt to use a closed response" );
                         try {
                             String line = reader.readLine();
                             if( line != null ) {
@@ -108,6 +110,7 @@ public class HTTPAPI implements ILuaAPI
                     case 1:
                     {
                         // readAll
+                        if( !open ) throw new LuaException( "attempt to use a closed response" );
                         try {
                             StringBuilder result = new StringBuilder( "" );
                             String line = reader.readLine();
@@ -128,6 +131,7 @@ public class HTTPAPI implements ILuaAPI
                         // close
                         try {
                             reader.close();
+                            open = false;
                             return null;
                         } catch( IOException e ) {
                             return null;

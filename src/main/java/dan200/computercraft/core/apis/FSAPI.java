@@ -292,7 +292,7 @@ public class FSAPI implements ILuaAPI
                         
                     }
                 } catch( FileSystemException e ) {
-                    return null;
+                    return new Object[] { null, e.getMessage() };
                 }
             }
             case 12:
@@ -372,6 +372,8 @@ public class FSAPI implements ILuaAPI
     private static Object[] wrapBufferedReader( final IMountedFileNormal reader )
     {
         return new Object[] { new ILuaObject() {
+            private boolean open = true;
+
             @Nonnull
             @Override
             public String[] getMethodNames()
@@ -391,6 +393,7 @@ public class FSAPI implements ILuaAPI
                     case 0:
                     {
                         // readLine
+                        if( !open ) throw new LuaException( "attempt to use a closed file" );
                         try {
                             String line = reader.readLine();
                             if( line != null ) {
@@ -405,6 +408,7 @@ public class FSAPI implements ILuaAPI
                     case 1:
                     {
                         // readAll
+                        if( !open ) throw new LuaException( "attempt to use a closed file" );
                         try {
                             StringBuilder result = new StringBuilder( "" );
                             String line = reader.readLine();
@@ -425,6 +429,7 @@ public class FSAPI implements ILuaAPI
                         // close
                         try {
                             reader.close();
+                            open = false;
                             return null;
                         } catch( IOException e ) {
                             return null;
@@ -442,6 +447,8 @@ public class FSAPI implements ILuaAPI
     private static Object[] wrapBufferedWriter( final IMountedFileNormal writer )
     {
         return new Object[] { new ILuaObject() {
+            private boolean open = true;
+
             @Nonnull
             @Override
             public String[] getMethodNames()
@@ -462,6 +469,7 @@ public class FSAPI implements ILuaAPI
                     case 0:
                     {
                         // write
+                        if( !open ) throw new LuaException( "attempt to use a closed file" );
                         String text;
                         if( args.length > 0 && args[0] != null ) {
                             text = args[0].toString();
@@ -478,6 +486,8 @@ public class FSAPI implements ILuaAPI
                     case 1:
                     {
                         // writeLine
+                        if( !open ) throw new LuaException( "attempt to use a closed file" );
+                        
                         String text;
                         if( args.length > 0 && args[0] != null ) {
                             text = args[0].toString();
@@ -496,6 +506,7 @@ public class FSAPI implements ILuaAPI
                         // close
                         try {
                             writer.close();
+                            open = false;
                             return null;
                         } catch( IOException e ) {
                             return null;
@@ -504,6 +515,7 @@ public class FSAPI implements ILuaAPI
                     case 3:
                     {
                         try {
+                            if( !open ) throw new LuaException( "attempt to use a closed file" );
                             writer.flush();
                             return null;
                         } catch ( IOException e ) {
@@ -524,6 +536,7 @@ public class FSAPI implements ILuaAPI
     {
         
         return new Object[] { new ILuaObject() {
+            private boolean open = true;
 
             @Nonnull
             @Override
@@ -541,6 +554,7 @@ public class FSAPI implements ILuaAPI
                     case 0:
                     {
                         // read
+                        if( !open ) throw new LuaException( "attempt to use a closed file" );
                         try {
                             int b = reader.read();
                             if( b != -1 ) {
@@ -557,6 +571,7 @@ public class FSAPI implements ILuaAPI
                         //close
                         try {
                             reader.close();
+                            open = false;
                             return null;
                         } catch( IOException e ) {
                             return null;
@@ -576,6 +591,7 @@ public class FSAPI implements ILuaAPI
     {        
         
         return new Object[] { new ILuaObject() {
+            private boolean open = true;
 
             @Nonnull
             @Override
@@ -594,6 +610,7 @@ public class FSAPI implements ILuaAPI
                     case 0:
                     {
                         // write
+                        if( !open ) throw new LuaException( "attempt to use a closed file" );
                         try {
                             if( args.length > 0 && args[0] instanceof Number )
                             {
@@ -610,6 +627,7 @@ public class FSAPI implements ILuaAPI
                         //close
                         try {
                             writer.close();
+                            open = false;
                             return null;
                         } catch( IOException e ) {
                             return null;
@@ -617,6 +635,7 @@ public class FSAPI implements ILuaAPI
                     }
                     case 2:
                     {
+                        if( !open ) throw new LuaException( "attempt to use a closed file" );
                         try {
                             writer.flush();
                             return null;
