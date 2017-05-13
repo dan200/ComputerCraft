@@ -333,7 +333,8 @@ public class BlockPeripheral extends BlockPeripheralBase
                 }
                 break;
             }
-            case Speaker: {
+            case Speaker:
+            {
                 state = state.withProperty( Properties.FACING, dir );
                 break;
             }
