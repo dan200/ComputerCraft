@@ -40,10 +40,16 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
+
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class TileTurtle extends TileComputerBase
     implements ITurtleTile, IInventory, ITickable
@@ -65,6 +71,7 @@ public class TileTurtle extends TileComputerBase
 
     private ItemStack[] m_inventory;
     private ItemStack[] m_previousInventory;
+    private final IItemHandlerModifiable m_itemHandler = new InvWrapper( this );
     private boolean m_inventoryChanged;
     private TurtleBrain m_brain;
     private MoveState m_moveState;
@@ -713,5 +720,27 @@ public class TileTurtle extends TileComputerBase
         m_brain = copy.m_brain;
         m_brain.setOwner( this );
         copy.m_moveState = MoveState.MOVED;
+    }
+
+    public IItemHandlerModifiable getItemHandler()
+    {
+        return m_itemHandler;
+    }
+
+    @Override
+    public boolean hasCapability( @Nonnull Capability<?> capability, @Nullable EnumFacing facing )
+    {
+        return capability == ITEM_HANDLER_CAPABILITY ||  super.hasCapability( capability, facing );
+    }
+
+    @Nonnull
+    @Override
+    public <T> T getCapability( @Nonnull Capability<T> capability, @Nullable EnumFacing facing )
+    {
+        if( capability == ITEM_HANDLER_CAPABILITY )
+        {
+            return ITEM_HANDLER_CAPABILITY.cast( m_itemHandler );
+        }
+        return super.getCapability( capability, facing );
     }
 }

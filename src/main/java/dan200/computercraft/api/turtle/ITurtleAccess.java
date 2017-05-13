@@ -15,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -138,9 +139,21 @@ public interface ITurtleAccess
      * Get the inventory of this turtle
      *
      * @return This turtle's inventory
+     * @see #getItemHandler()
      */
     @Nonnull
     IInventory getInventory();
+
+    /**
+     * Get the inventory of this turtle as an {@link IItemHandlerModifiable}.
+     *
+     * @return This turtle's inventory
+     * @see #getInventory() 
+     * @see IItemHandlerModifiable
+     * @see net.minecraftforge.items.CapabilityItemHandler#ITEM_HANDLER_CAPABILITY
+     */
+    @Nonnull
+    IItemHandlerModifiable getItemHandler();
 
     /**
      * Determine whether this turtle will require fuel when performing actions.

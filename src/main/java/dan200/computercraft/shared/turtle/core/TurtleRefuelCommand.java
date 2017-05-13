@@ -42,14 +42,14 @@ public class TurtleRefuelCommand implements ITurtleCommand
         {
             // Otherwise, refuel for real
             // Remove items from inventory
-            ItemStack stack = InventoryUtil.takeItems( m_limit, turtle.getInventory(), turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
+            ItemStack stack = InventoryUtil.takeItems( m_limit, turtle.getItemHandler(), turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
             if( stack != null )
             {
                 TurtleCommandResult result = refuel( turtle, stack, false );
                 if( !result.isSuccess() )
                 {
                     // If the items weren't burnt, put them back
-                    InventoryUtil.storeItems( stack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                    InventoryUtil.storeItems( stack, turtle.getItemHandler(), turtle.getSelectedSlot() );
                 }
                 return result;
             }
@@ -83,7 +83,7 @@ public class TurtleRefuelCommand implements ITurtleCommand
             // Store the replacement item in the inventory
             if( replacementStack != null )
             {
-                InventoryUtil.storeItems( replacementStack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                InventoryUtil.storeItems( replacementStack, turtle.getItemHandler(), turtle.getSelectedSlot() );
             }
 
             // Animate

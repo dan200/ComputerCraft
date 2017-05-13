@@ -23,13 +23,22 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class TilePrinter extends TilePeripheralBase
     implements IInventory, ISidedInventory
@@ -43,6 +52,9 @@ public class TilePrinter extends TilePeripheralBase
     // Members
 
     private final ItemStack[] m_inventory;
+    private final IItemHandlerModifiable m_itemHandlerAll = new InvWrapper( this );
+    private IItemHandlerModifiable[] m_itemHandlerSides;
+    
     private final Terminal m_page;
     private String m_pageTitle;
     private boolean m_printing;
@@ -532,7 +544,7 @@ public class TilePrinter extends TilePeripheralBase
             ItemStack stack = ItemPrintout.createSingleFromTitleAndText( m_pageTitle, lines, colours );
             synchronized( m_inventory )
             {
-                ItemStack remainder = InventoryUtil.storeItems( stack, this, 7, 6, 7 );
+                ItemStack remainder = InventoryUtil.storeItems( stack, m_itemHandlerAll, 7, 6, 7 );
                 if( remainder == null )
                 {
                     m_printing = false;
@@ -595,5 +607,36 @@ public class TilePrinter extends TilePeripheralBase
             }
             setAnim( anim );
         }
+    }
+
+    @Override
+    public boolean hasCapability( @Nonnull Capability<?> capability, @Nullable EnumFacing facing )
+    {
+        return capability == ITEM_HANDLER_CAPABILITY || super.hasCapability( capability, facing );
+    }
+
+    @Nonnull
+    @Override
+    public <T> T getCapability( @Nonnull Capability<T> capability, @Nullable EnumFacing facing )
+    {
+        if( capability == ITEM_HANDLER_CAPABILITY )
+        {
+            if( facing == null )
+            {
+                return ITEM_HANDLER_CAPABILITY.cast( m_itemHandlerAll );
+            }
+            else
+            {
+                IItemHandlerModifiable[] handlers = m_itemHandlerSides;
+                if( handlers == null ) handlers = m_itemHandlerSides = new IItemHandlerModifiable[ 6 ];
+
+                int i = facing.ordinal();
+                IItemHandlerModifiable handler = handlers[ i ];
+                if( handler == null ) handler = handlers[ i ] = new SidedInvWrapper( this, facing );
+
+                return ITEM_HANDLER_CAPABILITY.cast( handler );
+            }
+        }
+        return super.getCapability( capability, facing );
     }
 }

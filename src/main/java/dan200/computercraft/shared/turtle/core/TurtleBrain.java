@@ -34,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
@@ -647,6 +648,13 @@ public class TurtleBrain implements ITurtleAccess
     public IInventory getInventory()
     {
         return m_owner;
+    }
+
+    @Nonnull
+    @Override
+    public IItemHandlerModifiable getItemHandler()
+    {
+        return m_owner.getItemHandler();
     }
 
     @Override

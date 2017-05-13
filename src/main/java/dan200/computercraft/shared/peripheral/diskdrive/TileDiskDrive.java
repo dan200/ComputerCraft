@@ -22,15 +22,26 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class TileDiskDrive extends TilePeripheralBase
     implements IInventory, ITickable
@@ -50,6 +61,7 @@ public class TileDiskDrive extends TilePeripheralBase
     private final Map<IComputerAccess, MountInfo> m_computers;
 
     private ItemStack m_diskStack;
+    private final IItemHandlerModifiable m_itemHandler = new InvWrapper( this );
     private IMount m_diskMount;
     
     private boolean m_recordQueued;
@@ -680,5 +692,22 @@ public class TileDiskDrive extends TilePeripheralBase
     private void stopRecord()
     {
         ComputerCraft.playRecord( null, null, worldObj, getPos() );
+    }
+
+    @Override
+    public boolean hasCapability( @Nonnull Capability<?> capability, @Nullable EnumFacing facing )
+    {
+        return capability == ITEM_HANDLER_CAPABILITY ||  super.hasCapability( capability, facing );
+    }
+
+    @Nonnull
+    @Override
+    public <T> T getCapability( @Nonnull Capability<T> capability, @Nullable EnumFacing facing )
+    {
+        if( capability == ITEM_HANDLER_CAPABILITY )
+        {
+            return ITEM_HANDLER_CAPABILITY.cast( m_itemHandler );
+        }
+        return super.getCapability( capability, facing );
     }
 }

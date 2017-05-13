@@ -54,7 +54,7 @@ public class TurtlePlayer extends FakePlayer
             ItemStack stack = inventory.getStackInSlot( i );
             if( stack != null )
             {
-                ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getItemHandler(), turtle.getSelectedSlot() );
                 if( remainder != null )
                 {
                     WorldUtil.dropItemStack( remainder, turtle.getWorld(), dropPosition, dropDirection );

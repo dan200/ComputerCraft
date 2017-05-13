@@ -20,6 +20,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -55,19 +56,19 @@ public class TurtleSuckCommand implements ITurtleCommand
         BlockPos newPosition = WorldUtil.moveCoords( oldPosition, direction );
         EnumFacing side = direction.getOpposite();
 
-        IInventory inventory = InventoryUtil.getInventory( world, newPosition, side );
+        IItemHandler inventory = InventoryUtil.getInventory( world, newPosition, side );
         if( inventory != null )
         {
             // Take from inventory of thing in front
-            ItemStack stack = InventoryUtil.takeItems( m_quantity, inventory, side );
+            ItemStack stack = InventoryUtil.takeItems( m_quantity, inventory );
             if( stack != null )
             {
                 // Try to place into the turtle
-                ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getItemHandler(), turtle.getSelectedSlot() );
                 if( remainder != null )
                 {
                     // Put the remainder back in the inventory
-                    InventoryUtil.storeItems( remainder, inventory, side );
+                    InventoryUtil.storeItems( remainder, inventory );
                 }
 
                 // Return true if we consumed anything
@@ -115,7 +116,7 @@ public class TurtleSuckCommand implements ITurtleCommand
                             storeStack = stack;
                             leaveStack = null;
                         }
-                        ItemStack remainder = InventoryUtil.storeItems( storeStack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                        ItemStack remainder = InventoryUtil.storeItems( storeStack, turtle.getItemHandler(), turtle.getSelectedSlot() );
                         if( remainder != storeStack )
                         {
                             storedItems = true;
