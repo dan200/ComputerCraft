@@ -7,7 +7,6 @@
 package dan200.computercraft.shared.network;
 
 import dan200.computercraft.ComputerCraft;
-import dan200.computercraft.core.logger.Logger;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -25,7 +24,7 @@ public class PacketHandler
         }
         catch( Exception e )
         {
-            Logger.error( "Error handling packet", e );
+            ComputerCraft.log.error( "Error handling packet", e );
         }
     }
 
@@ -40,7 +39,7 @@ public class PacketHandler
         }
         catch( Exception e )
         {
-            Logger.error( "Error handling packet", e );
+            ComputerCraft.log.error( "Error handling packet", e );
         }
     }
 }

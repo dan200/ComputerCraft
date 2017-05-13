@@ -14,7 +14,6 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.core.apis.*;
 import dan200.computercraft.core.filesystem.FileSystem;
 import dan200.computercraft.core.filesystem.FileSystemException;
-import dan200.computercraft.core.logger.Logger;
 import dan200.computercraft.core.lua.ILuaMachine;
 import dan200.computercraft.core.lua.LuaJLuaMachine;
 import dan200.computercraft.core.terminal.Terminal;
@@ -470,7 +469,7 @@ public class Computer
         }
         catch( FileSystemException e )
         {
-            Logger.error( "Cannot mount rom", e );
+            ComputerCraft.log.error( "Cannot mount rom", e );
             return false;
         }
     }

@@ -20,8 +20,6 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.core.filesystem.ComboMount;
 import dan200.computercraft.core.filesystem.FileMount;
 import dan200.computercraft.core.filesystem.JarMount;
-import dan200.computercraft.core.logger.Log4JLogger;
-import dan200.computercraft.core.logger.Logger;
 import dan200.computercraft.shared.common.DefaultBundledRedstoneProvider;
 import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
 import dan200.computercraft.shared.computer.blocks.BlockComputer;
@@ -70,6 +68,7 @@ import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -209,6 +208,9 @@ public class ComputerCraft
     // Creative
     public static CreativeTabMain mainCreativeTab;
 
+    // Logging
+    public static Logger log;
+
     // API users
     private static List<IPeripheralProvider> peripheralProviders = new ArrayList<IPeripheralProvider>();
     private static List<IBundledRedstoneProvider> bundledRedstoneProviders = new ArrayList<IBundledRedstoneProvider>();
@@ -233,7 +235,7 @@ public class ComputerCraft
     @Mod.EventHandler
     public void preInit( FMLPreInitializationEvent event )
     {
-        Logger.setInstance( new Log4JLogger( event.getModLog() ) );
+        log = event.getModLog();
 
         // Load config
         Config.config = new Configuration( event.getSuggestedConfigurationFile() );
@@ -609,7 +611,7 @@ public class ComputerCraft
             }
             catch( Exception e )
             {
-                Logger.error( "Peripheral provider " + peripheralProvider + " errored.", e );
+                ComputerCraft.log.error( "Peripheral provider " + peripheralProvider + " errored.", e );
             }
         }
         return null;
@@ -653,7 +655,7 @@ public class ComputerCraft
             }
             catch( Exception e )
             {
-                Logger.error( "Bundled redstone provider " + bundledRedstoneProvider + " errored.", e );
+                ComputerCraft.log.error( "Bundled redstone provider " + bundledRedstoneProvider + " errored.", e );
             }
         }
         return combinedSignal;
@@ -677,7 +679,7 @@ public class ComputerCraft
                 catch( Exception e )
                 {
                     // mod misbehaved, ignore it
-                    Logger.error( "Media provider " + mediaProvider + " errored.", e );
+                    ComputerCraft.log.error( "Media provider " + mediaProvider + " errored.", e );
                 }
             }
             return null;
