@@ -9,7 +9,6 @@ package dan200.computercraft.shared.proxy;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
-import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.core.computer.MainThread;
 import dan200.computercraft.shared.common.DefaultBundledRedstoneProvider;
 import dan200.computercraft.shared.common.TileGeneric;
@@ -75,6 +74,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -234,15 +234,15 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         // Blocks
         // Computer
         ComputerCraft.Blocks.computer = new BlockComputer();
-        registerBlock( ComputerCraft.Blocks.computer, new ItemComputer( ComputerCraft.Blocks.computer ), "CC-Computer" );
+        registerBlock( ComputerCraft.Blocks.computer, new ItemComputer( ComputerCraft.Blocks.computer ), "computer" );
 
         // Peripheral
         ComputerCraft.Blocks.peripheral = new BlockPeripheral();
-        registerBlock( ComputerCraft.Blocks.peripheral, new ItemPeripheral( ComputerCraft.Blocks.peripheral ), "CC-Peripheral" );
+        registerBlock( ComputerCraft.Blocks.peripheral, new ItemPeripheral( ComputerCraft.Blocks.peripheral ), "peripheral" );
 
         // Cable
         ComputerCraft.Blocks.cable = new BlockCable();
-        registerBlock( ComputerCraft.Blocks.cable, new ItemCable( ComputerCraft.Blocks.cable ), "CC-Cable" );
+        registerBlock( ComputerCraft.Blocks.cable, new ItemCable( ComputerCraft.Blocks.cable ), "cable" );
 
         // Command Computer
         ComputerCraft.Blocks.commandComputer = new BlockCommandComputer();
@@ -258,11 +258,11 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         GameRegistry.register( ComputerCraft.Items.disk.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "disk" ) ) );
 
         ComputerCraft.Items.diskExpanded = new ItemDiskExpanded();
-        GameRegistry.register( ComputerCraft.Items.diskExpanded.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "diskExpanded" ) ) );
+        GameRegistry.register( ComputerCraft.Items.diskExpanded.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "disk_expanded" ) ) );
 
         // Treasure Disk
         ComputerCraft.Items.treasureDisk = new ItemTreasureDisk();
-        GameRegistry.register( ComputerCraft.Items.treasureDisk.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "treasureDisk" ) ) );
+        GameRegistry.register( ComputerCraft.Items.treasureDisk.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "treasure_disk" ) ) );
 
         // Printout
         ComputerCraft.Items.printout = new ItemPrintout();
@@ -270,7 +270,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
 
         // Pocket computer
         ComputerCraft.Items.pocketComputer = new ItemPocketComputer();
-        GameRegistry.register( ComputerCraft.Items.pocketComputer.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "pocketComputer" ) ) );
+        GameRegistry.register( ComputerCraft.Items.pocketComputer.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "pocket_computer" ) ) );
 
         // Recipe types
         RecipeSorter.register( "computercraft:impostor", ImpostorRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
@@ -473,22 +473,77 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         GameRegistry.addShapelessRecipe( cloudyHead, monitor, new ItemStack( Items.SKULL, 1, 1 ) );
     }
 
-    private void registerBlock( Block block, Item item, String name) {
+    @Override
+    public void remap( FMLMissingMappingsEvent mappings )
+    {
+        // We have to use mappings.getAll() as the mod ID is upper case but the domain lower.
+        for( FMLMissingMappingsEvent.MissingMapping mapping : mappings.getAll() )
+        {
+            String domain = mapping.resourceLocation.getResourceDomain();
+            if( !domain.equalsIgnoreCase( ComputerCraft.MOD_ID ) ) continue;
+
+            String key = mapping.resourceLocation.getResourcePath();
+            if( key.equals( "CC-Computer" ) )
+            {
+                remap( mapping, ComputerCraft.Blocks.computer );
+            }
+            else if( key.equals( "CC-Peripheral" ) )
+            {
+                remap( mapping, ComputerCraft.Blocks.peripheral );
+            }
+            else if( key.equals( "CC-Cable" ) )
+            {
+                remap( mapping, ComputerCraft.Blocks.cable );
+            }
+            else if( key.equals( "diskExpanded" ) )
+            {
+                mapping.remap( ComputerCraft.Items.diskExpanded );
+            }
+            else if( key.equals( "treasureDisk" ) )
+            {
+                mapping.remap( ComputerCraft.Items.treasureDisk );
+            }
+            else if( key.equals( "pocketComputer" ) )
+            {
+                mapping.remap( ComputerCraft.Items.pocketComputer );
+            }
+        }
+    }
+
+    private static void remap( FMLMissingMappingsEvent.MissingMapping mapping, Block block )
+    {
+        if( mapping.type == GameRegistry.Type.BLOCK )
+        {
+            mapping.remap( block );
+        }
+        else
+        {
+            mapping.remap( Item.getItemFromBlock( block ) );
+        }
+    }
+
+    private void registerBlock( Block block, Item item, String name )
+    {
         GameRegistry.register( block.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
         GameRegistry.register( item.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
+    }
+
+    private void registerTileEntity( Class<? extends TileEntity> klass, String name )
+    {
+        GameRegistry.registerTileEntityWithAlternatives( klass, ComputerCraft.LOWER_ID + " : " + name, name );
     }
 
     private void registerTileEntities()
     {
         // Tile Entities
-        GameRegistry.registerTileEntity( TileComputer.class, "computer" );
-        GameRegistry.registerTileEntity( TileDiskDrive.class, "diskdrive" );
-        GameRegistry.registerTileEntity( TileWirelessModem.class, "wirelessmodem" );
-        GameRegistry.registerTileEntity( TileMonitor.class, "monitor" );
-        GameRegistry.registerTileEntity( TilePrinter.class, "ccprinter" );
-        GameRegistry.registerTileEntity( TileCable.class, "wiredmodem" );
-        GameRegistry.registerTileEntity( TileCommandComputer.class, "command_computer" );
-        GameRegistry.registerTileEntity( TileAdvancedModem.class, "advanced_modem" );
+        registerTileEntity( TileComputer.class, "computer" );
+        registerTileEntity( TileDiskDrive.class, "diskdrive" );
+        registerTileEntity( TileWirelessModem.class, "wirelessmodem" );
+        registerTileEntity( TileMonitor.class, "monitor" );
+        registerTileEntity( TilePrinter.class, "ccprinter" );
+        registerTileEntity( TileCable.class, "wiredmodem" );
+        registerTileEntity( TileCommandComputer.class, "command_computer" );
+        registerTileEntity( TileAdvancedModem.class, "advanced_modem" );
 
         // Register peripheral providers
         ComputerCraftAPI.registerPeripheralProvider( new DefaultPeripheralProvider() );
