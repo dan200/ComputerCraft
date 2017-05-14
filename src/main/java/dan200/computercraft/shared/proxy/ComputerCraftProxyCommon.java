@@ -73,7 +73,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -130,8 +129,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         if (item instanceof ItemRecord)
         {
             ItemRecord record = (ItemRecord) item;
-            String key = ObfuscationReflectionHelper.getPrivateValue( ItemRecord.class, record, "field_185077_c" );
-            return StringUtil.translateToLocal( key );
+            return StringUtil.translateToLocal( record.displayName );
         }
         return null;
     }

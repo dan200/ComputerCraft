@@ -38,7 +38,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -180,26 +179,12 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     {
         if( !m_dropConsumers.containsKey( entity ) )
         {
-            boolean captured = ObfuscationReflectionHelper.<Boolean, Entity>getPrivateValue(
-                Entity.class,
-                entity,
-                "captureDrops"
-            );
+            boolean captured = entity.captureDrops;
             
             if( !captured )
             {
-                ObfuscationReflectionHelper.setPrivateValue(
-                    Entity.class,
-                    entity,
-                    Boolean.TRUE,
-                    "captureDrops"
-                );
-                
-                ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
-                    Entity.class,
-                    entity,
-                    "capturedDrops"
-                );
+                entity.captureDrops = true;
+                ArrayList<EntityItem> items = entity.capturedDrops;
                 
                 if( items == null || items.size() == 0 )
                 {
@@ -214,26 +199,12 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     {
         if( m_dropConsumers.containsKey( entity ) )
         {
-            boolean captured = ObfuscationReflectionHelper.<Boolean, Entity>getPrivateValue(
-                    Entity.class,
-                    entity,
-                    "captureDrops"
-            );
+            boolean captured = entity.captureDrops;
             
             if( captured )
             {
-                ObfuscationReflectionHelper.setPrivateValue(
-                    Entity.class,
-                    entity,
-                    Boolean.FALSE,
-                    "captureDrops"
-                );
-                
-                ArrayList<EntityItem> items = ObfuscationReflectionHelper.getPrivateValue(
-                    Entity.class,
-                    entity,
-                    "capturedDrops"
-                );
+                entity.captureDrops = false;
+                ArrayList<EntityItem> items = entity.capturedDrops;
                 
                 if( items != null )
                 {

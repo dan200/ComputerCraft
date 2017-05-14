@@ -134,7 +134,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    protected final ItemStack createStackedBlock( @Nonnull IBlockState state )
+    public final ItemStack createStackedBlock( @Nonnull IBlockState state )
     {
         return null;
     }
