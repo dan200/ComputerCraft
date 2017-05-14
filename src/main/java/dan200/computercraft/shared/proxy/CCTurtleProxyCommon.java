@@ -141,7 +141,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     
     private void addAllUpgradedTurtles( ComputerFamily family, List<ItemStack> list )
     {
-        ItemStack basicStack = TurtleItemFactory.create( -1, null, null, family, null, null, 0, null );
+        ItemStack basicStack = TurtleItemFactory.create( -1, null, -1, family, null, null, 0, null );
         if( basicStack != null )
         {
             list.add( basicStack );
@@ -160,7 +160,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     {
         if ( isUpgradeSuitableForFamily( family, upgrade ) )
         {
-            ItemStack stack = TurtleItemFactory.create( -1, null, null, family, upgrade, null, 0, null );
+            ItemStack stack = TurtleItemFactory.create( -1, null, -1, family, upgrade, null, 0, null );
             if( stack != null )
             {
                 list.add( stack );
@@ -292,11 +292,11 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                     continue;
                 }
 
-                ItemStack baseTurtle = TurtleItemFactory.create( -1, null, null, family, null, null, 0, null );
+                ItemStack baseTurtle = TurtleItemFactory.create( -1, null, -1, family, null, null, 0, null );
                 if( baseTurtle != null )
                 {
-                    ItemStack craftedTurtle = TurtleItemFactory.create( -1, null, null, family, upgrade, null, 0, null );
-                    ItemStack craftedTurtleFlipped = TurtleItemFactory.create( -1, null, null, family, null, upgrade, 0, null );
+                    ItemStack craftedTurtle = TurtleItemFactory.create( -1, null, -1, family, upgrade, null, 0, null );
+                    ItemStack craftedTurtleFlipped = TurtleItemFactory.create( -1, null, -1, family, null, upgrade, 0, null );
                     recipeList.add( new ImpostorRecipe( 2, 1, new ItemStack[] { baseTurtle, craftingItem }, craftedTurtle ) );
                     recipeList.add( new ImpostorRecipe( 2, 1, new ItemStack[] { craftingItem, baseTurtle }, craftedTurtleFlipped ) );
 
@@ -307,11 +307,11 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                         {
                             ItemStack otherCraftingItem = otherUpgrade.getCraftingItem();
 
-                            ItemStack otherCraftedTurtle = TurtleItemFactory.create( -1, null, null, family, null, otherUpgrade, 0, null );
-                            ItemStack comboCraftedTurtle = TurtleItemFactory.create( -1, null, null, family, upgrade, otherUpgrade, 0, null );
+                            ItemStack otherCraftedTurtle = TurtleItemFactory.create( -1, null, -1, family, null, otherUpgrade, 0, null );
+                            ItemStack comboCraftedTurtle = TurtleItemFactory.create( -1, null, -1, family, upgrade, otherUpgrade, 0, null );
 
-                            ItemStack otherCraftedTurtleFlipped = TurtleItemFactory.create( -1, null, null, family, otherUpgrade, null, 0, null );
-                            ItemStack comboCraftedTurtleFlipped = TurtleItemFactory.create( -1, null, null, family, otherUpgrade, upgrade, 0, null );
+                            ItemStack otherCraftedTurtleFlipped = TurtleItemFactory.create( -1, null, -1, family, otherUpgrade, null, 0, null );
+                            ItemStack comboCraftedTurtleFlipped = TurtleItemFactory.create( -1, null, -1, family, otherUpgrade, upgrade, 0, null );
 
                             recipeList.add( new ImpostorRecipe( 2, 1, new ItemStack[] { otherCraftingItem, craftedTurtle }, comboCraftedTurtle ) );
                             recipeList.add( new ImpostorRecipe( 2, 1, new ItemStack[] { otherCraftedTurtle, craftingItem }, comboCraftedTurtle ) );
@@ -361,7 +361,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                 iron, ComputerItemFactory.create( -1, null, ComputerFamily.Normal ), iron,
                 iron, new ItemStack( Blocks.CHEST, 1 ), iron,
             },
-            TurtleItemFactory.create( -1, null, null, ComputerFamily.Normal, null, null, 0, null )
+            TurtleItemFactory.create( -1, null, -1, ComputerFamily.Normal, null, null, 0, null )
         ) );
 
         // Advanced Turtle
@@ -379,7 +379,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                 gold, ComputerItemFactory.create( -1, null, ComputerFamily.Advanced ), gold,
                 gold, new ItemStack( Blocks.CHEST, 1 ), gold,
             },
-            TurtleItemFactory.create( -1, null, null, ComputerFamily.Advanced, null, null, 0, null )
+            TurtleItemFactory.create( -1, null, -1, ComputerFamily.Advanced, null, null, 0, null )
         ) );
 
         // Upgrades

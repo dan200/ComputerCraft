@@ -11,13 +11,12 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.common.IDirectionalTile;
 import dan200.computercraft.shared.computer.blocks.IComputerTile;
-import dan200.computercraft.shared.util.Colour;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
 public interface ITurtleTile extends IComputerTile, IDirectionalTile
 {
-    Colour getColour();
+    int getColour();
     ResourceLocation getOverlay();
     ITurtleUpgrade getUpgrade( TurtleSide side );
     ITurtleAccess getAccess();

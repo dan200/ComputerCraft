@@ -17,7 +17,6 @@ import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.turtle.apis.TurtleAPI;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
-import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.InventoryUtil;
 import dan200.computercraft.shared.util.RedstoneUtil;
 import dan200.computercraft.shared.util.WorldUtil;
@@ -202,14 +201,14 @@ public class TileTurtle extends TileComputerBase
                 }
                 return true;
             }
-            else if( currentItem.getItem() == Items.WATER_BUCKET && m_brain.getDyeColour() != -1 )
+            else if( currentItem.getItem() == Items.WATER_BUCKET && m_brain.getColour() != -1 )
             {
                 // Water to remove turtle colour
                 if( !worldObj.isRemote )
                 {
-                    if( m_brain.getDyeColour() != -1 )
+                    if( m_brain.getColour() != -1 )
                     {
-                        m_brain.setDyeColour( -1 );
+                        m_brain.setColour( -1 );
                         if( !player.capabilities.isCreativeMode )
                         {
                             player.setHeldItem( EnumHand.MAIN_HAND, new ItemStack( Items.BUCKET ) );
@@ -417,14 +416,9 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public Colour getColour()
+    public int getColour()
     {
-        int dye = m_brain.getDyeColour();
-        if( dye >= 0 )
-        {
-            return Colour.values()[ dye ];
-        }
-        return null;
+        return m_brain.getColour();
     }
 
     @Override
