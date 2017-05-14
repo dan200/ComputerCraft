@@ -39,6 +39,19 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
     }
 
     @Override
+    public int getColour()
+    {
+        return ComputerCraft.Items.pocketComputer.getColour( m_stack );
+    }
+
+    @Override
+    public void setColour( int colour )
+    {
+        ComputerCraft.Items.pocketComputer.setColourDirect( m_stack, colour );
+        updateUpgradeNBTData();
+    }
+
+    @Override
     public int getLight()
     {
         NBTTagCompound tag = getUserData();

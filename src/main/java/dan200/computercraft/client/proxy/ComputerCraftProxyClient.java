@@ -9,6 +9,7 @@ package dan200.computercraft.client.proxy;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.client.gui.*;
 import dan200.computercraft.client.render.TileEntityMonitorRenderer;
+import dan200.computercraft.shared.computer.blocks.ComputerState;
 import dan200.computercraft.shared.computer.blocks.TileComputer;
 import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
@@ -111,61 +112,66 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             private ModelResourceLocation pocket_computer_off = new ModelResourceLocation( "computercraft:pocket_computer", "inventory" );
             private ModelResourceLocation pocket_computer_on = new ModelResourceLocation( "computercraft:pocket_computer_on", "inventory" );
             private ModelResourceLocation pocket_computer_blinking = new ModelResourceLocation( "computercraft:pocket_computer_blinking", "inventory" );
-            private ModelResourceLocation advanced_pocket_computer_off = new ModelResourceLocation( "computercraft:advanced_pocket_computer_off", "inventory" );
+            private ModelResourceLocation advanced_pocket_computer_off = new ModelResourceLocation( "computercraft:advanced_pocket_computer", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_on = new ModelResourceLocation( "computercraft:advanced_pocket_computer_on", "inventory" );
             private ModelResourceLocation advanced_pocket_computer_blinking = new ModelResourceLocation( "computercraft:advanced_pocket_computer_blinking", "inventory" );
+            private ModelResourceLocation colour_pocket_computer_off = new ModelResourceLocation( "computercraft:pocket_computer_colour", "inventory" );
+            private ModelResourceLocation colour_pocket_computer_on = new ModelResourceLocation( "computercraft:pocket_computer_colour_on", "inventory" );
+            private ModelResourceLocation colour_pocket_computer_blinking = new ModelResourceLocation( "computercraft:pocket_computer_colour_blinking", "inventory" );
 
             @Nonnull
             @Override
             public ModelResourceLocation getModelLocation( @Nonnull ItemStack stack )
             {
-                ItemPocketComputer itemPocketComputer = (ItemPocketComputer)stack.getItem();
-                switch( itemPocketComputer.getFamily( stack ) )
+                ItemPocketComputer itemPocketComputer = (ItemPocketComputer) stack.getItem();
+                ComputerState state = itemPocketComputer.getState( stack );
+                if( itemPocketComputer.getColour( stack ) == -1 )
                 {
-                    case Advanced:
+                    switch( itemPocketComputer.getFamily( stack ) )
                     {
-                        switch( itemPocketComputer.getState( stack ) )
-                        {
-                            case Off:
-                            default:
+                        case Advanced:
+                            switch( state )
                             {
-                                return advanced_pocket_computer_off;
+                                case Off:
+                                default:
+                                    return advanced_pocket_computer_off;
+                                case On:
+                                    return advanced_pocket_computer_on;
+                                case Blinking:
+                                    return advanced_pocket_computer_blinking;
                             }
-                            case On:
+                        case Normal:
+                        default:
+                            switch( state )
                             {
-                                return advanced_pocket_computer_on;
+                                case Off:
+                                default:
+                                    return pocket_computer_off;
+                                case On:
+                                    return pocket_computer_on;
+                                case Blinking:
+                                    return pocket_computer_blinking;
                             }
-                            case Blinking:
-                            {
-                                return advanced_pocket_computer_blinking;
-                            }
-                        }
                     }
-                    case Normal:
-                    default:
+                }
+                else
+                {
+                    switch( state )
                     {
-                        switch( itemPocketComputer.getState( stack ) )
-                        {
-                            case Off:
-                            default:
-                            {
-                                return pocket_computer_off;
-                            }
-                            case On:
-                            {
-                                return pocket_computer_on;
-                            }
-                            case Blinking:
-                            {
-                                return pocket_computer_blinking;
-                            }
-                        }
+                        case Off:
+                        default:
+                            return colour_pocket_computer_off;
+                        case On:
+                            return colour_pocket_computer_on;
+                        case Blinking:
+                            return colour_pocket_computer_blinking;
                     }
                 }
             }
         }, new String[] {
             "pocket_computer", "pocket_computer_on", "pocket_computer_blinking",
-            "advanced_pocket_computer_off", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking",
+            "advanced_pocket_computer", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking",
+            "pocket_computer_colour", "pocket_computer_colour_on", "pocket_computer_colour_blinking",
         } );
 
         // Setup client forge handlers
@@ -188,12 +194,26 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         mc.getItemColors().registerItemColorHandler( new IItemColor()
         {
             @Override
-            public int getColorFromItemstack( @Nonnull ItemStack stack, int layout )
+            public int getColorFromItemstack( @Nonnull ItemStack stack, int layer )
             {
-                if( layout != 1 ) return 0xFFFFFF;
-
-                int colour = ComputerCraft.Items.pocketComputer.getLightState( stack );
-                return colour == -1 ? Colour.Black.getHex() : colour;
+                switch( layer )
+                {
+                    case 0:
+                    default:
+                        return 0xFFFFFF;
+                    case 1:
+                    {
+                        // Frame colour
+                        int colour = ComputerCraft.Items.pocketComputer.getColour( stack );
+                        return colour == -1 ? 0xFFFFFF : colour;
+                    }
+                    case 2:
+                    {
+                        // Light colour
+                        int colour = ComputerCraft.Items.pocketComputer.getLightState( stack );
+                        return colour == -1 ? Colour.Black.getHex() : colour;
+                    }
+                }
             }
         }, ComputerCraft.Items.pocketComputer );
 

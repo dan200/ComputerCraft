@@ -420,7 +420,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         GameRegistry.addRecipe( new ImpostorShapelessRecipe( bookPrintout, new ItemStack[]{leather, singlePrintout, string} ) );
 
         // Pocket Computer
-        ItemStack pocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, null );
+        ItemStack pocketComputer = PocketComputerItemFactory.create( -1, null, -1, ComputerFamily.Normal, null );
         GameRegistry.addRecipe( pocketComputer,
                 "XXX", "XYX", "XZX",
                 'X', Blocks.STONE,
@@ -429,7 +429,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         );
 
         // Advanced Pocket Computer
-        ItemStack advancedPocketComputer = PocketComputerItemFactory.create( -1, null, ComputerFamily.Advanced, null );
+        ItemStack advancedPocketComputer = PocketComputerItemFactory.create( -1, null, -1, ComputerFamily.Advanced, null );
         GameRegistry.addRecipe( advancedPocketComputer,
                 "XXX", "XYX", "XZX",
                 'X', Items.GOLD_INGOT,
@@ -452,13 +452,13 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
             GameRegistry.addRecipe( new ImpostorRecipe(
                 1, 2,
                 new ItemStack[]{ upgrade.getCraftingItem(), pocketComputer },
-                PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, upgrade )
+                PocketComputerItemFactory.create( -1, null, -1, ComputerFamily.Normal, upgrade )
             ) );
 
             GameRegistry.addRecipe( new ImpostorRecipe(
                 1, 2,
                 new ItemStack[]{ upgrade.getCraftingItem(), advancedPocketComputer },
-                PocketComputerItemFactory.create( -1, null, ComputerFamily.Advanced, upgrade )
+                PocketComputerItemFactory.create( -1, null, -1, ComputerFamily.Advanced, upgrade )
             ) );
         }
 
