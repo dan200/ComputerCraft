@@ -313,10 +313,10 @@ if multishell then
         local sCommand = tWords[1]
         if sCommand then
         	local sPath = shell.resolveProgram( sCommand )
-        	if sPath == "rom/programs/shell" then
+        	if sPath == "rom/programs/shell.lua" then
                 return multishell.launch( tEnv, sPath, table.unpack( tWords, 2 ) )
             elseif sPath ~= nil then
-                return multishell.launch( tEnv, "rom/programs/shell", sCommand, table.unpack( tWords, 2 ) )
+                return multishell.launch( tEnv, "rom/programs/shell.lua", sCommand, table.unpack( tWords, 2 ) )
             else
                 printError( "No such program" )
             end
@@ -344,7 +344,7 @@ else
 
     -- Run the startup program
     if parentShell == nil then
-        shell.run( "/rom/startup" )
+        shell.run( "/rom/startup.lua" )
     end
 
     -- Read commands and execute them
