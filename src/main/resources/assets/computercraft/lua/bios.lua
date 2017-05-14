@@ -282,6 +282,8 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
     local sLine = ""
     local nHistoryPos
     local nPos = 0
+    local tDown = {}
+    local nMod = 0
     if _sReplaceChar then
         _sReplaceChar = string.sub( _sReplaceChar, 1, 1 )
     end
@@ -305,6 +307,31 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
     local function uncomplete()
         tCompletions = nil
         nCompletion = nil
+    end
+    
+    local function updateModifier()
+        nMod = 0
+        if tDown[keys.leftCtrl] or tDown[keys.rightCtrl] then nMod = nMod + 1 end
+        if tDown[keys.leftAlt] or tDown[keys.rightAlt] then nMod = nMod + 2 end
+    end
+
+    local function nextWord()
+        -- Attempt to find the position of the next word
+        local nOffset = sLine:find("%w%W", nPos + 1)
+        if nOffset then return nOffset else return #sLine end
+    end
+
+    local function prevWord()
+        -- Attempt to find the position of the previous word
+        local nOffset = 1
+        while nOffset <= #sLine do
+            local nNext = sLine:find("%W%w", nOffset)
+            if nNext and nNext < nPos then
+                nOffset = nNext + 1
+            else
+                return nOffset - 1
+            end
+        end
     end
 
     local w = term.getSize()
@@ -372,7 +399,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
     end
     while true do
         local sEvent, param = os.pullEvent()
-        if sEvent == "char" then
+        if nMod == 0 and sEvent == "char" then
             -- Typed key
             clear()
             sLine = string.sub( sLine, 1, nPos ) .. param .. string.sub( sLine, nPos + 1 )
@@ -389,7 +416,10 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
             redraw()
 
         elseif sEvent == "key" then
-            if param == keys.enter then
+            if param == keys.leftCtrl or param == keys.rightCtrl or param == keys.leftAlt or param == keys.rightAlt then
+                tDown[param] = true
+                updateModifier()
+            elseif param == keys.enter then
                 -- Enter
                 if nCompletion then
                     clear()
@@ -397,8 +427,17 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
                     redraw()
                 end
                 break
-                
-            elseif param == keys.left then
+            elseif nMod == 1 and param == keys.d then
+                -- Enter
+                if nCompletion then
+                    clear()
+                    uncomplete()
+                    redraw()
+                end
+                sLine = nil
+                nPos = 0
+                break
+            elseif (nMod == 0 and param == keys.left) or (nMod == 1 and param == keys.b) then
                 -- Left
                 if nPos > 0 then
                     clear()
@@ -406,9 +445,9 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
                     recomplete()
                     redraw()
                 end
-                
-            elseif param == keys.right then
-                -- Right                
+
+            elseif (nMod == 0 and param == keys.right) or (nMod == 1 and param == keys.f) then
+                -- Right
                 if nPos < string.len(sLine) then
                     -- Move right
                     clear()
@@ -420,17 +459,37 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
                     acceptCompletion()
                 end
 
-            elseif param == keys.up or param == keys.down then
+            elseif nMod == 2 and param == keys.b then
+                -- Word left
+                local nNewPos = prevWord()
+                if nNewPos ~= nPos then
+                    clear()
+                    nPos = nNewPos
+                    recomplete()
+                    redraw()
+                end
+
+            elseif nMod == 2 and param == keys.f then
+                -- Word right
+                local nNewPos = nextWord()
+                if nNewPos ~= nPos then
+                    clear()
+                    nPos = nNewPos
+                    recomplete()
+                    redraw()
+                end
+
+            elseif (nMod == 0 and (param == keys.up or param == keys.down)) or (nMod == 1 and (param == keys.p or param == keys.n)) then
                 -- Up or down
                 if nCompletion then
                     -- Cycle completions
                     clear()
-                    if param == keys.up then
+                    if param == keys.up or param == keys.p then
                         nCompletion = nCompletion - 1
                         if nCompletion < 1 then
                             nCompletion = #tCompletions
                         end
-                    elseif param == keys.down then
+                    elseif param == keys.down or param == keys.n then
                         nCompletion = nCompletion + 1
                         if nCompletion > #tCompletions then
                             nCompletion = 1
@@ -441,7 +500,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
                 elseif _tHistory then
                     -- Cycle history
                     clear()
-                    if param == keys.up then
+                    if param == keys.up or param == keys.p then
                         -- Up
                         if nHistoryPos == nil then
                             if #_tHistory > 0 then
@@ -450,7 +509,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
                         elseif nHistoryPos > 1 then
                             nHistoryPos = nHistoryPos - 1
                         end
-                    else
+                    elseif param == keys.down or param == keys.n then
                         -- Down
                         if nHistoryPos == #_tHistory then
                             nHistoryPos = nil
@@ -470,7 +529,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
 
                 end
 
-            elseif param == keys.backspace then
+            elseif nMod == 0 and param == keys.backspace then
                 -- Backspace
                 if nPos > 0 then
                     clear()
@@ -480,7 +539,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
                     redraw()
                 end
 
-            elseif param == keys.home then
+            elseif (nMod == 0 and param == keys.home) or (nMod == 1 and param == keys.a) then
                 -- Home
                 if nPos > 0 then
                     clear()
@@ -489,7 +548,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
                     redraw()
                 end
 
-            elseif param == keys.delete then
+            elseif nMod == 0 and param == keys.delete then
                 -- Delete
                 if nPos < string.len(sLine) then
                     clear()
@@ -498,7 +557,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
                     redraw()
                 end
 
-            elseif param == keys["end"] then
+            elseif (nMod == 0 and param == keys["end"]) or (nMod == 1 and param == keys.e) then
                 -- End
                 if nPos < string.len(sLine ) then
                     clear()
@@ -507,12 +566,62 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
                     redraw()
                 end
 
-            elseif param == keys.tab then
+            elseif nMod == 1 and param == keys.u then
+                -- Delete from cursor to beginning of line
+                if nPos > 0 then
+                    clear()
+                    sLine = sLine:sub(nPos + 1)
+                    nPos = 0
+                    recomplete()
+                    redraw()
+                end
+
+            elseif nMod == 1 and param == keys.k then
+                -- Delete from cursor to end of line
+                if nPos < #sLine then
+                    clear()
+                    sLine = sLine:sub(1, nPos)
+                    nPos = #sLine
+                    recomplete()
+                    redraw()
+                end
+
+            elseif nMod == 2 and param == keys.d then
+                -- Delete from cursor to end of next word
+                if nPos < #sLine then
+                    local nNext = nextWord()
+                    if nNext ~= nPos then
+                        clear()
+                        sLine = sLine:sub(1, nPos) .. sLine:sub(nNext + 1)
+                        recomplete()
+                        redraw()
+                    end
+                end
+
+            elseif nMod == 1 and param == keys.w then
+                -- Delete from cursor to beginning of previous word
+                if nPos > 0 then
+                    local nPrev = prevWord(nPos)
+                    if nPrev ~= nPos then
+                        clear()
+                        sLine = sLine:sub(1, nPrev) .. sLine:sub(nPos + 1)
+                        nPos = nPrev
+                        recomplete()
+                        redraw()
+                    end
+                end
+
+            elseif nMod == 0 and param == keys.tab then
                 -- Tab (accept autocomplete)
                 acceptCompletion()
 
             end
-
+        elseif sEvent == "key_up" then
+            -- Update the status of the modifier flag
+            if param == keys.leftCtrl or param == keys.rightCtrl or param == keys.leftAlt or param == keys.rightAlt then
+                tDown[param] = false
+                updateModifier()
+            end
         elseif sEvent == "term_resize" then
             -- Terminal resized
             w = term.getSize()

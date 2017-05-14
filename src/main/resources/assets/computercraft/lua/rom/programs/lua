@@ -44,6 +44,7 @@ while bRunning do
 		end
         return nil
 	end )
+	if not s then break end
 	table.insert( tCommandHistory, s )
 	
 	local nForcePrint = 0

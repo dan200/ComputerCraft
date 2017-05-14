@@ -363,6 +363,9 @@ else
         else
             sLine = read( nil, tCommandHistory )
         end
+        
+        if not sLine then break end
+        
         table.insert( tCommandHistory, sLine )
         shell.run( sLine )
     end

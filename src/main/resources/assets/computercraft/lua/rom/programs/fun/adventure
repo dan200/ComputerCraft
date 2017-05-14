@@ -1325,6 +1325,7 @@ while bRunning do
 	term.setTextColour( colours.white )
 		
     local sRawLine = read( nil, tCommandHistory )
+    if not sRawLine then break end
     table.insert( tCommandHistory, sRawLine )
     
     local sLine = nil
