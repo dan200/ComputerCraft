@@ -127,7 +127,7 @@ public interface ITurtleAccess
     void setColour( int colour );
 
     /**
-     * Set the colour of the turtle to a RGB number.
+     * Get the colour of this turtle as a RGB number.
      *
      * @return The colour this turtle is. This will be a RGB colour between {@code 0x000000} and {@code 0xFFFFFF} or
      * -1 if it has no colour.

@@ -5,7 +5,6 @@ import dan200.computercraft.api.pocket.IPocketAccess;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
-import dan200.computercraft.shared.util.Colour;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -77,7 +76,7 @@ public class PocketModem implements IPocketUpgrade
                 modem.setLocation( entity.getEntityWorld(), entity.posX, entity.posY, entity.posZ );
             }
 
-            access.setLight( modem.isActive() ? Colour.Red.ordinal() : Colour.Black.ordinal() );
+            access.setLight( modem.isActive() ? 0xBA0000 : -1 );
         }
     }
 

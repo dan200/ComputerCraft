@@ -457,12 +457,12 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         if( computer != null && computer.isOn() )
         {
             NBTTagCompound computerNBT = computer.getUserData();
-            if( computerNBT != null )
+            if( computerNBT != null && computerNBT.hasKey( "modemLight", Constants.NBT.TAG_ANY_NUMERIC ) )
             {
                 return computerNBT.getInteger( "modemLight" );
             }
         }
-        return 0;
+        return -1;
     }
 
     public IPocketUpgrade getUpgrade( ItemStack stack )

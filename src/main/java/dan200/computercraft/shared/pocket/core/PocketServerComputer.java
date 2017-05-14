@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,19 +41,32 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
     @Override
     public int getLight()
     {
-        int value = getUserData().getInteger( "modemLight" );
-        return value >= 0 && value <= 15 ? value : 0;
+        NBTTagCompound tag = getUserData();
+        if( tag.hasKey( "modemLight", Constants.NBT.TAG_ANY_NUMERIC ) )
+        {
+            return tag.getInteger( "modemLight" );
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     @Override
-    public void setLight( int value )
+    public void setLight( int colour )
     {
-        if( value < 0 || value > 15 ) throw new IllegalArgumentException( "Colour out of bounds" );
-
         NBTTagCompound tag = getUserData();
-        if( tag.getInteger( "modemLight" ) != value )
+        if( colour >= 0 && colour <= 0xFFFFFF )
         {
-            tag.setInteger( "modemLight", value );
+            if( !tag.hasKey( "modemLight", Constants.NBT.TAG_ANY_NUMERIC ) || tag.getInteger( "modemLight" ) != colour )
+            {
+                tag.setInteger( "modemLight", colour );
+                updateUserData();
+            }
+        }
+        else if( tag.hasKey( "modemLight", Constants.NBT.TAG_ANY_NUMERIC ) )
+        {
+            tag.removeTag( "modemLight" );
             updateUserData();
         }
     }

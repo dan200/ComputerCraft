@@ -192,8 +192,8 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             {
                 if( layout != 1 ) return 0xFFFFFF;
 
-                Colour colour = Colour.fromInt( ComputerCraft.Items.pocketComputer.getLightState( stack ) );
-                return colour == null ? Colour.Black.getHex() : colour.getHex();
+                int colour = ComputerCraft.Items.pocketComputer.getLightState( stack );
+                return colour == -1 ? Colour.Black.getHex() : colour;
             }
         }, ComputerCraft.Items.pocketComputer );
 
