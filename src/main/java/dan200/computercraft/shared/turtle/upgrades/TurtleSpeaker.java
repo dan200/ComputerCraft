@@ -166,9 +166,11 @@ public class TurtleSpeaker implements ITurtleUpgrade
     @Override
     public void update(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide turtleSide)
     {
-        if (turtle.getPeripheral(turtleSide) instanceof Peripheral)
+        IPeripheral turtlePeripheral = turtle.getPeripheral(turtleSide);
+
+        if (turtlePeripheral instanceof Peripheral)
         {
-            Peripheral peripheral = (Peripheral) turtle.getPeripheral(turtleSide);
+            Peripheral peripheral = (Peripheral) turtlePeripheral;
             peripheral.update();
         }
     }

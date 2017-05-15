@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of ComputerCraft - http://www.computercraft.info
  * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
@@ -12,10 +12,11 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class SpeakerPeripheral implements IPeripheral {
 
@@ -31,7 +32,7 @@ public class SpeakerPeripheral implements IPeripheral {
         m_notesThisTick = 0;
     }
 
-    public SpeakerPeripheral(TileSpeaker speaker)
+    SpeakerPeripheral(TileSpeaker speaker)
     {
         this();
         m_speaker = speaker;
@@ -72,21 +73,23 @@ public class SpeakerPeripheral implements IPeripheral {
 
 
     @Override
-    public void attach(IComputerAccess computerAccess)
+    public void attach(@Nonnull IComputerAccess computerAccess)
     {
     }
 
     @Override
-    public void detach(IComputerAccess computerAccess)
+    public void detach(@Nonnull IComputerAccess computerAccess)
     {
     }
 
+    @Nonnull
     @Override
     public String getType()
     {
         return "speaker";
     }
 
+    @Nonnull
     @Override
     public String[] getMethodNames()
     {
@@ -97,20 +100,20 @@ public class SpeakerPeripheral implements IPeripheral {
     }
 
     @Override
-    public Object[] callMethod(IComputerAccess computerAccess, ILuaContext context, int methodIndex, Object[] args) throws LuaException
+    public Object[] callMethod(@Nonnull IComputerAccess computerAccess, @Nonnull ILuaContext context, int methodIndex, @Nonnull Object[] args) throws LuaException
     {
         switch (methodIndex)
         {
             // playsound
             case 0:
             {
-                return playSound(args, false);
+                return playSound(args, context, false);
             }
 
             // playnote
             case 1:
             {
-                return playNote(args);
+                return playNote(args, context);
             }
 
             default:
@@ -121,7 +124,7 @@ public class SpeakerPeripheral implements IPeripheral {
         }
     }
 
-    private Object[] playNote(Object[] arguments) throws LuaException
+    private Object[] playNote(Object[] arguments, ILuaContext context) throws LuaException
     {
         double volume = 1f;
         double pitch = 1f;
@@ -167,14 +170,18 @@ public class SpeakerPeripheral implements IPeripheral {
         }
 
         // If the resource location for noteblock notes changes, this method call will need to be updated
-        Object[] returnValue = playSound(new Object[] {"block.note." + arguments[0], volume, Math.pow(2d, (pitch - 12) / 12d)}, true);
-        m_notesThisTick++;
+        Object[] returnValue = playSound(new Object[] {"block.note." + arguments[0], volume, Math.pow(2d, (pitch - 12) / 12d)}, context, true);
+
+        if (returnValue[0] instanceof Boolean && (Boolean) returnValue[0])
+        {
+            m_notesThisTick++;
+        }
 
         return returnValue;
 
     }
 
-    private Object[] playSound(Object[] arguments, boolean isNote) throws LuaException
+    private Object[] playSound(Object[] arguments, ILuaContext context, boolean isNote) throws LuaException
     {
 
         float volume = 1f;
@@ -217,12 +224,12 @@ public class SpeakerPeripheral implements IPeripheral {
 
         ResourceLocation resourceName = new ResourceLocation((String) arguments[0]);
 
-        if (m_clock - m_lastPlayTime > TileSpeaker.MIN_TICKS_BETWEEN_SOUNDS || ((m_clock - m_lastPlayTime == 0) && (m_notesThisTick < ComputerCraft.maxNotesPerTick) && isNote))
+        if (m_clock - m_lastPlayTime >= TileSpeaker.MIN_TICKS_BETWEEN_SOUNDS || ((m_clock - m_lastPlayTime == 0) && (m_notesThisTick < ComputerCraft.maxNotesPerTick) && isNote))
         {
 
             if (SoundEvent.REGISTRY.containsKey(resourceName))
             {
-               getWorld().playSound(null, getPos(), new SoundEvent(resourceName), SoundCategory.RECORDS, volume, pitch);
+                context.issueMainThreadTask(new SoundTask(getWorld(), getPos(), resourceName, volume, pitch));
                 m_lastPlayTime = m_clock;
                 return new Object[]{true}; // Success, return true
             }
