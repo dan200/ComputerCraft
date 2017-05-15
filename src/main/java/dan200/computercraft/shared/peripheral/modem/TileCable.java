@@ -359,7 +359,7 @@ public class TileCable extends TileModemBase
                     ((BlockGeneric)getBlockType()).dropItem( getWorld(), getPos(), PeripheralItemFactory.create( PeripheralType.WiredModem, getLabel(), 1 ) );
                     setLabel( null );
                     setBlockState( getBlockState().withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.None ) );
-                    modemChanged();
+                    if( modemChanged() ) networkChanged();
                     break;
                 }
             }
@@ -714,9 +714,11 @@ public class TileCable extends TileModemBase
         }
     }
 
-    public void modemChanged()
+    public boolean modemChanged()
     {
-        if( getWorld().isRemote ) return;
+        if( getWorld().isRemote ) return false;
+        
+        boolean requiresUpdate = false;
 
         PeripheralType type = getPeripheralType();
         if( type == PeripheralType.Cable )
@@ -727,10 +729,12 @@ public class TileCable extends TileModemBase
         if( type != PeripheralType.WiredModemWithCable && m_peripheralAccessAllowed )
         {
             m_peripheralAccessAllowed = false;
+            requiresUpdate = true;
+            markDirty();
+            updateAnim();
         }
-
-        markDirty();
-        updateAnim();
+        
+        return requiresUpdate;
     }
         
     // private stuff
