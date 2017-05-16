@@ -5,5 +5,5 @@ playSound( sResourceName, nVolume, nPitch )
 playNote( sInstrumentName, nVolume, nTicks )
 
 Resource name is the same as used by the /playsound command, such as "minecraft:entity.cow.ambient".
-Instruments are as follows: "harp", "bass", "snare", "hat", and "basedrum" with the addition of "flute", "bell", "chime", and "guitar" in Minecraft version 1.12 above.
+Instruments are as follows: "harp", "bass", "snare", "hat", and "basedrum" with the addition of "flute", "bell", "chime", and "guitar" in Minecraft versions 1.12 and above.
 Ticks is the amount of times a noteblock has been tuned (right clicked).
