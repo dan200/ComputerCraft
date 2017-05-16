@@ -280,7 +280,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         error("Colour out of range", 2)
        end
     else
-       error("Color must be a number",2)
+       error("Colour must be a number",2)
     end
     end
 
@@ -323,13 +323,13 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         error("Colour out of range",2)
        end
     else
-       error("Color must be a number",2)
+       error("Colour must be a number",2)
     end
     end
 
     window.setBackgroundColor = setBackgroundColor
 
-    window.setBackgroundColour = setBackgroundColo
+    window.setBackgroundColour = setBackgroundColor
    
     function window.getSize()
         return nWidth, nHeight
