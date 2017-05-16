@@ -215,7 +215,7 @@ public class CommandAPI implements ILuaAPI
                                     // Ignore buggy command
                                     if( ComputerCraft.logPeripheralErrors )
                                     {
-                                        ComputerCraft.log.error( "Error running command.", t );
+                                        ComputerCraft.log.error( "Error checking permissions of command.", t );
                                     }
                                 }
                             }

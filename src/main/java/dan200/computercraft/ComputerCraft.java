@@ -107,7 +107,7 @@ public class ComputerCraft
     public static String http_whitelist = "*";
     public static boolean disable_lua51_features = false;
     public static String default_computer_settings = "";
-    public static boolean logPeripheralErrors = true;
+    public static boolean logPeripheralErrors = false;
 
     public static boolean enableCommandBlock = false;
     public static boolean turtlesNeedFuel = true;
