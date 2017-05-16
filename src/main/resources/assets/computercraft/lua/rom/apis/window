@@ -270,6 +270,11 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function setTextColor( color )
+        if type(color) ~= "number" then
+            error( "Expected number", 3 )
+        elseif tHex[color] == nil then
+            error( "Invalid color", 3 )
+        end
         nTextColor = color
         if bVisible then
             updateCursorColor()
@@ -312,6 +317,11 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     window.getPaletteColor = window.getPaletteColour
 
     local function setBackgroundColor( color )
+        if type(color) ~= "number" then
+            error( "Expected number", 3 )
+        elseif tHex[color] == nil then
+            error( "Invalid color", 3 )
+        end
         nBackgroundColor = color
     end
 
