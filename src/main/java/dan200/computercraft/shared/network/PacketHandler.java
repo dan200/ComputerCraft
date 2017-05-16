@@ -24,7 +24,7 @@ public class PacketHandler
         }
         catch( Exception e )
         {
-            e.printStackTrace();
+            ComputerCraft.log.error( "Error handling packet", e );
         }
     }
 
@@ -39,7 +39,7 @@ public class PacketHandler
         }
         catch( Exception e )
         {
-            e.printStackTrace();
+            ComputerCraft.log.error( "Error handling packet", e );
         }
     }
 }

@@ -469,7 +469,7 @@ public class Computer
         }
         catch( FileSystemException e )
         {
-            e.printStackTrace();
+            ComputerCraft.log.error( "Cannot mount rom", e );
             return false;
         }
     }

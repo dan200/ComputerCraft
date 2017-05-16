@@ -15,6 +15,7 @@ import dan200.computercraft.core.apis.ILuaAPI;
 import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.core.computer.ITask;
 import dan200.computercraft.core.computer.MainThread;
+
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
@@ -183,6 +184,7 @@ public class LuaJLuaMachine implements ILuaMachine
         }
         catch( LuaError e )
         {
+            ComputerCraft.log.warn( "Could not load bios.lua ", e );
             if( m_mainRoutine != null )
             {
                 ((LuaThread)m_mainRoutine).abandon();
@@ -327,7 +329,8 @@ public class LuaJLuaMachine implements ILuaMachine
             {
                 final int method = i;
                 final ILuaObject apiObject = object;
-                table.set( methods[i], new VarArgFunction() {
+                final String methodName = methods[i];
+                table.set( methodName, new VarArgFunction() {
                     @Override
                     public Varargs invoke( Varargs _args )
                     {
@@ -412,6 +415,10 @@ public class LuaJLuaMachine implements ILuaMachine
                                             }
                                             catch( Throwable t )
                                             {
+                                                if( ComputerCraft.logPeripheralErrors )
+                                                {
+                                                    ComputerCraft.log.error( "Error running task", t );
+                                                }
                                                 m_computer.queueEvent( "task_complete", new Object[] {
                                                     taskID, false, "Java Exception Thrown: " + t.toString()
                                                 } );
@@ -478,6 +485,10 @@ public class LuaJLuaMachine implements ILuaMachine
                         }
                         catch( Throwable t )
                         {
+                            if( ComputerCraft.logPeripheralErrors )
+                            {
+                                ComputerCraft.log.error( "Error calling " + methodName + " on " + apiObject, t );
+                            }
                             throw new LuaError( "Java Exception Thrown: " + t.toString(), 0 );
                         }
                         return LuaValue.varargsOf( toValues( results, 0 ) );

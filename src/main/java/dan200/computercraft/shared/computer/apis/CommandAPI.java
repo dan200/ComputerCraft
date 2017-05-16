@@ -7,6 +7,7 @@
 package dan200.computercraft.shared.computer.apis;
 
 import com.google.common.collect.ImmutableMap;
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
@@ -98,6 +99,10 @@ public class CommandAPI implements ILuaAPI
             }
             catch( Throwable t )
             {
+                if( ComputerCraft.logPeripheralErrors )
+                {
+                    ComputerCraft.log.error( "Error running command.", t );
+                }
                 return new Object[]{ false, createOutput( "Java Exception Thrown: " + t.toString() ) };
             }
         }
@@ -208,6 +213,10 @@ public class CommandAPI implements ILuaAPI
                                 catch( Throwable t )
                                 {
                                     // Ignore buggy command
+                                    if( ComputerCraft.logPeripheralErrors )
+                                    {
+                                        ComputerCraft.log.error( "Error checking permissions of command.", t );
+                                    }
                                 }
                             }
                         }

@@ -68,6 +68,7 @@ import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,6 +107,7 @@ public class ComputerCraft
     public static String http_whitelist = "*";
     public static boolean disable_lua51_features = false;
     public static String default_computer_settings = "";
+    public static boolean logPeripheralErrors = false;
 
     public static boolean enableCommandBlock = false;
     public static boolean turtlesNeedFuel = true;
@@ -179,6 +181,7 @@ public class ComputerCraft
         public static Property http_whitelist;
         public static Property disable_lua51_features;
         public static Property default_computer_settings;
+        public static Property logPeripheralErrors;
 
         public static Property enableCommandBlock;
         public static Property turtlesNeedFuel;
@@ -207,6 +210,9 @@ public class ComputerCraft
     // Creative
     public static CreativeTabMain mainCreativeTab;
 
+    // Logging
+    public static Logger log;
+
     // API users
     private static List<IPeripheralProvider> peripheralProviders = new ArrayList<IPeripheralProvider>();
     private static List<IBundledRedstoneProvider> bundledRedstoneProviders = new ArrayList<IBundledRedstoneProvider>();
@@ -231,6 +237,8 @@ public class ComputerCraft
     @Mod.EventHandler
     public void preInit( FMLPreInitializationEvent event )
     {
+        log = event.getModLog();
+
         // Load config
         Config.config = new Configuration( event.getSuggestedConfigurationFile() );
         Config.config.load();
@@ -247,6 +255,10 @@ public class ComputerCraft
         Config.default_computer_settings = Config.config.get( Configuration.CATEGORY_GENERAL, "default_computer_settings", default_computer_settings );
         Config.default_computer_settings.setComment( "A comma seperated list of default system settings to set on new computers. Example: \"shell.autocomplete=false,lua.autocomplete=false,edit.autocomplete=false\" will disable all autocompletion" );
 
+        Config.logPeripheralErrors = Config.config.get( Configuration.CATEGORY_GENERAL, "logPeripheralErrors", logPeripheralErrors );
+        Config.logPeripheralErrors.setComment( "Log exceptions thrown by peripherals and other Lua objects.\n" +
+            "This makes it easier for mod authors to debug problems, but may result in log spam should people use buggy methods." );
+        
         Config.enableCommandBlock = Config.config.get( Configuration.CATEGORY_GENERAL, "enableCommandBlock", enableCommandBlock );
         Config.enableCommandBlock.setComment( "Enable Command Block peripheral support" );
 
@@ -605,7 +617,7 @@ public class ComputerCraft
             }
             catch( Exception e )
             {
-                // mod misbehaved, ignore it
+                ComputerCraft.log.error( "Peripheral provider " + peripheralProvider + " errored.", e );
             }
         }
         return null;
@@ -649,7 +661,7 @@ public class ComputerCraft
             }
             catch( Exception e )
             {
-                // mod misbehaved, ignore it
+                ComputerCraft.log.error( "Bundled redstone provider " + bundledRedstoneProvider + " errored.", e );
             }
         }
         return combinedSignal;
@@ -673,6 +685,7 @@ public class ComputerCraft
                 catch( Exception e )
                 {
                     // mod misbehaved, ignore it
+                    ComputerCraft.log.error( "Media provider " + mediaProvider + " errored.", e );
                 }
             }
             return null;
