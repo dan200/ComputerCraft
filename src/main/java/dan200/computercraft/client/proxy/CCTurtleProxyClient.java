@@ -155,6 +155,8 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
             loadModel( event, "advanced_turtle_modem_on_left" );
             loadModel( event, "advanced_turtle_modem_off_right" );
             loadModel( event, "advanced_turtle_modem_on_right" );
+            loadModel( event, "turtle_speaker_upgrade_left" );
+            loadModel( event, "turtle_speaker_upgrade_right" );
             loadSmartModel( event, "turtle_dynamic", m_turtleSmartItemModel );
         }
 

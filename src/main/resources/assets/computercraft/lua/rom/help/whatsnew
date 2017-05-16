@@ -30,5 +30,6 @@ New Features in ComputerCraft 1.80:
 * Turtles now use tinting
 * shell.resolveProgram now picks up on *.lua files
 * Fixed a handful of bugs in ComputerCraft
+* Added speaker block, turtle upgrade, pocket upgrade, and peripheral api
 
 Type "help changelog" to see the full version history.

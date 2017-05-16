@@ -44,10 +44,12 @@ import dan200.computercraft.shared.peripheral.modem.TileWirelessModem;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.ContainerPrinter;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
+import dan200.computercraft.shared.peripheral.speaker.TileSpeaker;
 import dan200.computercraft.shared.pocket.inventory.ContainerPocketComputer;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
 import dan200.computercraft.shared.pocket.peripherals.PocketModem;
+import dan200.computercraft.shared.pocket.peripherals.PocketSpeaker;
 import dan200.computercraft.shared.pocket.recipes.PocketComputerUpgradeRecipe;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.inventory.ContainerTurtle;
@@ -306,6 +308,15 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
                 'Y', Items.REDSTONE
         );
 
+        // Speaker
+        ItemStack speaker = PeripheralItemFactory.create( PeripheralType.Speaker, null, 1);
+        GameRegistry.addRecipe( speaker,
+                "XXX", "XYX", "XZX",
+                'X', Blocks.STONE,
+                'Y', Blocks.NOTEBLOCK,
+                'Z', Items.REDSTONE
+        );
+
         // Wireless Modem
         ItemStack wirelessModem = PeripheralItemFactory.create( PeripheralType.WirelessModem, null, 1 );
         GameRegistry.addRecipe( wirelessModem,
@@ -441,6 +452,9 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         ComputerCraft.PocketUpgrades.advancedModem = new PocketModem( true );
         ComputerCraftAPI.registerPocketUpgrade( ComputerCraft.PocketUpgrades.advancedModem );
 
+        ComputerCraft.PocketUpgrades.pocketSpeaker = new PocketSpeaker();
+        ComputerCraftAPI.registerPocketUpgrade( ComputerCraft.PocketUpgrades.pocketSpeaker );
+
         // Wireless Pocket Computer
         GameRegistry.addRecipe( new PocketComputerUpgradeRecipe() );
 
@@ -547,6 +561,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
         registerTileEntity( TileCable.class, "wiredmodem" );
         registerTileEntity( TileCommandComputer.class, "command_computer" );
         registerTileEntity( TileAdvancedModem.class, "advanced_modem" );
+        registerTileEntity( TileSpeaker.class, "speaker" );
 
         // Register peripheral providers
         ComputerCraftAPI.registerPeripheralProvider( new DefaultPeripheralProvider() );

@@ -8,8 +8,10 @@ package dan200.computercraft.shared.proxy;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
+import dan200.computercraft.shared.peripheral.speaker.SpeakerPeripheral;
 import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.blocks.TileTurtleAdvanced;
@@ -126,7 +128,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
 
     public static boolean isUpgradeVanilla( ITurtleUpgrade upgrade )
     {
-        return upgrade instanceof TurtleTool || upgrade instanceof TurtleModem || upgrade instanceof TurtleCraftingTable;
+        return upgrade instanceof TurtleTool || upgrade instanceof TurtleModem || upgrade instanceof TurtleCraftingTable || upgrade instanceof TurtleSpeaker;
     }
 
     public static boolean isUpgradeSuitableForFamily( ComputerFamily family, ITurtleUpgrade upgrade )
@@ -156,6 +158,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         addUpgradedTurtle( family, ComputerCraft.Upgrades.craftingTable, list );
         addUpgradedTurtle( family, ComputerCraft.Upgrades.wirelessModem, list );
         addUpgradedTurtle( family, ComputerCraft.Upgrades.advancedModem, list );
+        addUpgradedTurtle( family, ComputerCraft.Upgrades.turtleSpeaker, list );
     }
 
     private void addUpgradedTurtle( ComputerFamily family, ITurtleUpgrade upgrade, List<ItemStack> list )
@@ -384,8 +387,12 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         ComputerCraft.Upgrades.diamondHoe = new TurtleHoe( new ResourceLocation( "minecraft", "diamond_hoe" ), 7, "upgrade.minecraft:diamond_hoe.adjective", Items.DIAMOND_HOE );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.diamondHoe );
 
-        ComputerCraft.Upgrades.advancedModem =  new TurtleModem( true, new ResourceLocation( "computercraft", "advanced_modem" ), -1 );
+        ComputerCraft.Upgrades.advancedModem = new TurtleModem( true, new ResourceLocation( "computercraft", "advanced_modem" ), -1 );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.advancedModem );
+
+        ComputerCraft.Upgrades.turtleSpeaker = new TurtleSpeaker( new ResourceLocation( "computercraft", "speaker" ), 8 );
+        registerTurtleUpgradeInternal( ComputerCraft.Upgrades.turtleSpeaker );
+
     }
 
     @Override

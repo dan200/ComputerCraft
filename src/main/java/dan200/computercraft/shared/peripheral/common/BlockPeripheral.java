@@ -12,6 +12,7 @@ import dan200.computercraft.shared.peripheral.diskdrive.TileDiskDrive;
 import dan200.computercraft.shared.peripheral.modem.TileWirelessModem;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
+import dan200.computercraft.shared.peripheral.speaker.TileSpeaker;
 import dan200.computercraft.shared.util.DirectionUtil;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
@@ -105,6 +106,10 @@ public class BlockPeripheral extends BlockPeripheralBase
         {
             state = state.withProperty( Properties.VARIANT, BlockPeripheralVariant.AdvancedMonitor );
         }
+        else if (meta == 13)
+        {
+            state = state.withProperty( Properties.VARIANT, BlockPeripheralVariant.Speaker);
+        }
         return state;
     }
 
@@ -162,6 +167,11 @@ public class BlockPeripheral extends BlockPeripheralBase
             case AdvancedMonitor:
             {
                 meta = 12;
+                break;
+            }
+            case Speaker:
+            {
+                meta = 13;
                 break;
             }
         }
@@ -321,6 +331,11 @@ public class BlockPeripheral extends BlockPeripheralBase
                         break;
                     }
                 }
+                break;
+            }
+            case Speaker:
+            {
+                state = state.withProperty( Properties.FACING, dir );
                 break;
             }
             case Monitor:
@@ -489,6 +504,10 @@ public class BlockPeripheral extends BlockPeripheralBase
             {
                 return getDefaultState().withProperty( Properties.VARIANT, BlockPeripheralVariant.AdvancedMonitor );
             }
+            case Speaker:
+            {
+                return getDefaultState().withProperty( Properties.VARIANT, BlockPeripheralVariant.Speaker );
+            }
         }
     }
 
@@ -527,6 +546,10 @@ public class BlockPeripheral extends BlockPeripheralBase
             {
                 return new TilePrinter();
             }
+            case Speaker:
+            {
+                return new TileSpeaker();
+            }
         }
     }
 
@@ -543,6 +566,7 @@ public class BlockPeripheral extends BlockPeripheralBase
 
         switch( getPeripheralType( state ) )
         {
+            case Speaker:
             case DiskDrive:
             case Printer:
             {
