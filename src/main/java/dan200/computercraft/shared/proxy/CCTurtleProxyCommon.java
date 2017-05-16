@@ -119,7 +119,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             }
             catch( Exception e )
             {
-                ComputerCraft.log.error("Error checking stackability of items", e);
+                ComputerCraft.log.error("Error getting computer upgrade item", e);
             }
         }
         return null;

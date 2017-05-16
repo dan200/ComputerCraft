@@ -99,7 +99,10 @@ public class CommandAPI implements ILuaAPI
             }
             catch( Throwable t )
             {
-                ComputerCraft.log.error( "Error running command.", t );
+                if( ComputerCraft.logPeripheralErrors )
+                {
+                    ComputerCraft.log.error( "Error running command.", t );
+                }
                 return new Object[]{ false, createOutput( "Java Exception Thrown: " + t.toString() ) };
             }
         }
@@ -210,7 +213,10 @@ public class CommandAPI implements ILuaAPI
                                 catch( Throwable t )
                                 {
                                     // Ignore buggy command
-                                    ComputerCraft.log.error( "Error running command.", t );
+                                    if( ComputerCraft.logPeripheralErrors )
+                                    {
+                                        ComputerCraft.log.error( "Error running command.", t );
+                                    }
                                 }
                             }
                         }

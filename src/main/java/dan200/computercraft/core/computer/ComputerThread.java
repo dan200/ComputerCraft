@@ -140,7 +140,7 @@ public class ComputerThread
                                     // Step 3: abandon
                                     if( worker.isAlive() )
                                     {
-                                        ComputerCraft.log.warn( "Failed to abort Computer " + computer.getID() + ". Dangling lua thread could cause errors." );
+                                        // ComputerCraft.log.warn( "Failed to abort Computer " + computer.getID() + ". Dangling lua thread could cause errors." );
                                         worker.interrupt();
                                     }
                                 }                

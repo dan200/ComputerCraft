@@ -107,6 +107,7 @@ public class ComputerCraft
     public static String http_whitelist = "*";
     public static boolean disable_lua51_features = false;
     public static String default_computer_settings = "";
+    public static boolean logPeripheralErrors = true;
 
     public static boolean enableCommandBlock = false;
     public static boolean turtlesNeedFuel = true;
@@ -180,6 +181,7 @@ public class ComputerCraft
         public static Property http_whitelist;
         public static Property disable_lua51_features;
         public static Property default_computer_settings;
+        public static Property logPeripheralErrors;
 
         public static Property enableCommandBlock;
         public static Property turtlesNeedFuel;
@@ -253,6 +255,10 @@ public class ComputerCraft
         Config.default_computer_settings = Config.config.get( Configuration.CATEGORY_GENERAL, "default_computer_settings", default_computer_settings );
         Config.default_computer_settings.setComment( "A comma seperated list of default system settings to set on new computers. Example: \"shell.autocomplete=false,lua.autocomplete=false,edit.autocomplete=false\" will disable all autocompletion" );
 
+        Config.logPeripheralErrors = Config.config.get( Configuration.CATEGORY_GENERAL, "logPeripheralErrors", logPeripheralErrors );
+        Config.logPeripheralErrors.setComment( "Log exceptions thrown by peripherals and other Lua objects.\n" +
+            "This makes it easier for mod authors to debug problems, but may result in log spam should people use buggy methods." );
+        
         Config.enableCommandBlock = Config.config.get( Configuration.CATEGORY_GENERAL, "enableCommandBlock", enableCommandBlock );
         Config.enableCommandBlock.setComment( "Enable Command Block peripheral support" );
 

@@ -44,6 +44,7 @@ gui.computercraft:config.http_enable=Enable HTTP API
 gui.computercraft:config.http_whitelist=HTTP whitelist
 gui.computercraft:config.disable_lua51_features=Disable Lua 5.1 features
 gui.computercraft:config.default_computer_settings=Default Computer settings
+gui.computercraft:config.log_peripheral_errors=Log peripheral errors
 gui.computercraft:config.enable_command_block=Enable command block peripheral
 gui.computercraft:config.modem_range=Modem range (default)
 gui.computercraft:config.modem_high_altitude_range=Modem range (high-altitude)

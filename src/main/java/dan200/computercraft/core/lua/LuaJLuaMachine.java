@@ -415,7 +415,10 @@ public class LuaJLuaMachine implements ILuaMachine
                                             }
                                             catch( Throwable t )
                                             {
-                                                ComputerCraft.log.error( "Error running task", t);
+                                                if( ComputerCraft.logPeripheralErrors )
+                                                {
+                                                    ComputerCraft.log.error( "Error running task", t );
+                                                }
                                                 m_computer.queueEvent( "task_complete", new Object[] {
                                                     taskID, false, "Java Exception Thrown: " + t.toString()
                                                 } );
@@ -482,7 +485,10 @@ public class LuaJLuaMachine implements ILuaMachine
                         }
                         catch( Throwable t )
                         {
-                            ComputerCraft.log.error( "Error calling " + methodName + " on " + apiObject, t );
+                            if( ComputerCraft.logPeripheralErrors )
+                            {
+                                ComputerCraft.log.error( "Error calling " + methodName + " on " + apiObject, t );
+                            }
                             throw new LuaError( "Java Exception Thrown: " + t.toString(), 0 );
                         }
                         return LuaValue.varargsOf( toValues( results, 0 ) );
