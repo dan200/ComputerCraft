@@ -270,19 +270,23 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function setTextColor( color )
+	if type(color) == "number" then
+       if type(tHex[color]) == "string" then
         nTextColor = color
         if bVisible then
             updateCursorColor()
         end
+       else
+        error("Colour out of range", 2)
+       end
+    else
+       error("Colour must be a number",2)
+    end
     end
 
-    function window.setTextColor( color )
-        setTextColor( color )
-    end
+    window.setTextColor = setTextColor
 
-    function window.setTextColour( color )
-        setTextColor( color )
-    end
+    window.setTextColour = setTextColor
 
     function window.setPaletteColour( colour, r, g, b )
         local tCol
@@ -312,17 +316,21 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     window.getPaletteColor = window.getPaletteColour
 
     local function setBackgroundColor( color )
+    if type(color) == "number" then
+       if type(tHex[color]) == "string" then
         nBackgroundColor = color
+       else
+        error("Colour out of range",2)
+       end
+    else
+       error("Colour must be a number",2)
+    end
     end
 
-    function window.setBackgroundColor( color )
-        setBackgroundColor( color )
-    end
+    window.setBackgroundColor = setBackgroundColor
 
-    function window.setBackgroundColour( color )
-        setBackgroundColor( color )
-    end
-
+    window.setBackgroundColour = setBackgroundColor
+   
     function window.getSize()
         return nWidth, nHeight
     end
