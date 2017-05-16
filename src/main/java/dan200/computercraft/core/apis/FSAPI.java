@@ -7,15 +7,17 @@
 package dan200.computercraft.core.apis;
 
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.core.apis.handles.BinaryInputHandle;
+import dan200.computercraft.core.apis.handles.BinaryOutputHandle;
+import dan200.computercraft.core.apis.handles.EncodedInputHandle;
+import dan200.computercraft.core.apis.handles.EncodedOutputHandle;
 import dan200.computercraft.core.filesystem.FileSystem;
 import dan200.computercraft.core.filesystem.FileSystemException;
-import dan200.computercraft.core.filesystem.IMountedFileBinary;
-import dan200.computercraft.core.filesystem.IMountedFileNormal;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -259,33 +261,33 @@ public class FSAPI implements ILuaAPI
                 try {
                     if( mode.equals( "r" ) ) {
                         // Open the file for reading, then create a wrapper around the reader
-                        IMountedFileNormal reader = m_fileSystem.openForRead( path );
-                        return wrapBufferedReader( reader );
+                        InputStream reader = m_fileSystem.openForRead( path );
+                        return new Object[] { new EncodedInputHandle( reader ) };
                         
                     } else if( mode.equals( "w" ) ) {
                         // Open the file for writing, then create a wrapper around the writer
-                        IMountedFileNormal writer = m_fileSystem.openForWrite( path, false );
-                        return wrapBufferedWriter( writer );
+                        OutputStream writer = m_fileSystem.openForWrite( path, false );
+                        return new Object[] { new EncodedOutputHandle( writer ) };
                     
                     } else if( mode.equals( "a" ) ) {
                         // Open the file for appending, then create a wrapper around the writer
-                        IMountedFileNormal writer = m_fileSystem.openForWrite( path, true );
-                        return wrapBufferedWriter( writer );
+                        OutputStream writer = m_fileSystem.openForWrite( path, true );
+                        return new Object[] { new EncodedOutputHandle( writer ) };
                                             
                     } else if( mode.equals( "rb" ) ) {
                         // Open the file for binary reading, then create a wrapper around the reader
-                        IMountedFileBinary reader = m_fileSystem.openForBinaryRead( path );
-                        return wrapInputStream( reader );
+                        InputStream reader = m_fileSystem.openForRead( path );
+                        return new Object[] { new BinaryInputHandle( reader ) };
                         
                     } else if( mode.equals( "wb" ) ) {
                         // Open the file for binary writing, then create a wrapper around the writer
-                        IMountedFileBinary writer = m_fileSystem.openForBinaryWrite( path, false );
-                        return wrapOutputStream( writer );
+                        OutputStream writer = m_fileSystem.openForWrite( path, false );
+                        return new Object[] { new BinaryOutputHandle( writer ) };
                     
                     } else if( mode.equals( "ab" ) ) {
                         // Open the file for binary appending, then create a wrapper around the reader
-                        IMountedFileBinary writer = m_fileSystem.openForBinaryWrite( path, true );
-                        return wrapOutputStream( writer );
+                        OutputStream writer = m_fileSystem.openForWrite( path, true );
+                        return new Object[] { new BinaryOutputHandle( writer ) };
                         
                     } else {
                         throw new LuaException( "Unsupported mode" );
@@ -368,288 +370,4 @@ public class FSAPI implements ILuaAPI
             }
         }
     }
-    
-    private static Object[] wrapBufferedReader( final IMountedFileNormal reader )
-    {
-        return new Object[] { new ILuaObject() {
-            private boolean open = true;
-
-            @Nonnull
-            @Override
-            public String[] getMethodNames()
-            {
-                return new String[] {
-                    "readLine",
-                    "readAll",
-                    "close"
-                };
-            }
-            
-            @Override
-            public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
-            {
-                switch( method )
-                {
-                    case 0:
-                    {
-                        // readLine
-                        if( !open ) throw new LuaException( "attempt to use a closed file" );
-                        try {
-                            String line = reader.readLine();
-                            if( line != null ) {
-                                return new Object[] { line };
-                            } else {
-                                return null;
-                            }
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    case 1:
-                    {
-                        // readAll
-                        if( !open ) throw new LuaException( "attempt to use a closed file" );
-                        try {
-                            StringBuilder result = new StringBuilder( "" );
-                            String line = reader.readLine();
-                            while( line != null ) {
-                                result.append( line );
-                                line = reader.readLine();
-                                if( line != null ) {
-                                    result.append( "\n" );
-                                }
-                            }
-                            return new Object[] { result.toString() };
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    case 2:
-                    {
-                        // close
-                        try {
-                            reader.close();
-                            open = false;
-                            return null;
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    default:
-                    {
-                        return null;
-                    }
-                }
-            }
-        } };
-    }
-
-    private static Object[] wrapBufferedWriter( final IMountedFileNormal writer )
-    {
-        return new Object[] { new ILuaObject() {
-            private boolean open = true;
-
-            @Nonnull
-            @Override
-            public String[] getMethodNames()
-            {
-                return new String[] {
-                    "write",
-                    "writeLine",
-                    "close",
-                    "flush"
-                };
-            }
-            
-            @Override
-            public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
-            {
-                switch( method )
-                {
-                    case 0:
-                    {
-                        // write
-                        if( !open ) throw new LuaException( "attempt to use a closed file" );
-                        String text;
-                        if( args.length > 0 && args[0] != null ) {
-                            text = args[0].toString();
-                        } else {
-                            text = "";
-                        }
-                        try {
-                            writer.write( text, 0, text.length(), false );
-                            return null;
-                        } catch( IOException e ) {
-                            throw new LuaException( e.getMessage() );
-                        }
-                    }
-                    case 1:
-                    {
-                        // writeLine
-                        if( !open ) throw new LuaException( "attempt to use a closed file" );
-                        
-                        String text;
-                        if( args.length > 0 && args[0] != null ) {
-                            text = args[0].toString();
-                        } else {
-                            text = "";
-                        }
-                        try {
-                            writer.write( text, 0, text.length(), true );
-                            return null;
-                        } catch( IOException e ) {
-                            throw new LuaException( e.getMessage() );
-                        }
-                    }
-                    case 2:
-                    {
-                        // close
-                        try {
-                            writer.close();
-                            open = false;
-                            return null;
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    case 3:
-                    {
-                        try {
-                            if( !open ) throw new LuaException( "attempt to use a closed file" );
-                            writer.flush();
-                            return null;
-                        } catch ( IOException e ) {
-                            return null;
-                        }
-                    }
-                    default:
-                    {
-                        assert( false );
-                        return null;
-                    }
-                }
-            }
-        } };
-    }
-    
-    private static Object[] wrapInputStream( final IMountedFileBinary reader )
-    {
-        
-        return new Object[] { new ILuaObject() {
-            private boolean open = true;
-
-            @Nonnull
-            @Override
-            public String[] getMethodNames() {
-                return new String[] {
-                        "read",
-                        "close"
-                    };
-            }
-
-            @Override
-            public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args) throws LuaException {
-                switch( method )
-                {
-                    case 0:
-                    {
-                        // read
-                        if( !open ) throw new LuaException( "attempt to use a closed file" );
-                        try {
-                            int b = reader.read();
-                            if( b != -1 ) {
-                                return new Object[] { b };
-                            } else {
-                                return null;
-                            }
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    case 1:
-                    {
-                        //close
-                        try {
-                            reader.close();
-                            open = false;
-                            return null;
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    default:
-                    {
-                        assert( false );
-                        return null;
-                    }
-                }
-            }
-        }};
-    }
-
-    private static Object[] wrapOutputStream( final IMountedFileBinary writer )
-    {        
-        
-        return new Object[] { new ILuaObject() {
-            private boolean open = true;
-
-            @Nonnull
-            @Override
-            public String[] getMethodNames() {
-                return new String[] {
-                        "write",
-                        "close",
-                        "flush"
-                    };
-            }
-
-            @Override
-            public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args) throws LuaException {
-                switch( method )
-                {
-                    case 0:
-                    {
-                        // write
-                        if( !open ) throw new LuaException( "attempt to use a closed file" );
-                        try {
-                            if( args.length > 0 && args[0] instanceof Number )
-                            {
-                                int number = ((Number)args[0]).intValue();
-                                writer.write( number );
-                            }
-                            return null;
-                        } catch( IOException e ) {
-                            throw new LuaException(e.getMessage());
-                        }
-                    }
-                    case 1:
-                    {
-                        //close
-                        try {
-                            writer.close();
-                            open = false;
-                            return null;
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    case 2:
-                    {
-                        if( !open ) throw new LuaException( "attempt to use a closed file" );
-                        try {
-                            writer.flush();
-                            return null;
-                        } catch ( IOException e ) {
-                            return null;
-                        }
-                    }
-                    default:
-                    {
-                        assert( false );
-                        return null;
-                    }
-                }
-            }
-        }};
-    }    
 }

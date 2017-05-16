@@ -24,6 +24,7 @@ import org.luaj.vm2.lib.jse.JsePlatform;
 
 import javax.annotation.Nonnull;
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -519,6 +520,11 @@ public class LuaJLuaMachine implements ILuaMachine
         {
             String s = object.toString();
             return LuaValue.valueOf( s );
+        }
+        else if( object instanceof byte[] )
+        {
+            byte[] b = (byte[]) object;
+            return LuaValue.valueOf( Arrays.copyOf( b, b.length ) );
         }
         else if( object instanceof Map )
         {
