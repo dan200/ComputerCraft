@@ -223,7 +223,10 @@ local function findStartups( sBaseDir )
             tStartups = {}
         end
         for _,v in pairs( fs.list( sBasePath ) ) do
-            tStartups[ #tStartups + 1 ] = "/" .. fs.combine( sBasePath, v )
+            local sPath = "/" .. fs.combine( sBasePath, v )
+            if not fs.isDir( sPath ) then
+                tStartups[ #tStartups + 1 ] = sPath
+            end
         end
     end
     return tStartups
