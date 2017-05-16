@@ -268,18 +268,19 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     function window.isColour()
         return isColor()
     end
- 
-    local floor, log, log2 = math.floor, math.log, math.log(2)
+
     local function setTextColor( color )
-	if not(type(color) == "number") then
-        error("Expected number", 2)
-    else
-        -- Type assertions, whatever, etc...
-        if not tHex[color] then
-           if color < 0 or color > 0xFFFF then error("Colour out of range", 2) end
-              color = 2^floor(log(color) / log2)
-           end
+	if type(color) == "number" then
+       if type(tHex[color]) == "string" then
         nTextColor = color
+        if bVisible then
+            updateCursorColor()
+        end
+       else
+        error("Colour out of range", 2)
+       end
+    else
+       error("Color must be a number",2)
     end
     end
 
@@ -315,21 +316,21 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     window.getPaletteColor = window.getPaletteColour
 
     local function setBackgroundColor( color )
-    if not(type(color) == "number") then
-        error("Expected number", 2)
-    else
-        if not tHex[color] then
-           if color < 0 or color > 0xFFFF then error("Colour out of range", 2) end
-              color = 2^floor(log(color) / log2)
-           end
+    if type(color) == "number" then
+       if type(tHex[color]) == "string" then
         nBackgroundColor = color
+       else
+        error("Colour out of range",2)
+       end
+    else
+       error("Color must be a number",2)
     end
     end
 
     window.setBackgroundColor = setBackgroundColor
 
-    window.setBackgroundColour = setBackgroundColor
-
+    window.setBackgroundColour = setBackgroundColo
+   
     function window.getSize()
         return nWidth, nHeight
     end
