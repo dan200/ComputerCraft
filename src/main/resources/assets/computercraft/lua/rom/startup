@@ -248,7 +248,7 @@ if settings.get( "shell.allow_disk_startup" ) then
         end
     end
 end
-if type( tUserStartups ) == "table" then
+if tUserStartups then
     for _,v in pairs( tUserStartups ) do
         shell.run( v )
     end
