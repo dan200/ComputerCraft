@@ -2,7 +2,7 @@ The Speaker is a peripheral device available for CraftOS. Type "help peripheral"
 
 Methods exposed by the Speaker:
 playSound( sResourceName, nVolume, nPitch )
-playNote( sIntrumentName, nVolume, nTicks )
+playNote( sInstrumentName, nVolume, nTicks )
 
 Resource name is the same as used by the /playsound command, such as "minecraft:entity.cow.ambient".
 Instruments are as follows: "harp", "bass", "snare", "hat", and "basedrum" with the addition of "flute", "bell", "chime", and "guitar" in Minecraft version 1.12 above.
