@@ -6,9 +6,9 @@
 
 package dan200.computercraft.shared.peripheral.speaker;
 
-        import dan200.computercraft.api.peripheral.IPeripheral;
-        import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
-        import net.minecraft.util.EnumFacing;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
+import net.minecraft.util.EnumFacing;
 
 public class TileSpeaker extends TilePeripheralBase
 {

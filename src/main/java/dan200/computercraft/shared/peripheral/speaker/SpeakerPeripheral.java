@@ -8,15 +8,17 @@ package dan200.computercraft.shared.peripheral.speaker;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class SpeakerPeripheral implements IPeripheral {
 
@@ -38,7 +40,7 @@ public class SpeakerPeripheral implements IPeripheral {
         m_speaker = speaker;
     }
 
-    public void update() {
+    public synchronized void update() {
         m_clock++;
         m_notesThisTick = 0;
     }
@@ -124,7 +126,8 @@ public class SpeakerPeripheral implements IPeripheral {
         }
     }
 
-    private Object[] playNote(Object[] arguments, ILuaContext context) throws LuaException
+    @Nonnull
+    private synchronized Object[] playNote(Object[] arguments, ILuaContext context) throws LuaException
     {
         double volume = 1f;
         double pitch = 1f;
@@ -147,29 +150,24 @@ public class SpeakerPeripheral implements IPeripheral {
 
         if (arguments.length > 1)
         {
-            if (!(arguments[1] instanceof Double))   // Arg wrong type
+            if (!(arguments[1] instanceof Double) && !(arguments[1] == null))   // Arg wrong type
             {
                 throw new LuaException("Expected string, number (optional), number (optional)");
             }
-            volume = ((Double) arguments[1]).floatValue();
+            volume = arguments[1] != null ? ((Double) arguments[1]).floatValue() : 1f;
 
         }
 
         if (arguments.length > 2)
         {
-            if (!(arguments[1] instanceof Double))  // Arg wrong type
+            if (!(arguments[1] instanceof Double) && !(arguments[2] == null))  // Arg wrong type
             {
                 throw new LuaException("Expected string, number (optional), number (optional)");
             }
-            pitch = ((Double) arguments[2]).floatValue();
+            pitch = arguments[2] != null ? ((Double) arguments[2]).floatValue() : 1f;
         }
 
-        if (arguments.length > 3)
-        {
-            throw new LuaException("Expected string, number (optional), number (optional)");
-        }
-
-        // If the resource location for noteblock notes changes, this method call will need to be updated
+        // If the resource location for note block notes changes, this method call will need to be updated
         Object[] returnValue = playSound(new Object[] {"block.note." + arguments[0], volume, Math.pow(2d, (pitch - 12) / 12d)}, context, true);
 
         if (returnValue[0] instanceof Boolean && (Boolean) returnValue[0])
@@ -181,7 +179,8 @@ public class SpeakerPeripheral implements IPeripheral {
 
     }
 
-    private Object[] playSound(Object[] arguments, ILuaContext context, boolean isNote) throws LuaException
+    @Nonnull
+    private synchronized Object[] playSound(Object[] arguments, ILuaContext context, boolean isNote) throws LuaException
     {
 
         float volume = 1f;
@@ -196,31 +195,29 @@ public class SpeakerPeripheral implements IPeripheral {
         if (!(arguments[0] instanceof String)) // Arg wrong type
         {
             throw new LuaException("Expected string, number (optional), number (optional)");
+
         }
 
         if (arguments.length > 1)
         {
-            if (!(arguments[1] instanceof Double))  // Arg wrong type
+            if (!(arguments[1] instanceof Double) && !(arguments[1] == null))  // Arg wrong type
             {
                 throw new LuaException("Expected string, number (optional), number (optional)");
             }
-            volume = ((Double) arguments[1]).floatValue();
+
+            volume = arguments[1] != null ? ((Double) arguments[1]).floatValue() : 1f;
 
         }
 
         if (arguments.length > 2)
         {
-            if (!(arguments[2] instanceof Double))  // Arg wrong type
+            if (!(arguments[2] instanceof Double) && !(arguments[2] == null))  // Arg wrong type
             {
                 throw new LuaException("Expected string, number (optional), number (optional)");
             }
-            pitch = ((Double) arguments[2]).floatValue();
+            pitch = arguments[2] != null ? ((Double) arguments[2]).floatValue() : 1f;
         }
 
-        if (arguments.length > 3)
-        {
-            throw new LuaException("Expected string, number (optional), number (optional)");
-        }
 
         ResourceLocation resourceName = new ResourceLocation((String) arguments[0]);
 
@@ -229,7 +226,24 @@ public class SpeakerPeripheral implements IPeripheral {
 
             if (SoundEvent.REGISTRY.containsKey(resourceName))
             {
-                context.issueMainThreadTask(new SoundTask(getWorld(), getPos(), resourceName, volume, pitch));
+
+                final World world = getWorld();
+                final BlockPos pos = getPos();
+                final ResourceLocation resource = resourceName;
+                final float vol = volume;
+                final float soundPitch = pitch;
+
+                context.issueMainThreadTask(new ILuaTask() {
+
+                    @Nullable
+                    @Override
+                    public Object[] execute() throws LuaException {
+                        world.playSound(null, pos, new SoundEvent(resource), SoundCategory.RECORDS, vol, soundPitch);
+                        return null;
+                    }
+
+                });
+
                 m_lastPlayTime = m_clock;
                 return new Object[]{true}; // Success, return true
             }

@@ -555,15 +555,15 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
     private void registerTileEntities()
     {
         // Tile Entities
-        GameRegistry.registerTileEntity( TileComputer.class, "computer" );
-        GameRegistry.registerTileEntity( TileDiskDrive.class, "diskdrive" );
-        GameRegistry.registerTileEntity( TileWirelessModem.class, "wirelessmodem" );
-        GameRegistry.registerTileEntity( TileMonitor.class, "monitor" );
-        GameRegistry.registerTileEntity( TilePrinter.class, "ccprinter" );
-        GameRegistry.registerTileEntity( TileCable.class, "wiredmodem" );
-        GameRegistry.registerTileEntity( TileCommandComputer.class, "command_computer" );
-        GameRegistry.registerTileEntity( TileAdvancedModem.class, "advanced_modem" );
-        GameRegistry.registerTileEntity( TileSpeaker.class, "speaker" );
+        registerTileEntity( TileComputer.class, "computer" );
+        registerTileEntity( TileDiskDrive.class, "diskdrive" );
+        registerTileEntity( TileWirelessModem.class, "wirelessmodem" );
+        registerTileEntity( TileMonitor.class, "monitor" );
+        registerTileEntity( TilePrinter.class, "ccprinter" );
+        registerTileEntity( TileCable.class, "wiredmodem" );
+        registerTileEntity( TileCommandComputer.class, "command_computer" );
+        registerTileEntity( TileAdvancedModem.class, "advanced_modem" );
+        registerTileEntity( TileSpeaker.class, "speaker" );
 
         // Register peripheral providers
         ComputerCraftAPI.registerPeripheralProvider( new DefaultPeripheralProvider() );

@@ -294,7 +294,7 @@ public class ComputerCraft
         Config.turtlesCanPush.setComment( "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so" );
 
         Config.maxNotesPerTick = Config.config.get( Configuration.CATEGORY_GENERAL, "maxNotesPerTick", maxNotesPerTick );
-        Config.maxNotesPerTick.setComment( "Maximum amount of sounds a speaker can play at once" );
+        Config.maxNotesPerTick.setComment( "Maximum amount of notes a speaker can play at once" );
 
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
@@ -335,7 +335,7 @@ public class ComputerCraft
         turtlesObeyBlockProtection = Config.turtlesObeyBlockProtection.getBoolean();
         turtlesCanPush = Config.turtlesCanPush.getBoolean();
 
-        maximumFilesOpen = Math.max(1, Config.maximumFilesOpen.getInt());
+        maxNotesPerTick = Math.max(1, Config.maxNotesPerTick.getInt());
 
         Config.config.save();
     }
