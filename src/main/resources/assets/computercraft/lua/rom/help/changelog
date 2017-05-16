@@ -30,6 +30,7 @@ New Features in ComputerCraft 1.80:
 * Turtles now use tinting
 * shell.resolveProgram now picks up on *.lua files
 * Fixed a handful of bugs in ComputerCraft
+* Startup can now be a directory containing multiple startup files
 
 New Features in ComputerCraft 1.79:
 
