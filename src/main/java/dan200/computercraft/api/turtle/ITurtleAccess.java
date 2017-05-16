@@ -1,6 +1,6 @@
 /*
  * This file is part of the public ComputerCraft API - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. This API may be redistributed unmodified and in full only.
+ * Copyright Daniel Ratcliffe, 2011-2017. This API may be redistributed unmodified and in full only.
  * For help using the API, and posting your mods, visit the forums at computercraft.info.
  */
 
@@ -15,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -117,30 +118,42 @@ public interface ITurtleAccess
     void setSelectedSlot( int slot );
 
     /**
-     * Sets the colour of the turtle, as if the player had dyed it with a dye item.
+     * Set the colour of the turtle to a RGB number.
      *
-     * @param dyeColour 0-15 to dye the turtle one of the 16 standard Minecraft <em>dye</em> colours, or -1 to remove
-     *                  the dye from the turtle.
-     * @see #getDyeColour()
+     * @param colour The colour this turtle should be changed to. This should be a RGB colour between {@code 0x000000}
+     *               and {@code 0xFFFFFF} or -1 to reset to the default colour.
+     * @see #getColour()
      */
-    void setDyeColour( int dyeColour );
+    void setColour( int colour );
 
     /**
-     * Gets the colour the turtle has been dyed.
+     * Get the colour of this turtle as a RGB number.
      *
-     * @return 0-15 if the turtle has been dyed one of the 16 standard Minecraft <em>dye</em> colours, -1 if the turtle
-     * is clean.
-     * @see #getDyeColour()
+     * @return The colour this turtle is. This will be a RGB colour between {@code 0x000000} and {@code 0xFFFFFF} or
+     * -1 if it has no colour.
+     * @see #setColour(int)
      */
-    int getDyeColour();
+    int getColour();
 
     /**
      * Get the inventory of this turtle
      *
      * @return This turtle's inventory
+     * @see #getItemHandler()
      */
     @Nonnull
     IInventory getInventory();
+
+    /**
+     * Get the inventory of this turtle as an {@link IItemHandlerModifiable}.
+     *
+     * @return This turtle's inventory
+     * @see #getInventory() 
+     * @see IItemHandlerModifiable
+     * @see net.minecraftforge.items.CapabilityItemHandler#ITEM_HANDLER_CAPABILITY
+     */
+    @Nonnull
+    IItemHandlerModifiable getItemHandler();
 
     /**
      * Determine whether this turtle will require fuel when performing actions.

@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -36,6 +36,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
+import java.util.List;
 
 public class TurtleTool implements ITurtleUpgrade
 {
@@ -180,7 +181,7 @@ public class TurtleTool implements ITurtleUpgrade
                 @Override
                 public void consumeDrop( Entity entity, ItemStack drop )
                 {
-                    ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                    ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
                     if( remainder != null )
                     {
                         WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );
@@ -261,12 +262,12 @@ public class TurtleTool implements ITurtleUpgrade
             // Consume the items the block drops
             if( canHarvestBlock( world, newPosition ) )
             {
-                java.util.List<ItemStack> items = getBlockDropped( world, newPosition );
+                List<ItemStack> items = getBlockDropped( world, newPosition );
                 if( items != null && items.size() > 0 )
                 {
                     for( ItemStack stack : items )
                     {
-                        ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                        ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getItemHandler(), turtle.getSelectedSlot() );
                         if( remainder != null )
                         {
                             // If there's no room for the items, drop them

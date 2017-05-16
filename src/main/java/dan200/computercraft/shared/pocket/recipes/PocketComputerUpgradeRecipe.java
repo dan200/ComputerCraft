@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -33,7 +33,7 @@ public class PocketComputerUpgradeRecipe implements IRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return PocketComputerItemFactory.create( -1, null, ComputerFamily.Normal, null );
+        return PocketComputerItemFactory.create( -1, null, -1, ComputerFamily.Normal, null );
     }
 
     @Override
@@ -111,7 +111,8 @@ public class PocketComputerUpgradeRecipe implements IRecipe
         ComputerFamily family = itemComputer.getFamily( computer );
         int computerID = itemComputer.getComputerID( computer );
         String label = itemComputer.getLabel( computer );
-        return PocketComputerItemFactory.create( computerID, label, family, upgrade );
+        int colour = itemComputer.getColour( computer );
+        return PocketComputerItemFactory.create( computerID, label, colour, family, upgrade );
     }
 
     @Nonnull

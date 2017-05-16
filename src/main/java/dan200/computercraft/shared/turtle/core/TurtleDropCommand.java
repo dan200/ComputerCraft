@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
@@ -46,7 +47,7 @@ public class TurtleDropCommand implements ITurtleCommand
         EnumFacing direction = m_direction.toWorldDir( turtle );
 
         // Get things to drop
-        ItemStack stack = InventoryUtil.takeItems( m_quantity, turtle.getInventory(), turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
+        ItemStack stack = InventoryUtil.takeItems( m_quantity, turtle.getItemHandler(), turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
         if( stack == null )
         {
             return TurtleCommandResult.failure( "No items to drop" );
@@ -58,15 +59,15 @@ public class TurtleDropCommand implements ITurtleCommand
         BlockPos newPosition = oldPosition.offset( direction );
         EnumFacing side = direction.getOpposite();
 
-        IInventory inventory = InventoryUtil.getInventory( world, newPosition, side );
+        IItemHandler inventory = InventoryUtil.getInventory( world, newPosition, side );
         if( inventory != null )
         {
             // Drop the item into the inventory
-            ItemStack remainder = InventoryUtil.storeItems( stack, inventory, side );
+            ItemStack remainder = InventoryUtil.storeItems( stack, inventory );
             if( remainder != null )
             {
                 // Put the remainder back in the turtle
-                InventoryUtil.storeItems( remainder, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                InventoryUtil.storeItems( remainder, turtle.getItemHandler(), turtle.getSelectedSlot() );
             }
 
             // Return true if we stored anything

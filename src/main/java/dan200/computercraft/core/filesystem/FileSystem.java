@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -9,6 +9,7 @@ package dan200.computercraft.core.filesystem;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
+import net.minecraftforge.fml.common.FMLLog;
 
 import java.io.*;
 import java.util.*;
@@ -291,7 +292,7 @@ public class FileSystem
     }
 
     private final Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
-    private final Set<IMountedFile> m_openFiles = Collections.newSetFromMap( new WeakHashMap<IMountedFile, Boolean>() );
+    private final Set<Closeable> m_openFiles = Collections.newSetFromMap( new WeakHashMap<Closeable, Boolean>() );
     
     public FileSystem( String rootLabel, IMount rootMount ) throws FileSystemException
     {
@@ -308,7 +309,7 @@ public class FileSystem
         // Close all dangling open files
         synchronized( m_openFiles )
         {
-            for(IMountedFile file : m_openFiles)
+            for( Closeable file : m_openFiles )
             {
                 try {
                     file.close();
@@ -647,7 +648,7 @@ public class FileSystem
         }
     }
 
-    private synchronized <T extends IMountedFile> T openFile(T file, Closeable handle) throws FileSystemException
+    private synchronized <T> T openFile( T file, Closeable handle ) throws FileSystemException
     {
         synchronized( m_openFiles )
         {
@@ -665,199 +666,44 @@ public class FileSystem
                 throw new FileSystemException("Too many files already open");
             }
 
-            m_openFiles.add( file );
+            m_openFiles.add( handle );
             return file;
         }
     }
 
-    private synchronized void closeFile( IMountedFile file, Closeable handle ) throws IOException
+    private synchronized void closeFile( Closeable handle ) throws IOException
     {
         synchronized( m_openFiles )
         {
-            m_openFiles.remove( file );
-            if( handle != null )
-            {
-                handle.close();
-            }
+            m_openFiles.remove( handle );
+            handle.close();
         }
     }
     
-    public synchronized IMountedFileNormal openForRead( String path ) throws FileSystemException
+    public synchronized InputStream openForRead( String path ) throws FileSystemException
     {
         path = sanitizePath ( path );
         MountWrapper mount = getMount( path );
         InputStream stream = mount.openForRead( path );
         if( stream != null )
         {
-            InputStreamReader isr;
-            try
-            {
-                isr = new InputStreamReader( stream, "UTF-8" );
-            }
-            catch( UnsupportedEncodingException e )
-            {
-                isr = new InputStreamReader( stream );
-            }
-            final BufferedReader reader = new BufferedReader( isr );
-            IMountedFileNormal file = new IMountedFileNormal()
-            {
-                @Override
-                public String readLine() throws IOException
-                {
-                    return reader.readLine();
-                }
-                
-                @Override
-                public void write(String s, int off, int len, boolean newLine) throws IOException
-                {
-                    throw new UnsupportedOperationException();
-                }
-                
-                @Override
-                public void close() throws IOException
-                {
-                    closeFile( this, reader );
-                }
-                
-                @Override
-                public void flush() throws IOException
-                {
-                    throw new UnsupportedOperationException();
-                }
-            };
-            return openFile( file, reader );
+            return openFile( new ClosingInputStream( stream ), stream );
         }
         return null;
     }
-    
-    public synchronized IMountedFileNormal openForWrite( String path, boolean append ) throws FileSystemException
+
+    public synchronized OutputStream openForWrite( String path, boolean append ) throws FileSystemException
     {
         path = sanitizePath ( path );
         MountWrapper mount = getMount( path );
         OutputStream stream = append ? mount.openForAppend( path ) : mount.openForWrite( path );
         if( stream != null )
         {
-            OutputStreamWriter osw;
-            try
-            {
-                osw = new OutputStreamWriter( stream, "UTF-8" );
-            }
-            catch( UnsupportedEncodingException e )
-            {
-                osw = new OutputStreamWriter( stream );
-            }
-            final BufferedWriter writer = new BufferedWriter( osw );
-            IMountedFileNormal file = new IMountedFileNormal()
-            {
-                @Override
-                public String readLine() throws IOException
-                {
-                    throw new UnsupportedOperationException();
-                }
-                
-                @Override
-                public void write( String s, int off, int len, boolean newLine ) throws IOException
-                {
-                    writer.write( s, off, len );
-                    if( newLine )
-                    {
-                        writer.newLine();
-                    }
-                }
-                
-                @Override
-                public void close() throws IOException
-                {
-                    closeFile( this, writer );
-                }
-                
-                @Override
-                public void flush() throws IOException
-                {
-                    writer.flush();
-                }
-            };
-            return openFile( file, writer );
+            return openFile( new ClosingOutputStream( stream ), stream );
         }
         return null;
     }
 
-    public synchronized IMountedFileBinary openForBinaryRead( String path ) throws FileSystemException
-    {
-        path = sanitizePath ( path );
-        MountWrapper mount = getMount( path );
-        final InputStream stream = mount.openForRead( path );
-        if( stream != null )
-        {
-            IMountedFileBinary file = new IMountedFileBinary()
-            {
-                @Override
-                public int read() throws IOException
-                {
-                    return stream.read();
-                }
-                
-                @Override
-                public void write(int i) throws IOException
-                {
-                    throw new UnsupportedOperationException();
-                }
-                
-                @Override
-                public void close() throws IOException
-                {
-                    closeFile( this, stream );
-                }
-                
-                @Override
-                public void flush() throws IOException
-                {
-                    throw new UnsupportedOperationException();
-                }
-            };
-            return openFile( file, stream );
-        }
-        return null;
-    }
-
-    public synchronized IMountedFileBinary openForBinaryWrite( String path, boolean append ) throws FileSystemException
-    {
-        path = sanitizePath ( path );
-        MountWrapper mount = getMount( path );
-        final OutputStream stream = append ? mount.openForAppend( path ) : mount.openForWrite( path );
-        if( stream != null )
-        {
-            IMountedFileBinary file = new IMountedFileBinary()
-            {
-                @Override
-                public int read() throws IOException
-                {
-                    throw new UnsupportedOperationException();
-                }
-                
-                @Override
-                public void write(int i) throws IOException
-                {
-                    stream.write(i);
-                }
-                
-                @Override
-                public void close() throws IOException
-                {
-                    closeFile( this, stream );
-                }
-                
-                @Override
-                public void flush() throws IOException
-                {
-                    stream.flush();
-                }
-            };
-            return openFile( file, stream );
-        }
-        return null;
-    }
-        
     public long getFreeSpace( String path ) throws FileSystemException
     {
         path = sanitizePath( path );
@@ -1008,6 +854,36 @@ public class FileSystem
             return local.substring( 1 );
         } else {
             return local;
+        }
+    }
+
+    private class ClosingInputStream extends FilterInputStream
+    {
+        protected ClosingInputStream( InputStream in )
+        {
+            super( in );
+        }
+
+        @Override
+        public void close() throws IOException
+        {
+            super.close();
+            closeFile( in );
+        }
+    }
+
+    private class ClosingOutputStream extends FilterOutputStream
+    {
+        protected ClosingOutputStream( OutputStream out )
+        {
+            super( out );
+        }
+
+        @Override
+        public void close() throws IOException
+        {
+            super.close();
+            closeFile( out );
         }
     }
 }

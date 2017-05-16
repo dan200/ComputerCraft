@@ -363,7 +363,9 @@ else
         else
             sLine = read( nil, tCommandHistory )
         end
-        table.insert( tCommandHistory, sLine )
+        if sLine:match("%S") and tCommandHistory[#tCommandHistory] ~= sLine then
+            table.insert( tCommandHistory, sLine )
+        end
         shell.run( sLine )
     end
 end

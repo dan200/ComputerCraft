@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -13,7 +13,6 @@ import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ItemComputerBase;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
-import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.StringUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -41,7 +40,7 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
         setHasSubtypes( true );
     }
 
-    public abstract ItemStack create( int id, String label, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay );
+    public abstract ItemStack create( int id, String label, int colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay );
 
     @Override
     public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
@@ -100,10 +99,10 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
         turtle.getAccess().setFuelLevel( fuelLevel );
 
         // Set colour
-        Colour colour = getColour( stack );
-        if( colour != null )
+        int colour = getColour( stack );
+        if( colour != -1 )
         {
-            turtle.getAccess().setDyeColour( colour.ordinal() );
+            turtle.getAccess().setColour( colour );
         }
 
         // Set overlay
@@ -172,17 +171,13 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
         }
     }
 
-    // ITurtleItem implementation
-
     @Override
-    public abstract ITurtleUpgrade getUpgrade( ItemStack stack, TurtleSide side );
-
-    @Override
-    public abstract Colour getColour( ItemStack stack );
-
-    @Override
-    public abstract ResourceLocation getOverlay( ItemStack stack );
-
-    @Override
-    public abstract int getFuelLevel( ItemStack stack );
+    public ItemStack setColour( ItemStack stack, int colour )
+    {
+        return TurtleItemFactory.create(
+            getComputerID( stack ), getLabel( stack ), colour, getFamily( stack ),
+            getUpgrade( stack, TurtleSide.Left ), getUpgrade( stack, TurtleSide.Right ),
+            getFuelLevel( stack ), getOverlay( stack )
+        );
+    }
 }

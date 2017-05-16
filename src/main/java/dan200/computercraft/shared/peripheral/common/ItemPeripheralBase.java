@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -97,6 +97,10 @@ public abstract class ItemPeripheralBase extends ItemBlock implements IPeriphera
             case AdvancedModem:
             {
                 return "tile.computercraft:advanced_modem";
+            }
+            case Speaker:
+            {
+                return "tile.computercraft:speaker";
             }
         }
     }

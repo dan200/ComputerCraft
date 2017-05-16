@@ -639,8 +639,8 @@ end
 if http then
     local nativeHTTPRequest = http.request
 
-    local function wrapRequest( _url, _post, _headers )
-        local ok, err = nativeHTTPRequest( _url, _post, _headers )
+    local function wrapRequest( _url, _post, _headers, _binary )
+        local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary )
         if ok then
             while true do
                 local event, param1, param2, param3 = os.pullEvent()
@@ -654,16 +654,16 @@ if http then
         return nil, err
     end
     
-    http.get = function( _url, _headers )
-        return wrapRequest( _url, nil, _headers )
+    http.get = function( _url, _headers, _binary)
+        return wrapRequest( _url, nil, _headers, _binary)
     end
 
-    http.post = function( _url, _post, _headers )
-        return wrapRequest( _url, _post or "", _headers )
+    http.post = function( _url, _post, _headers, _binary)
+        return wrapRequest( _url, _post or "", _headers, _binary)
     end
 
-    http.request = function( _url, _post, _headers )
-        local ok, err = nativeHTTPRequest( _url, _post, _headers )
+    http.request = function( _url, _post, _headers, _binary )
+        local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary )
         if not ok then
             os.queueEvent( "http_failure", _url, err )
         end

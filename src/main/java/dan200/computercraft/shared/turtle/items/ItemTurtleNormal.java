@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -9,15 +9,16 @@ package dan200.computercraft.shared.turtle.items;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
+import dan200.computercraft.shared.common.IColouredItem;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
-import dan200.computercraft.shared.util.Colour;
+import dan200.computercraft.shared.util.ColourUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 
-public class ItemTurtleNormal extends ItemTurtleBase
+public class ItemTurtleNormal extends ItemTurtleBase implements IColouredItem
 {
     public ItemTurtleNormal( Block block )
     {
@@ -27,7 +28,7 @@ public class ItemTurtleNormal extends ItemTurtleBase
     }
 
     @Override
-    public ItemStack create( int id, String label, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay )
+    public ItemStack create( int id, String label, int colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay )
     {
         // Build the stack
         ItemStack stack = new ItemStack( this, 1, 0 );
@@ -64,9 +65,9 @@ public class ItemTurtleNormal extends ItemTurtleBase
         {
             nbt.setInteger( "fuelLevel", fuelLevel );
         }
-        if( colour != null )
+        if( colour != -1 )
         {
-            nbt.setInteger( "colourIndex", colour.ordinal() );
+            nbt.setInteger( "colour", colour );
         }
         if( overlay != null )
         {
@@ -151,18 +152,10 @@ public class ItemTurtleNormal extends ItemTurtleBase
     }
 
     @Override
-    public Colour getColour( ItemStack stack )
+    public int getColour( ItemStack stack )
     {
-        if( stack.hasTagCompound() )
-        {
-            NBTTagCompound nbt = stack.getTagCompound();
-            if( nbt.hasKey( "colourIndex" ) )
-            {
-                int index = nbt.getInteger( "colourIndex" ) & 0xf;
-                return Colour.values()[ index ];
-            }
-        }
-        return null;
+        NBTTagCompound tag = stack.getTagCompound();
+        return tag == null ? -1 : ColourUtils.getHexColour( tag );
     }
 
     @Override

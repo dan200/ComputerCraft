@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -9,10 +9,11 @@ package dan200.computercraft.core.apis;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.core.apis.handles.BinaryInputHandle;
+import dan200.computercraft.core.apis.handles.EncodedInputHandle;
 
 import javax.annotation.Nonnull;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public class HTTPAPI implements ILuaAPI
@@ -52,15 +53,21 @@ public class HTTPAPI implements ILuaAPI
                     final String url = h.getURL();
                     if( h.wasSuccessful() ) {
                         // Queue the "http_success" event
-                        final BufferedReader contents = h.getContents();
-                        final Object result = wrapBufferedReader( contents, h.getResponseCode(), h.getResponseHeaders() );
+                        InputStream contents = h.getContents();
+                        Object result = wrapStream(
+                            h.isBinary() ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, h.getEncoding() ),
+                            h.getResponseCode(), h.getResponseHeaders()
+                        );
                         m_apiEnvironment.queueEvent( "http_success", new Object[] { url, result } );
                     } else {
                         // Queue the "http_failure" event
-                        BufferedReader contents = h.getContents();
+                        InputStream contents = h.getContents();
                         Object result = null;
                         if( contents != null ) {
-                            result = wrapBufferedReader( contents, h.getResponseCode(), h.getResponseHeaders() );
+                            result = wrapStream(
+                                h.isBinary() ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, h.getEncoding() ),
+                                h.getResponseCode(), h.getResponseHeaders()
+                            );
                         }
                         m_apiEnvironment.queueEvent( "http_failure", new Object[]{ url, "Could not connect", result } );
                     }
@@ -69,76 +76,40 @@ public class HTTPAPI implements ILuaAPI
             }
         }
     }
-    
-    private static ILuaObject wrapBufferedReader( final BufferedReader reader, final int responseCode, final Map<String, String> responseHeaders )
+
+    private static ILuaObject wrapStream( final ILuaObject reader, final int responseCode, final Map<String, String> responseHeaders )
     {
-        return new ILuaObject() {
+        String[] oldMethods = reader.getMethodNames();
+        final int methodOffset = oldMethods.length;
+
+        final String[] newMethods = Arrays.copyOf( oldMethods, oldMethods.length + 2 );
+        newMethods[ methodOffset + 0 ] = "getResponseCode";
+        newMethods[ methodOffset + 1 ] = "getResponseHeaders";
+
+        return new ILuaObject()
+        {
             @Nonnull
             @Override
             public String[] getMethodNames()
             {
-                return new String[] {
-                    "readLine",
-                    "readAll",
-                    "close",
-                    "getResponseCode",
-                    "getResponseHeaders",
-                };
+                return newMethods;
             }
-            
+
             @Override
-            public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
+            public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException, InterruptedException
             {
-                switch( method )
+                if( method < methodOffset )
+                {
+                    return reader.callMethod( context, method, args );
+                }
+                switch( method - methodOffset )
                 {
                     case 0:
-                    {
-                        // readLine
-                        try {
-                            String line = reader.readLine();
-                            if( line != null ) {
-                                return new Object[] { line };
-                            } else {
-                                return null;
-                            }
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    case 1:
-                    {
-                        // readAll
-                        try {
-                            StringBuilder result = new StringBuilder( "" );
-                            String line = reader.readLine();
-                            while( line != null ) {
-                                result.append( line );
-                                line = reader.readLine();
-                                if( line != null ) {
-                                    result.append( "\n" );
-                                }
-                            }
-                            return new Object[] { result.toString() };
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    case 2:
-                    {
-                        // close
-                        try {
-                            reader.close();
-                            return null;
-                        } catch( IOException e ) {
-                            return null;
-                        }
-                    }
-                    case 3:
                     {
                         // getResponseCode
                         return new Object[] { responseCode };
                     }
-                    case 4:
+                    case 1:
                     {
                         // getResponseHeaders
                         return new Object[] { responseHeaders };
@@ -212,11 +183,18 @@ public class HTTPAPI implements ILuaAPI
                         }
                     }
                 }
+                
+                // Get binary
+                boolean binary = false;
+                if( args.length >= 4 )
+                {
+                    binary = args[ 3 ] != null && !args[ 3 ].equals( Boolean.FALSE );
+                }
 
                 // Make the request
                 try
                 {
-                    HTTPRequest request = new HTTPRequest( urlString, postString, headers );
+                    HTTPRequest request = new HTTPRequest( urlString, postString, headers, binary );
                     synchronized( m_httpRequests )
                     {
                         m_httpRequests.add( request );

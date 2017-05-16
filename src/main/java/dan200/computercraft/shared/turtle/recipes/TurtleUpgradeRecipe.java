@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -37,7 +37,7 @@ public class TurtleUpgradeRecipe implements IRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return TurtleItemFactory.create( -1, null, null, ComputerFamily.Normal, null, null, 0, null );
+        return TurtleItemFactory.create( -1, null, -1, ComputerFamily.Normal, null, null, 0, null );
     }
 
     @Override
@@ -154,7 +154,7 @@ public class TurtleUpgradeRecipe implements IRecipe
         int computerID = itemTurtle.getComputerID( turtle );
         String label = itemTurtle.getLabel( turtle );
         int fuelLevel = itemTurtle.getFuelLevel( turtle );
-        Colour colour = itemTurtle.getColour( turtle );
+        int colour = itemTurtle.getColour( turtle );
         ResourceLocation overlay = itemTurtle.getOverlay( turtle );
         return TurtleItemFactory.create( computerID, label, colour, family, upgrades[0], upgrades[1], fuelLevel, overlay );
     }

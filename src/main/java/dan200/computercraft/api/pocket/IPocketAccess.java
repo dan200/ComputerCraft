@@ -23,26 +23,40 @@ public interface IPocketAccess
     Entity getEntity();
 
     /**
-     * Get the colour of the pocket computer's light.
+     * Get the colour of this pocket computer as a RGB number.
      *
-     * See {@link #setLight(int)} for the values this may return.
+     * @return The colour this pocket computer is. This will be a RGB colour between {@code 0x000000} and
+     * {@code 0xFFFFFF} or -1 if it has no colour.
+     * @see #setColour(int)
+     */
+    int getColour();
+
+    /**
+     * Set the colour of the pocket computer to a RGB number.
      *
-     * @return The colour of the pocket computer's light.
+     * @param colour The colour this pocket computer should be changed to. This should be a RGB colour between
+     *               {@code 0x000000} and {@code 0xFFFFFF} or -1 to reset to the default colour.
+     * @see #getColour()
+     */
+    void setColour( int colour );
+
+    /**
+     * Get the colour of this pocket computer's light as a RGB number.
+     *
+     * @return The colour this light is. This will be a RGB colour between {@code 0x000000} and {@code 0xFFFFFF} or
+     * -1 if it has no colour.
      * @see #setLight(int)
      */
     int getLight();
 
     /**
-     * Set the colour of the pocket computer's light. Use {@link 0} to turn it off.
+     * Set the colour of the pocket computer's light to a RGB number.
      *
-     * Colours take the form of an integer between 0 and 15, using the opposite order to those in
-     * {@link <a href="http://www.computercraft.info/wiki/Colors_(API)#Colors">The colors API</a>}  - so 0 being black,
-     * 1 representing red, 2 representing green all the way up to 15 for white.
-     *
-     * @param value The colour the light should have.
+     * @param colour The colour this modem's light will be changed to. This should be a RGB colour between
+     *               {@code 0x000000} and {@code 0xFFFFFF} or -1 to reset to the default colour.
      * @see #getLight()
      */
-    void setLight( int value );
+    void setLight( int colour );
 
     /**
      * Get the upgrade-specific NBT.

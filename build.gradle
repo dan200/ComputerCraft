@@ -63,6 +63,12 @@ dependencies {
 
 }
 
+jar {
+    manifest {
+        attributes('FMLAT': 'computercraft_at.cfg')
+    }
+}
+
 processResources
 {
     // this will ensure that this task is redone when the versions change.

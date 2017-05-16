@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -25,12 +25,23 @@ public enum Colour
     Orange( 0xf2b233 ),
     White( 0xf0f0f0 );
 
+    public static final Colour[] VALUES = values();
+
     public static Colour fromInt( int colour )
     {
         if( colour >= 0 && colour < 16 )
         {
-            return Colour.values()[ colour ];
+            return Colour.VALUES[ colour ];
         }
+        return null;
+    }
+    
+    public static Colour fromHex(int colour) {
+        for( Colour entry : VALUES )
+        {
+            if( entry.getHex() == colour ) return entry;
+        }
+
         return null;
     }
 
@@ -49,12 +60,12 @@ public enum Colour
 
     public Colour getNext()
     {
-        return Colour.values()[ (ordinal() + 1) % 16 ];
+        return Colour.VALUES[ (ordinal() + 1) % 16 ];
     }
 
     public Colour getPrevious()
     {
-        return Colour.values()[ (ordinal() + 15) % 16 ];
+        return Colour.VALUES[ (ordinal() + 15) % 16 ];
     }
 
     public int getHex()

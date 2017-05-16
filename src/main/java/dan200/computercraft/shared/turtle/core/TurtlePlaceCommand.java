@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -227,7 +227,7 @@ public class TurtlePlaceCommand implements ITurtleCommand
             @Override
             public void consumeDrop( Entity entity, ItemStack drop )
             {
-                ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getInventory(), 0, turtle.getInventory().getSizeInventory(), turtle.getSelectedSlot() );
+                ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
                 if( remainder != null )
                 {
                     WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );

@@ -1,12 +1,13 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
 package dan200.computercraft.core.apis;
 
 import com.google.common.base.Joiner;
+import com.google.common.io.ByteStreams;
 import dan200.computercraft.ComputerCraft;
 
 import java.io.*;
@@ -60,11 +61,12 @@ public class HTTPRequest
         return url;
     }
 
-    public HTTPRequest( String url, final String postText, final Map<String, String> headers ) throws HTTPRequestException
+    public HTTPRequest( String url, final String postText, final Map<String, String> headers, boolean binary ) throws HTTPRequestException
     {
         // Parse the URL
         m_urlString = url;
         m_url = checkURL( m_urlString );
+        m_binary = binary;
 
         // Start the thread
         m_cancelled = false;
@@ -136,54 +138,10 @@ public class HTTPRequest
                         is = connection.getErrorStream();
                         responseSuccess = false;
                     }
-                    InputStreamReader isr;
-                    try
-                    {
-                        String contentEncoding = connection.getContentEncoding();
-                        if( contentEncoding != null )
-                        {
-                            try
-                            {
-                                isr = new InputStreamReader( is, contentEncoding );
-                            }
-                            catch( UnsupportedEncodingException e )
-                            {
-                                isr = new InputStreamReader( is, "UTF-8" );
-                            }
-                        }
-                        else
-                        {
-                            isr = new InputStreamReader( is, "UTF-8" );
-                        }
-                    }
-                    catch( UnsupportedEncodingException e )
-                    {
-                        isr = new InputStreamReader( is );
-                    }
-
-                    // Download the contents
-                    BufferedReader reader = new BufferedReader( isr );
-                    StringBuilder result = new StringBuilder();
-                    while( true )
-                    {
-                        synchronized( m_lock )
-                        {
-                            if( m_cancelled )
-                            {
-                                break;
-                            }
-                        }
-
-                        String line = reader.readLine();
-                        if( line == null )
-                        {
-                            break;
-                        }
-                        result.append( line );
-                        result.append( '\n' );
-                    }
-                    reader.close();
-
+                    
+                    byte[] result = ByteStreams.toByteArray( is );
+                    is.close();
+                    
                     synchronized( m_lock )
                     {
                         if( m_cancelled )
@@ -198,8 +156,9 @@ public class HTTPRequest
                             // We completed
                             m_complete = true;
                             m_success = responseSuccess;
-                            m_result = result.toString();
+                            m_result = result;
                             m_responseCode = connection.getResponseCode();
+                            m_encoding = connection.getContentEncoding();
 
                             Joiner joiner = Joiner.on( ',' );
                             Map<String, String> headers = m_responseHeaders = new HashMap<String, String>();
@@ -264,18 +223,27 @@ public class HTTPRequest
             return m_success;
         }
     }
-    
-    public BufferedReader getContents()
+
+    public boolean isBinary()
     {
-        String result;
+        return m_binary;
+    }
+    
+    public InputStream getContents()
+    {
+        byte[] result;
         synchronized(m_lock) {
             result = m_result;
         }
         
         if( result != null ) {
-            return new BufferedReader( new StringReader( result ) );
+            return new ByteArrayInputStream( result );
         }
         return null;
+    }
+    
+    public String getEncoding() {
+        return m_encoding;
     }
     
     private final Object m_lock = new Object();
@@ -285,7 +253,9 @@ public class HTTPRequest
     private boolean m_complete;
     private boolean m_cancelled;
     private boolean m_success;
-    private String m_result;
+    private String m_encoding;
+    private byte[] m_result;
+    private boolean m_binary;
     private int m_responseCode;
     private Map<String, String> m_responseHeaders;
 }

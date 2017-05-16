@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -11,6 +11,7 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
+import dan200.computercraft.shared.common.IColouredItem;
 import dan200.computercraft.shared.computer.blocks.ComputerState;
 import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
@@ -38,7 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class ItemPocketComputer extends Item implements IComputerItem, IMedia
+public class ItemPocketComputer extends Item implements IComputerItem, IMedia, IColouredItem
 {
     public ItemPocketComputer()
     {
@@ -48,7 +49,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         setCreativeTab( ComputerCraft.mainCreativeTab );
     }
 
-    public ItemStack create( int id, String label, ComputerFamily family, IPocketUpgrade upgrade )
+    public ItemStack create( int id, String label, int colour, ComputerFamily family, IPocketUpgrade upgrade )
     {
         // Ignore types we can't handle
         if( family != ComputerFamily.Normal && family != ComputerFamily.Advanced )
@@ -76,6 +77,14 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         {
             result.setStackDisplayName( label );
         }
+
+        if( colour != -1 )
+        {
+            NBTTagCompound tag = result.getTagCompound();
+            if( tag == null ) result.setTagCompound( tag = new NBTTagCompound() );
+            tag.setInteger( "colour", colour );
+        }
+        
         return result;
     }
 
@@ -88,10 +97,10 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
 
     private void getSubItems( List<ItemStack> list, ComputerFamily family )
     {
-        list.add( PocketComputerItemFactory.create( -1, null, family, null ) );
+        list.add( PocketComputerItemFactory.create( -1, null, -1, family, null ) );
         for (IPocketUpgrade upgrade : ComputerCraft.getVanillaPocketUpgrades())
         {
-            list.add( PocketComputerItemFactory.create( -1, null, family, upgrade ) );
+            list.add( PocketComputerItemFactory.create( -1, null, -1, family, upgrade ) );
         }
     }
 
@@ -457,12 +466,12 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
         if( computer != null && computer.isOn() )
         {
             NBTTagCompound computerNBT = computer.getUserData();
-            if( computerNBT != null )
+            if( computerNBT != null && computerNBT.hasKey( "modemLight", Constants.NBT.TAG_ANY_NUMERIC ) )
             {
                 return computerNBT.getInteger( "modemLight" );
             }
         }
-        return 0;
+        return -1;
     }
 
     public IPocketUpgrade getUpgrade( ItemStack stack )
@@ -523,6 +532,35 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia
             NBTTagCompound sub = new NBTTagCompound();
             tag.setTag( "upgrade_info", sub );
             return sub;
+        }
+    }
+
+    @Override
+    public int getColour( ItemStack stack )
+    {
+        NBTTagCompound tag = stack.getTagCompound();
+        return tag != null && tag.hasKey( "colour", Constants.NBT.TAG_ANY_NUMERIC ) ? tag.getInteger( "colour" ) : -1;
+    }
+
+    @Override
+    public ItemStack setColour( ItemStack stack, int colour )
+    {
+        ItemStack copy = stack.copy();
+        setColourDirect( copy, colour );
+        return copy;
+    }
+
+    public void setColourDirect( ItemStack stack, int colour )
+    {
+        NBTTagCompound tag = stack.getTagCompound();
+        if( colour == -1 )
+        {
+            if( tag != null ) tag.removeTag( "colour" );
+        }
+        else
+        {
+            if( tag == null ) stack.setTagCompound( tag = new NBTTagCompound() );
+            tag.setInteger( "colour", colour );
         }
     }
 }
