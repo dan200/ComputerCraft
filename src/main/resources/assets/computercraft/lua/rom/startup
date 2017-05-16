@@ -209,22 +209,47 @@ if fs.exists( "/rom/autorun" ) and fs.isDir( "/rom/autorun" ) then
 	end
 end
 
+local function findStartups( sBaseDir )
+    local tStartups = nil
+    local sBasePath = "/" .. fs.combine( sBaseDir, "startup" )
+    local sStartupNode = shell.resolveProgram( sBasePath )
+    if sStartupNode then
+        tStartups = { sStartupNode }
+    end
+    -- It's possible that there is a startup directory and a startup.lua file, so this has to be
+    -- executed even if a file has already been found.
+    if fs.isDir( sBasePath ) then
+        if tStartups == nil then
+            tStartups = {}
+        end
+        for _,v in pairs( fs.list( sBasePath ) ) do
+            local sPath = "/" .. fs.combine( sBasePath, v )
+            if not fs.isDir( sPath ) then
+                tStartups[ #tStartups + 1 ] = sPath
+            end
+        end
+    end
+    return tStartups
+end
+
 -- Run the user created startup, either from disk drives or the root
-local sUserStartup = nil
+local tUserStartups = nil
 if settings.get( "shell.allow_startup" ) then
-    sUserStartup = shell.resolveProgram( "/startup" )
+    tUserStartups = findStartups( "/" )
 end
 if settings.get( "shell.allow_disk_startup" ) then
     for n,sName in pairs( peripheral.getNames() ) do
         if disk.isPresent( sName ) and disk.hasData( sName ) then
-            local sDiskStartup = shell.resolveProgram( "/" .. disk.getMountPath( sName ) .. "/startup" )
-            if sDiskStartup then
-                sUserStartup = sDiskStartup
+            local startups = findStartups( disk.getMountPath( sName ) )
+            if startups then
+                tUserStartups = startups
                 break
             end
         end
     end
 end
-if sUserStartup then
-    shell.run( sUserStartup )
+if tUserStartups then
+    for _,v in pairs( tUserStartups ) do
+        shell.run( v )
+    end
 end
