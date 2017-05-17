@@ -1,0 +1,37 @@
+--Made by Wilma456
+local tArgs = {...}
+
+if not tArgs[1] then
+  print("Usage: webrun <url> <args>")
+  return 1
+end
+
+if not http then
+  print("Please enable http in the config")
+  return 3
+end
+
+local test, text = http.checkURL(tArgs[1])
+if test == false then
+  printError("[Error]"..text)
+  return 4
+end
+
+local data = http.get(tArgs[1])
+if not(data) then
+  printError("Error while getting the program")
+  return 5
+end
+
+local program = data.readAll()
+data.close()
+local run, err = load(program)
+if not(run) then
+  printError(err)
+  return 6
+end
+
+table.remove(tArgs,1)
+run(table.unpack(tArgs))
+
+return 0

@@ -1,0 +1,5 @@
+webrun run a programm from the ineternet without downloading them
+
+ex:
+"webrun http://example.com/program.lua" will run the program from this url
+"webrun http://example.com/program.lua test" will run the program from this url with the argument "test"

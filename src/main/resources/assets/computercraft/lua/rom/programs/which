@@ -1,0 +1,13 @@
+--Made by Wilma456
+local tArgs = {...}
+if tArgs[1] == nil then
+	print("Usage: which <command>")
+	return 1
+end
+local path = shell.resolveProgram(tArgs[1])
+if path == nil then
+	printError("Can't find command "..tArgs[1])
+	return 3
+end
+print(tArgs[1].." is /"..path)
+return 0
