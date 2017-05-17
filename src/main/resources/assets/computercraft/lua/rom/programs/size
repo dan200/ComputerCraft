@@ -1,0 +1,53 @@
+local arg = {...}
+
+if arg[1] == nil then
+  print("Usage: size <path>")
+  return 1
+end
+
+local function listAllFiles(target)
+if target == nil then
+  target = "/"
+end
+local stack = {target}
+local files = {}
+while #stack > 0 do
+    local dir = stack[1]
+    table.remove(stack, 1)
+    local t = fs.list(dir)
+    for i = 1, #t do
+        local path
+        if dir:find("/") == dir:len() then
+          path = dir..t[i]
+        else
+          path = dir.."/"..t[i]
+        end
+        if fs.isDir(path) then
+            table.insert(stack, 1, path)
+        else
+            files[#files + 1] = path
+        end
+    end
+end
+return files
+end
+
+local filename = shell.resolve(arg[1])
+
+if fs.exists(filename) == true then
+  if fs.isDir(filename) then
+    local fileta = listAllFiles(filename)
+    local size = 0
+    for key,sizefile in ipairs(fileta) do
+      size = size + fs.getSize(sizefile)
+    end
+    print("Size: "..size.." Bytes")
+  else
+  print("Size: "..fs.getSize(filename).." Bytes")
+  end
+else
+  print("File does not exist")
+  return 2
+end
+
+return 0

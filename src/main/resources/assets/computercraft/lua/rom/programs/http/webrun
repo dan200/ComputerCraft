@@ -1,0 +1,30 @@
+local Arg = {...}
+
+if not Arg[1] then
+  print("Usage: webrun <url> <args>")
+  return
+end
+
+--Checks, if the Htpp API is bled
+if not http then
+  print("Please enable http in the config")
+  return
+end
+
+--Download the program and checks , if the program has been downloaded
+local test,text = http.checkURL(Arg[1])
+if test == false then
+  print("[Error]"..text)
+  return
+end
+
+--Get the programm code
+local data = http.get(Arg[1])
+local program = data.readAll()
+data.close()
+--load the programm
+local run = load(program)
+--Add the Args
+table.remove(Arg,1)
+--Run the program
+run(table.unpack(Arg))
