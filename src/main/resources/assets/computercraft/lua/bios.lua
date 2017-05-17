@@ -575,6 +575,9 @@ end
 local tAPIsLoading = {}
 function os.loadAPI( _sPath )
     local sName = fs.getName( _sPath )
+    if sName:sub(-4) == ".lua" then
+        sName = sName:sub(1,-5)
+    end
     if tAPIsLoading[sName] == true then
         printError( "API "..sName.." is already being loaded" )
         return false
@@ -776,7 +779,7 @@ end
 
 if commands and fs.isDir( "rom/apis/command" ) then
     -- Load command APIs
-    if os.loadAPI( "rom/apis/command/commands" ) then
+    if os.loadAPI( "rom/apis/command/commands.lua" ) then
         -- Add a special case-insensitive metatable to the commands api
         local tCaseInsensitiveMetatable = {
             __index = function( table, key )
