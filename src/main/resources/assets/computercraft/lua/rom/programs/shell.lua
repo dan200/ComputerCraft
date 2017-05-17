@@ -37,13 +37,21 @@ local function run( _sCommand, ... )
 	if sPath ~= nil then
 		tProgramStack[#tProgramStack + 1] = sPath
 		if multishell then
-		    multishell.setTitle( multishell.getCurrent(), fs.getName( sPath ) )
+            local sTitle = fs.getName( sPath )
+            if sTitle:sub(-4) == ".lua" then
+                sTitle = sTitle:sub(1,-5)
+            end
+		    multishell.setTitle( multishell.getCurrent(), sTitle )
 		end
    		local result = os.run( tEnv, sPath, ... )
 		tProgramStack[#tProgramStack] = nil
 		if multishell then
 		    if #tProgramStack > 0 then
-    		    multishell.setTitle( multishell.getCurrent(), fs.getName( tProgramStack[#tProgramStack] ) )
+		        local sTitle = fs.getName( tProgramStack[#tProgramStack] )
+		        if sTitle:sub(-4) == ".lua" then
+		            sTitle = sTitle:sub(1,-5)
+                end
+                multishell.setTitle( multishell.getCurrent(), sTitle )
     		else
     		    multishell.setTitle( multishell.getCurrent(), "shell" )
     		end
