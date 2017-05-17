@@ -516,8 +516,8 @@ while bRunning do
                 else
                     -- Indent line
                     local sLine = tLines[y]
-                    tLines[y] = string.sub(sLine,1,x-1) .. "  " .. string.sub(sLine,x)
-                    setCursor( x + 2, y )
+                    tLines[y] = string.sub(sLine,1,x-1) .. "    " .. string.sub(sLine,x)
+                    setCursor( x + 4, y )
                 end
             end
 
@@ -634,8 +634,13 @@ while bRunning do
                 if x > 1 then
                     -- Remove character
                     local sLine = tLines[y]
-                    tLines[y] = string.sub(sLine,1,x-2) .. string.sub(sLine,x)
-                    setCursor( x - 1, y )
+                    if x > 4 and string.sub(sLine,x-4,x-1) == "    " then
+                        tLines[y] = string.sub(sLine,1,x-5) .. string.sub(sLine,x)
+                        setCursor( x - 4, y )
+                    else
+                        tLines[y] = string.sub(sLine,1,x-2) .. string.sub(sLine,x)
+                        setCursor( x - 1, y )
+                    end
                 elseif y > 1 then
                     -- Remove newline
                     local sPrevLen = string.len( tLines[y-1] )
