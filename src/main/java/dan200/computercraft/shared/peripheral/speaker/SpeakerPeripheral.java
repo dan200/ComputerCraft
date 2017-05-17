@@ -238,7 +238,7 @@ public class SpeakerPeripheral implements IPeripheral {
                     @Nullable
                     @Override
                     public Object[] execute() throws LuaException {
-                        world.playSound(null, pos, new SoundEvent(resource), SoundCategory.RECORDS, vol, soundPitch);
+                        world.playSound( null, pos, SoundEvent.REGISTRY.getObject( resource ), SoundCategory.RECORDS, vol, soundPitch );
                         return null;
                     }
 
