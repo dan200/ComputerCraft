@@ -23,7 +23,11 @@ public class EncodedInputHandle extends HandleGeneric
 
     public EncodedInputHandle( InputStream stream, String encoding )
     {
-        super( stream );
+        this( makeReader( stream, encoding ) );
+    }
+
+    private static BufferedReader makeReader( InputStream stream, String encoding )
+    {
         if( encoding == null ) encoding = "UTF-8";
         InputStreamReader streamReader;
         try
@@ -34,7 +38,7 @@ public class EncodedInputHandle extends HandleGeneric
         {
             streamReader = new InputStreamReader( stream );
         }
-        this.m_reader = new BufferedReader( streamReader );
+        return new BufferedReader( streamReader );
     }
 
     @Nonnull
