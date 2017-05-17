@@ -13,6 +13,11 @@ if fs.exists( sPath ) and fs.isDir( sPath ) then
     return
 end
 
+-- Create .lua files by default
+if not fs.exists( sPath ) and not string.find( sPath, "%." ) then
+	sPath = sPath .. ".lua"
+end
+
 local x,y = 1,1
 local w,h = term.getSize()
 local scrollX, scrollY = 0,0
