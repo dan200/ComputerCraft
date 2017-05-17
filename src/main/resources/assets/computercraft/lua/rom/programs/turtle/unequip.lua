@@ -1,12 +1,12 @@
 
 local tArgs = { ... }
 local function printUsage()
-	print( "Usage: unequip <side>" )
+    print( "Usage: unequip <side>" )
 end
 
 if #tArgs ~= 1 then
     printUsage()
-	return
+    return
 end
 
 local function unequip( fnEquipFunction )

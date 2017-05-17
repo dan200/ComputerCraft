@@ -1,7 +1,7 @@
 local tArgs = { ... }
 if #tArgs < 2 then
-	print( "Usage: rename <source> <destination>" )
-	return
+    print( "Usage: rename <source> <destination>" )
+    return
 end
 
 local sSource = shell.resolve( tArgs[1] )

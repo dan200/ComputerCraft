@@ -16,56 +16,56 @@ local tProgramStack = {}
 
 local shell = {}
 local tEnv = {
-	[ "shell" ] = shell,
-	[ "multishell" ] = multishell,
+    [ "shell" ] = shell,
+    [ "multishell" ] = multishell,
 }
 
 -- Colours
 local promptColour, textColour, bgColour
 if term.isColour() then
-	promptColour = colours.yellow
-	textColour = colours.white
-	bgColour = colours.black
+    promptColour = colours.yellow
+    textColour = colours.white
+    bgColour = colours.black
 else
-	promptColour = colours.white
-	textColour = colours.white
-	bgColour = colours.black
+    promptColour = colours.white
+    textColour = colours.white
+    bgColour = colours.black
 end
 
 local function run( _sCommand, ... )
-	local sPath = shell.resolveProgram( _sCommand )
-	if sPath ~= nil then
-		tProgramStack[#tProgramStack + 1] = sPath
-		if multishell then
+    local sPath = shell.resolveProgram( _sCommand )
+    if sPath ~= nil then
+        tProgramStack[#tProgramStack + 1] = sPath
+        if multishell then
             local sTitle = fs.getName( sPath )
             if sTitle:sub(-4) == ".lua" then
                 sTitle = sTitle:sub(1,-5)
             end
-		    multishell.setTitle( multishell.getCurrent(), sTitle )
-		end
-   		local result = os.run( tEnv, sPath, ... )
-		tProgramStack[#tProgramStack] = nil
-		if multishell then
-		    if #tProgramStack > 0 then
-		        local sTitle = fs.getName( tProgramStack[#tProgramStack] )
-		        if sTitle:sub(-4) == ".lua" then
-		            sTitle = sTitle:sub(1,-5)
+            multishell.setTitle( multishell.getCurrent(), sTitle )
+        end
+           local result = os.run( tEnv, sPath, ... )
+        tProgramStack[#tProgramStack] = nil
+        if multishell then
+            if #tProgramStack > 0 then
+                local sTitle = fs.getName( tProgramStack[#tProgramStack] )
+                if sTitle:sub(-4) == ".lua" then
+                    sTitle = sTitle:sub(1,-5)
                 end
                 multishell.setTitle( multishell.getCurrent(), sTitle )
-    		else
-    		    multishell.setTitle( multishell.getCurrent(), "shell" )
-    		end
-		end
-		return result
-   	else
-    	printError( "No such program" )
-    	return false
+            else
+                multishell.setTitle( multishell.getCurrent(), "shell" )
+            end
+        end
+        return result
+       else
+        printError( "No such program" )
+        return false
     end
 end
 
 local function tokenise( ... )
     local sLine = table.concat( { ... }, " " )
-	local tWords = {}
+    local tWords = {}
     local bQuoted = false
     for match in string.gmatch( sLine .. "\"", "(.-)\"" ) do
         if bQuoted then
@@ -82,12 +82,12 @@ end
 
 -- Install shell API
 function shell.run( ... )
-	local tWords = tokenise( ... )
-	local sCommand = tWords[1]
-	if sCommand then
-		return run( sCommand, table.unpack( tWords, 2 ) )
-	end
-	return false
+    local tWords = tokenise( ... )
+    local sCommand = tWords[1]
+    if sCommand then
+        return run( sCommand, table.unpack( tWords, 2 ) )
+    end
+    return false
 end
 
 function shell.exit()
@@ -95,28 +95,28 @@ function shell.exit()
 end
 
 function shell.dir()
-	return sDir
+    return sDir
 end
 
 function shell.setDir( _sDir )
-	sDir = _sDir
+    sDir = _sDir
 end
 
 function shell.path()
-	return sPath
+    return sPath
 end
 
 function shell.setPath( _sPath )
-	sPath = _sPath
+    sPath = _sPath
 end
 
 function shell.resolve( _sPath )
-	local sStartChar = string.sub( _sPath, 1, 1 )
-	if sStartChar == "/" or sStartChar == "\\" then
-		return fs.combine( "", _sPath )
-	else
-		return fs.combine( sDir, _sPath )
-	end
+    local sStartChar = string.sub( _sPath, 1, 1 )
+    if sStartChar == "/" or sStartChar == "\\" then
+        return fs.combine( "", _sPath )
+    else
+        return fs.combine( sDir, _sPath )
+    end
 end
 
 local function pathWithExtension( _sPath, _sExt )
@@ -130,77 +130,77 @@ local function pathWithExtension( _sPath, _sExt )
 end
 
 function shell.resolveProgram( _sCommand )
-	-- Substitute aliases firsts
-	if tAliases[ _sCommand ] ~= nil then
-		_sCommand = tAliases[ _sCommand ]
-	end
+    -- Substitute aliases firsts
+    if tAliases[ _sCommand ] ~= nil then
+        _sCommand = tAliases[ _sCommand ]
+    end
 
     -- If the path is a global path, use it directly
     local sStartChar = string.sub( _sCommand, 1, 1 )
     if sStartChar == "/" or sStartChar == "\\" then
-    	local sPath = fs.combine( "", _sCommand )
-    	if fs.exists( sPath ) and not fs.isDir( sPath ) then
-			return sPath
-    	else
+        local sPath = fs.combine( "", _sCommand )
+        if fs.exists( sPath ) and not fs.isDir( sPath ) then
+            return sPath
+        else
             local sPathLua = pathWithExtension( sPath, "lua" )
             if fs.exists( sPathLua ) and not fs.isDir( sPathLua ) then
                 return sPathLua
             end
         end
-		return nil
+        return nil
     end
     
- 	-- Otherwise, look on the path variable
+     -- Otherwise, look on the path variable
     for sPath in string.gmatch(sPath, "[^:]+") do
-    	sPath = fs.combine( shell.resolve( sPath ), _sCommand )
-    	if fs.exists( sPath ) and not fs.isDir( sPath ) then
-			return sPath
-    	else
+        sPath = fs.combine( shell.resolve( sPath ), _sCommand )
+        if fs.exists( sPath ) and not fs.isDir( sPath ) then
+            return sPath
+        else
             local sPathLua = pathWithExtension( sPath, "lua" )
             if fs.exists( sPathLua ) and not fs.isDir( sPathLua ) then
                 return sPathLua
             end
         end
     end
-	
-	-- Not found
-	return nil
+    
+    -- Not found
+    return nil
 end
 
 function shell.programs( _bIncludeHidden )
-	local tItems = {}
-	
-	-- Add programs from the path
+    local tItems = {}
+    
+    -- Add programs from the path
     for sPath in string.gmatch(sPath, "[^:]+") do
-    	sPath = shell.resolve( sPath )
-		if fs.isDir( sPath ) then
-			local tList = fs.list( sPath )
+        sPath = shell.resolve( sPath )
+        if fs.isDir( sPath ) then
+            local tList = fs.list( sPath )
             for n=1,#tList do
                 local sFile = tList[n]
-				if not fs.isDir( fs.combine( sPath, sFile ) ) and
-				   (_bIncludeHidden or string.sub( sFile, 1, 1 ) ~= ".") then
-				    if #sFile > 4 and sFile:sub(-4) == ".lua" then
-	                    sFile = sFile:sub(1,-5)
-	                end
-					tItems[ sFile ] = true
-				end
-			end
-		end
-    end	
+                if not fs.isDir( fs.combine( sPath, sFile ) ) and
+                   (_bIncludeHidden or string.sub( sFile, 1, 1 ) ~= ".") then
+                    if #sFile > 4 and sFile:sub(-4) == ".lua" then
+                        sFile = sFile:sub(1,-5)
+                    end
+                    tItems[ sFile ] = true
+                end
+            end
+        end
+    end    
 
-	-- Sort and return
-	local tItemList = {}
-	for sItem, b in pairs( tItems ) do
+    -- Sort and return
+    local tItemList = {}
+    for sItem, b in pairs( tItems ) do
         table.insert( tItemList, sItem )
-	end
-	table.sort( tItemList )
-	return tItemList
+    end
+    table.sort( tItemList )
+    return tItemList
 end
 
 local function completeProgram( sLine )
-	if #sLine > 0 and string.sub( sLine, 1, 1 ) == "/" then
-	    -- Add programs from the root
-	    return fs.complete( sLine, "", true, false )
+    if #sLine > 0 and string.sub( sLine, 1, 1 ) == "/" then
+        -- Add programs from the root
+        return fs.complete( sLine, "", true, false )
 
     else
         local tResults = {}
@@ -277,7 +277,7 @@ function shell.complete( sLine )
 
         end
     end
-	return nil
+    return nil
 end
 
 function shell.completeProgram( sProgram )
@@ -295,27 +295,27 @@ function shell.getCompletionInfo()
 end
 
 function shell.getRunningProgram()
-	if #tProgramStack > 0 then
-		return tProgramStack[#tProgramStack]
-	end
-	return nil
+    if #tProgramStack > 0 then
+        return tProgramStack[#tProgramStack]
+    end
+    return nil
 end
 
 function shell.setAlias( _sCommand, _sProgram )
-	tAliases[ _sCommand ] = _sProgram
+    tAliases[ _sCommand ] = _sProgram
 end
 
 function shell.clearAlias( _sCommand )
-	tAliases[ _sCommand ] = nil
+    tAliases[ _sCommand ] = nil
 end
 
 function shell.aliases()
-	-- Copy aliases
-	local tCopy = {}
-	for sAlias, sCommand in pairs( tAliases ) do
-		tCopy[sAlias] = sCommand
-	end
-	return tCopy
+    -- Copy aliases
+    local tCopy = {}
+    for sAlias, sCommand in pairs( tAliases ) do
+        tCopy[sAlias] = sCommand
+    end
+    return tCopy
 end
 
 if multishell then
@@ -323,8 +323,8 @@ if multishell then
         local tWords = tokenise( ... )
         local sCommand = tWords[1]
         if sCommand then
-        	local sPath = shell.resolveProgram( sCommand )
-        	if sPath == "rom/programs/shell.lua" then
+            local sPath = shell.resolveProgram( sCommand )
+            if sPath == "rom/programs/shell.lua" then
                 return multishell.launch( tEnv, sPath, table.unpack( tWords, 2 ) )
             elseif sPath ~= nil then
                 return multishell.launch( tEnv, "rom/programs/shell.lua", sCommand, table.unpack( tWords, 2 ) )

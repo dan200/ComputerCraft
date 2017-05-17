@@ -2,9 +2,9 @@
 local tArgs = { ... }
 
 local function printUsage()
-	print( "Usages:" )
-	print( "chat host <hostname>" )
-	print( "chat join <hostname> <nickname>" )
+    print( "Usages:" )
+    print( "chat host <hostname>" )
+    print( "chat join <hostname> <nickname>" )
 end
 
 local sOpenedModem = nil
@@ -32,11 +32,11 @@ end
 -- Colours
 local highlightColour, textColour
 if term.isColour() then
-	textColour = colours.white
-	highlightColour = colours.yellow
+    textColour = colours.white
+    highlightColour = colours.yellow
 else
-	textColour = colours.white
-	highlightColour = colours.white
+    textColour = colours.white
+    highlightColour = colours.white
 end
 
 local sCommand = tArgs[1]

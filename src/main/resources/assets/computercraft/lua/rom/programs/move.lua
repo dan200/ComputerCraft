@@ -1,8 +1,8 @@
 
 local tArgs = { ... }
 if #tArgs < 2 then
-	print( "Usage: mv <source> <destination>" )
-	return
+    print( "Usage: mv <source> <destination>" )
+    return
 end
 
 local sSource = shell.resolve( tArgs[1] )

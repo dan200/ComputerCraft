@@ -1,12 +1,12 @@
 
 local tArgs = { ... }
 local function printUsage()
-	print( "Usage: equip <slot> <side>" )
+    print( "Usage: equip <slot> <side>" )
 end
 
 if #tArgs ~= 2 then
     printUsage()
-	return
+    return
 end
 
 local function equip( nSlot, fnEquipFunction )

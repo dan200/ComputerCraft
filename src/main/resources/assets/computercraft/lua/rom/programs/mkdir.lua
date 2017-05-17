@@ -1,7 +1,7 @@
 local tArgs = { ... }
 if #tArgs < 1 then
-	print( "Usage: mkdir <path>" )
-	return
+    print( "Usage: mkdir <path>" )
+    return
 end
 
 local sNewDir = shell.resolve( tArgs[1] )

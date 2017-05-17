@@ -1,5 +1,5 @@
 if term.isColour() then
-	term.setTextColour( colours.yellow )
+    term.setTextColour( colours.yellow )
 end
 print( "Goodbye" )
 term.setTextColour( colours.white )

@@ -2,14 +2,14 @@
 -- Setup paths
 local sPath = ".:/rom/programs"
 if term.isColor() then
-	sPath = sPath..":/rom/programs/advanced"
+    sPath = sPath..":/rom/programs/advanced"
 end
 if turtle then
-	sPath = sPath..":/rom/programs/turtle"
+    sPath = sPath..":/rom/programs/turtle"
 else
     sPath = sPath..":/rom/programs/rednet:/rom/programs/fun"
     if term.isColor() then
-    	sPath = sPath..":/rom/programs/fun/advanced"
+        sPath = sPath..":/rom/programs/fun/advanced"
     end
 end
 if pocket then
@@ -19,7 +19,7 @@ if commands then
     sPath = sPath..":/rom/programs/command"
 end
 if http then
-	sPath = sPath..":/rom/programs/http"
+    sPath = sPath..":/rom/programs/http"
 end
 shell.setPath( sPath )
 help.setPath( "/rom/help" )
@@ -197,16 +197,16 @@ shell.setCompletionFunction( "rom/programs/rednet/chat.lua", completeChat )
 
 -- Run autorun files
 if fs.exists( "/rom/autorun" ) and fs.isDir( "/rom/autorun" ) then
-	local tFiles = fs.list( "/rom/autorun" )
-	table.sort( tFiles )
-	for n, sFile in ipairs( tFiles ) do
-		if string.sub( sFile, 1, 1 ) ~= "." then
-			local sPath = "/rom/autorun/"..sFile
-			if not fs.isDir( sPath ) then
-				shell.run( sPath )
-			end
-		end
-	end
+    local tFiles = fs.list( "/rom/autorun" )
+    table.sort( tFiles )
+    for n, sFile in ipairs( tFiles ) do
+        if string.sub( sFile, 1, 1 ) ~= "." then
+            local sPath = "/rom/autorun/"..sFile
+            if not fs.isDir( sPath ) then
+                shell.run( sPath )
+            end
+        end
+    end
 end
 
 local function findStartups( sBaseDir )

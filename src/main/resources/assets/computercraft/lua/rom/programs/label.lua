@@ -1,12 +1,12 @@
 
 local function printUsage()
-	print( "Usages:" )
-	print( "label get" )
-	print( "label get <drive>" )
-	print( "label set <text>" )
-	print( "label set <drive> <text>" )
-	print( "label clear" )
-	print( "label clear <drive>" )
+    print( "Usages:" )
+    print( "label get" )
+    print( "label get <drive>" )
+    print( "label set <text>" )
+    print( "label set <drive> <text>" )
+    print( "label clear" )
+    print( "label clear <drive>" )
 end
 
 local function checkDrive( sDrive )
@@ -18,15 +18,15 @@ local function checkDrive( sDrive )
             return false
         end
     else
-	    print( "No disk drive named "..sDrive )
+        print( "No disk drive named "..sDrive )
         return false
-	end
-	return true
+    end
+    return true
 end
 
 local function get( sDrive )
-	if sDrive ~= nil then
-	    if checkDrive( sDrive ) then
+    if sDrive ~= nil then
+        if checkDrive( sDrive ) then
             local sLabel = disk.getLabel( sDrive )
             if sLabel then
                 print( "Disk label is \""..sLabel.."\"" )
@@ -34,19 +34,19 @@ local function get( sDrive )
                 print( "No Disk label" )
             end
         end
-	else
-		local sLabel = os.getComputerLabel()
-		if sLabel then
-			print( "Computer label is \""..sLabel.."\"" )
-		else
-			print( "No Computer label" )
-		end
-	end
+    else
+        local sLabel = os.getComputerLabel()
+        if sLabel then
+            print( "Computer label is \""..sLabel.."\"" )
+        else
+            print( "No Computer label" )
+        end
+    end
 end
 
 local function set( sDrive, sText )
-	if sDrive ~= nil then
-	    if checkDrive( sDrive ) then
+    if sDrive ~= nil then
+        if checkDrive( sDrive ) then
             disk.setLabel( sDrive, sText )
             local sLabel = disk.getLabel( sDrive )
             if sLabel then
@@ -55,15 +55,15 @@ local function set( sDrive, sText )
                 print( "Disk label cleared" )
             end
         end
-	else
-		os.setComputerLabel( sText )
-		local sLabel = os.getComputerLabel()
-		if sLabel then
-			print( "Computer label set to \""..sLabel.."\"" )
-		else
-			print( "Computer label cleared" )
-		end
-	end
+    else
+        os.setComputerLabel( sText )
+        local sLabel = os.getComputerLabel()
+        if sLabel then
+            print( "Computer label set to \""..sLabel.."\"" )
+        else
+            print( "Computer label cleared" )
+        end
+    end
 end
 
 local tArgs = { ... }

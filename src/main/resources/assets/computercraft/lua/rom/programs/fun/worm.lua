@@ -5,23 +5,23 @@ local w,h = term.getSize()
 local titleColour, headingColour, textColour, wormColour, fruitColour
 if term.isColour() then
     titleColour = colours.red
-	headingColour = colours.yellow
-	textColour = colours.white
-	wormColour = colours.green
-	fruitColour = colours.red
+    headingColour = colours.yellow
+    textColour = colours.white
+    wormColour = colours.green
+    fruitColour = colours.red
 else
     titleColour = colours.white
-	headingColour = colours.white
-	textColour = colours.white
-	wormColour = colours.white
-	fruitColour = colours.white
+    headingColour = colours.white
+    textColour = colours.white
+    wormColour = colours.white
+    fruitColour = colours.white
 end
 
 local function printCentred( y, s )
-	local x = math.floor((w - string.len(s)) / 2)
-	term.setCursorPos(x,y)
-	--term.clearLine()
-	term.write( s )
+    local x = math.floor((w - string.len(s)) / 2)
+    term.setCursorPos(x,y)
+    --term.clearLine()
+    term.write( s )
 end
 
 local xVel,yVel = 1,0
@@ -40,177 +40,177 @@ local nSpeed, nInterval
 -- Setup the screen
 local screen = {}
 for x=1,w do
-	screen[x] = {}
-	for y=1,h do
-		screen[x][y] = {}
-	end
+    screen[x] = {}
+    for y=1,h do
+        screen[x][y] = {}
+    end
 end
 screen[xPos][yPos] = { snake = true }
 
 local nFruit = 1
 local tFruits = {
-	"A", "B", "C", "D", "E", "F", "G", "H",
-	"I", "J", "K", "L", "M", "N", "O", "P",
-	"Q", "R", "S", "T", "U", "V", "W", "X",
-	"Y", "Z",
-	"a", "b", "c", "d", "e", "f", "g", "h",
-	"i", "j", "k", "l", "m", "n", "o", "p",
-	"q", "r", "s", "t", "u", "v", "w", "x",
-	"y", "z",
-	"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
-	"@", "$", "%", "#", "&", "!", "?", "+", "*", "~"
+    "A", "B", "C", "D", "E", "F", "G", "H",
+    "I", "J", "K", "L", "M", "N", "O", "P",
+    "Q", "R", "S", "T", "U", "V", "W", "X",
+    "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h",
+    "i", "j", "k", "l", "m", "n", "o", "p",
+    "q", "r", "s", "t", "u", "v", "w", "x",
+    "y", "z",
+    "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+    "@", "$", "%", "#", "&", "!", "?", "+", "*", "~"
 }
 
 local function addFruit()
-	while true do
-		local x = math.random(1,w)
-		local y = math.random(2,h)
-		local fruit = screen[x][y]
-		if fruit.snake == nil and fruit.wall == nil and fruit.fruit == nil then
-			screen[x][y] = { fruit = true }
-			term.setCursorPos(x,y)
-			term.setBackgroundColour( fruitColour )
-			term.write(" ")
-			term.setBackgroundColour( colours.black )
-			break
-		end
-	end
-	
-	nFruit = nFruit + 1
-	if nFruit > #tFruits then
-		nFruit = 1
-	end
+    while true do
+        local x = math.random(1,w)
+        local y = math.random(2,h)
+        local fruit = screen[x][y]
+        if fruit.snake == nil and fruit.wall == nil and fruit.fruit == nil then
+            screen[x][y] = { fruit = true }
+            term.setCursorPos(x,y)
+            term.setBackgroundColour( fruitColour )
+            term.write(" ")
+            term.setBackgroundColour( colours.black )
+            break
+        end
+    end
+    
+    nFruit = nFruit + 1
+    if nFruit > #tFruits then
+        nFruit = 1
+    end
 end
 
 local function drawMenu()
-	term.setTextColour( headingColour )
-	term.setCursorPos(1,1)
-	term.write( "SCORE " )
-	
-	term.setTextColour( textColour )
-	term.setCursorPos(7,1)
-	term.write( tostring(nScore) )
+    term.setTextColour( headingColour )
+    term.setCursorPos(1,1)
+    term.write( "SCORE " )
+    
+    term.setTextColour( textColour )
+    term.setCursorPos(7,1)
+    term.write( tostring(nScore) )
 
-	term.setTextColour( headingColour )
-	term.setCursorPos(w-11,1)
-	term.write( "DIFFICULTY ")
+    term.setTextColour( headingColour )
+    term.setCursorPos(w-11,1)
+    term.write( "DIFFICULTY ")
 
-	term.setTextColour( textColour )
-	term.setCursorPos(w,1)
-	term.write( tostring(nDifficulty or "?") ) 
+    term.setTextColour( textColour )
+    term.setCursorPos(w,1)
+    term.write( tostring(nDifficulty or "?") ) 
 
-	term.setTextColour( colours.white )
+    term.setTextColour( colours.white )
 end
 
 local function update( )
-	local x,y = xPos,yPos
-	if pxVel and pyVel then
-		xVel, yVel = pxVel, pyVel
-		pxVel, pyVel = nil, nil
-	end
+    local x,y = xPos,yPos
+    if pxVel and pyVel then
+        xVel, yVel = pxVel, pyVel
+        pxVel, pyVel = nil, nil
+    end
 
-	-- Remove the tail
-	if nExtraLength == 0 then
-		local tail = screen[tailX][tailY]
-		screen[tailX][tailY] = {}
-		term.setCursorPos(tailX,tailY)
-		term.write(" ")
-		tailX = tail.nextX
-		tailY = tail.nextY
-	else
-		nExtraLength = nExtraLength - 1
-	end
-	
-	-- Update the head
-	local head = screen[xPos][yPos]
-	local newXPos = xPos + xVel
-	local newYPos = yPos + yVel
-	if newXPos < 1 then
-		newXPos = w
-	elseif newXPos > w then
-		newXPos = 1
-	end
-	if newYPos < 2 then
-		newYPos = h
-	elseif newYPos > h then
-		newYPos = 2
-	end
-	
-	local newHead = screen[newXPos][newYPos]
-	term.setCursorPos(1,1);
-	print( newHead.snake )
-	if newHead.snake == true or newHead.wall == true then
-		bRunning = false
-		
-	else
-		if newHead.fruit == true then
-			nScore = nScore + 10
-			nExtraLength = nExtraLength + 1
-			addFruit()
-		end
-		xPos = newXPos
-		yPos = newYPos
-		head.nextX = newXPos
-		head.nextY = newYPos
-		screen[newXPos][newYPos] = { snake = true }
-		
-	end
-	
-	term.setCursorPos(xPos,yPos)
-	term.setBackgroundColour( wormColour )
-	term.write(" ")
-	term.setBackgroundColour( colours.black )
+    -- Remove the tail
+    if nExtraLength == 0 then
+        local tail = screen[tailX][tailY]
+        screen[tailX][tailY] = {}
+        term.setCursorPos(tailX,tailY)
+        term.write(" ")
+        tailX = tail.nextX
+        tailY = tail.nextY
+    else
+        nExtraLength = nExtraLength - 1
+    end
+    
+    -- Update the head
+    local head = screen[xPos][yPos]
+    local newXPos = xPos + xVel
+    local newYPos = yPos + yVel
+    if newXPos < 1 then
+        newXPos = w
+    elseif newXPos > w then
+        newXPos = 1
+    end
+    if newYPos < 2 then
+        newYPos = h
+    elseif newYPos > h then
+        newYPos = 2
+    end
+    
+    local newHead = screen[newXPos][newYPos]
+    term.setCursorPos(1,1);
+    print( newHead.snake )
+    if newHead.snake == true or newHead.wall == true then
+        bRunning = false
+        
+    else
+        if newHead.fruit == true then
+            nScore = nScore + 10
+            nExtraLength = nExtraLength + 1
+            addFruit()
+        end
+        xPos = newXPos
+        yPos = newYPos
+        head.nextX = newXPos
+        head.nextY = newYPos
+        screen[newXPos][newYPos] = { snake = true }
+        
+    end
+    
+    term.setCursorPos(xPos,yPos)
+    term.setBackgroundColour( wormColour )
+    term.write(" ")
+    term.setBackgroundColour( colours.black )
 
-	drawMenu()
+    drawMenu()
 end
 
 -- Display the frontend
 term.clear()
 local function drawFrontend()
-	--term.setTextColour( titleColour )
+    --term.setTextColour( titleColour )
     --printCentred( math.floor(h/2) - 4, " W O R M " )
 
-	term.setTextColour( headingColour )
-	printCentred( math.floor(h/2) - 3, "" )
-	printCentred( math.floor(h/2) - 2, " SELECT DIFFICULTY " )
-	printCentred( math.floor(h/2) - 1, "" )
-	
-	printCentred( math.floor(h/2) + 0, "            " )
-	printCentred( math.floor(h/2) + 1, "            " )
-	printCentred( math.floor(h/2) + 2, "            " )
-	printCentred( math.floor(h/2) - 1 + nDifficulty, " [        ] " )
+    term.setTextColour( headingColour )
+    printCentred( math.floor(h/2) - 3, "" )
+    printCentred( math.floor(h/2) - 2, " SELECT DIFFICULTY " )
+    printCentred( math.floor(h/2) - 1, "" )
+    
+    printCentred( math.floor(h/2) + 0, "            " )
+    printCentred( math.floor(h/2) + 1, "            " )
+    printCentred( math.floor(h/2) + 2, "            " )
+    printCentred( math.floor(h/2) - 1 + nDifficulty, " [        ] " )
 
-	term.setTextColour( textColour )
-	printCentred( math.floor(h/2) + 0, "EASY" )
-	printCentred( math.floor(h/2) + 1, "MEDIUM" )
-	printCentred( math.floor(h/2) + 2, "HARD" )
-	printCentred( math.floor(h/2) + 3, "" )
+    term.setTextColour( textColour )
+    printCentred( math.floor(h/2) + 0, "EASY" )
+    printCentred( math.floor(h/2) + 1, "MEDIUM" )
+    printCentred( math.floor(h/2) + 2, "HARD" )
+    printCentred( math.floor(h/2) + 3, "" )
 
-	term.setTextColour( colours.white )
+    term.setTextColour( colours.white )
 end
 
 drawMenu()
 drawFrontend()
 while true do
-	local e,key = os.pullEvent( "key" )
-	if key == keys.up or key == keys.w then
-		-- Up
-		if nDifficulty > 1 then
-			nDifficulty = nDifficulty - 1
-			drawMenu()
-			drawFrontend()
-		end
-	elseif key == keys.down or key == keys.s then
-		-- Down
-		if nDifficulty < 3 then
-			nDifficulty = nDifficulty + 1
-			drawMenu()
-			drawFrontend()
-		end
-	elseif key == keys.enter then
-		-- Enter
-		break
-	end
+    local e,key = os.pullEvent( "key" )
+    if key == keys.up or key == keys.w then
+        -- Up
+        if nDifficulty > 1 then
+            nDifficulty = nDifficulty - 1
+            drawMenu()
+            drawFrontend()
+        end
+    elseif key == keys.down or key == keys.s then
+        -- Down
+        if nDifficulty < 3 then
+            nDifficulty = nDifficulty + 1
+            drawMenu()
+            drawFrontend()
+        end
+    elseif key == keys.enter then
+        -- Enter
+        break
+    end
 end
 
 local tSpeeds = { 5, 10, 25 }
@@ -222,7 +222,7 @@ term.clear()
 drawMenu()
 screen[tailX][tailY].snake = true
 while nExtraLength > 0 do
-	update()
+    update()
 end
 addFruit()
 addFruit()
@@ -230,37 +230,37 @@ addFruit()
 -- Play the game
 local timer = os.startTimer(0)
 while bRunning do
-	local event, p1, p2 = os.pullEvent()
-	if event == "timer" and p1 == timer then
-		timer = os.startTimer(nInterval)
-		update( false )
-	
-	elseif event == "key" then
-		local key = p1
-		if key == keys.up or key == keys.w then
-			-- Up
-			if yVel == 0 then
-				pxVel,pyVel = 0,-1
-			end
-		elseif key == keys.down or key == keys.s then
-			-- Down
-			if yVel == 0 then
-				pxVel,pyVel = 0,1
-			end
-		elseif key == keys.left or key == keys.a then
-			-- Left
-			if xVel == 0 then
-				pxVel,pyVel = -1,0
-			end
-		
-		elseif key == keys.right or key == keys.d then
-			-- Right
-			if xVel == 0 then
-				pxVel,pyVel = 1,0
-			end
-		
-		end	
-	end
+    local event, p1, p2 = os.pullEvent()
+    if event == "timer" and p1 == timer then
+        timer = os.startTimer(nInterval)
+        update( false )
+    
+    elseif event == "key" then
+        local key = p1
+        if key == keys.up or key == keys.w then
+            -- Up
+            if yVel == 0 then
+                pxVel,pyVel = 0,-1
+            end
+        elseif key == keys.down or key == keys.s then
+            -- Down
+            if yVel == 0 then
+                pxVel,pyVel = 0,1
+            end
+        elseif key == keys.left or key == keys.a then
+            -- Left
+            if xVel == 0 then
+                pxVel,pyVel = -1,0
+            end
+        
+        elseif key == keys.right or key == keys.d then
+            -- Right
+            if xVel == 0 then
+                pxVel,pyVel = 1,0
+            end
+        
+        end    
+    end
 end
 
 -- Display the gameover screen
@@ -276,16 +276,16 @@ term.setTextColour( colours.white )
 
 local timer = os.startTimer(2.5)
 repeat
-	local e,p = os.pullEvent()
-	if e == "timer" and p == timer then
-		term.setTextColour( textColour )
-		printCentred( math.floor(h/2) + 2, " PRESS ANY KEY " )
-		printCentred( math.floor(h/2) + 3, "               " )
-		term.setTextColour( colours.white )
-	end
+    local e,p = os.pullEvent()
+    if e == "timer" and p == timer then
+        term.setTextColour( textColour )
+        printCentred( math.floor(h/2) + 2, " PRESS ANY KEY " )
+        printCentred( math.floor(h/2) + 3, "               " )
+        term.setTextColour( colours.white )
+    end
 until e == "char"
 
 term.clear()
 term.setCursorPos(1,1)
 
-		
+        

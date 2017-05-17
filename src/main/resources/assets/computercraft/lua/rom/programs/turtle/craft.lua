@@ -7,10 +7,10 @@ end
 local tArgs = { ... }
 local nLimit = nil
 if #tArgs < 1 then
-	print( "Usage: craft [number]" )
-	return
+    print( "Usage: craft [number]" )
+    return
 else
-	nLimit = tonumber( tArgs[1] )
+    nLimit = tonumber( tArgs[1] )
 end
 
 local nCrafted = 0

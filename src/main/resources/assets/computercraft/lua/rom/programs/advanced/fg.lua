@@ -1,7 +1,7 @@
 
 if not shell.openTab then
-	printError( "Requires multishell" )
-	return
+    printError( "Requires multishell" )
+    return
 end
 
 local tArgs = { ... }

@@ -1,8 +1,8 @@
 
 local tArgs = { ... }
 if #tArgs < 2 then
-	print( "Usage: cp <source> <destination>" )
-	return
+    print( "Usage: cp <source> <destination>" )
+    return
 end
 
 local sSource = shell.resolve( tArgs[1] )
