@@ -216,7 +216,7 @@ setMenuVisible( false )
 selectProcess( launchProcess( {
     ["shell"] = shell,
     ["multishell"] = multishell,
-}, "/rom/programs/shell" ) )
+}, "/rom/programs/shell.lua" ) )
 redrawMenu()
 
 -- Run processes

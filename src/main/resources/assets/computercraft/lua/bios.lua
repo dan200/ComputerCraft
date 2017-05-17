@@ -856,12 +856,12 @@ local ok, err = pcall( function()
         function()
             local sShell
             if term.isColour() and settings.get( "bios.use_multishell" ) then
-                sShell = "rom/programs/advanced/multishell"
+                sShell = "rom/programs/advanced/multishell.lua"
             else
-                sShell = "rom/programs/shell"
+                sShell = "rom/programs/shell.lua"
             end
             os.run( {}, sShell )
-            os.run( {}, "rom/programs/shutdown" )
+            os.run( {}, "rom/programs/shutdown.lua" )
         end,
         function()
             rednet.run()
