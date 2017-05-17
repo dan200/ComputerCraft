@@ -15,10 +15,83 @@ local tCompletionInfo = (parentShell and parentShell.getCompletionInfo()) or {}
 local tProgramStack = {}
 
 local shell = {}
-local tEnv = {
-    [ "shell" ] = shell,
-    [ "multishell" ] = multishell,
-}
+local function createShellEnv( sDir )
+    local tEnv = {}
+    tEnv[ "shell" ] = shell
+    tEnv[ "multishell" ] = multishell
+
+    local package = {}
+    package.loaded = {}
+    package.path = "?;?.lua;?/init.lua"
+    package.preload = {}
+    package.loaders = {
+        function( name )
+            if package.preload[name] then
+                return package.preload[name]
+            else
+                return nil, "no field package.preload['" .. name .. "']"
+            end
+        end,
+        function( name )
+            local fname = string.gsub(name, "%.", "/")
+            local sError = ""
+            for pattern in string.gmatch(package.path, "[^;]+") do
+                local sPath = string.gsub(pattern, "%?", fname)
+                if sPath:sub(1,1) ~= "/" then
+                    sPath = fs.combine(sDir, sPath)
+                end
+                if fs.exists(sPath) and not fs.isDir(sPath) then
+                    local fnFile, sError = loadfile( sPath, tEnv )
+                    if fnFile then
+                        return fnFile, sPath
+                    else
+                        return nil, sError
+                    end
+                else
+                    if #sError > 0 then
+                        sError = sError .. "\n"
+                    end
+                    sError = sError .. "no file '" .. sPath .. "'"
+                end
+            end
+            return nil, sError
+        end
+    }
+
+    local sentinel = {}
+    local function require( name )
+        if package.loaded[name] == sentinel then
+            error("Loop detected requiring '" .. name .. "'", 0)
+        end
+        if package.loaded[name] then
+            return package.loaded[name]
+        end
+
+        local sError = "Error loading modile '" .. name .. "':"
+        for n,searcher in ipairs(package.loaders) do
+            local loader, err = searcher(name)
+            if loader then
+                package.loaded[name] = sentinel
+                local result, err = loader( err )
+                if result ~= nil then
+                    package.loaded[name] = result
+                    return result
+                else
+                    package.loaded[name] = true
+                    return true
+                end
+            else
+                sError = sError .. "\n" .. err
+            end
+        end
+        error(sError, 2)
+    end
+
+    tEnv["package"] = package
+    tEnv["require"] = require
+
+    return tEnv
+end
 
 -- Colours
 local promptColour, textColour, bgColour
@@ -43,7 +116,8 @@ local function run( _sCommand, ... )
             end
             multishell.setTitle( multishell.getCurrent(), sTitle )
         end
-           local result = os.run( tEnv, sPath, ... )
+        local sDir = fs.getDir( sPath )
+        local result = os.run( createShellEnv( sDir ), sPath, ... )
         tProgramStack[#tProgramStack] = nil
         if multishell then
             if #tProgramStack > 0 then
@@ -325,9 +399,9 @@ if multishell then
         if sCommand then
             local sPath = shell.resolveProgram( sCommand )
             if sPath == "rom/programs/shell.lua" then
-                return multishell.launch( tEnv, sPath, table.unpack( tWords, 2 ) )
+                return multishell.launch( createShellEnv( "rom/programs" ), sPath, table.unpack( tWords, 2 ) )
             elseif sPath ~= nil then
-                return multishell.launch( tEnv, "rom/programs/shell.lua", sCommand, table.unpack( tWords, 2 ) )
+                return multishell.launch( createShellEnv( "rom/programs" ), "rom/programs/shell.lua", sCommand, table.unpack( tWords, 2 ) )
             else
                 printError( "No such program" )
             end
