@@ -23,7 +23,11 @@ public class EncodedOutputHandle extends HandleGeneric
 
     public EncodedOutputHandle( OutputStream stream, String encoding )
     {
-        super( stream );
+        this( makeWriter( stream, encoding ) );
+    }
+
+    private static BufferedWriter makeWriter( OutputStream stream, String encoding )
+    {
         if( encoding == null ) encoding = "UTF-8";
         OutputStreamWriter streamWriter;
         try
@@ -34,7 +38,7 @@ public class EncodedOutputHandle extends HandleGeneric
         {
             streamWriter = new OutputStreamWriter( stream );
         }
-        this.m_writer = new BufferedWriter( streamWriter );
+        return new BufferedWriter( streamWriter );
     }
 
     @Nonnull
