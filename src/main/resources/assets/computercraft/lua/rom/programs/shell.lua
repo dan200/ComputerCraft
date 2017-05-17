@@ -21,7 +21,15 @@ local function createShellEnv( sDir )
     tEnv[ "multishell" ] = multishell
 
     local package = {}
-    package.loaded = {}
+    package.loaded = {
+        _G = _G,
+        bit32 = bit32,
+        coroutine = coroutine,
+        math = math,
+        package = package,
+        string = string,
+        table = table,
+    }
     package.path = "?;?.lua;?/init.lua"
     package.preload = {}
     package.loaders = {
