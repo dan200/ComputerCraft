@@ -80,7 +80,7 @@ local function createShellEnv( sDir )
             local loader, err = searcher(name)
             if loader then
                 package.loaded[name] = sentinel
-                local result, err = loader( err )
+                local result = loader( err )
                 if result ~= nil then
                     package.loaded[name] = result
                     return result
