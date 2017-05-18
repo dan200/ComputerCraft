@@ -239,7 +239,7 @@ public class TileCable extends TileModemBase
     // Members
 
     private final Set<IPacketReceiver> m_receivers;
-    private final Queue<Packet> m_transmitQueue;
+    private final Queue<PacketWrapper> m_transmitQueue;
     
     private boolean m_peripheralAccessAllowed;
     private int m_attachedPeripheralID;
@@ -254,7 +254,7 @@ public class TileCable extends TileModemBase
     public TileCable()
     {
         m_receivers = new HashSet<IPacketReceiver>();
-        m_transmitQueue = new LinkedList<Packet>();
+        m_transmitQueue = new LinkedList<PacketWrapper>();
         
         m_peripheralAccessAllowed = false;
         m_attachedPeripheralID = -1;
@@ -569,7 +569,7 @@ public class TileCable extends TileModemBase
             {
                 while( m_transmitQueue.peek() != null )
                 {
-                    Packet p = m_transmitQueue.remove();
+                    PacketWrapper p = m_transmitQueue.remove();
                     if( p != null )
                     {
                         dispatchPacket( p );
@@ -598,16 +598,25 @@ public class TileCable extends TileModemBase
             m_receivers.remove( receiver );
         }
     }
-    
+
     @Override
-    public void transmit( @Nonnull Packet packet )
+    public void transmitSameDimension( @Nonnull Packet packet, double range )
     {
         synchronized( m_transmitQueue )
         {
-            m_transmitQueue.offer( packet );
+            m_transmitQueue.offer( new PacketWrapper( packet, range ) );
         }
     }
-    
+
+    @Override
+    public void transmitInterdimensional( @Nonnull Packet packet )
+    {
+        synchronized( m_transmitQueue )
+        {
+            m_transmitQueue.offer( new PacketWrapper( packet, Double.MAX_VALUE ) );
+        }
+    }
+
     @Override
     public boolean isWireless()
     {
@@ -714,13 +723,28 @@ public class TileCable extends TileModemBase
     // private stuff
         
     // Packet sending
+
+    private static class PacketWrapper
+    {
+        final Packet m_packet;
+        final double m_range;
+
+        private PacketWrapper( Packet m_packet, double m_range )
+        {
+            this.m_packet = m_packet;
+            this.m_range = m_range;
+        }
+    }
         
-    private void dispatchPacket( final Packet packet )
+    private void dispatchPacket( final PacketWrapper packet )
     {
         searchNetwork( new ICableVisitor() {
             public void visit( TileCable modem, int distance )
             {
-                modem.receivePacket( packet, distance );
+                if( distance <= packet.m_range)
+                {
+                    modem.receivePacket( packet.m_packet, distance );
+                }
             }
         } );
     }

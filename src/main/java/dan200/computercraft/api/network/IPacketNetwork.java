@@ -38,11 +38,21 @@ public interface IPacketNetwork
 
     /**
      * Submit a packet for transmitting across the network. This will route the packet through the network, sending it
-     * to all reachable receivers.
+     * to all receivers within range (or any interdimensional ones).
      *
      * @param packet The packet to send.
-     * @see IPacketReceiver#receiveDifferentDimension(Packet)
+     * @see #transmitInterdimensional(Packet) 
      * @see IPacketReceiver#receiveSameDimension(Packet, double)
      */
-    void transmit( @Nonnull Packet packet );
+    void transmitSameDimension( @Nonnull Packet packet, double range );
+
+    /**
+     * Submit a packet for transmitting across the network. This will route the packet through the network, sending it
+     * to all receivers across all dimensions.
+     *
+     * @param packet The packet to send.
+     * @see #transmitSameDimension(Packet, double) 
+     * @see IPacketReceiver#receiveDifferentDimension(Packet)
+     */
+    void transmitInterdimensional( @Nonnull Packet packet );
 }

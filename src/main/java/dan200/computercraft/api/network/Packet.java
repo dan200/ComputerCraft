@@ -14,7 +14,8 @@ import javax.annotation.Nullable;
  * Represents a packet which may be sent across a {@link IPacketNetwork}.
  *
  * @see IPacketSender
- * @see IPacketNetwork#transmit(Packet)
+ * @see IPacketNetwork#transmitSameDimension(Packet, double)
+ * @see IPacketNetwork#transmitInterdimensional(Packet)
  * @see IPacketReceiver#receiveDifferentDimension(Packet)
  * @see IPacketReceiver#receiveSameDimension(Packet, double)
  */
@@ -24,8 +25,6 @@ public class Packet
     private final int m_replyChannel;
     private final Object m_payload;
 
-    private final double m_range;
-    private final boolean m_interdimensional;
     private final IPacketSender m_sender;
 
     /**
@@ -38,15 +37,13 @@ public class Packet
      *                     event or returning from a peripheral call.
      * @param sender       The object which sent this packet.
      */
-    public Packet( int channel, int replyChannel, @Nullable Object payload, double range, boolean interdimensional, @Nonnull IPacketSender sender )
+    public Packet( int channel, int replyChannel, @Nullable Object payload, @Nonnull IPacketSender sender )
     {
         Preconditions.checkNotNull( sender, "sender cannot be null" );
 
         m_channel = channel;
         m_replyChannel = replyChannel;
         m_payload = payload;
-        m_range = range;
-        m_interdimensional = interdimensional;
         m_sender = sender;
     }
 
@@ -84,32 +81,6 @@ public class Packet
     }
 
     /**
-     * Get the minimum distance this packet will travel.
-     *
-     * Packets may still travel further if there is a more sensitive receiver available.
-     *
-     * @return The distance this packet will travel.
-     * @see IPacketReceiver#getRange()
-     */
-    public double getRange()
-    {
-        return m_range;
-    }
-
-    /**
-     * Whether this packet will travel across dimensions.
-     *
-     * Packets may still be received if there is a more sensitive receiver available.
-     *
-     * @return If this packet will travel across dimensions.
-     * @see IPacketReceiver#isInterdimensional()
-     */
-    public boolean isInterdimensional()
-    {
-        return m_interdimensional;
-    }
-
-    /**
      * The object which sent this message.
      *
      * @return The sending object.
@@ -130,8 +101,6 @@ public class Packet
 
         if( m_channel != packet.m_channel ) return false;
         if( m_replyChannel != packet.m_replyChannel ) return false;
-        if( Double.compare( packet.m_range, m_range ) != 0 ) return false;
-        if( m_interdimensional != packet.m_interdimensional ) return false;
         if( m_payload != null ? !m_payload.equals( packet.m_payload ) : packet.m_payload != null ) return false;
         return m_sender.equals( packet.m_sender );
     }
@@ -143,9 +112,6 @@ public class Packet
         result = m_channel;
         result = 31 * result + m_replyChannel;
         result = 31 * result + (m_payload != null ? m_payload.hashCode() : 0);
-        long temp = Double.doubleToLongBits( m_range );
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (m_interdimensional ? 1 : 0);
         result = 31 * result + m_sender.hashCode();
         return result;
     }

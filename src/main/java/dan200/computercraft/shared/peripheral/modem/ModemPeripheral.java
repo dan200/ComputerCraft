@@ -244,7 +244,15 @@ public abstract class ModemPeripheral
                     Vec3d position = getPosition();
                     if( world != null && position != null && m_network != null)
                     {
-                        m_network.transmit( new Packet( channel, replyChannel, payload, getRange(), isInterdimensional(), this ) );
+                        Packet packet = new Packet( channel, replyChannel, payload, this );
+                        if( isInterdimensional() )
+                        {
+                            m_network.transmitInterdimensional( packet );
+                        }
+                        else
+                        {
+                            m_network.transmitSameDimension( packet, getRange() );
+                        }
                     }
                 }
                 return null;

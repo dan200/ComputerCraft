@@ -41,7 +41,7 @@ public interface IPacketReceiver
      * @return The maximum distance this device can send and receive messages.
      * @see #isInterdimensional()
      * @see #receiveSameDimension(Packet packet, double)
-     * @see Packet#getRange()
+     * @see IPacketNetwork#transmitInterdimensional(Packet)
      */
     double getRange();
 
@@ -53,7 +53,7 @@ public interface IPacketReceiver
      * @return Whether this receiver receives packets from other dimensions.
      * @see #getRange()
      * @see #receiveDifferentDimension(Packet)
-     * @see Packet#isInterdimensional()
+     * @see IPacketNetwork#transmitInterdimensional(Packet) 
      */
     boolean isInterdimensional();
 
@@ -64,7 +64,9 @@ public interface IPacketReceiver
      *                 if so, queue the appropriate modem event.
      * @param distance The distance this packet has travelled from the source.
      * @see Packet
-     * @see IPacketNetwork#transmit(Packet)
+     * @see #getRange()
+     * @see IPacketNetwork#transmitSameDimension(Packet, double)
+     * @see IPacketNetwork#transmitInterdimensional(Packet)
      */
     void receiveSameDimension( @Nonnull Packet packet, double distance );
 
@@ -74,7 +76,8 @@ public interface IPacketReceiver
      * @param packet The packet to receive. Generally you should check that you are listening on the given channel and,
      *               if so, queue the appropriate modem event.
      * @see Packet
-     * @see IPacketNetwork#transmit(Packet)
+     * @see IPacketNetwork#transmitInterdimensional(Packet)
+     * @see IPacketNetwork#transmitSameDimension(Packet, double)
      * @see #isInterdimensional()
      */
     void receiveDifferentDimension( @Nonnull Packet packet );
