@@ -10,6 +10,7 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.api.media.IMediaProvider;
+import dan200.computercraft.api.network.IPacketNetwork;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
@@ -289,6 +290,27 @@ public final class ComputerCraftAPI
         }
     }
 
+    /**
+     * Attempt to get the game-wide wireless network.
+     *
+     * @return The global wireless network, or {@code null} if it could not be fetched.
+     */
+    public static IPacketNetwork getWirelessNetwork()
+    {
+        findCC();
+        if( computerCraft_getWirelessNetwork != null )
+        {
+            try
+            {
+                return (IPacketNetwork) computerCraft_getWirelessNetwork.invoke( null );
+            } catch (Exception e) {
+                // It failed;
+            }
+        }
+
+        return null;
+    }
+
     // The functions below here are private, and are used to interface with the non-API ComputerCraft classes.
     // Reflection is used here so you can develop your mod without decompiling ComputerCraft and including
     // it in your solution, and so your mod won't crash if ComputerCraft is installed.
@@ -330,6 +352,8 @@ public final class ComputerCraftAPI
                 computerCraft_registerPocketUpgrade = findCCMethod( "registerPocketUpgrade", new Class<?>[] {
                     IPocketUpgrade.class
                 } );
+                computerCraft_getWirelessNetwork = findCCMethod( "getWirelessNetwork", new Class<?>[] {
+                } );
             } catch( Exception e ) {
                 System.out.println( "ComputerCraftAPI: ComputerCraft not found." );
             } finally {
@@ -365,4 +389,5 @@ public final class ComputerCraftAPI
     private static Method computerCraft_registerMediaProvider = null;
     private static Method computerCraft_registerPermissionProvider = null;
     private static Method computerCraft_registerPocketUpgrade = null;
+    private static Method computerCraft_getWirelessNetwork = null;
 }

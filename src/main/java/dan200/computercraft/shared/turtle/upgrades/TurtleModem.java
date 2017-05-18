@@ -42,14 +42,16 @@ public class TurtleModem implements ITurtleUpgrade
             m_turtle = turtle;
         }
 
+        @Nonnull
         @Override
-        protected World getWorld()
+        public World getWorld()
         {
             return m_turtle.getWorld();
         }
 
+        @Nonnull
         @Override
-        protected Vec3d getPosition()
+        public Vec3d getPosition()
         {
             BlockPos turtlePos = m_turtle.getPosition();
             return new Vec3d(
