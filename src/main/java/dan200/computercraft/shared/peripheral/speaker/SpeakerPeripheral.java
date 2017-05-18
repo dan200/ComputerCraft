@@ -168,7 +168,7 @@ public class SpeakerPeripheral implements IPeripheral {
         }
 
         // If the resource location for note block notes changes, this method call will need to be updated
-        Object[] returnValue = playSound(new Object[] {"block.note." + arguments[0], volume, Math.pow(2d, (pitch - 12) / 12d)}, context, true);
+        Object[] returnValue = playSound(new Object[] {"block.note." + arguments[0], Math.min(volume,3f) , Math.pow(2d, (pitch - 12) / 12d)}, context, true);
 
         if (returnValue[0] instanceof Boolean && (Boolean) returnValue[0])
         {
@@ -238,7 +238,7 @@ public class SpeakerPeripheral implements IPeripheral {
                     @Nullable
                     @Override
                     public Object[] execute() throws LuaException {
-                        world.playSound( null, pos, SoundEvent.REGISTRY.getObject( resource ), SoundCategory.RECORDS, vol, soundPitch );
+                        world.playSound( null, pos, SoundEvent.REGISTRY.getObject( resource ), SoundCategory.RECORDS, Math.min(vol,3f), soundPitch );
                         return null;
                     }
 
