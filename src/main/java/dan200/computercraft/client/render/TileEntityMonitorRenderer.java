@@ -125,11 +125,15 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                     int cursorY = terminal.getCursorY();
                     FixedWidthFontRenderer fontRenderer = (FixedWidthFontRenderer)ComputerCraft.getFixedWidthFontRenderer();
 
+                    double xScale = xSize / (double) ( width * FixedWidthFontRenderer.FONT_WIDTH );
+                    double yScale = ySize / (double) ( height * FixedWidthFontRenderer.FONT_HEIGHT );
+                    double marginXSize = TileMonitor.RENDER_MARGIN / xScale;
+                    double marginYSize = TileMonitor.RENDER_MARGIN / yScale;
+                    double marginSquash = marginYSize / (double) FixedWidthFontRenderer.FONT_HEIGHT;
+
                     GlStateManager.pushMatrix();
                     try
                     {
-                        double xScale = xSize / (double) ( width * FixedWidthFontRenderer.FONT_WIDTH );
-                        double yScale = ySize / (double) ( height * FixedWidthFontRenderer.FONT_HEIGHT );
                         GlStateManager.scale( xScale, -yScale, 1.0 );
 
                         // Draw background
@@ -140,19 +144,26 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                             GlStateManager.glNewList( origin.m_renderDisplayList, GL11.GL_COMPILE );
                             try
                             {
-                                double marginXSize = TileMonitor.RENDER_MARGIN / xScale;
-                                double marginYSize = TileMonitor.RENDER_MARGIN / yScale;
-                                double marginSquash = marginYSize / (double) FixedWidthFontRenderer.FONT_HEIGHT;
-
                                 // Top and bottom margins
                                 GlStateManager.pushMatrix();
                                 try
                                 {
+                                    final TextBuffer blackRow = new TextBuffer( "f", width );
                                     GlStateManager.scale( 1.0, marginSquash, 1.0 );
                                     GlStateManager.translate( 0.0, -marginYSize / marginSquash, 0.0 );
-                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( 0 ), marginXSize, marginXSize, greyscale, palette );
+                                    fontRenderer.drawStringBackgroundPart( 0, 0, blackRow, marginXSize, marginXSize, greyscale, palette );
                                     GlStateManager.translate( 0.0, ( marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT ) / marginSquash, 0.0 );
-                                    fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( height - 1 ), marginXSize, marginXSize, greyscale, palette );
+                                    fontRenderer.drawStringBackgroundPart( 0, 0, blackRow, marginXSize, marginXSize, greyscale, palette );
+
+                                    final TextBuffer black = new TextBuffer( "f" );
+
+                                    for( int y = 0; y < height; ++y )
+                                    {
+                                        GlStateManager.translate( -marginXSize / marginSquash, 0.0, 0.0 );
+                                        fontRenderer.drawStringBackgroundPart( 0, 0, black, marginXSize, marginXSize, greyscale, palette );
+                                        GlStateManager.translate( ( marginXSize + width * FixedWidthFontRenderer.FONT_WIDTH ) / marginSquash, 0.0, 0.0 );
+                                        fontRenderer.drawStringBackgroundPart( 0, 0, black, marginXSize, marginXSize, greyscale, palette );
+                                    }
                                 }
                                 finally
                                 {
@@ -165,7 +176,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                     fontRenderer.drawStringBackgroundPart(
                                             0, FixedWidthFontRenderer.FONT_HEIGHT * y,
                                             terminal.getBackgroundColourLine( y ),
-                                            marginXSize, marginXSize,
+                                            0.0, 0.0,
                                             greyscale,
                                             palette
                                     );
