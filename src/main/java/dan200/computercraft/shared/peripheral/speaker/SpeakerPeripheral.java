@@ -148,7 +148,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
         if ( arguments.length > 1 )
         {
-            if ( !(arguments[1] instanceof Double) && arguments[1] != null )   // Arg wrong type
+            if ( arguments[1] != null && !(arguments[1] instanceof Double) )   // Arg wrong type
             {
                 throw new LuaException( "Expected string, number (optional), number (optional)" );
             }
@@ -157,7 +157,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
         if( arguments.length > 2 )
         {
-            if (!(arguments[1] instanceof Double) && arguments[2] != null)  // Arg wrong type
+            if( arguments[2] != null && !(arguments[2] instanceof Double) )  // Arg wrong type
             {
                 throw new LuaException("Expected string, number (optional), number (optional)");
             }
@@ -201,7 +201,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
         if( arguments.length > 1 )
         {
-            if( !(arguments[1] instanceof Double) && arguments[1] != null )  // Arg wrong type
+            if( arguments[1] != null && !(arguments[1] instanceof Double) )  // Arg wrong type
             {
                 throw new LuaException( "Expected string, number (optional), number (optional)" );
             }
@@ -212,7 +212,7 @@ public class SpeakerPeripheral implements IPeripheral {
 
         if( arguments.length > 2 )
         {
-            if( !(arguments[2] instanceof Double) && arguments[2] != null )  // Arg wrong type
+            if( arguments[2] != null && !(arguments[2] instanceof Double) )  // Arg wrong type
             {
                 throw new LuaException( "Expected string, number (optional), number (optional)" );
             }
