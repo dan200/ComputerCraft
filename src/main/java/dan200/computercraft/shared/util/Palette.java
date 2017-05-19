@@ -89,7 +89,10 @@ public class Palette
 
     public void readFromNBT( NBTTagCompound nbt )
     {
+        if( !nbt.hasKey( "term_palette" ) ) return;
         int[] rgb8 = nbt.getIntArray( "term_palette" );
+
+        if( rgb8.length != colours.length ) return;
 
         for(int i = 0; i < colours.length; ++i)
         {
