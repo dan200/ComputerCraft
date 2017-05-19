@@ -430,6 +430,12 @@ public class WidgetTerminal extends Widget
                             palette
                     );
                 }
+
+                mc.getTextureManager().bindTexture( background );
+                Colour black = Colour.Black;
+                GlStateManager.color( black.getR(), black.getG(), black.getB(), 1.0f );
+                drawTexturedModalRect( startX, startY, 0, 0, m_leftMargin, getHeight() );
+                drawTexturedModalRect( startX + getWidth() - m_rightMargin, startY, 0, 0, m_rightMargin, getHeight() );
             } else
             {
                 // Draw a black background
