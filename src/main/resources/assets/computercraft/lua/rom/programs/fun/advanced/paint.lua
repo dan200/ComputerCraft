@@ -44,8 +44,8 @@ if fs.exists(sPath) and fs.isDir(sPath) then
     return
 end
 if fs.exists(sPath) == false then
-    if fs.exists(sPath..".mcpi") or sPath:find(".",1,true) == nil then
-        sPath = sPath..".mcpi"
+    if fs.exists(sPath..".nfp") or sPath:find(".",1,true) == nil then
+        sPath = sPath..".nfp"
     end
 end
 
