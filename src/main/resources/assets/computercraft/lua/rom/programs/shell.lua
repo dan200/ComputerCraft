@@ -75,7 +75,7 @@ local function createShellEnv( sDir )
             return package.loaded[name]
         end
 
-        local sError = "Error loading modile '" .. name .. "':"
+        local sError = "Error loading module '" .. name .. "':"
         for n,searcher in ipairs(package.loaders) do
             local loader, err = searcher(name)
             if loader then
