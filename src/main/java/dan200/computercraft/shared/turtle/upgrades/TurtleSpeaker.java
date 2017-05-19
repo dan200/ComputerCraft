@@ -81,7 +81,7 @@ public class TurtleSpeaker implements ITurtleUpgrade
     @SideOnly( Side.CLIENT )
     private ModelResourceLocation m_rightModel;
 
-    public TurtleSpeaker(ResourceLocation id, int legacyId)
+    public TurtleSpeaker( ResourceLocation id, int legacyId )
     {
         m_id = id;
         m_legacyID = legacyId;
@@ -128,7 +128,7 @@ public class TurtleSpeaker implements ITurtleUpgrade
 
     @Nonnull
     @Override
-    public TurtleCommandResult useTool(@Nonnull ITurtleAccess turtleAccess, @Nonnull TurtleSide turtleSide, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction)
+    public TurtleCommandResult useTool( @Nonnull ITurtleAccess turtleAccess, @Nonnull TurtleSide turtleSide, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction )
     {
         return TurtleCommandResult.failure();
     }
@@ -146,29 +146,26 @@ public class TurtleSpeaker implements ITurtleUpgrade
     @Nonnull
     @Override
     @SideOnly( Side.CLIENT )
-    public Pair<IBakedModel, Matrix4f> getModel(ITurtleAccess turtle, @Nonnull TurtleSide side ) {
-
+    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, @Nonnull TurtleSide side )
+    {
         loadModelLocations();
         ModelManager modelManager = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getModelManager();
 
-        if (side == TurtleSide.Left)
+        if( side == TurtleSide.Left )
         {
-            return Pair.of(modelManager.getModel( m_leftModel ), null);
+            return Pair.of( modelManager.getModel( m_leftModel ), null );
         }
-
         else
         {
-            return Pair.of(modelManager.getModel( m_rightModel ), null);
+            return Pair.of( modelManager.getModel( m_rightModel ), null );
         }
-
     }
 
     @Override
-    public void update(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide turtleSide)
+    public void update( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide turtleSide )
     {
-        IPeripheral turtlePeripheral = turtle.getPeripheral(turtleSide);
-
-        if (turtlePeripheral instanceof Peripheral)
+        IPeripheral turtlePeripheral = turtle.getPeripheral( turtleSide );
+        if ( turtlePeripheral instanceof Peripheral )
         {
             Peripheral peripheral = (Peripheral) turtlePeripheral;
             peripheral.update();

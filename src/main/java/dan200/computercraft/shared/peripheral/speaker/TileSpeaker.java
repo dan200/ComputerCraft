@@ -13,10 +13,10 @@ import net.minecraft.util.EnumFacing;
 public class TileSpeaker extends TilePeripheralBase
 {
     // Statics
-    static final int MIN_TICKS_BETWEEN_SOUNDS = 1;
+    public static final int MIN_TICKS_BETWEEN_SOUNDS = 1;
 
     // Members
-    private SpeakerPeripheral m_peripheral;
+    private final SpeakerPeripheral m_peripheral;
 
     public TileSpeaker()
     {
@@ -25,15 +25,15 @@ public class TileSpeaker extends TilePeripheralBase
     }
 
     @Override
-    public synchronized void update() {
+    public synchronized void update()
+    {
         m_peripheral.update();
     }
 
     // IPeripheralTile implementation
 
-    public IPeripheral getPeripheral(EnumFacing side)
+    public IPeripheral getPeripheral( EnumFacing side )
     {
         return m_peripheral;
     }
-
 }
