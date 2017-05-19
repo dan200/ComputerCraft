@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SpeakerPeripheral implements IPeripheral {
-
     private TileSpeaker m_speaker;
     private long m_clock;
     private long m_lastPlayTime;
@@ -40,7 +39,8 @@ public class SpeakerPeripheral implements IPeripheral {
         m_speaker = speaker;
     }
 
-    public synchronized void update() {
+    public synchronized void update()
+    {
         m_clock++;
         m_notesThisTick = 0;
     }
@@ -55,32 +55,30 @@ public class SpeakerPeripheral implements IPeripheral {
         return m_speaker.getPos();
     }
 
-    /* IPeripheral implementations */
+    /* IPeripheral implementation */
 
     @Override
-    public boolean equals(IPeripheral other)
+    public boolean equals( IPeripheral other )
     {
-        if (other != null && other instanceof SpeakerPeripheral)
+        if( other != null && other instanceof SpeakerPeripheral )
         {
             SpeakerPeripheral otherSpeaker = (SpeakerPeripheral) other;
             return otherSpeaker.m_speaker == m_speaker;
         }
-
         else
         {
             return false;
         }
-
     }
 
 
     @Override
-    public void attach(@Nonnull IComputerAccess computerAccess)
+    public void attach( @Nonnull IComputerAccess computerAccess )
     {
     }
 
     @Override
-    public void detach(@Nonnull IComputerAccess computerAccess)
+    public void detach( @Nonnull IComputerAccess computerAccess )
     {
     }
 
@@ -102,17 +100,17 @@ public class SpeakerPeripheral implements IPeripheral {
     }
 
     @Override
-    public Object[] callMethod(@Nonnull IComputerAccess computerAccess, @Nonnull ILuaContext context, int methodIndex, @Nonnull Object[] args) throws LuaException
+    public Object[] callMethod( @Nonnull IComputerAccess computerAccess, @Nonnull ILuaContext context, int methodIndex, @Nonnull Object[] args ) throws LuaException
     {
-        switch (methodIndex)
+        switch( methodIndex )
         {
-            // playsound
+            // playSound
             case 0:
             {
                 return playSound(args, context, false);
             }
 
-            // playnote
+            // playNote
             case 1:
             {
                 return playNote(args, context);
@@ -127,38 +125,37 @@ public class SpeakerPeripheral implements IPeripheral {
     }
 
     @Nonnull
-    private synchronized Object[] playNote(Object[] arguments, ILuaContext context) throws LuaException
+    private synchronized Object[] playNote( Object[] arguments, ILuaContext context ) throws LuaException
     {
-        double volume = 1f;
-        double pitch = 1f;
+        float volume = 1.0f;
+        float pitch = 1.0f;
 
         // Check if arguments are correct
-        if (arguments.length == 0) // Too few args
+        if( arguments.length == 0 ) // Too few args
+        {
+            throw new LuaException( "Expected string, number (optional), number (optional)" );
+        }
+
+        if( !(arguments[0] instanceof String) ) // Arg wrong type
         {
             throw new LuaException("Expected string, number (optional), number (optional)");
         }
 
-        if (!(arguments[0] instanceof String)) // Arg wrong type
-        {
-            throw new LuaException("Expected string, number (optional), number (optional)");
-        }
-
-        if (!SoundEvent.REGISTRY.containsKey(new ResourceLocation("block.note." + arguments[0])))
+        if ( !SoundEvent.REGISTRY.containsKey( new ResourceLocation( "block.note." + arguments[0] ) ) )
         {
             throw new LuaException("Invalid instrument, \"" + arguments[0] + "\"!");
         }
 
-        if (arguments.length > 1)
+        if ( arguments.length > 1 )
         {
-            if (!(arguments[1] instanceof Double) && arguments[1] != null)   // Arg wrong type
+            if ( !(arguments[1] instanceof Double) && arguments[1] != null )   // Arg wrong type
             {
-                throw new LuaException("Expected string, number (optional), number (optional)");
+                throw new LuaException( "Expected string, number (optional), number (optional)" );
             }
             volume = arguments[1] != null ? ((Double) arguments[1]).floatValue() : 1f;
-
         }
 
-        if (arguments.length > 2)
+        if( arguments.length > 2 )
         {
             if (!(arguments[1] instanceof Double) && arguments[2] != null)  // Arg wrong type
             {
@@ -168,93 +165,91 @@ public class SpeakerPeripheral implements IPeripheral {
         }
 
         // If the resource location for note block notes changes, this method call will need to be updated
-        Object[] returnValue = playSound(new Object[] {"block.note." + arguments[0], Math.min(volume,3f) , Math.pow(2d, (pitch - 12) / 12d)}, context, true);
+        Object[] returnValue = playSound(
+            new Object[] {
+                "block.note." + arguments[0],
+                (double)Math.min( volume, 3f ),
+                Math.pow( 2.0f, ( pitch - 12.0f ) / 12.0f)
+            }, context, true
+        );
 
-        if (returnValue[0] instanceof Boolean && (Boolean) returnValue[0])
+        if( returnValue[0] instanceof Boolean && (Boolean) returnValue[0] )
         {
             m_notesThisTick++;
         }
 
         return returnValue;
-
     }
 
     @Nonnull
-    private synchronized Object[] playSound(Object[] arguments, ILuaContext context, boolean isNote) throws LuaException
+    private synchronized Object[] playSound( Object[] arguments, ILuaContext context, boolean isNote ) throws LuaException
     {
 
-        float volume = 1f;
-        float pitch = 1f;
+        float volume = 1.0f;
+        float pitch = 1.0f;
 
         // Check if arguments are correct
-        if (arguments.length == 0) // Too few args
+        if( arguments.length == 0 ) // Too few args
         {
-            throw new LuaException("Expected string, number (optional), number (optional)");
+            throw new LuaException( "Expected string, number (optional), number (optional)" );
         }
 
-        if (!(arguments[0] instanceof String)) // Arg wrong type
+        if( !(arguments[0] instanceof String) ) // Arg wrong type
         {
-            throw new LuaException("Expected string, number (optional), number (optional)");
-
+            throw new LuaException( "Expected string, number (optional), number (optional)" );
         }
 
-        if (arguments.length > 1)
+        if( arguments.length > 1 )
         {
-            if (!(arguments[1] instanceof Double) && arguments[1] != null)  // Arg wrong type
+            if( !(arguments[1] instanceof Double) && arguments[1] != null )  // Arg wrong type
             {
-                throw new LuaException("Expected string, number (optional), number (optional)");
+                throw new LuaException( "Expected string, number (optional), number (optional)" );
             }
 
             volume = arguments[1] != null ? ((Double) arguments[1]).floatValue() : 1f;
 
         }
 
-        if (arguments.length > 2)
+        if( arguments.length > 2 )
         {
-            if (!(arguments[2] instanceof Double) && arguments[2] != null)  // Arg wrong type
+            if( !(arguments[2] instanceof Double) && arguments[2] != null )  // Arg wrong type
             {
-                throw new LuaException("Expected string, number (optional), number (optional)");
+                throw new LuaException( "Expected string, number (optional), number (optional)" );
             }
             pitch = arguments[2] != null ? ((Double) arguments[2]).floatValue() : 1f;
         }
 
+        ResourceLocation resourceName = new ResourceLocation( (String) arguments[0] );
 
-        ResourceLocation resourceName = new ResourceLocation((String) arguments[0]);
-
-        if (m_clock - m_lastPlayTime >= TileSpeaker.MIN_TICKS_BETWEEN_SOUNDS || ((m_clock - m_lastPlayTime == 0) && (m_notesThisTick < ComputerCraft.maxNotesPerTick) && isNote))
+        if( m_clock - m_lastPlayTime >= TileSpeaker.MIN_TICKS_BETWEEN_SOUNDS || ( ( m_clock - m_lastPlayTime == 0 ) && ( m_notesThisTick < ComputerCraft.maxNotesPerTick ) && isNote ) )
         {
-
-            if (SoundEvent.REGISTRY.containsKey(resourceName))
+            if( SoundEvent.REGISTRY.containsKey(resourceName) )
             {
-
                 final World world = getWorld();
                 final BlockPos pos = getPos();
                 final ResourceLocation resource = resourceName;
                 final float vol = volume;
                 final float soundPitch = pitch;
 
-                context.issueMainThreadTask(new ILuaTask() {
-
+                context.issueMainThreadTask(new ILuaTask()
+                {
                     @Nullable
                     @Override
-                    public Object[] execute() throws LuaException {
-                        world.playSound( null, pos, SoundEvent.REGISTRY.getObject( resource ), SoundCategory.RECORDS, Math.min(vol,3f), soundPitch );
+                    public Object[] execute() throws LuaException
+                    {
+                        world.playSound( null, pos, SoundEvent.REGISTRY.getObject( resource ), SoundCategory.RECORDS, Math.min( vol, 3f ), soundPitch );
                         return null;
                     }
-
                 });
 
                 m_lastPlayTime = m_clock;
                 return new Object[]{true}; // Success, return true
             }
-
             else
             {
                 return new Object[]{false}; // Failed - sound not existent, return false
             }
-
         }
-
         else
         {
             return new Object[]{false}; // Failed - rate limited, return false
