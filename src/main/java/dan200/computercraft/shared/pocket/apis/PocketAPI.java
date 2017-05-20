@@ -193,7 +193,7 @@ public class PocketAPI implements ILuaAPI
                 {
                     throw new LuaException( "Cannot find player" );
                 }
-				
+                
                 ResourceLocation resourceName = new ResourceLocation( "block.note.bell" );
                 
                 //Fallback to harp if this version of minecraft don't have bell.
@@ -201,34 +201,28 @@ public class PocketAPI implements ILuaAPI
                 {
                     resourceName = new ResourceLocation( "block.note.harp" );
                 }
-                if ( m_clock - m_lastBeepTime >= 1 ) //Once on tic only
+                //Please remove block above this after porting to 1.12
+                if ( m_clock - m_lastBeepTime >= 1 ) //Once on tick only
                 {
-                    if ( SoundEvent.REGISTRY.containsKey(resourceName) )
+                    final EntityPlayer player = (EntityPlayer) m_computer.getEntity();
+                    final World world = m_computer.getWorld();
+                    final BlockPos pos = player.getPosition().up();
+                    final ResourceLocation resource = resourceName;
+                    final float vol = Math.min( volume, 1f );
+                    final float soundPitch = (float) Math.pow( 2d, (pitch - 12) / 12d );
+                    
+                    context.issueMainThreadTask( new ILuaTask() 
                     {
-                        final EntityPlayer player = (EntityPlayer) m_computer.getEntity();
-                        final World world = m_computer.getWorld();
-                        final BlockPos pos = player.getPosition().up();
-                        final ResourceLocation resource = resourceName;
-                        final float vol = Math.min( volume, 1f );
-                        final float soundPitch = (float) Math.pow( 2d, (pitch - 12) / 12d );
-                        
-                        context.issueMainThreadTask( new ILuaTask() 
-						{
-							@Nullable
-                            @Override
-                            public Object[] execute() throws LuaException {
-                                world.playSound( null, pos, SoundEvent.REGISTRY.getObject( resource ), SoundCategory.RECORDS, vol, soundPitch );
-                                return null;
-                            }
-                        });
+                        @Nullable
+                        @Override
+                        public Object[] execute() throws LuaException {
+                            world.playSound( null, pos, SoundEvent.REGISTRY.getObject( resource ), SoundCategory.RECORDS, vol, soundPitch );
+                            return null;
+                        }
+                    });
 
-                        m_lastBeepTime = m_clock;
-                        return new Object[]{true}; // Success, return true
-                    }
-                    else
-                    {
-                        return new Object[]{false}; // Failed - sound not existent, return false
-                    }
+                    m_lastBeepTime = m_clock;
+                    return new Object[]{true}; // Success, return true
                 }
                 else
                 {
