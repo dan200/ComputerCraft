@@ -2,5 +2,7 @@ pocket is an API available on pocket computers, which allows modifying its upgra
 Functions in the pocket API:
 pocket.equipBack()
 pocket.unequipBack()
+pocket.beep( [nVolume] , [nPitch] )
 
 When equipping upgrades, it will search your inventory for a suitable upgrade, starting in the selected slot. If one cannot be found then it will check your offhand.
+When using beep, build in speaker is limited to only one beep per ingame tick. Works similiary to Speaker peripheral.
