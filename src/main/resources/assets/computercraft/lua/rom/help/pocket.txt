@@ -5,4 +5,4 @@ pocket.unequipBack()
 pocket.beep( [nVolume] , [nPitch] )
 
 When equipping upgrades, it will search your inventory for a suitable upgrade, starting in the selected slot. If one cannot be found then it will check your offhand.
-When using beep, build in speaker is limited to only one beep per ingame tick. Works similiary to Speaker peripheral.
+When using beep, build in speaker is limited to only one beep per ingame tick. Works similiary to Speaker peripheral exept nPitch accepts only numbers from 0-5 and plays only 6 tones instead of 25 allowed by speaker.

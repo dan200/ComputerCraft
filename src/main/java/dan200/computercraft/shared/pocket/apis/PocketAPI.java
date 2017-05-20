@@ -209,7 +209,7 @@ public class PocketAPI implements ILuaAPI
                     final BlockPos pos = player.getPosition().up();
                     final ResourceLocation resource = resourceName;
                     final float vol = Math.min( volume, 1f );
-                    final float soundPitch = (float) Math.pow( 2d, (pitch - 12) / 12d );
+                    final float soundPitch = (float) Math.pow( 2d, (Math.floor(pitch)*5 - 12) / 12d );
                     
                     context.issueMainThreadTask( new ILuaTask() 
                     {
