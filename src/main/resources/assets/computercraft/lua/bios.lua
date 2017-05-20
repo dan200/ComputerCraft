@@ -166,8 +166,12 @@ if string.find( _HOST, "ComputerCraft" ) == 1 then
 end
 
 -- Install lua parts of the os api
-function os.version()
-    return "CraftOS 1.8"
+function os.version(isnumber)
+    if isnumber == true then
+        return 1.8
+    else
+        return "CraftOS 1.8"
+    end
 end
 
 function os.pullEventRaw( sFilter )
