@@ -174,7 +174,7 @@ local function loadLevel(nNum)
     sLevelTitle = "Level "..nNum
     if nNum == nil then return error("nNum == nil") end
     local sDir = fs.getDir( shell.getRunningProgram() )
-    local sLevelD = sDir .. "/levels/" .. tostring(nNum)
+    local sLevelD = sDir .. "/levels/" .. tostring(nNum)..".dat"
     if not ( fs.exists(sLevelD) or fs.isDir(sLevelD) ) then return error("Level Not Exists : "..sLevelD) end
     fLevel = fs.open(sLevelD,"r")
     local Line = 0
