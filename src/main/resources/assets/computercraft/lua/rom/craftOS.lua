@@ -364,25 +364,6 @@ function read( _sReplaceChar, _tHistory, _fnComplete )
     return sLine
 end
 
-loadfile = function( _sFile, _tEnv )
-    local file = fs.open( _sFile, "r" )
-    if file then
-        local func, err = load( file.readAll(), fs.getName( _sFile ), "t", _tEnv )
-        file.close()
-        return func, err
-    end
-    return nil, "File not found"
-end
-
-dofile = function( _sFile )
-    local fnFile, e = loadfile( _sFile, _G )
-    if fnFile then
-        return fnFile()
-    else
-        error( e, 2 )
-    end
-end
-
 -- Install the rest of the OS api
 function os.run( _tEnv, _sPath, ... )
     local tArgs = table.pack( ... )

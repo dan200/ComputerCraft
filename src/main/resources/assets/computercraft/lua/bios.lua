@@ -1,4 +1,5 @@
 
+-- Sandbox things and such
 local nativegetfenv = getfenv
 if _VERSION == "Lua 5.1" then
     -- If we're on Lua 5.1, install parts of the Lua 5.2/5.3 API so that programs can be written against it
@@ -165,30 +166,24 @@ if string.find( _HOST, "ComputerCraft" ) == 1 then
     end
 end
 
-
--- Look at settings for OS path
-
-local sOSPath
--- If there is a path in the setting then load that
-
-
--- Check that the path is valid
-if type(sOSPath) == "string" and fs.exists(sOSPath) then
-  -- Attempt to run it
-  local ok, err = pcall(sOSPath)
-  
+-- Implement core Lua functions
+loadfile = function( _sFile, _tEnv )
+    local file = fs.open( _sFile, "r" )
+    if file then
+        local func, err = load( file.readAll(), fs.getName( _sFile ), "t", _tEnv )
+        file.close()
+        return func, err
+    end
+    return nil, "File not found"
 end
 
--- If it was not valid or crashes then load CraftOS
-
-local ok, err = pcall(sOSPath)
--- If the shell errored, let the user read it.
-term.redirect( term.native() )
-if not ok then
-    printError( err ) -- Make local Copy or move this and prerequisits?
-    pcall( function()
-        term.setCursorBlink( false )
-        print( "Press any key to continue" )
-        coroutine.yield( "key" ) -- No OS API so no event pulling
-    end )
+dofile = function( _sFile )
+    local fnFile, e = loadfile( _sFile, _G )
+    if fnFile then
+        return fnFile()
+    else
+        error( e, 2 )
+    end
 end
+
+
