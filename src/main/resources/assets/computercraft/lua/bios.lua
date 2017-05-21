@@ -187,3 +187,60 @@ dofile = function( _sFile )
 end
 
 
+
+
+
+-- The actual custom OS loader bit
+
+-- A modified copy of os.loadAPI so that some of this can be sane
+-- Returns the API as a table
+local function apiBootStrap(_sPath)
+    local tEnv = {}
+    setmetatable( tEnv, { __index = _G } )
+    local fnAPI, err = loadfile( _sPath, tEnv )
+    if fnAPI then
+        local ok, err = pcall( fnAPI )
+        if not ok then
+            return false
+        end
+    else
+        return false
+    end
+    
+    local tAPI = {}
+    for k,v in pairs( tEnv ) do
+        if k ~= "_ENV" then
+            tAPI[k] =  v
+        end
+    end
+
+    return true, tAPI
+end
+
+
+-- Look at settings for OS path
+
+local sOSPath
+-- If there is a path in the setting then load that
+
+
+-- Check that the path is valid
+if type(sOSPath) == "string" and fs.exists(sOSPath) then
+  -- Attempt to run it
+  local ok, err = pcall(sOSPath)
+  
+end
+
+-- If it was not valid or crashes then load CraftOS
+
+local ok, err = pcall(sOSFile)
+-- If the shell errored, let the user read it.
+term.redirect( term.native() )
+if not ok then
+    printError( err ) -- Make local Copy or move this and prerequisits?
+    pcall( function()
+        term.setCursorBlink( false )
+        print( "Press any key to continue" )
+        coroutine.yield( "key" ) -- No OS API so no event pulling
+    end )
+end
