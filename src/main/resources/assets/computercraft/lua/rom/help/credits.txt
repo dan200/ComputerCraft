@@ -10,14 +10,14 @@ Join the ComputerCraft community online at http://www.computercraft.info
 Follow @DanTwoHundred on Twitter!
 
 GitHub Contributors:
-SquidDev
-Lignum
-Restioson
-timia2109
-Wilma456 (Ingame:Jakob0815)
-JLLeitschuh
-Cruor
 boq
-ObloxCC
-Wojbie
+Cruor
 gegy1000
+JLLeitschuh
+Lignum
+ObloxCC
+Restioson
+SquidDev
+timia2109
+Wilma456
+Wojbie
