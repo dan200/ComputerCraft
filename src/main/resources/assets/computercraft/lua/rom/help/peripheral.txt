@@ -8,6 +8,8 @@ peripheral.getMethods( name )
 peripheral.call( name, methodName, param1, param2, etc )
 peripheral.wrap( name )
 peripheral.find( type, [fnFilter] )
+peripheral.create( type, env, [side] )
+peripheral.remove( side )
 
 Events fired by the peripheral API:
 "peripheral" when a new peripheral is attached. Argument is the name.
