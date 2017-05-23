@@ -14,10 +14,8 @@ if fs.exists( sPath ) and fs.isDir( sPath ) then
 end
 
 -- Create .lua files by default
-if settings.get( "edit.extension" ) then
-   if not fs.exists( sPath ) and not string.find( sPath, "%." ) then
-	   sPath = sPath .. ".lua"
-   end
+if not fs.exists( sPath ) and not string.find( sPath, "%." ) and settings.get( "edit.extension" ) then
+    sPath = sPath .. ".lua"
 end
 
 local x,y = 1,1
