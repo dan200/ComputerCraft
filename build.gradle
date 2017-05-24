@@ -10,9 +10,11 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'org.ajoberstar:gradle-git:1.6.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.ajoberstar.grgit'
 
 /*
 // for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
@@ -69,8 +71,42 @@ jar {
     }
 }
 
-processResources
-{
+import org.ajoberstar.grgit.Grgit
+
+task contributors {
+    group = 'other'
+    description = 'Creates a contributors file based on the git commit history'
+
+
+    doLast {
+	def header = '''
+ComputerCraft was created by Daniel "dan200" Ratcliffe, with additional code by Aaron "Cloudy" Mills.
+Thanks to nitrogenfingers, GopherATL and RamiLego for program contributions.
+Thanks to Mojang, the Forge team, and the MCP team.
+Uses LuaJ from http://luaj.sourceforge.net/
+
+The ComputerCraft 1.76 update was sponsored by MinecraftU and Deep Space.
+Visit http://www.minecraftu.org and http://www.deepspace.me/space-cadets to find out more.
+
+Join the ComputerCraft community online at http://www.computercraft.info
+Follow @DanTwoHundred on Twitter!
+
+GitHub Contributors:
+'''
+        def blacklist = ['GitHub', 'dan200', 'Daniel Ratcliffe']
+
+        def grgit = Grgit.open(dir: '.')
+        def history = grgit.log()
+        
+        Set<String> contributors = []
+        history.forEach { if(!blacklist.contains(it.committer.name)) contributors.add(it.committer.name) }
+
+        def credits = file('src/main/resources/assets/computercraft/lua/rom/help/credits.txt')
+        credits.write(header + contributors.sort().join('\n'))
+    }
+}
+
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -89,8 +125,11 @@ processResources
     }
 }
 
+processResources.dependsOn contributors
+
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xlint"
     }
 }
+
