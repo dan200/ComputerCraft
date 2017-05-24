@@ -73,59 +73,33 @@ jar {
 
 import org.ajoberstar.grgit.Grgit
 
-task contributors {
-    group = 'other'
-    description = 'Creates a contributors file based on the git commit history'
-
-
-    doLast {
-	def header = '''
-ComputerCraft was created by Daniel "dan200" Ratcliffe, with additional code by Aaron "Cloudy" Mills.
-Thanks to nitrogenfingers, GopherATL and RamiLego for program contributions.
-Thanks to Mojang, the Forge team, and the MCP team.
-Uses LuaJ from http://luaj.sourceforge.net/
-
-The ComputerCraft 1.76 update was sponsored by MinecraftU and Deep Space.
-Visit http://www.minecraftu.org and http://www.deepspace.me/space-cadets to find out more.
-
-Join the ComputerCraft community online at http://www.computercraft.info
-Follow @DanTwoHundred on Twitter!
-
-GitHub Contributors:
-'''
-        def blacklist = ['GitHub', 'dan200', 'Daniel Ratcliffe']
-
-        def grgit = Grgit.open(dir: '.')
-        def history = grgit.log()
-        
-        Set<String> contributors = []
-        history.each { if(!blacklist.contains(it.committer.name)) contributors.add(it.committer.name) }
-
-        def credits = file('src/main/resources/assets/computercraft/lua/rom/help/credits.txt')
-        credits.write(header + contributors.sort().join('\n'))
-    }
-}
-
 processResources {
-    // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
+    def grgit = Grgit.open(dir: '.')
+    inputs.property "commithash", grgit.log(maxCommits: 1)[0].id
+
+    def blacklist = ['GitHub', 'dan200', 'Daniel Ratcliffe']
+    Set<String> contributors = []
+    
+    grgit.log().each {
+        if (!blacklist.contains(it.committer.name))
+            contributors.add(it.committer.name)
+    }
+
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    // copy everything else, thats not the mcmod.info
+        include 'assets/computercraft/lua/rom/help/credits.txt'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version, 'gitcontributors':contributors.sort().join('\n')
+    }        
+    
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+        exclude 'assets/computercraft/lua/rom/help/credits.txt'
     }
 }
-
-processResources.dependsOn contributors
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {

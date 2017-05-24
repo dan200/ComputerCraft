@@ -9,4 +9,3 @@ deploy
 .gradle
 luaj-2.0.3/lib
 luaj-2.0.3/*.jar
-src/main/resources/assets/computercraft/lua/rom/help/credits.txt
