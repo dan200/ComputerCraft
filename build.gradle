@@ -99,7 +99,7 @@ GitHub Contributors:
         def history = grgit.log()
         
         Set<String> contributors = []
-        history.forEach { if(!blacklist.contains(it.committer.name)) contributors.add(it.committer.name) }
+        history.each { if(!blacklist.contains(it.committer.name)) contributors.add(it.committer.name) }
 
         def credits = file('src/main/resources/assets/computercraft/lua/rom/help/credits.txt')
         credits.write(header + contributors.sort().join('\n'))
