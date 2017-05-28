@@ -10,9 +10,11 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'org.ajoberstar:gradle-git:1.6.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.ajoberstar.grgit'
 
 /*
 // for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
@@ -69,23 +71,33 @@ jar {
     }
 }
 
-processResources
-{
-    // this will ensure that this task is redone when the versions change.
+import org.ajoberstar.grgit.Grgit
+
+processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
+    def grgit = Grgit.open(dir: '.')
+    inputs.property "commithash", grgit.log(maxCommits: 1)[0].id
+
+    def blacklist = ['GitHub', 'dan200', 'Daniel Ratcliffe']
+    Set<String> contributors = []
+    
+    grgit.log().each {
+        if (!blacklist.contains(it.committer.name))
+            contributors.add(it.committer.name)
+    }
+
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    // copy everything else, thats not the mcmod.info
+        include 'assets/computercraft/lua/rom/help/credits.txt'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version, 'gitcontributors':contributors.sort().join('\n')
+    }        
+    
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+        exclude 'assets/computercraft/lua/rom/help/credits.txt'
     }
 }
 
@@ -94,3 +106,4 @@ gradle.projectsEvaluated {
         options.compilerArgs << "-Xlint"
     }
 }
+
