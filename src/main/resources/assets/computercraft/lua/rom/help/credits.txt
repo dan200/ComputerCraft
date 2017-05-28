@@ -9,7 +9,7 @@ Visit http://www.minecraftu.org and http://www.deepspace.me/space-cadets to find
 Join the ComputerCraft community online at http://www.computercraft.info
 Follow @DanTwoHundred on Twitter!
 
-To help contribute to ComputerCraft, see the source code at https://github.com/dan200/ComputerCraft.
+To help contribute to ComputerCraft, browse the source code at https://github.com/dan200/ComputerCraft.
 
 GitHub Contributors:
 boq
