@@ -110,7 +110,7 @@ public class TermAPI implements ILuaAPI
         };
     }
 
-    public static void setColour( Terminal terminal, int colour, float r, float g, float b )
+    public static void setColour( Terminal terminal, int colour, double r, double g, double b )
     {
         if( terminal.getPalette() != null )
         {
@@ -296,7 +296,7 @@ public class TermAPI implements ILuaAPI
                 {
                     int colour = 15 - parseColour( args );
                     int hex = ((Double)args[1]).intValue();
-                    float[] rgb = Palette.decodeRGB8( hex );
+                    double[] rgb = Palette.decodeRGB8( hex );
                     setColour( m_terminal, colour, rgb[0], rgb[1], rgb[2] );
                     return null;
                 }
@@ -304,9 +304,9 @@ public class TermAPI implements ILuaAPI
                 if(args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
                 {
                     int colour = 15 - parseColour( args );
-                    float r = ((Double)args[1]).floatValue();
-                    float g = ((Double)args[2]).floatValue();
-                    float b = ((Double)args[3]).floatValue();
+                    double r = (Double)args[1];
+                    double g = (Double)args[2];
+                    double b = (Double)args[3];
                     setColour( m_terminal, colour, r, g, b );
                     return null;
                 }
