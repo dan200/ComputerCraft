@@ -14,7 +14,9 @@ import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TurtleMultiModel implements IBakedModel
 {
@@ -25,7 +27,7 @@ public class TurtleMultiModel implements IBakedModel
     private IBakedModel m_rightUpgradeModel;
     private Matrix4f m_rightUpgradeTransform;
     private List<BakedQuad> m_generalQuads;
-    private List<BakedQuad>[] m_faceQuads;
+    private Map<EnumFacing, List<BakedQuad>> m_faceQuads;
 
     public TurtleMultiModel( IBakedModel baseModel, IBakedModel overlayModel, IBakedModel leftUpgradeModel, Matrix4f leftUpgradeTransform, IBakedModel rightUpgradeModel, Matrix4f rightUpgradeTransform )
     {
@@ -37,7 +39,7 @@ public class TurtleMultiModel implements IBakedModel
         m_rightUpgradeModel = rightUpgradeModel;
         m_rightUpgradeTransform = rightUpgradeTransform;
         m_generalQuads = null;
-        m_faceQuads = new List[6];
+        m_faceQuads = new HashMap<EnumFacing, List<BakedQuad>>();
     }
 
     @Nonnull
@@ -46,7 +48,7 @@ public class TurtleMultiModel implements IBakedModel
     {
         if( side != null )
         {
-            if( m_faceQuads[ side.ordinal() ] == null )
+            if( !m_faceQuads.containsKey( side ) )
             {
                 ArrayList<BakedQuad> quads = new ArrayList<BakedQuad>();
                 if( m_overlayModel != null )
@@ -62,9 +64,9 @@ public class TurtleMultiModel implements IBakedModel
                     quads.addAll( transformQuads( m_rightUpgradeModel.getQuads( state, side, rand ), m_rightUpgradeTransform ) );
                 }
                 quads.trimToSize();
-                m_faceQuads[ side.ordinal() ] = quads;
+                m_faceQuads.put( side, quads );
             }
-            return  m_faceQuads[ side.ordinal() ];
+            return m_faceQuads.get( side );
         }
         else
         {
