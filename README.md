@@ -31,9 +31,8 @@ To build ComputerCraft, follow these steps:
 
 1. `git clone` this repository onto your machine.
 2. `cd` to it.
-3. Run `./setup.sh` on Unix, or `setup.bat` on Windows.
-4. Run `./deploy.sh` on Unix, or `gradlew.bat build` on Windows.
+3.  Run `./deploy.sh` on Unix, or `gradlew.bat build` on Windows.
 
 ComputerCraft is now built in `./build`.
 
-Once you have done steps 1-3, you can build with step 4 without doing them again.
+Once you have done steps 1-2, you can build with step 3 without doing them again.
