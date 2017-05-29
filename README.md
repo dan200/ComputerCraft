@@ -24,3 +24,16 @@ While ComputerCraft will no longer be actively developed by Daniel Ratcliffe, yo
 * It does not create bugs!
 
 The pull requests most likely to be accepted are those which fix bugs, simplify code, or make the mod compatible with newer versions of Minecraft.
+
+## Building
+
+To build ComputerCraft, follow these steps:
+
+1. `git clone` this repository onto your machine.
+2. `cd` to it.
+3. Run `./setup.sh` on Unix, or `setup.bat` on Windows.
+4. Run `./deploy.sh` on Unix, or `gradlew.bat build` on Windows.
+
+ComputerCraft is now built in `./build`.
+
+Once you have done steps 1-3, you can build with step 4 without doing them again.
