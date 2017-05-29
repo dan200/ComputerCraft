@@ -817,7 +817,8 @@ end
 settings.set( "shell.allow_startup", true )
 settings.set( "shell.allow_disk_startup", (commands == nil) )
 settings.set( "shell.autocomplete", true )
-settings.set( "edit.autocomplete", true )
+settings.set( "edit.autocomplete", true ) 
+settings.set( "edit.default_extension", "lua" )
 settings.set( "lua.autocomplete", true )
 settings.set( "list.show_hidden", false )
 if term.isColour() then

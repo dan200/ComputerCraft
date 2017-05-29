@@ -15,7 +15,10 @@ end
 
 -- Create .lua files by default
 if not fs.exists( sPath ) and not string.find( sPath, "%." ) then
-	sPath = sPath .. ".lua"
+    local sExtension = settings.get("edit.default_extension", "" )
+    if sExtension ~= "" then
+        sPath = sPath .. "." .. sExtension
+    end
 end
 
 local x,y = 1,1
