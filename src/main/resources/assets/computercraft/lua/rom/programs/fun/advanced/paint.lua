@@ -43,11 +43,15 @@ if fs.exists(sPath) and fs.isDir(sPath) then
     print("Cannot edit a directory.")
     return
 end
-if fs.exists(sPath) == false then
-    if fs.exists(sPath..".nfp") or sPath:find(".",1,true) == nil then
-        sPath = sPath..".nfp"
+
+-- Create .nfp files by default
+if not fs.exists( sPath ) and not string.find( sPath, "%." ) then
+    local sExtension = settings.get("paint.default_extension", "" )
+    if sExtension ~= "" then
+        sPath = sPath .. "." .. sExtension
     end
 end
+
 
 ---------------
 -- Functions --
