@@ -6,6 +6,9 @@ for k,v in pairs( _G ) do
     end
 end
 table.insert( tApis, "shell" )
+if multishell then
+    table.insert( tApis, "multishell" )
+end
 table.sort( tApis )
 
 textutils.pagedTabulate( tApis )
