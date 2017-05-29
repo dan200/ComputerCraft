@@ -44,6 +44,15 @@ if fs.exists(sPath) and fs.isDir(sPath) then
     return
 end
 
+-- Create .nfp files by default
+if not fs.exists( sPath ) and not string.find( sPath, "%." ) then
+    local sExtension = settings.get("paint.default_extension", "" )
+    if sExtension ~= "" then
+        sPath = sPath .. "." .. sExtension
+    end
+end
+
+
 ---------------
 -- Functions --
 ---------------
