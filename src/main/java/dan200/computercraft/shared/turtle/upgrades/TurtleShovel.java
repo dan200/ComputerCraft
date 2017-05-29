@@ -5,12 +5,22 @@
  */
 
 package dan200.computercraft.shared.turtle.upgrades;
+
+import dan200.computercraft.api.turtle.ITurtleAccess;
+import dan200.computercraft.api.turtle.TurtleCommandResult;
+import dan200.computercraft.api.turtle.TurtleSide;
+import dan200.computercraft.api.turtle.TurtleVerb;
+import dan200.computercraft.shared.turtle.core.TurtlePlaceCommand;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class TurtleShovel extends TurtleTool
 {
@@ -40,5 +50,21 @@ public class TurtleShovel extends TurtleTool
                     material == Material.VINE;
         }
         return false;
+    }
+
+    @Nonnull
+    @Override
+    public TurtleCommandResult useTool( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction )
+    {
+        if( verb == TurtleVerb.Dig )
+        {
+            ItemStack shovel = m_item.copy();
+            ItemStack remainder = TurtlePlaceCommand.deploy( shovel, turtle, direction, null, null );
+            if( remainder != shovel )
+            {
+                return TurtleCommandResult.success();
+            }
+        }
+        return super.useTool( turtle, side, verb, direction );
     }
 }

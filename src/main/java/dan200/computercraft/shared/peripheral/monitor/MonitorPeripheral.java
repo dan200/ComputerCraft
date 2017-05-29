@@ -240,7 +240,7 @@ public class MonitorPeripheral implements IPeripheral
                 {
                     int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args );
                     int hex = ((Double)args[1]).intValue();
-                    float[] rgb = Palette.decodeRGB8( hex );
+                    double[] rgb = Palette.decodeRGB8( hex );
                     dan200.computercraft.core.apis.TermAPI.setColour( terminal, colour, rgb[0], rgb[1], rgb[2] );
                     return null;
                 }
@@ -248,9 +248,9 @@ public class MonitorPeripheral implements IPeripheral
                 if (args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
                 {
                     int colour = 15 - dan200.computercraft.core.apis.TermAPI.parseColour( args );
-                    float r = ((Double)args[1]).floatValue();
-                    float g = ((Double)args[2]).floatValue();
-                    float b = ((Double)args[3]).floatValue();
+                    double r = (Double)args[1];
+                    double g = (Double)args[2];
+                    double b = (Double)args[3];
                     dan200.computercraft.core.apis.TermAPI.setColour( terminal, colour, r, g, b );
                     return null;
                 }

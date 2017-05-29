@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public class Palette
 {
     private static final int PALETTE_SIZE = 16;
-    private final float[][] colours = new float[PALETTE_SIZE][3];
+    private final double[][] colours = new double[PALETTE_SIZE][3];
 
     public static final Palette DEFAULT = new Palette();
 
@@ -15,7 +15,7 @@ public class Palette
         resetColours();
     }
 
-    public void setColour(int i, float r, float g, float b)
+    public void setColour(int i, double r, double g, double b)
     {
         if( i >= 0 && i < colours.length )
         {
@@ -30,7 +30,7 @@ public class Palette
         setColour( i, colour.getR(), colour.getG(), colour.getB() );
     }
 
-    public float[] getColour( int i )
+    public double[] getColour( int i )
     {
         if( i >= 0 && i < colours.length )
         {
@@ -55,7 +55,7 @@ public class Palette
         }
     }
 
-    public static int encodeRGB8( float[] rgb )
+    public static int encodeRGB8( double[] rgb )
     {
         int r = (int)( rgb[0] * 255 ) & 0xFF;
         int g = (int)( rgb[1] * 255 ) & 0xFF;
@@ -64,9 +64,9 @@ public class Palette
         return ( r << 16 ) | ( g << 8 ) | b;
     }
 
-    public static float[] decodeRGB8( int rgb )
+    public static double[] decodeRGB8( int rgb )
     {
-        return new float[]
+        return new double[]
         {
             (( rgb >> 16 ) & 0xFF) / 255.0f,
             (( rgb >> 8 ) & 0xFF) / 255.0f,

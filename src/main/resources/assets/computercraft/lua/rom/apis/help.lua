@@ -15,6 +15,8 @@ function lookup( _sTopic )
     	sPath = fs.combine( sPath, _sTopic )
     	if fs.exists( sPath ) and not fs.isDir( sPath ) then
 			return sPath
+        elseif fs.exists( sPath..".txt" ) and not fs.isDir( sPath..".txt" ) then
+		    return sPath..".txt"
     	end
     end
 	
@@ -35,6 +37,9 @@ function topics()
 			for n,sFile in pairs( tList ) do
 				if string.sub( sFile, 1, 1 ) ~= "." then
 					if not fs.isDir( fs.combine( sPath, sFile ) ) then
+                        if #sFile > 4 and sFile:sub(-4) == ".txt" then
+                            sFile = sFile:sub(1,-5)
+                        end
 						tItems[ sFile ] = true
 					end
 				end
