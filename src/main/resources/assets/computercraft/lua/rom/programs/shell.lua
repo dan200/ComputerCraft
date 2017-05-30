@@ -19,6 +19,7 @@ local function createShellEnv( sDir )
     local tEnv = {}
     tEnv[ "shell" ] = shell
     tEnv[ "multishell" ] = multishell
+    shellenv = {}
 
     local package = {}
     package.loaded = {
@@ -114,7 +115,22 @@ else
 end
 
 local function run( _sCommand, ... )
-    local sPath = shell.resolveProgram( _sCommand )
+    local checkvar = { ... }
+    table.insert( checkvar, 1, _sCommand )
+    for k, v in ipairs( checkvar ) do
+        if v:find( "$", 1, true ) == 1 then
+            v = v:sub( 2, -1)
+            if type( shellenv[v] ) == "string" or type( shellenv[v] ) == "number" or type( shellenv[v] ) == "boolean" then
+                v = tostring( shellenv[v] )
+            elseif type( shellenv[v] ) == "function" then
+                v = tostring( shellenv[v]() )
+            else
+                v = ""
+            end
+        end
+        checkvar[k] = v
+    end
+    local sPath = shell.resolveProgram( checkvar[1] )
     if sPath ~= nil then
         tProgramStack[#tProgramStack + 1] = sPath
         if multishell then
@@ -124,8 +140,9 @@ local function run( _sCommand, ... )
             end
             multishell.setTitle( multishell.getCurrent(), sTitle )
         end
+        table.remove( checkvar, 1 )
         local sDir = fs.getDir( sPath )
-        local result = os.run( createShellEnv( sDir ), sPath, ... )
+        local result = os.run( createShellEnv( sDir ), sPath, table.unpack(checkvar) )
         tProgramStack[#tProgramStack] = nil
         if multishell then
             if #tProgramStack > 0 then
@@ -163,6 +180,19 @@ local function tokenise( ... )
 end
 
 -- Install shell API
+
+function shell.setenv( key, value )
+    shellenv[key] = value
+end
+
+function shell.getenv( key )
+    if key == nil then
+        return shellenv
+    else
+        return shellenv[key]
+    end
+end
+
 function shell.run( ... )
     local tWords = tokenise( ... )
     local sCommand = tWords[1]
