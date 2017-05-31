@@ -54,6 +54,7 @@ public class LuaJLuaMachine implements ILuaMachine
 
         // Create an environment to run in
         m_globals = JsePlatform.debugGlobals();
+        m_globals.load( new LuaJBit32Lib() );
         m_loadString = m_globals.get("loadstring");
         m_assert = m_globals.get("assert");
 
