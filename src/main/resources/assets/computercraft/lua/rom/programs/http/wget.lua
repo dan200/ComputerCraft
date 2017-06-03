@@ -28,7 +28,7 @@ local function get( sUrl )
         return nil
     end
 
-    local response = http.get( sUrl )
+    local response = http.get( sUrl , nil , true )
     if not response then
         print( "Failed." )
         return nil
@@ -53,7 +53,7 @@ end
 -- Do the get
 local res = get( sUrl )
 if res then
-    local file = fs.open( sPath, "w" )
+    local file = fs.open( sPath, "wb" )
     file.write( res )
     file.close()
 
