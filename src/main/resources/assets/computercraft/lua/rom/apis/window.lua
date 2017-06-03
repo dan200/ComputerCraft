@@ -243,6 +243,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.setCursorPos( x, y )
+        if type( x ) ~= "number" or type( y ) ~= "number" then
+            error( "Expected number, number", 2 )
+        end
         nCursorX = math.floor( x )
         nCursorY = math.floor( y )
         if bVisible then
