@@ -1,4 +1,6 @@
 local native = peripheral
+local internalcou = 1
+local perita = {}
 
 function getNames()
 	local tResults = {}
@@ -13,6 +15,9 @@ function getNames()
 			end
 		end
 	end
+    for k,v in pairs(perita) do
+        table.insert( tResults, k )
+    end
 	return tResults
 end
 
@@ -23,6 +28,9 @@ function isPresent( _sSide )
 	if native.isPresent( _sSide ) then
 		return true
 	end
+    if type(perita[_sSide]) == "table" then
+        return true
+    end
 	for n,sSide in ipairs( rs.getSides() ) do
 		if native.getType( sSide ) == "modem" and not native.call( sSide, "isWireless" ) then
 			if native.call( sSide, "isPresentRemote", _sSide )  then
@@ -36,6 +44,9 @@ end
 function getType( _sSide )
     if type( _sSide ) ~= "string" then
         error( "Expected string", 2 )
+    end
+    if type(perita[_sSide]) == "table" then
+        return perita[_sSide]["type"]
     end
 	if native.isPresent( _sSide ) then
 		return native.getType( _sSide )
@@ -54,6 +65,9 @@ function getMethods( _sSide )
     if type( _sSide ) ~= "string" then
         error( "Expected string", 2 )
     end
+    if type(perita[_sSide]) == "table" then
+        return perita[_sSide]["env"]
+    end
 	if native.isPresent( _sSide ) then
 		return native.getMethods( _sSide )
 	end
@@ -71,6 +85,9 @@ function call( _sSide, _sMethod, ... )
     if type( _sSide ) ~= "string" or type( _sMethod ) ~= "string" then
         error( "Expected string, string", 2 )
     end
+    if type(perita[_sSide]) == "table" then
+        return perita[_sSide]["env"][_sMethod](...)
+    end
 	if native.isPresent( _sSide ) then
 		return native.call( _sSide, _sMethod, ... )
 	end
@@ -87,6 +104,9 @@ end
 function wrap( _sSide )
     if type( _sSide ) ~= "string"  then
         error( "Expected string", 2 )
+    end
+    if type(perita[_sSide]) == "table" then
+        return perita[_sSide]["env"]
     end
 	if peripheral.isPresent( _sSide ) then
 		local tMethods = peripheral.getMethods( _sSide )
@@ -106,6 +126,11 @@ function find( sType, fnFilter )
         error( "Expected string, [function]", 2 )
     end
 	local tResults = {}
+    for k,v in pairs(perita) do
+        if v.type == sType then
+            table.insert( tResults, v.env )
+        end
+    end
 	for n,sName in ipairs( peripheral.getNames() ) do
 		if peripheral.getType( sName ) == sType then
 			local wrapped = peripheral.wrap( sName )
@@ -115,4 +140,35 @@ function find( sType, fnFilter )
 		end
 	end
 	return table.unpack( tResults )
+end
+
+function create( name, env, side )
+    if type(name) ~= "string" then
+        error( "Expected string", 2 )
+        return false
+    end
+    if type(env) ~= "table" then
+        error( "Expected table", 2 )
+        return false
+    end
+    if side == nil then
+        side = "internal"..internalcou
+        internalcou = internalcou + 1
+    end
+    perita[side] = {}
+    perita[side]["type"] = name
+    perita[side]["env"] = env
+    os.queueEvent("peripheral",side)
+    return true,side
+end
+
+function remove( side )
+    if type(perita[side]) == "table" then
+        perita[side] = nil
+        os.queueEvent("peripheral_detach",side)
+        return true
+    else
+        error( "Not a virtual peripheral", 2 )
+        return false
+    end
 end
