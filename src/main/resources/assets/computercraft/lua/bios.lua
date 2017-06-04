@@ -556,15 +556,15 @@ function os.run( _tEnv, _sPath, ... )
     local fnFile, err = loadfile( _sPath, tEnv )
     if fnFile then
         local ok, err = pcall( function()
-            fnFile( table.unpack( tArgs, 1, tArgs.n ) )
+            return fnFile( table.unpack( tArgs, 1, tArgs.n ) )
         end )
         if not ok then
             if err and err ~= "" then
                 printError( err )
             end
-            return false
+            return false, err
         end
-        return true
+        return true, err
     end
     if err and err ~= "" then
         printError( err )

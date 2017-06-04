@@ -125,7 +125,7 @@ local function run( _sCommand, ... )
             multishell.setTitle( multishell.getCurrent(), sTitle )
         end
         local sDir = fs.getDir( sPath )
-        local result = os.run( createShellEnv( sDir ), sPath, ... )
+        local result, ret = os.run( createShellEnv( sDir ), sPath, ... )
         tProgramStack[#tProgramStack] = nil
         if multishell then
             if #tProgramStack > 0 then
@@ -138,7 +138,7 @@ local function run( _sCommand, ... )
                 multishell.setTitle( multishell.getCurrent(), "shell" )
             end
         end
-        return result
+        return result, ret
        else
         printError( "No such program" )
         return false
