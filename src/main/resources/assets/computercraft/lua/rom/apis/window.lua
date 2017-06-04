@@ -299,6 +299,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         local tCol
         if type(colour) == "number" and type(r) == "number" and g == nil and b == nil then
             tCol = { colours.rgb8( r ) }
+            tPalette[ colour ] = tCol
         elseif type(colour) == "number" and type(r) == "number" and type(g) == "number" and type(b) == "number" then
             tCol = tPalette[ colour ]
             tCol[1] = r
