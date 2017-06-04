@@ -254,6 +254,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.setCursorBlink( blink )
+        if type( blink ) ~= "boolean" then
+            error( "Expected boolean", 2 )
+        end
         bCursorBlink = blink
         if bVisible then
             updateCursorBlink()
@@ -302,7 +305,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
             tCol[2] = g
             tCol[3] = b
         else
-            error("Expected number, number, number, number")
+            error( "Expected number, number, number, number", 2 )
         end
 
         if bVisible then
@@ -341,6 +344,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.scroll( n )
+        if type( n ) ~= "number" then
+            error( "Expected number", 2 )
+        end
         if n ~= 0 then
             local tNewLines = {}
             local sEmptyText = sEmptySpaceLine
@@ -385,6 +391,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
     -- Other functions
     function window.setVisible( bVis )
+        if type( bVis) ~= "boolean" then
+            error( "Expected boolean", 2 )
+        end
         if bVisible ~= bVis then
             bVisible = bVis
             if bVisible then
@@ -416,6 +425,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.reposition( nNewX, nNewY, nNewWidth, nNewHeight )
+        if type( nNewX ) ~= "number" or type( nNewY ) ~= "number" or type( nNewWidth ) ~= "number" or type( nNewWidth ) ~= "number" then
+            error( "Expected number, number, number, number", 2 )
+        end
         nX = nNewX
         nY = nNewY
         if nNewWidth and nNewHeight then
