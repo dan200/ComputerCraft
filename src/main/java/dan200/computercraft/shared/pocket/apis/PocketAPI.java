@@ -17,18 +17,28 @@ import dan200.computercraft.shared.util.InventoryUtil;
 import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class PocketAPI implements ILuaAPI
 {
     private final PocketServerComputer m_computer;
+    private long m_clock;
+    private long m_lastBeepTime;
 
     public PocketAPI( PocketServerComputer computer )
     {
         this.m_computer = computer;
+        m_clock = 0;
+        m_lastBeepTime = 0;
     }
 
     @Override
@@ -47,6 +57,7 @@ public class PocketAPI implements ILuaAPI
     @Override
     public void advance( double dt )
     {
+       m_clock++;
     }
 
     @Override
@@ -60,7 +71,8 @@ public class PocketAPI implements ILuaAPI
     {
         return new String[] {
             "equipBack",
-            "unequipBack"
+            "unequipBack",
+            "beep"
         };
     }
 
@@ -150,6 +162,72 @@ public class PocketAPI implements ILuaAPI
                         return null;
                     }
                 } );
+            case 2:
+                // beep
+                float volume = 1f;
+                float pitch = 1f;
+
+                // Check if arguments are correct
+                
+                if ( arguments.length > 0 )
+                {
+                    if ( arguments[0] != null && !(arguments[0] instanceof Double) )  // Arg 0 wrong type
+                    {
+                        throw new LuaException("Expected number (optional), number (optional)" );
+                    }
+
+                    volume = arguments[0] != null ? ((Double) arguments[0]).floatValue() : 1f;
+
+                }
+
+                if ( arguments.length > 1 )
+                {
+                    if ( arguments[1] != null && !(arguments[1] instanceof Double) )  // Arg 1 wrong type
+                    {
+                        throw new LuaException("Expected string, number (optional), number (optional)" );
+                    }
+                    pitch = arguments[1] != null ? ((Double) arguments[1]).floatValue() : 1f;
+                }
+                
+                if( !(m_computer.getEntity() instanceof EntityPlayer) )
+                {
+                    throw new LuaException( "Cannot find player" );
+                }
+                
+                ResourceLocation resourceName = new ResourceLocation( "block.note.bell" );
+                
+                //Fallback to harp if this version of minecraft don't have bell.
+                if ( !( SoundEvent.REGISTRY.containsKey( resourceName ) ) )
+                {
+                    resourceName = new ResourceLocation( "block.note.harp" );
+                }
+                //Please remove block above this after porting to 1.12
+                if ( m_clock - m_lastBeepTime >= 1 ) //Once on tick only
+                {
+                    final EntityPlayer player = (EntityPlayer) m_computer.getEntity();
+                    final World world = m_computer.getWorld();
+                    final BlockPos pos = player.getPosition().up();
+                    final ResourceLocation resource = resourceName;
+                    final float vol = Math.min( volume, 1f );
+                    final float soundPitch = (float) Math.pow( 2d, (Math.floor(pitch)*5 - 12) / 12d );
+                    
+                    context.issueMainThreadTask( new ILuaTask() 
+                    {
+                        @Nullable
+                        @Override
+                        public Object[] execute() throws LuaException {
+                            world.playSound( null, pos, SoundEvent.REGISTRY.getObject( resource ), SoundCategory.RECORDS, vol, soundPitch );
+                            return null;
+                        }
+                    });
+
+                    m_lastBeepTime = m_clock;
+                    return new Object[]{true}; // Success, return true
+                }
+                else
+                {
+                    return new Object[]{false}; // Failed - rate limited, return false
+                }
             default:
                 return null;
         }
