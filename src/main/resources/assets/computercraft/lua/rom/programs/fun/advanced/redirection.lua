@@ -614,7 +614,7 @@ local function startG(LevelN)
         elseif isExit == "retry" then
             return LevelN
         elseif fExit == "yes" then
-            if fs.exists( fs.getDir( shell.getRunningProgram() ) .. "/levels/" .. tostring(LevelN + 1) ) then
+            if fs.exists( fs.getDir( shell.getRunningProgram() ) .. "/levels/" .. tostring(LevelN + 1) .. ".dat" ) then
                 return LevelN + 1
             else
                 return nil
