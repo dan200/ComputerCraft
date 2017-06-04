@@ -11,5 +11,8 @@ Events only on advanced computers:
 "mouse_drag" when a user moves the mouse when held. Arguments are button, xPos, yPos.
 "mouse_up" when a user releases the mouse button. Arguments are button, xPos, yPos.
 "mouse_scroll" when a user uses the scrollwheel on the mouse. Arguments are direction, xPos, yPos.
+"multishell_launch" when a new multishell process launch, path, id.
+"multishell_focus" when multishell change the focus, newid.
+"multishell_title" when a process in multishell change the title, id, title.
 
 Other APIs and peripherals will emit their own events. See their respective help pages for details.

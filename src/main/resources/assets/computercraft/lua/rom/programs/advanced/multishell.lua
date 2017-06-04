@@ -69,6 +69,7 @@ local function launchProcess( tProgramEnv, sProgramPath, ... )
     tProcess.bInteracted = false
     tProcesses[ nProcess ] = tProcess
     resumeProcess( nProcess )
+    os.queueEvent( "multishell_launch", sProgramPath, nProcess )
     return nProcess
 end
 
@@ -174,6 +175,7 @@ function multishell.setFocus( n )
     if n >= 1 and n <= #tProcesses then
         selectProcess( n )
         redrawMenu()
+        os.queueEvent( "multishell_focus", n)
         return true
     end
     return false
@@ -190,6 +192,7 @@ function multishell.setTitle( n, sTitle )
     if n >= 1 and n <= #tProcesses then
         setProcessTitle( n, sTitle )
         redrawMenu()
+        os.queueEvent( "multishell_title", n, sTitle)
     end
 end
 
