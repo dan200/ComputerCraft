@@ -421,6 +421,31 @@ if multishell then
     end
 end
 
+function shell.parse(...)
+local params = {...}
+local args = {}
+local options = {}
+for key,data in ipairs(params) do
+  if data:find("--",1,true) == 1 then
+    data = data:sub(3,-1)
+    local head,body = data:match("([^=]+)=([^=]+)")
+    if body ~= nil then
+      options[head] = body
+    else
+      options[data] = true
+    end
+  elseif data:find("-") == 1 then
+    data = data:sub(2,-1)
+    for i=1,#data do
+      options[data:sub(i,i)] = true
+    end
+  else
+    table.insert(args,data)
+  end
+end
+return args,options
+end
+
 local tArgs = { ... }
 if #tArgs > 0 then
     -- "shell x y z"
