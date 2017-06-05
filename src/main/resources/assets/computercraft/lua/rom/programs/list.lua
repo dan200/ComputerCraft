@@ -27,7 +27,7 @@ table.sort( tDirs )
 table.sort( tFiles )
 
 if term.isColour() then
-    textutils.pagedTabulate( colors.green, tDirs, colors.white, tFiles )
+    textutils.pagedTabulate( colors[settings.get( "list.directory_color" )], tDirs, colors[settings.get( "list.file_color" )], tFiles )
 else
     textutils.pagedTabulate( tDirs, tFiles )
 end

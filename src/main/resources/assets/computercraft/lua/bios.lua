@@ -824,6 +824,8 @@ settings.set( "lua.autocomplete", true )
 settings.set( "list.show_hidden", false )
 if term.isColour() then
     settings.set( "bios.use_multishell", true )
+    settings.set( "list.file_color", "white" )
+    settings.set( "list.directory_color", "green" )
 end
 if _CC_DEFAULT_SETTINGS then
     for sPair in string.gmatch( _CC_DEFAULT_SETTINGS, "[^,]+" ) do
