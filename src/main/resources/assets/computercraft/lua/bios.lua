@@ -814,28 +814,30 @@ if bAPIError then
 end
 
 -- Set default settings
-settings.set( "bios.use_multishell", true )
 settings.set( "shell.allow_startup", true )
 settings.set( "shell.allow_disk_startup", (commands == nil) )
 settings.set( "shell.autocomplete", true )
-settings.set( "shell.promptColor", "yellow" )
-settings.set( "shell.textColor", "white" )
-settings.set( "shell.backgroundColor", "black" )
+settings.set( "shell.prompt_color", "yellow" )
+settings.set( "shell.text_color", "white" )
+settings.set( "shell.background_color", "black" )
 settings.set( "edit.autocomplete", true ) 
 settings.set( "edit.default_extension", "lua" )
-settings.set( "edit.backgroundColor", "black" )
-settings.set( "edit.textColor", "white" )
-settings.set( "edit.highlightColor", "yellow" )
-settings.set( "edit.keywordColor", "yellow" )
-settings.set( "edit.commentColor", "green" )
-settings.set( "edit.stringColor", "red" )
+settings.set( "edit.background_color", "black" )
+settings.set( "edit.text_color", "white" )
+settings.set( "edit.highlight_color", "yellow" )
+settings.set( "edit.keyword_color", "yellow" )
+settings.set( "edit.comment_color", "green" )
+settings.set( "edit.string_color", "red" )
 settings.set( "paint.default_extension", "nfp" )
 settings.set( "lua.autocomplete", true )
-settings.set( "lua.promptColor", "yellow" )
-settings.set( "lua.textColor", "white" )
+settings.set( "lua.prompt_color", "yellow" )
+settings.set( "lua.text_color", "white" )
 settings.set( "list.show_hidden", false )
 settings.set( "list.file_color", "white" )
 settings.set( "list.directory_color", "green" )
+if term.isColour() then
+    settings.set( "bios.use_multishell", true )
+end
 
 if _CC_DEFAULT_SETTINGS then
     for sPair in string.gmatch( _CC_DEFAULT_SETTINGS, "[^,]+" ) do
