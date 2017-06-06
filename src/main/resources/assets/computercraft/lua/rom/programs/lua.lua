@@ -19,12 +19,12 @@ local tEnv = {
 setmetatable( tEnv, { __index = _ENV } )
 
 if term.isColour() then
-    term.setTextColour( colors[ settings.get( "lua.prompt_color" ) ] )
+    term.setTextColour( colors[ settings.get( "lua.prompt_color" ) ] or colors.yellow)
 end
 print( "Interactive Lua prompt." )
 print( "Call exit() to exit." )
 if term.isColour() then
-    term.setTextColour( colors[ settings.get( "lua.text_color" ) ] )
+    term.setTextColour( colors[ settings.get( "lua.text_color" ) ] or colors.white )
 else
     term.setTextColour( colours.white )
 end
