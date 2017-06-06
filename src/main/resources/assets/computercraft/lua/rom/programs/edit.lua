@@ -31,12 +31,12 @@ local bRunning = true
 -- Colours
 local highlightColour, keywordColour, commentColour, textColour, bgColour, stringColour
 if term.isColour() then
-    bgColour = colours.black
-    textColour = colours.white
-    highlightColour = colours.yellow
-    keywordColour = colours.yellow
-    commentColour = colours.green
-    stringColour = colours.red
+    bgColour = colors[ settings.get( "edit.backgroundColor" ) ]
+    textColour = colors[ settings.get( "edit.textColor" ) ]
+    highlightColour = colors[ settings.get( "edit.highlightColor" ) ]
+    keywordColour = colors[ settings.get( "edit.keywordColor" ) ]
+    commentColour = colors[ settings.get( "edit.commentColor" ) ]
+    stringColour = colors[ settings.get( "edit.stringColor" ) ]
 else
     bgColour = colours.black
     textColour = colours.white

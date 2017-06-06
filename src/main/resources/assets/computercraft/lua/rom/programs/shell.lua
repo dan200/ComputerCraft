@@ -104,9 +104,9 @@ end
 -- Colours
 local promptColour, textColour, bgColour
 if term.isColour() then
-    promptColour = colours.yellow
-    textColour = colours.white
-    bgColour = colours.black
+    promptColour = colors[ settings.get( "shell.promptColor" ) ]
+    textColour = colors[ settings.get( "shell.textColor" ) ]
+    bgColour = colors[ settings.get( "shell.backgroundColor" ) ]
 else
     promptColour = colours.white
     textColour = colours.white
