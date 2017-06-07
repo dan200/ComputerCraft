@@ -24,3 +24,8 @@ Events emitted by the os API:
 "timer" when a timeout started by os.startTimer() completes. Argument is the token returned by os.startTimer().
 "alarm" when a time passed to os.setAlarm() is reached. Argument is the token returned by os.setAlarm().
 Type "help events" to learn about the event system.
+
+Sources for os.time/os.day:
+ingame
+local
+utc
