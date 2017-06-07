@@ -38,12 +38,12 @@ if term.isColour() then
     commentColour = colors[ settings.get( "edit.comment_color" ) ] or colors.green
     stringColour = colors[ settings.get( "edit.string_color" ) ] or colors.red
 else
-    bgColour = colours.black
-    textColour = colours.white
-    highlightColour = colours.white
-    keywordColour = colours.white
-    commentColour = colours.white
-    stringColour = colours.white
+    bgColour = colors[ settings.get( "edit.background_color" ) ] or colors.black
+    textColour = colors[ settings.get( "edit.text_color" ) ] or colors.white
+    highlightColour = colors[ settings.get( "edit.highlight_color" ) ] or colors.white
+    keywordColour = colors[ settings.get( "edit.keyword_color" ) ] or colors.white
+    commentColour = colors[ settings.get( "edit.comment_color" ) ] or colors.white
+    stringColour = colors[ settings.get( "edit.string_color" ) ] or colors.white
 end
 
 -- Menus

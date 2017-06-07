@@ -108,9 +108,9 @@ if term.isColour() then
     textColour = colors[ settings.get( "shell.text_color" ) ] or colors.white
     bgColour = colors[ settings.get( "shell.background_color" ) ] or colors.black
 else
-    promptColour = colours.white
-    textColour = colours.white
-    bgColour = colours.black
+    promptColour = colors[ settings.get( "shell.prompt_color" ) ] or colors.white
+    textColour = colors[ settings.get( "shell.text_color" ) ] or colors.white
+    bgColour = colors[ settings.get( "shell.background_color" ) ] or colors.black
 end
 
 local function run( _sCommand, ... )
