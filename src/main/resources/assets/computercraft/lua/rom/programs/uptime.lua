@@ -5,4 +5,4 @@ local function formatUptime( nTime )
     return nHour..":"..nMinute..":"..nSecond
 end
 
-print( "The Computer runs "..formatUptime( os.clock() ) )
+print( "The computer has been running for "..formatUptime( os.clock() ) .." hours")
