@@ -127,6 +127,11 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
         return m_upgrade;
     }
 
+    public boolean isInPlayerInventory()
+    {
+        return isUpToDate();
+    }
+
     /**
      * Set the upgrade for this pocket computer, also updating the item stack.
      *
