@@ -349,10 +349,10 @@ public class TileCable extends TileModemBase
         {
            
             EnumFacing dir = getDirection();
-            if( !worldObj.isSideSolid(
+            if( worldObj.isAirBlock(getPos().offset( dir )) || ( !worldObj.isSideSolid(
             getPos().offset( dir ),
             dir.getOpposite()
-            ) && PeripheralUtil.getPeripheral( worldObj, getPos().offset( dir ), dir.getOpposite() ) == null
+            ) && PeripheralUtil.getPeripheral( worldObj, getPos().offset( dir ), dir.getOpposite() ) == null )
             )
             {
                 switch( getPeripheralType() )
@@ -366,6 +366,12 @@ public class TileCable extends TileModemBase
                     }
                     case WiredModemWithCable:
                     {
+                        if( m_peripheralAccessAllowed == true ) //Make sure to disconnect peripheral when breaking
+                        {
+                            m_peripheralAccessAllowed = false;
+                            updateAnim(); 
+                            networkChanged();
+                        }
                         // Drop the modem and convert to cable
                         ((BlockGeneric)getBlockType()).dropItem( worldObj, getPos(), PeripheralItemFactory.create( PeripheralType.WiredModem, getLabel(), 1 ) );
                         setLabel( null );
