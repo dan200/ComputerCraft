@@ -195,6 +195,45 @@ shell.setCompletionFunction( "rom/programs/fun/advanced/paint.lua", completeFile
 shell.setCompletionFunction( "rom/programs/http/pastebin.lua", completePastebin )
 shell.setCompletionFunction( "rom/programs/rednet/chat.lua", completeChat )
 
+if turtle then
+    local tGoOptions = { "left", "right", "forward", "back", "down", "up" }
+    local function completeGo( shell, nIndex, sText )
+        if nIndex == 1 then
+            return completeMultipleChoice(sText,tGoOptions)
+        end
+    end
+    local tTurnOptions = { "left", "right" }
+    local function completeTurn( shell, nIndex, sText )
+        if nIndex == 1 then
+            return completeMultipleChoice( sText, tTurnOptions )
+        end
+    end
+    local tEquipOptions = { "left", "right" }
+    local function completeEquip( shell, nIndex, sText )
+        if nIndex == 2 then
+            return completeMultipleChoice( sText, tEquipOptions )
+        end
+    end
+    local function completeUnequip( shell, nIndex, sText )
+        if nIndex == 1 then
+            return completeMultipleChoice( sText, tEquipOptions )
+        end
+    end
+    shell.setCompletionFunction( "rom/programs/turtle/go.lua", completeGo )
+    shell.setCompletionFunction( "rom/programs/turtle/turn.lua", completeTurn )
+    shell.setCompletionFunction( "rom/programs/turtle/equip.lua", completeEquip )
+    shell.setCompletionFunction( "rom/programs/turtle/unequip.lua", completeUnequip )
+end
+
+if commands then
+    local function completExec( shell, nIndex, sText )
+        if nIndex == 1 then
+            return completeMultipleChoice( sText, commands.list() )
+        end
+    end
+    shell.setCompletionFunction( "rom/programs/command/exec.lua", completExec )
+end
+
 -- Run autorun files
 if fs.exists( "/rom/autorun" ) and fs.isDir( "/rom/autorun" ) then
     local tFiles = fs.list( "/rom/autorun" )

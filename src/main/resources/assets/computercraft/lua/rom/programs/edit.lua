@@ -59,6 +59,7 @@ end
 if peripheral.find( "printer" ) then
     table.insert( tMenuItems, "Print" )
 end
+table.insert( tMenuItems, "Jump" )
 table.insert( tMenuItems, "Exit" )
 
 local sStatus = "Press Ctrl to access menu"
@@ -282,6 +283,47 @@ local function redrawMenu()
     term.setCursorPos( x - scrollX, y - scrollY )
 end
 
+local function setCursor( newX, newY )
+    local oldX, oldY = x, y
+    x, y = newX, newY
+    local screenX = x - scrollX
+    local screenY = y - scrollY
+    
+    local bRedraw = false
+    if screenX < 1 then
+        scrollX = x - 1
+        screenX = 1
+        bRedraw = true
+    elseif screenX > w then
+        scrollX = x - w
+        screenX = w
+        bRedraw = true
+    end
+    
+    if screenY < 1 then
+        scrollY = y - 1
+        screenY = 1
+        bRedraw = true
+    elseif screenY > h-1 then
+        scrollY = y - (h-1)
+        screenY = h-1
+        bRedraw = true
+    end
+
+    recomplete()
+    if bRedraw then
+        redrawText()
+    elseif y ~= oldY then
+        redrawLine( oldY )
+        redrawLine( y )
+    else
+        redrawLine( y )
+    end
+    term.setCursorPos( screenX, screenY )
+
+    redrawMenu()
+end
+
 local tMenuFuncs = { 
     Save = function()
         if bReadOnly then
@@ -395,7 +437,26 @@ local tMenuFuncs = {
             sStatus="Error saving to "..sTempPath
         end
         redrawMenu()
-    end
+    end,
+    Jump = function()
+        term.setCursorPos( 1, h )
+        term.clearLine()
+        term.setTextColour( highlightColour )
+        term.write( "Line : " )
+        term.setTextColour( textColour )
+        local nLine = tonumber(read())
+        if type(nLine) == "number" then
+            nLine = math.min(math.max( 1, nLine ), #tLines )
+            setCursor( 1, nLine )
+            sStatus="Jumped to line "..nLine
+            redrawMenu()
+            redrawText()
+        else
+            sStatus="Invalid line number"
+            redrawMenu()
+            redrawText()
+        end
+    end,
 }
 
 local function doMenuItem( _n )
@@ -404,47 +465,6 @@ local function doMenuItem( _n )
         bMenu = false
         term.setCursorBlink( true )
     end
-    redrawMenu()
-end
-
-local function setCursor( newX, newY )
-    local oldX, oldY = x, y
-    x, y = newX, newY
-    local screenX = x - scrollX
-    local screenY = y - scrollY
-    
-    local bRedraw = false
-    if screenX < 1 then
-        scrollX = x - 1
-        screenX = 1
-        bRedraw = true
-    elseif screenX > w then
-        scrollX = x - w
-        screenX = w
-        bRedraw = true
-    end
-    
-    if screenY < 1 then
-        scrollY = y - 1
-        screenY = 1
-        bRedraw = true
-    elseif screenY > h-1 then
-        scrollY = y - (h-1)
-        screenY = h-1
-        bRedraw = true
-    end
-
-    recomplete()
-    if bRedraw then
-        redrawText()
-    elseif y ~= oldY then
-        redrawLine( oldY )
-        redrawLine( y )
-    else
-        redrawLine( y )
-    end
-    term.setCursorPos( screenX, screenY )
-
     redrawMenu()
 end
 
@@ -709,7 +729,13 @@ while bRunning do
         end
 
     elseif sEvent == "paste" then
-        if not bMenu and not bReadOnly then
+        if not bReadOnly then
+            -- Close menu if open
+            if bMenu then
+                bMenu = false
+                term.setCursorBlink( true )
+                redrawMenu()
+            end
             -- Input text
             local sLine = tLines[y]
             tLines[y] = string.sub(sLine,1,x-1) .. param .. string.sub(sLine,x)

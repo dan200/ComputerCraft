@@ -4,6 +4,11 @@ local function drawPixelInternal( xPos, yPos )
     term.write(" ")
 end
 
+local function drawLineHorizontal( xPos, yPos , nLen )
+    term.setCursorPos( xPos, yPos )
+    term.write(string.rep( " ", nLen ))
+end
+
 local tColourLookup = {}
 for n=1,16 do
     tColourLookup[ string.byte( "0123456789abcdef",n,n ) ] = 2^(n-1)
@@ -77,6 +82,11 @@ function drawLine( startX, startY, endX, endY, nColour )
         
     local xDiff = maxX - minX
     local yDiff = maxY - minY
+    
+    if minY == maxY then
+        drawLineHorizontal( minX, minY , xDiff + 1 )
+        return
+    end
             
     if xDiff > math.abs(yDiff) then
         local y = minY
@@ -133,10 +143,8 @@ function drawBox( startX, startY, endX, endY, nColour )
         maxY = startY
     end
 
-    for x=minX,maxX do
-        drawPixelInternal( x, minY )
-        drawPixelInternal( x, maxY )
-    end
+    drawLineHorizontal( minX, minY , maxX - minX + 1 )
+    drawLineHorizontal( minX, maxY , maxX - minX + 1 )
 
     if (maxY - minY) >= 2 then
         for y=(minY+1),(maxY-1) do
@@ -177,10 +185,8 @@ function drawFilledBox( startX, startY, endX, endY, nColour )
         maxY = startY
     end
 
-    for x=minX,maxX do
-        for y=minY,maxY do
-            drawPixelInternal( x, y )
-        end
+    for y=minY,maxY do
+        drawLineHorizontal( minX, y , maxX - minX + 1 )
     end
 end
 

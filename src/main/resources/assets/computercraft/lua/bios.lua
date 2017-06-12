@@ -747,7 +747,7 @@ for n,sFile in ipairs( tApis ) do
     end
 end
 
-if turtle then
+if turtle and fs.isDir( "rom/apis/turtle" ) then
     -- Load turtle APIs
     local tApis = fs.list( "rom/apis/turtle" )
     for n,sFile in ipairs( tApis ) do

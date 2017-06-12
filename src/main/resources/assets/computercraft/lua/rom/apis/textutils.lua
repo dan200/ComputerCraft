@@ -338,6 +338,7 @@ end
 
 local tEmpty = {}
 function complete( sSearchText, tSearchTable )
+    if g_tLuaKeywords[sSearchText] then return tEmpty end
     local nStart = 1
     local nDot = string.find( sSearchText, ".", nStart, true )
     local tTable = tSearchTable or _ENV
