@@ -18,6 +18,8 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.optString;
+
 public class DiskDrivePeripheral implements IPeripheral
 {
     private final TileDiskDrive m_diskDrive;
@@ -78,15 +80,7 @@ public class DiskDrivePeripheral implements IPeripheral
             case 2:
             {
                 // setDiskLabel
-                String label = null;
-                if( arguments.length > 0 )
-                {
-                    if( arguments[0] != null && !(arguments[0] instanceof String) )
-                    {
-                        throw new LuaException( "Expected string" );
-                    }
-                    label = (String)arguments[0];
-                }
+                String label = optString( arguments, 0, null );
 
                 IMedia media = m_diskDrive.getDiskMedia();
                 if( media != null )

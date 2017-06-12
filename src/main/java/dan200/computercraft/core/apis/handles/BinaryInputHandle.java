@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+
 public class BinaryInputHandle extends HandleGeneric
 {
     private final InputStream m_stream;
@@ -42,13 +44,7 @@ public class BinaryInputHandle extends HandleGeneric
                 {
                     if( args.length > 0 && args[ 0 ] != null )
                     {
-                        if( !(args[ 0 ] instanceof Number) )
-                        {
-                            throw new LuaException( "Expected number" );
-                        }
-
-                        int count = ((Number) args[ 0 ]).intValue();
-
+                        int count = getInt( args, 0 );
                         if( count <= 0 || count >= 1024 * 16 )
                         {
                             throw new LuaException( "Count out of range" );

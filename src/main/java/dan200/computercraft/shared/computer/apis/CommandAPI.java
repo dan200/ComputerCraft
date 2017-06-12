@@ -28,6 +28,9 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+
 public class CommandAPI implements ILuaAPI
 {
     private TileCommandComputer m_computer;
@@ -151,11 +154,7 @@ public class CommandAPI implements ILuaAPI
             case 0:
             {
                 // exec
-                if( arguments.length < 1 || !(arguments[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                final String command = (String)arguments[0];
+                final String command = getString( arguments, 0 );
                 return context.executeMainThreadTask( new ILuaTask()
                 {
                     @Override
@@ -168,11 +167,7 @@ public class CommandAPI implements ILuaAPI
             case 1:
             {
                 // execAsync
-                if( arguments.length < 1 || !(arguments[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                final String command = (String)arguments[0];
+                final String command = getString( arguments, 0 );
                 long taskID = context.issueMainThreadTask( new ILuaTask()
                 {
                     @Override
@@ -234,22 +229,12 @@ public class CommandAPI implements ILuaAPI
             case 4:
             {
                 // getBlockInfos
-                if( arguments.length < 6 ||
-                    !(arguments[0] instanceof Number) ||
-                    !(arguments[1] instanceof Number) ||
-                    !(arguments[2] instanceof Number) ||
-                    !(arguments[3] instanceof Number) ||
-                    !(arguments[4] instanceof Number) ||
-                    !(arguments[5] instanceof Number) )
-                {
-                    throw new LuaException( "Expected number, number, number, number, number, number" );
-                }
-                final int minx = ((Number)arguments[0]).intValue();
-                final int miny = ((Number)arguments[1]).intValue();
-                final int minz = ((Number)arguments[2]).intValue();
-                final int maxx = ((Number)arguments[3]).intValue();
-                final int maxy = ((Number)arguments[4]).intValue();
-                final int maxz = ((Number)arguments[5]).intValue();
+                final int minx = getInt( arguments, 0 );
+                final int miny = getInt( arguments, 1 );
+                final int minz = getInt( arguments, 2 );
+                final int maxx = getInt( arguments, 3 );
+                final int maxy = getInt( arguments, 4 );
+                final int maxz = getInt( arguments, 5 );
                 return context.executeMainThreadTask( new ILuaTask()
                 {
                     @Override
@@ -295,16 +280,9 @@ public class CommandAPI implements ILuaAPI
             case 5:
             {
                 // getBlockInfo
-                if( arguments.length < 3 ||
-                        !(arguments[0] instanceof Number) ||
-                        !(arguments[1] instanceof Number) ||
-                        !(arguments[2] instanceof Number) )
-                {
-                    throw new LuaException( "Expected number, number, number" );
-                }
-                final int x = ((Number)arguments[0]).intValue();
-                final int y = ((Number)arguments[1]).intValue();
-                final int z = ((Number)arguments[2]).intValue();
+                final int x = getInt( arguments, 0 );
+                final int y = getInt( arguments, 1 );
+                final int z = getInt( arguments, 2 );
                 return context.executeMainThreadTask( new ILuaTask()
                 {
                     @Override
