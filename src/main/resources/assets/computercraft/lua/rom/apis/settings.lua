@@ -2,11 +2,13 @@
 local tSettings = {}
 
 function set( sName, value )
-    if type(sName) ~= "string" or
-       (type(value) ~= "string" and type(value) ~= "number" and type(value) ~= "boolean" and type(value) ~= "table") then
-        error( "Expected string, value", 2 )
+    if type( sName ) ~= "string" then error( "bad argument #1 (expected string, got " .. type( sName ) .. ")", 2 ) end
+    
+    local sValueTy = type(value)
+    if sValueTy ~= "number" and sValueTy ~= "string" and sValueTy ~= "boolean" and sValueTy ~= "table" then 
+        error( "bad argument #2 (expected value, got " .. sValueTy .. ")", 2 ) 
     end
-    if type(value) == "table" then
+    if sValueTy == "table" then
         -- Ensure value is serializeable
         value = textutils.unserialize( textutils.serialize(value) )
     end
@@ -28,7 +30,7 @@ end
 
 function get( sName, default )
     if type(sName) ~= "string" then
-        error( "Expected string", 2 )
+        error( "bad argument #1 (expected string, got " .. type( sName ) .. ")", 2 ) 
     end
     local result = tSettings[ sName ]
     if result ~= nil then
@@ -40,7 +42,7 @@ end
 
 function unset( sName )
     if type(sName) ~= "string" then
-        error( "Expected string", 2 )
+        error( "bad argument #1 (expected string, got " .. type( sName ) .. ")", 2 ) 
     end
     tSettings[ sName ] = nil
 end
@@ -59,7 +61,7 @@ end
 
 function load( sPath )
     if type(sPath) ~= "string" then
-        error( "Expected string", 2 )
+        error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 ) 
     end
     local file = fs.open( sPath, "r" )
     if not file then
@@ -86,7 +88,7 @@ end
 
 function save( sPath )
     if type(sPath) ~= "string" then
-        error( "Expected string", 2 )
+        error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 ) 
     end
     local file = fs.open( sPath, "w" )
     if not file then
