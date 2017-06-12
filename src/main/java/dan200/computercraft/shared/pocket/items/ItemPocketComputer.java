@@ -20,6 +20,7 @@ import dan200.computercraft.shared.computer.items.IComputerItem;
 import dan200.computercraft.shared.pocket.apis.PocketAPI;
 import dan200.computercraft.shared.pocket.core.PocketServerComputer;
 import dan200.computercraft.shared.util.StringUtil;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -86,8 +87,9 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia, I
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list )
+    public void getSubItems( @Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
+        if( !isInCreativeTab( tabs ) ) return;
         getSubItems( list, ComputerFamily.Normal );
         getSubItems( list, ComputerFamily.Advanced );
     }
@@ -223,9 +225,9 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia, I
     }
 
     @Override
-    public void addInformation( @Nonnull ItemStack stack, EntityPlayer player, List<String> list, boolean debug )
+    public void addInformation( @Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag flag )
     {
-        if( debug )
+        if( flag.isAdvanced() )
         {
             int id = getComputerID( stack );
             if( id >= 0 )

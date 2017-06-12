@@ -29,6 +29,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
@@ -49,6 +50,13 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
     {    
         super.preInit();
 
+        // Setup client forge handlers
+        registerForgeHandlers();
+    }
+
+    @SubscribeEvent
+    public void registerModels( ModelRegistryEvent event )
+    {
         // Register item models
         ItemMeshDefinition turtleMeshDefinition = new ItemMeshDefinition()
         {
@@ -70,9 +78,6 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         registerItemModel( ComputerCraft.Blocks.turtle, turtleMeshDefinition, turtleModelNames );
         registerItemModel( ComputerCraft.Blocks.turtleExpanded, turtleMeshDefinition, turtleModelNames );
         registerItemModel( ComputerCraft.Blocks.turtleAdvanced, turtleMeshDefinition, turtleModelNames );
-
-        // Setup client forge handlers
-        registerForgeHandlers();
     }
 
     @Override

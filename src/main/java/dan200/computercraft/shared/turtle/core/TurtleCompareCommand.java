@@ -15,13 +15,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
-import java.util.List;
 
 public class TurtleCompareCommand implements ITurtleCommand
 {
@@ -77,8 +77,9 @@ public class TurtleCompareCommand implements ITurtleCommand
                     // (try 5 times to try and beat random number generators)
                     for( int i=0; (i<5) && lookAtStack.isEmpty(); ++i )
                     {
-                        List<ItemStack> drops = lookAtBlock.getDrops( world, newPosition, lookAtState, 0 );
-                        if( drops != null && drops.size() > 0 )
+                        NonNullList<ItemStack> drops = NonNullList.create();
+                        lookAtBlock.getDrops( drops, world, newPosition, lookAtState, 0 );
+                        if( drops.size() > 0 )
                         {
                             for( ItemStack drop : drops )
                             {

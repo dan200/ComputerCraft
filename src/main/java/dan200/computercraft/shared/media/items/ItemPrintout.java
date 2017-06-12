@@ -7,6 +7,7 @@
 package dan200.computercraft.shared.media.items;
 
 import dan200.computercraft.ComputerCraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -43,15 +44,16 @@ public class ItemPrintout extends Item
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list )
+    public void getSubItems( @Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
+        if( !isInCreativeTab( tabs ) ) return;
         list.add( createSingleFromTitleAndText( null, new String[ LINES_PER_PAGE ], new String[ LINES_PER_PAGE ] ) );
         list.add( createMultipleFromTitleAndText( null, new String[ 2*LINES_PER_PAGE ], new String[ 2*LINES_PER_PAGE ] ) );
         list.add( createBookFromTitleAndText( null, new String[ 2*LINES_PER_PAGE ], new String[ 2*LINES_PER_PAGE ] ) );
     }
 
     @Override
-    public void addInformation( @Nonnull ItemStack itemstack, EntityPlayer par2EntityPlayer, List<String> list, boolean flag )
+    public void addInformation( @Nonnull ItemStack itemstack, World world, List<String> list, ITooltipFlag flag )
     {
         String title = getTitle( itemstack );
         if( title != null && title.length() > 0 )
@@ -91,7 +93,7 @@ public class ItemPrintout extends Item
         {
             ComputerCraft.openPrintoutGUI( player, hand );
         }
-        return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
+        return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
     }
 
     @Nonnull

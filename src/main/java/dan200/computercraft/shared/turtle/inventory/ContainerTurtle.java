@@ -92,7 +92,7 @@ public class ContainerTurtle extends Container
     private void sendStateToPlayer( IContainerListener icrafting )
     {
         int selectedSlot = m_turtle.getSelectedSlot();
-        icrafting.sendProgressBarUpdate( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
+        icrafting.sendWindowProperty( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
     }
                         
     @Override
@@ -112,7 +112,7 @@ public class ContainerTurtle extends Container
         {
             if( m_selectedSlot != selectedSlot )
             {
-                listener.sendProgressBarUpdate( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
+                listener.sendWindowProperty( this, PROGRESS_ID_SELECTED_SLOT, selectedSlot );
             }
         }
         m_selectedSlot = selectedSlot;

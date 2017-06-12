@@ -59,7 +59,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
         }
 
         // Check the actual crafting
-        return CraftingManager.getInstance().findMatchingRecipe( this, m_turtle.getWorld() );
+        return CraftingManager.findMatchingResult( this, m_turtle.getWorld() );
     }
 
     public ArrayList<ItemStack> doCrafting( World world, int maxCount )
@@ -123,7 +123,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
             results.add( result );
 
             // Consume resources from the inventory
-            NonNullList<ItemStack> remainingItems = CraftingManager.getInstance().getRemainingItems( this, world );
+            NonNullList<ItemStack> remainingItems = CraftingManager.getRemainingItems( this, world );
             for( int n=0; n<size; ++n )
             {
                 ItemStack stack = getStackInSlot( n );

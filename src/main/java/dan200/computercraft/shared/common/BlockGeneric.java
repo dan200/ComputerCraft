@@ -15,16 +15,18 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,18 +48,15 @@ public abstract class BlockGeneric extends Block implements
     {
     }
 
-    @Nonnull
     @Override
-    public final List<ItemStack> getDrops( IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune )
+    public final void getDrops( @Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune )
     {
-        ArrayList<ItemStack> drops = new ArrayList<ItemStack>( 1 );
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
         {
-            TileGeneric generic = (TileGeneric)tile;
+            TileGeneric generic = (TileGeneric) tile;
             generic.getDroppedItems( drops, false );
         }
-        return drops;
     }
 
     @Nonnull
@@ -85,7 +84,7 @@ public abstract class BlockGeneric extends Block implements
     public final void dropAllItems( World world, BlockPos pos, boolean creative )
     {
         // Get items to drop
-        List<ItemStack> drops = new ArrayList<ItemStack>( 1 );
+        NonNullList<ItemStack> drops = NonNullList.create();
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
         {
@@ -170,6 +169,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
+    @Deprecated
     public final boolean isSideSolid( IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side )
     {
         TileEntity tile = world.getTileEntity( pos );
@@ -188,7 +188,7 @@ public abstract class BlockGeneric extends Block implements
     }
 
     @Override
-    public float getExplosionResistance( World world, BlockPos pos, @Nonnull Entity exploder, Explosion explosion )
+    public float getExplosionResistance( World world, BlockPos pos, @Nullable Entity exploder, Explosion explosion )
     {
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric && tile.hasWorld() )
@@ -199,7 +199,7 @@ public abstract class BlockGeneric extends Block implements
                 return 2000.0f;
             }
         }
-        return super.getExplosionResistance( exploder );
+        return super.getExplosionResistance( world, pos, exploder, explosion );
     }
 
     @Nonnull

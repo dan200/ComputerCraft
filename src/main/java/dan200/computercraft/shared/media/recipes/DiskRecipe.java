@@ -17,10 +17,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-public class DiskRecipe implements IRecipe
+public class DiskRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
     @Override
     public boolean matches( @Nonnull InventoryCrafting inv, @Nonnull World world )
@@ -80,9 +81,15 @@ public class DiskRecipe implements IRecipe
     }
 
     @Override
-    public int getRecipeSize()
+    public boolean canFit( int x, int y )
     {
-        return 2;
+        return x >= 2 && y >= 2;
+    }
+
+    @Override
+    public boolean isHidden()
+    {
+        return true;
     }
 
     @Nonnull

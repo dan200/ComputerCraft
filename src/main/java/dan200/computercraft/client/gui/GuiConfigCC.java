@@ -53,21 +53,7 @@ public class GuiConfigCC extends GuiConfig
         }
 
         @Override
-        @Deprecated
-        public Class<? extends GuiScreen> mainConfigGuiClass()
-        {
-            return GuiConfigCC.class;
-        }
-
-        @Override
         public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
-        {
-            return null;
-        }
-
-        @Override
-        @Deprecated
-        public RuntimeOptionGuiHandler getHandlerFor( RuntimeOptionCategoryElement runtimeOptionCategoryElement )
         {
             return null;
         }

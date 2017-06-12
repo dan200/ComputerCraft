@@ -28,6 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -315,7 +316,8 @@ public class TurtleTool implements ITurtleUpgrade
     {
         IBlockState state = world.getBlockState( pos );
         Block block = state.getBlock();
-        List<ItemStack> drops = block.getDrops( world, pos, world.getBlockState( pos ), 0 );
+        NonNullList<ItemStack> drops = NonNullList.create();
+        block.getDrops( drops, world, pos, world.getBlockState( pos ), 0 );
         double chance = ForgeEventFactory.fireBlockHarvesting( drops, world, pos, state, 0, 1, false, player );
 
         for( int i = drops.size() - 1; i >= 0; i-- )

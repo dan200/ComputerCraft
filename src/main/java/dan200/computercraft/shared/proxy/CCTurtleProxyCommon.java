@@ -8,10 +8,7 @@ package dan200.computercraft.shared.proxy;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
-import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
-import dan200.computercraft.shared.computer.items.ComputerItemFactory;
-import dan200.computercraft.shared.peripheral.speaker.SpeakerPeripheral;
 import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.blocks.TileTurtleAdvanced;
@@ -21,7 +18,6 @@ import dan200.computercraft.shared.turtle.items.ItemTurtleAdvanced;
 import dan200.computercraft.shared.turtle.items.ItemTurtleLegacy;
 import dan200.computercraft.shared.turtle.items.ItemTurtleNormal;
 import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
-import dan200.computercraft.shared.turtle.recipes.TurtleRecipe;
 import dan200.computercraft.shared.turtle.recipes.TurtleUpgradeRecipe;
 import dan200.computercraft.shared.turtle.upgrades.*;
 import dan200.computercraft.shared.util.IEntityDropConsumer;
@@ -30,22 +26,19 @@ import dan200.computercraft.shared.util.InventoryUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -68,11 +61,18 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     @Override        
     public void preInit()
     {
+        MinecraftForge.EVENT_BUS.register( this );
+
         EntityRegistry.registerModEntity(
             new ResourceLocation( ComputerCraft.MOD_ID, "turtle_player" ), TurtlePlayer.class, "turtle_player",
             0, ComputerCraft.instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false
         );
-        registerItems();
+
+        registerUpgrades();
+
+        // Recipe types
+        // RecipeSorter.register( "computercraft:turtle", TurtleRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
+        // RecipeSorter.register( "computercraft:turtle_upgrade", TurtleUpgradeRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
     }
     
     @Override        
@@ -264,12 +264,48 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             m_legacyTurtleUpgrades.put( legacyID, upgrade );
         }
         m_turtleUpgrades.put( id, upgrade );
+    }
+
+    @SubscribeEvent
+    public void registerBlocks( RegistryEvent.Register<Block> event )
+    {
+        IForgeRegistry<Block> registry = event.getRegistry();
+
+        // Turtle
+        ComputerCraft.Blocks.turtle = BlockTurtle.createTurtleBlock();
+        registry.register( ComputerCraft.Blocks.turtle.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle" ) ) );
+
+        ComputerCraft.Blocks.turtleExpanded = BlockTurtle.createTurtleBlock();
+        registry.register( ComputerCraft.Blocks.turtleExpanded.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle_expanded" ) ) );
+
+        // Advanced Turtle
+        ComputerCraft.Blocks.turtleAdvanced = BlockTurtle.createTurtleBlock();
+        registry.register( ComputerCraft.Blocks.turtleAdvanced.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle_advanced" ) ) );
+    }
+
+    @SubscribeEvent
+    public void registerItems( RegistryEvent.Register<Item> event )
+    {
+        IForgeRegistry<Item> registry = event.getRegistry();
+
+        registry.register( new ItemTurtleLegacy( ComputerCraft.Blocks.turtle).setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle" ) ) );
+        registry.register( new ItemTurtleNormal( ComputerCraft.Blocks.turtleExpanded ).setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle_expanded" ) ) );
+        registry.register( new ItemTurtleAdvanced( ComputerCraft.Blocks.turtleAdvanced ).setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle_advanced" ) ) );
+    }
+
+    @SubscribeEvent
+    public void registerRecipes( RegistryEvent.Register<IRecipe> event )
+    {
+        IForgeRegistry<IRecipe> registry = event.getRegistry();
+        registry.register( new TurtleUpgradeRecipe().setRegistryName( new ResourceLocation( "computercraft:turtle" ) ) );
 
         // Add a bunch of impostor recipes
-        if( isUpgradeVanilla( upgrade )  )
+        // TODO: Figure out a way to do this in a "nice" way.
+        for( ITurtleUpgrade upgrade : m_turtleUpgrades.values() )
         {
+            if( !isUpgradeVanilla( upgrade ) ) continue;
+
             // Add fake recipes to fool NEI
-            List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
             ItemStack craftingItem = upgrade.getCraftingItem();
 
             // A turtle just containing this upgrade
@@ -285,22 +321,29 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                 {
                     ItemStack craftedTurtle = TurtleItemFactory.create( -1, null, -1, family, upgrade, null, 0, null );
                     ItemStack craftedTurtleFlipped = TurtleItemFactory.create( -1, null, -1, family, null, upgrade, 0, null );
-                    recipeList.add( new ImpostorRecipe( 2, 1, new ItemStack[] { baseTurtle, craftingItem }, craftedTurtle ) );
-                    recipeList.add( new ImpostorRecipe( 2, 1, new ItemStack[] { craftingItem, baseTurtle }, craftedTurtleFlipped ) );
+                    registry.register(
+                        new ImpostorRecipe( "computercraft:" + family.toString() + "_turtle_upgrade", 2, 1, new ItemStack[] { baseTurtle, craftingItem }, craftedTurtle )
+                            .setRegistryName( new ResourceLocation( "computercraft:" + family + "_turtle_upgrade_" + upgrade.getUpgradeID().toString().replace( ':', '_' ) + "_1" ) )
+                    );
+                    registry.register(
+                        new ImpostorRecipe( "computercraft:" + family.toString() + "_turtle_upgrade", 2, 1, new ItemStack[] { craftingItem, baseTurtle }, craftedTurtleFlipped )
+                            .setRegistryName( new ResourceLocation( "computercraft:" + family + "_turtle_upgrade_" + upgrade.getUpgradeID().toString().replace( ':', '_' ) + "_2" ) )
+                    );
 
+                    /*
                     // A turtle containing this upgrade and another upgrade
                     for( ITurtleUpgrade otherUpgrade : m_turtleUpgrades.values() )
                     {
                         if( isUpgradeVanilla( otherUpgrade ) && isUpgradeSuitableForFamily( family, otherUpgrade ) )
                         {
                             ItemStack otherCraftingItem = otherUpgrade.getCraftingItem();
-
+    
                             ItemStack otherCraftedTurtle = TurtleItemFactory.create( -1, null, -1, family, null, otherUpgrade, 0, null );
                             ItemStack comboCraftedTurtle = TurtleItemFactory.create( -1, null, -1, family, upgrade, otherUpgrade, 0, null );
-
+    
                             ItemStack otherCraftedTurtleFlipped = TurtleItemFactory.create( -1, null, -1, family, otherUpgrade, null, 0, null );
                             ItemStack comboCraftedTurtleFlipped = TurtleItemFactory.create( -1, null, -1, family, otherUpgrade, upgrade, 0, null );
-
+    
                             recipeList.add( new ImpostorRecipe( 2, 1, new ItemStack[] { otherCraftingItem, craftedTurtle }, comboCraftedTurtle ) );
                             recipeList.add( new ImpostorRecipe( 2, 1, new ItemStack[] { otherCraftedTurtle, craftingItem }, comboCraftedTurtle ) );
                             recipeList.add( new ImpostorRecipe( 2, 1, new ItemStack[] { craftedTurtleFlipped, otherCraftingItem }, comboCraftedTurtleFlipped ) );
@@ -309,67 +352,14 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
                             recipeList.add( new ImpostorRecipe( 3, 1, new ItemStack[] { craftingItem, baseTurtle, otherCraftingItem }, comboCraftedTurtleFlipped ) );
                         }
                     }
+                    */
                 }
             }
         }
     }
-    
-    private void registerItems()
+
+    private void registerUpgrades()
     {
-        // Blocks
-        // Turtle
-        ComputerCraft.Blocks.turtle = BlockTurtle.createTurtleBlock();
-        registerBlock( ComputerCraft.Blocks.turtle, new ItemTurtleLegacy(ComputerCraft.Blocks.turtle), "turtle" );
-
-        ComputerCraft.Blocks.turtleExpanded = BlockTurtle.createTurtleBlock();
-        registerBlock( ComputerCraft.Blocks.turtleExpanded, new ItemTurtleNormal( ComputerCraft.Blocks.turtleExpanded ), "turtle_expanded" );
-
-        // Advanced Turtle
-        ComputerCraft.Blocks.turtleAdvanced = BlockTurtle.createTurtleBlock();
-        registerBlock( ComputerCraft.Blocks.turtleAdvanced, new ItemTurtleAdvanced( ComputerCraft.Blocks.turtleAdvanced ), "turtle_advanced" );
-
-        // Recipe types
-        RecipeSorter.register( "computercraft:turtle", TurtleRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
-        RecipeSorter.register( "computercraft:turtle_upgrade", TurtleUpgradeRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
-
-        // Recipes
-        // Turtle
-        GameRegistry.addRecipe( new TurtleRecipe( new Item[] {
-            Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT,
-            Items.IRON_INGOT, Item.getItemFromBlock( ComputerCraft.Blocks.computer ), Items.IRON_INGOT,
-            Items.IRON_INGOT, Item.getItemFromBlock( Blocks.CHEST ), Items.IRON_INGOT,
-        }, ComputerFamily.Normal ) );
-        GameRegistry.addRecipe( new TurtleUpgradeRecipe() );
-
-        // Impostor Turtle recipe (to fool NEI)
-        ItemStack iron = new ItemStack( Items.IRON_INGOT, 1 );
-        GameRegistry.addRecipe( new ImpostorRecipe( 3, 3,
-            new ItemStack[] {
-                iron, iron, iron,
-                iron, ComputerItemFactory.create( -1, null, ComputerFamily.Normal ), iron,
-                iron, new ItemStack( Blocks.CHEST, 1 ), iron,
-            },
-            TurtleItemFactory.create( -1, null, -1, ComputerFamily.Normal, null, null, 0, null )
-        ) );
-
-        // Advanced Turtle
-        GameRegistry.addRecipe( new TurtleRecipe( new Item[] {
-            Items.GOLD_INGOT, Items.GOLD_INGOT, Items.GOLD_INGOT,
-            Items.GOLD_INGOT, Item.getItemFromBlock( ComputerCraft.Blocks.computer ), Items.GOLD_INGOT,
-            Items.GOLD_INGOT, Item.getItemFromBlock( Blocks.CHEST ), Items.GOLD_INGOT,
-        }, ComputerFamily.Advanced ) );
-
-        // Impostor Advanced Turtle recipe (to fool NEI)
-        ItemStack gold = new ItemStack( Items.GOLD_INGOT, 1 );
-        GameRegistry.addRecipe( new ImpostorRecipe( 3, 3,
-            new ItemStack[] {
-                gold, gold, gold,
-                gold, ComputerItemFactory.create( -1, null, ComputerFamily.Advanced ), gold,
-                gold, new ItemStack( Blocks.CHEST, 1 ), gold,
-            },
-            TurtleItemFactory.create( -1, null, -1, ComputerFamily.Advanced, null, null, 0, null )
-        ) );
-
         // Upgrades
         ComputerCraft.Upgrades.wirelessModem =  new TurtleModem( false, new ResourceLocation( "computercraft", "wireless_modem" ), 1 );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.wirelessModem );
@@ -397,63 +387,64 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
 
         ComputerCraft.Upgrades.turtleSpeaker = new TurtleSpeaker( new ResourceLocation( "computercraft", "speaker" ), 8 );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.turtleSpeaker );
-
     }
 
-    @Override
-    public void remap( FMLMissingMappingsEvent mappings )
+    @SubscribeEvent
+    public void remapItems( RegistryEvent.MissingMappings<Item> mappings )
     {
-        // We have to use mappings.getAll() as the mod ID is upper case but the domain lower.
-        for( FMLMissingMappingsEvent.MissingMapping mapping : mappings.getAll() )
+        // We have to use mappings.getAllMappings() as the mod ID is upper case but the domain lower.
+        for( RegistryEvent.MissingMappings.Mapping<Item> mapping : mappings.getAllMappings() )
         {
-            String domain = mapping.resourceLocation.getResourceDomain();
+            String domain = mapping.key.getResourceDomain();
             if( !domain.equalsIgnoreCase( ComputerCraft.MOD_ID ) ) continue;
 
-            String key = mapping.resourceLocation.getResourcePath();
+            String key = mapping.key.getResourcePath();
             if( key.equalsIgnoreCase( "CC-Turtle" ) )
             {
-                remap( mapping, ComputerCraft.Blocks.turtle );
+                mapping.remap( Item.getItemFromBlock( ComputerCraft.Blocks.turtle ) );
             }
             else if( key.equalsIgnoreCase( "CC-TurtleExpanded" ) )
             {
-                remap( mapping, ComputerCraft.Blocks.turtleExpanded );
+                mapping.remap( Item.getItemFromBlock( ComputerCraft.Blocks.turtleExpanded ) );
             }
             else if( key.equalsIgnoreCase( "CC-TurtleAdvanced" ) )
             {
-                remap( mapping, ComputerCraft.Blocks.turtleAdvanced );
+                mapping.remap( Item.getItemFromBlock( ComputerCraft.Blocks.turtleAdvanced ) );
             }
         }
     }
 
-    private static void remap( FMLMissingMappingsEvent.MissingMapping mapping, Block block )
+    @SubscribeEvent
+    public void remapBlocks( RegistryEvent.MissingMappings<Block> mappings )
     {
-        if( mapping.type == GameRegistry.Type.BLOCK )
+        // We have to use mappings.getAllMappings() as the mod ID is upper case but the domain lower.
+        for( RegistryEvent.MissingMappings.Mapping<Block> mapping : mappings.getAllMappings() )
         {
-            mapping.remap( block );
-        }
-        else
-        {
-            mapping.remap( Item.getItemFromBlock( block ) );
-        }
-    }
+            String domain = mapping.key.getResourceDomain();
+            if( !domain.equalsIgnoreCase( ComputerCraft.MOD_ID ) ) continue;
 
-    private void registerBlock( Block block, Item item, String name )
-    {
-        GameRegistry.register( block.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
-        GameRegistry.register( item.setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, name ) ) );
-    }
-
-    private void registerTileEntity( Class<? extends TileEntity> klass, String name )
-    {
-        GameRegistry.registerTileEntityWithAlternatives( klass, ComputerCraft.LOWER_ID + " : " + name, name );
+            String key = mapping.key.getResourcePath();
+            if( key.equalsIgnoreCase( "CC-Turtle" ) )
+            {
+                mapping.remap( ComputerCraft.Blocks.turtle );
+            }
+            else if( key.equalsIgnoreCase( "CC-TurtleExpanded" ) )
+            {
+                mapping.remap( ComputerCraft.Blocks.turtleExpanded );
+            }
+            else if( key.equalsIgnoreCase( "CC-TurtleAdvanced" ) )
+            {
+                mapping.remap( ComputerCraft.Blocks.turtleAdvanced );
+            }
+        }
     }
 
     private void registerTileEntities()
     {
         // TileEntities
-        registerTileEntity( TileTurtle.class, "turtle" );
-        registerTileEntity( TileTurtleExpanded.class, "turtleex" );
-        registerTileEntity( TileTurtleAdvanced.class, "turtleadv" );
+        GameRegistry.registerTileEntity( TileTurtle.class, ComputerCraft.LOWER_ID + " : " + "turtle" );
+        GameRegistry.registerTileEntity( TileTurtleExpanded.class, ComputerCraft.LOWER_ID + " : " + "turtleex" );
+        GameRegistry.registerTileEntity( TileTurtleAdvanced.class, ComputerCraft.LOWER_ID + " : " + "turtleadv" );
     }
     
     private void registerForgeHandlers()
@@ -484,7 +475,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             // All checks have passed, lets dispatch the drops
             for(EntityItem entityItem : drops)
             {
-                consumer.consumeDrop( entity, entityItem.getEntityItem() );
+                consumer.consumeDrop( entity, entityItem.getItem() );
             }
             drops.clear();
         }

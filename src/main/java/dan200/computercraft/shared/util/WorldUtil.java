@@ -36,27 +36,27 @@ public class WorldUtil
 
     public static Pair<Entity, Vec3d> rayTraceEntities( World world, Vec3d vecStart, Vec3d vecDir, double distance )
     {
-        Vec3d vecEnd = vecStart.addVector( vecDir.xCoord * distance, vecDir.yCoord * distance, vecDir.zCoord * distance );
+        Vec3d vecEnd = vecStart.addVector( vecDir.x * distance, vecDir.y * distance, vecDir.z * distance );
 
         // Raycast for blocks
         RayTraceResult result = world.rayTraceBlocks( vecStart.addVector(0.0,0.0,0.0), vecEnd.addVector(0.0,0.0,0.0) );
         if( result != null && result.typeOfHit == RayTraceResult.Type.BLOCK )
         {
             distance = vecStart.distanceTo( result.hitVec );
-            vecEnd = vecStart.addVector( vecDir.xCoord * distance, vecDir.yCoord * distance, vecDir.zCoord * distance );
+            vecEnd = vecStart.addVector( vecDir.x * distance, vecDir.y * distance, vecDir.z * distance );
         }
 
         // Check for entities
-        float xStretch = (Math.abs(vecDir.xCoord) > 0.25f) ? 0.0f : 1.0f;
-        float yStretch = (Math.abs(vecDir.yCoord) > 0.25f) ? 0.0f : 1.0f;
-        float zStretch = (Math.abs(vecDir.zCoord) > 0.25f) ? 0.0f : 1.0f;
+        float xStretch = (Math.abs(vecDir.x) > 0.25f) ? 0.0f : 1.0f;
+        float yStretch = (Math.abs(vecDir.y) > 0.25f) ? 0.0f : 1.0f;
+        float zStretch = (Math.abs(vecDir.z) > 0.25f) ? 0.0f : 1.0f;
         AxisAlignedBB bigBox = new AxisAlignedBB(
-            Math.min(vecStart.xCoord, vecEnd.xCoord) - 0.375f * xStretch,
-            Math.min(vecStart.yCoord, vecEnd.yCoord) - 0.375f * yStretch,
-            Math.min(vecStart.zCoord, vecEnd.zCoord) - 0.375f * zStretch,
-            Math.max(vecStart.xCoord, vecEnd.xCoord) + 0.375f * xStretch,
-            Math.max(vecStart.yCoord, vecEnd.yCoord) + 0.375f * yStretch,
-            Math.max(vecStart.zCoord, vecEnd.zCoord) + 0.375f * zStretch
+            Math.min(vecStart.x, vecEnd.x) - 0.375f * xStretch,
+            Math.min(vecStart.y, vecEnd.y) - 0.375f * yStretch,
+            Math.min(vecStart.z, vecEnd.z) - 0.375f * zStretch,
+            Math.max(vecStart.x, vecEnd.x) + 0.375f * xStretch,
+            Math.max(vecStart.y, vecEnd.y) + 0.375f * yStretch,
+            Math.max(vecStart.z, vecEnd.z) + 0.375f * zStretch
         );
 
         Entity closest = null;
@@ -79,7 +79,7 @@ public class WorldUtil
                 }
             }
 
-            if( littleBox.isVecInside( vecStart ) )
+            if( littleBox.contains( vecStart ) )
             {
                 closest = entity;
                 closestDist = 0.0f;
@@ -96,7 +96,7 @@ public class WorldUtil
                     closestDist = dist;
                 }
             }
-            else if( littleBox.intersectsWith( bigBox ) )
+            else if( littleBox.intersects( bigBox ) )
             {
                 if( closest == null )
                 {
@@ -107,7 +107,7 @@ public class WorldUtil
         }
         if( closest != null && closestDist <= distance )
         {
-            Vec3d closestPos = vecStart.addVector( vecDir.xCoord * closestDist, vecDir.yCoord * closestDist, vecDir.zCoord * closestDist );
+            Vec3d closestPos = vecStart.addVector( vecDir.x * closestDist, vecDir.y * closestDist, vecDir.z * closestDist );
             return Pair.of( closest, closestPos );
         }
         return null;

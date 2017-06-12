@@ -11,6 +11,7 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.core.filesystem.SubMount;
 import dan200.computercraft.shared.util.Colour;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -23,6 +24,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,12 +39,12 @@ public class ItemTreasureDisk extends Item
     }
     
     @Override
-    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list )
+    public void getSubItems( @Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
     }
     
     @Override
-    public void addInformation( @Nonnull ItemStack stack, EntityPlayer player, List<String> list, boolean bool )
+    public void addInformation( @Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag flag )
     {
         String label = getTitle( stack );
         if( label != null && label.length() > 0 )

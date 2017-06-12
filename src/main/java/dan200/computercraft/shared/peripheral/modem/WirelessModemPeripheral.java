@@ -46,9 +46,9 @@ public abstract class WirelessModemPeripheral extends ModemPeripheral
                     minRange = (double) ComputerCraft.modem_rangeDuringStorm;
                     maxRange = (double) ComputerCraft.modem_highAltitudeRangeDuringStorm;
                 }
-                if( position.yCoord > 96.0 && maxRange > minRange )
+                if( position.y > 96.0 && maxRange > minRange )
                 {
-                    return minRange + ( position.yCoord - 96.0 ) * ( ( maxRange - minRange ) / ( ( world.getHeight() - 1 ) - 96.0 ) );
+                    return minRange + ( position.y - 96.0 ) * ( ( maxRange - minRange ) / ( ( world.getHeight() - 1 ) - 96.0 ) );
                 }
                 return minRange;
             }

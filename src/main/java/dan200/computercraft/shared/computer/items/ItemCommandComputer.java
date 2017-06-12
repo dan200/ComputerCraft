@@ -40,9 +40,12 @@ public class ItemCommandComputer extends ItemComputer
         // Build the stack
         ItemStack result = new ItemStack( this, 1, 0 );
 
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger( "computerID", id );
-        result.setTagCompound( nbt );
+        if( id >= 0 )
+        {
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setInteger( "computerID", id );
+            result.setTagCompound( nbt );
+        }
 
         if( label != null )
         {
@@ -53,8 +56,9 @@ public class ItemCommandComputer extends ItemComputer
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
+    public void getSubItems( @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
+        if( !isInCreativeTab( tabs ) ) return;
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Command ) );
     }
 

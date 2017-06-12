@@ -553,9 +553,9 @@ public class TurtleBrain implements ITurtleAccess
         Vec3d offset = getRenderOffset( f );
         BlockPos pos = m_owner.getPos();
         return new Vec3d(
-            pos.getX() + 0.5 + offset.xCoord,
-            pos.getY() + 0.5 + offset.yCoord,
-            pos.getZ() + 0.5 + offset.zCoord
+            pos.getX() + 0.5 + offset.x,
+            pos.getY() + 0.5 + offset.y,
+            pos.getZ() + 0.5 + offset.z
         );
     }
 
@@ -1177,9 +1177,9 @@ public class TurtleBrain implements ITurtleAccess
                     Vec3d position = getVisualPosition( 1.0f );
                     if( position != null )
                     {
-                        double x = position.xCoord + world.rand.nextGaussian() * 0.1;
-                        double y = position.yCoord + 0.5 + world.rand.nextGaussian() * 0.1;
-                        double z = position.zCoord + world.rand.nextGaussian() * 0.1;
+                        double x = position.x + world.rand.nextGaussian() * 0.1;
+                        double y = position.y + 0.5 + world.rand.nextGaussian() * 0.1;
+                        double z = position.z + world.rand.nextGaussian() * 0.1;
                         world.spawnParticle(
                                 EnumParticleTypes.HEART, x, y, z,
                                 world.rand.nextGaussian() * 0.02,

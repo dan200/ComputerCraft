@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'org.ajoberstar:gradle-git:1.6.0'
     }
 }
@@ -28,7 +28,7 @@ group = "dan200.computercraft"
 archivesBaseName = "ComputerCraft"
 
 minecraft {
-    version = "1.11.2-13.20.0.2294"
+    version = "1.12-14.21.1.2387"
     runDir = "run"
     replace '${version}', project.version
 
@@ -37,7 +37,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20161227"
+    mappings = "snapshot_20170629"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 

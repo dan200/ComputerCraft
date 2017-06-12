@@ -17,19 +17,26 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-public class PocketComputerUpgradeRecipe implements IRecipe
+public class PocketComputerUpgradeRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
     public PocketComputerUpgradeRecipe()
     {
     }
 
     @Override
-    public int getRecipeSize()
+    public boolean canFit( int x, int y )
     {
-        return 2;
+        return x >= 2 && y >= 2;
+    }
+
+    @Override
+    public boolean isHidden()
+    {
+        return true;
     }
 
     @Nonnull
