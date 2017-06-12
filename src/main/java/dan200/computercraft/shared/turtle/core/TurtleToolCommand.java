@@ -6,10 +6,10 @@
 
 package dan200.computercraft.shared.turtle.core;
 
-import com.google.common.base.Optional;
 import dan200.computercraft.api.turtle.*;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class TurtleToolCommand implements ITurtleCommand
 {

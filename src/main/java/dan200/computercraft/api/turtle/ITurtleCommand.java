@@ -15,6 +15,7 @@ import javax.annotation.Nonnull;
  *
  * @see ITurtleAccess#executeCommand(ILuaContext, ITurtleCommand)
  */
+@FunctionalInterface
 public interface ITurtleCommand
 {
     /**

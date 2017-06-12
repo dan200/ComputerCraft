@@ -6,7 +6,6 @@
 
 package dan200.computercraft.client.proxy;
 
-import com.google.common.base.Function;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.client.render.TileEntityTurtleRenderer;
 import dan200.computercraft.client.render.TurtleSmartItemModel;
@@ -21,7 +20,6 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
@@ -173,14 +171,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
             IBakedModel bakedModel = model.bake(
                 model.getDefaultState(),
                 DefaultVertexFormats.ITEM,
-                new Function<ResourceLocation, TextureAtlasSprite>()
-                {
-                    @Override
-                    public TextureAtlasSprite apply( ResourceLocation location )
-                    {
-                        return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( location.toString() );
-                    }
-                }
+                location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( location.toString() )
             );
             event.getModelRegistry().putObject(
                 new ModelResourceLocation( "computercraft:" + name, "inventory" ),

@@ -198,28 +198,24 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         mc.getItemColors().registerItemColorHandler( new DiskColorHandler( ComputerCraft.Items.disk ), ComputerCraft.Items.disk );
         mc.getItemColors().registerItemColorHandler( new DiskColorHandler( ComputerCraft.Items.diskExpanded ), ComputerCraft.Items.diskExpanded );
 
-        mc.getItemColors().registerItemColorHandler( new IItemColor()
+        mc.getItemColors().registerItemColorHandler( ( stack, layer ) ->
         {
-            @Override
-            public int getColorFromItemstack( @Nonnull ItemStack stack, int layer )
+            switch( layer )
             {
-                switch( layer )
+                case 0:
+                default:
+                    return 0xFFFFFF;
+                case 1:
                 {
-                    case 0:
-                    default:
-                        return 0xFFFFFF;
-                    case 1:
-                    {
-                        // Frame colour
-                        int colour = ComputerCraft.Items.pocketComputer.getColour( stack );
-                        return colour == -1 ? 0xFFFFFF : colour;
-                    }
-                    case 2:
-                    {
-                        // Light colour
-                        int colour = ComputerCraft.Items.pocketComputer.getLightState( stack );
-                        return colour == -1 ? Colour.Black.getHex() : colour;
-                    }
+                    // Frame colour
+                    int colour = ComputerCraft.Items.pocketComputer.getColour( stack );
+                    return colour == -1 ? 0xFFFFFF : colour;
+                }
+                case 2:
+                {
+                    // Light colour
+                    int colour = ComputerCraft.Items.pocketComputer.getLightState( stack );
+                    return colour == -1 ? Colour.Black.getHex() : colour;
                 }
             }
         }, ComputerCraft.Items.pocketComputer );
@@ -309,7 +305,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     @Override
     public String getRecordInfo( @Nonnull ItemStack recordStack )
     {
-        List<String> info = new ArrayList<String>( 1 );
+        List<String> info = new ArrayList<>( 1 );
         recordStack.getItem().addInformation( recordStack, null, info, ITooltipFlag.TooltipFlags.NORMAL );
         if( info.size() > 0 ) {
             return info.get( 0 );
@@ -399,14 +395,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                     }
                     else
                     {
-                        listener.addScheduledTask( new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                processPacket( packet, player );
-                            }
-                        } );
+                        listener.addScheduledTask( () -> processPacket( packet, player ) );
                     }
                 }
                 break;

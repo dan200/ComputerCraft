@@ -78,7 +78,7 @@ public class RedstoneAPI implements ILuaAPI
             case 0:
             {
                 // getSides
-                Map<Object,Object> table = new HashMap<Object,Object>();
+                Map<Object,Object> table = new HashMap<>();
                 for(int i=0; i< Computer.s_sideNames.length; ++i )
                 {
                     table.put( i+1, Computer.s_sideNames[i] );

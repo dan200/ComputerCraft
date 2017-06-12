@@ -91,7 +91,9 @@ public interface IPeripheral
      *                 computers can be attached to a peripheral at once.
      * @see #detach
      */
-    void attach( @Nonnull IComputerAccess computer );
+    default void attach( @Nonnull IComputerAccess computer )
+    {
+    }
 
     /**
      * Is called when a computer is detaching from the peripheral.
@@ -108,7 +110,9 @@ public interface IPeripheral
      *                 computers can be attached to a peripheral at once.
      * @see #detach
      */
-    void detach( @Nonnull IComputerAccess computer );
+    default void detach( @Nonnull IComputerAccess computer )
+    {
+    }
 
     /**
      * Determine whether this peripheral is equivalent to another one.

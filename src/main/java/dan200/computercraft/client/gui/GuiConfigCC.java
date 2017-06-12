@@ -23,7 +23,7 @@ public class GuiConfigCC extends GuiConfig
 
     private static List<IConfigElement> getConfigElements()
     {
-        ArrayList<IConfigElement> elements = new ArrayList<IConfigElement>();
+        ArrayList<IConfigElement> elements = new ArrayList<>();
         for (Property property : ComputerCraft.Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
             elements.add( new ConfigElement( property ) );

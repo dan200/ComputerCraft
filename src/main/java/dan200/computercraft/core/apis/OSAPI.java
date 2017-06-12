@@ -69,8 +69,8 @@ public class OSAPI implements ILuaAPI
         m_apiEnvironment = environment;
         m_nextTimerToken = 0;
         m_nextAlarmToken = 0;
-        m_timers = new HashMap<Integer, Timer>();
-        m_alarms = new HashMap<Integer, Alarm>();
+        m_timers = new HashMap<>();
+        m_alarms = new HashMap<>();
     }
     
     // ILuaAPI implementation
@@ -303,49 +303,56 @@ public class OSAPI implements ILuaAPI
             {
                 // time
                 String param = optString( args, 0, "ingame" );
-
-                if (param.equals("utc")) {
-                    // Get Hour of day (UTC)
-                    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                    return new Object[] {getTimeForCalendar(c)};
-
-                } else if (param.equals("local")) {
-                    // Get Hour of day (local time)
-                    Calendar c = Calendar.getInstance();
-                    return new Object[] {getTimeForCalendar(c)};
-
-                } else if (param.equals("ingame")) {
-                    // Get ingame hour
-                    synchronized (m_alarms) {
-                        return new Object[]{m_time};
+                switch( param )
+                {
+                    case "utc":
+                    {
+                        // Get Hour of day (UTC)
+                        Calendar c = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
+                        return new Object[] { getTimeForCalendar( c ) };
                     }
-
-                } else {
-                    throw new LuaException("Unsupported operation");
+                    case "local":
+                    {
+                        // Get Hour of day (local time)
+                        Calendar c = Calendar.getInstance();
+                        return new Object[] { getTimeForCalendar( c ) };
+                    }
+                    case "ingame":
+                        // Get ingame hour
+                        synchronized( m_alarms )
+                        {
+                            return new Object[] { m_time };
+                        }
+                    default:
+                        throw new LuaException( "Unsupported operation" );
                 }
             }
             case 12:
             {
                 // day
                 String param = optString( args, 0, "ingame" );
-                if (param.equals("utc")) {
-                    // Get numbers of days since 1970-01-01 (utc)
-                    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                    return new Object[] {getDayForCalendar(c)};
-
-                } else if (param.equals("local")) {
-                    // Get numbers of days since 1970-01-01 (local time)
-                    Calendar c = Calendar.getInstance();
-                    return new Object[] {getDayForCalendar(c)};
-
-                } else if (param.equals("ingame")){
-                    // Get game day
-                    synchronized (m_alarms) {
-                        return new Object[]{m_day};
+                switch( param )
+                {
+                    case "utc":
+                    {
+                        // Get numbers of days since 1970-01-01 (utc)
+                        Calendar c = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
+                        return new Object[] { getDayForCalendar( c ) };
                     }
-
-                } else {
-                    throw new LuaException("Unsupported operation");
+                    case "local":
+                    {
+                        // Get numbers of days since 1970-01-01 (local time)
+                        Calendar c = Calendar.getInstance();
+                        return new Object[] { getDayForCalendar( c ) };
+                    }
+                    case "ingame":
+                        // Get game day
+                        synchronized( m_alarms )
+                        {
+                            return new Object[] { m_day };
+                        }
+                    default:
+                        throw new LuaException( "Unsupported operation" );
                 }
             }
             case 13:
@@ -378,26 +385,30 @@ public class OSAPI implements ILuaAPI
             {
                 // epoch
                 String param = optString( args, 0, "ingame" );
-                if (param.equals("utc")) {
-                    // Get utc epoch
-                    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                    return new Object[] {getEpochForCalendar(c)};
-
-                } else if (param.equals("local")) {
-                    // Get local epoch
-                    Calendar c = Calendar.getInstance();
-                    return new Object[] {getEpochForCalendar(c)};
-
-                } else if (param.equals("ingame")){
-                    // Get in-game epoch
-                    synchronized (m_alarms) {
-                        return new Object[] {
-                            m_day * 86400000 + (int)(m_time * 3600000.0f)
-                        };
+                switch( param )
+                {
+                    case "utc":
+                    {
+                        // Get utc epoch
+                        Calendar c = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
+                        return new Object[] { getEpochForCalendar( c ) };
                     }
-
-                } else {
-                    throw new LuaException("Unsupported operation");
+                    case "local":
+                    {
+                        // Get local epoch
+                        Calendar c = Calendar.getInstance();
+                        return new Object[] { getEpochForCalendar( c ) };
+                    }
+                    case "ingame":
+                        // Get in-game epoch
+                        synchronized( m_alarms )
+                        {
+                            return new Object[] {
+                                m_day * 86400000 + (int) (m_time * 3600000.0f)
+                            };
+                        }
+                    default:
+                        throw new LuaException( "Unsupported operation" );
                 }
             }
             default:

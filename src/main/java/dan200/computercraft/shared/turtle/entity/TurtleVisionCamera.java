@@ -28,7 +28,7 @@ public class TurtleVisionCamera extends EntityLivingBase
     {
         super( world );
         m_turtle = turtle;
-        m_armor = new ArrayList<ItemStack>();
+        m_armor = new ArrayList<>();
         applyPos();
     }
 

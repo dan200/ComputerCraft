@@ -88,7 +88,7 @@ public abstract class BlockGeneric extends Block implements
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TileGeneric )
         {
-            TileGeneric generic = (TileGeneric)tile;
+            TileGeneric generic = (TileGeneric) tile;
             generic.getDroppedItems( drops, creative );
         }
 
@@ -234,7 +234,7 @@ public abstract class BlockGeneric extends Block implements
             TileGeneric generic = (TileGeneric)tile;
 
             // Get collision bounds
-            List<AxisAlignedBB> collision = new ArrayList<AxisAlignedBB>( 1 );
+            List<AxisAlignedBB> collision = new ArrayList<>( 1 );
             generic.getCollisionBounds( collision );
 
             // Return the union of the collision bounds
@@ -262,7 +262,7 @@ public abstract class BlockGeneric extends Block implements
             TileGeneric generic = (TileGeneric)tile;
 
             // Get collision bounds
-            List<AxisAlignedBB> collision = new ArrayList<AxisAlignedBB>( 1 );
+            List<AxisAlignedBB> collision = new ArrayList<>( 1 );
             generic.getCollisionBounds( collision );
 
             // Add collision bounds to list

@@ -51,6 +51,7 @@ public class BlockPeripheral extends BlockPeripheralBase
         );
     }
 
+    @Override
     @Nonnull
     @SideOnly( Side.CLIENT)
     public BlockRenderLayer getBlockLayer()

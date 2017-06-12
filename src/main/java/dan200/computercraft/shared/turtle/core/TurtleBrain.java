@@ -41,7 +41,7 @@ import java.util.*;
 public class TurtleBrain implements ITurtleAccess
 {
     private static int s_nextInstanceID = 0;
-    private static Map<Integer, WeakReference<TurtleBrain>> s_allClientBrains = new HashMap<Integer, WeakReference<TurtleBrain>>();
+    private static Map<Integer, WeakReference<TurtleBrain>> s_allClientBrains = new HashMap<>();
 
     public static int assignInstanceID()
     {
@@ -75,7 +75,7 @@ public class TurtleBrain implements ITurtleAccess
         {
             if( getClientBrain( instanceID ) != brain )
             {
-                s_allClientBrains.put( instanceID, new WeakReference<TurtleBrain>( brain ) );
+                s_allClientBrains.put( instanceID, new WeakReference<>( brain ) );
             }
         }
     }
@@ -127,12 +127,12 @@ public class TurtleBrain implements ITurtleAccess
     {
         m_owner = turtle;
 
-        m_commandQueue = new LinkedList<TurtleCommandQueueEntry>();
+        m_commandQueue = new LinkedList<>();
         m_commandsIssued = 0;
 
-        m_upgrades = new HashMap<TurtleSide, ITurtleUpgrade>();
-        m_peripherals = new HashMap<TurtleSide, IPeripheral>();
-        m_upgradeNBTData = new HashMap<TurtleSide, NBTTagCompound>();
+        m_upgrades = new HashMap<>();
+        m_peripherals = new HashMap<>();
+        m_upgradeNBTData = new HashMap<>();
 
         m_selectedSlot = 0;
         m_fuelLevel = 0;

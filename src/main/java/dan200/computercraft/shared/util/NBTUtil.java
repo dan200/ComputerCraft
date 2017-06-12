@@ -99,7 +99,7 @@ public class NBTUtil
                 {
                     NBTTagCompound c = (NBTTagCompound)tag;
                     int len = c.getInteger( "len" );
-                    Map<Object, Object> map = new HashMap<Object, Object>( len );
+                    Map<Object, Object> map = new HashMap<>( len );
                     for( int i=0; i<len; ++i )
                     {
                         Object key = fromNBTTag( c.getTag( "k" + Integer.toString( i ) ) );

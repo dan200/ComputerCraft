@@ -51,9 +51,9 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
 
     public CCTurtleProxyCommon()
     {
-        m_legacyTurtleUpgrades = new HashMap<Integer, ITurtleUpgrade>();
-        m_turtleUpgrades = new HashMap<String, ITurtleUpgrade>();
-        m_dropConsumers = new WeakHashMap<Entity, IEntityDropConsumer>();
+        m_legacyTurtleUpgrades = new HashMap<>();
+        m_turtleUpgrades = new HashMap<>();
+        m_dropConsumers = new WeakHashMap<>();
     }
     
     // ICCTurtleProxy implementation

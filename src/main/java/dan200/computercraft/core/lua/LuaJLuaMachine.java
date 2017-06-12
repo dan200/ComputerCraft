@@ -535,7 +535,7 @@ public class LuaJLuaMachine implements ILuaMachine
             {
                 if( m_valuesInProgress == null )
                 {
-                    m_valuesInProgress = new IdentityHashMap<Object, LuaValue>();
+                    m_valuesInProgress = new IdentityHashMap<>();
                     clearWhenDone = true;
                 }
                 else if( m_valuesInProgress.containsKey( object ) )
@@ -629,14 +629,14 @@ public class LuaJLuaMachine implements ILuaMachine
                     // Start remembering stuff
                     if( m_objectsInProgress == null )
                     {
-                        m_objectsInProgress = new IdentityHashMap<LuaValue, Object>();
+                        m_objectsInProgress = new IdentityHashMap<>();
                         clearWhenDone = true;
                     }
                     else if( m_objectsInProgress.containsKey( value ) )
                     {
                         return m_objectsInProgress.get( value );
                     }
-                    Map<Object, Object> table = new HashMap<Object, Object>();
+                    Map<Object, Object> table = new HashMap<>();
                     m_objectsInProgress.put( value, table );
 
                     // Convert all keys

@@ -179,14 +179,7 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy
                 processPacket( packet, player );
             } else
             {
-                listener.addScheduledTask( new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        processPacket( packet, player );
-                    }
-                } );
+                listener.addScheduledTask( () -> processPacket( packet, player ) );
             }
         }
     }

@@ -88,7 +88,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting
         if( !result.isEmpty() )
         {
             // Special case: craft(0) just returns an empty list if crafting was possible
-            ArrayList<ItemStack> results = new ArrayList<ItemStack>();
+            ArrayList<ItemStack> results = new ArrayList<>();
             if( maxCount == 0 )
             {
                 return results;

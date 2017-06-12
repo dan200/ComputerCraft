@@ -12,7 +12,6 @@ import dan200.computercraft.api.turtle.*;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import dan200.computercraft.shared.turtle.core.TurtlePlaceCommand;
 import dan200.computercraft.shared.turtle.core.TurtlePlayer;
-import dan200.computercraft.shared.util.IEntityDropConsumer;
 import dan200.computercraft.shared.util.InventoryUtil;
 import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
@@ -121,11 +120,6 @@ public class TurtleTool implements ITurtleUpgrade
         );
     }
 
-    @Override
-    public void update( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
-    {
-    }
-
     @Nonnull
     @Override
     public TurtleCommandResult useTool( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction )
@@ -186,16 +180,12 @@ public class TurtleTool implements ITurtleUpgrade
 
             // Start claiming entity drops
             Entity hitEntity = hit.getKey();
-            ComputerCraft.setEntityDropConsumer( hitEntity, new IEntityDropConsumer()
+            ComputerCraft.setEntityDropConsumer( hitEntity, ( entity, drop ) ->
             {
-                @Override
-                public void consumeDrop( Entity entity, @Nonnull ItemStack drop )
+                ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
+                if( !remainder.isEmpty() )
                 {
-                    ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
-                    if( !remainder.isEmpty() )
-                    {
-                        WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );
-                    }
+                    WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );
                 }
             } );
 

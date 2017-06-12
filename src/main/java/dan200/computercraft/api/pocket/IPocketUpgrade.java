@@ -74,7 +74,9 @@ public interface IPocketUpgrade
      * @param peripheral The peripheral for this upgrade.
      * @see #createPeripheral(IPocketAccess)
      */
-    void update( @Nonnull IPocketAccess access, @Nullable IPeripheral peripheral );
+    default void update( @Nonnull IPocketAccess access, @Nullable IPeripheral peripheral )
+    {
+    }
 
     /**
      * Called when the pocket computer is right clicked.
@@ -87,5 +89,8 @@ public interface IPocketUpgrade
      * access the GUI.
      * @see #createPeripheral(IPocketAccess)
      */
-    boolean onRightClick( @Nonnull World world, @Nonnull IPocketAccess access, @Nullable IPeripheral peripheral );
+    default boolean onRightClick( @Nonnull World world, @Nonnull IPocketAccess access, @Nullable IPeripheral peripheral )
+    {
+        return false;
+    }
 }

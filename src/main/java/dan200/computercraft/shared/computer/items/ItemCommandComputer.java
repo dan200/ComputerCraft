@@ -10,7 +10,6 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -29,6 +28,7 @@ public class ItemCommandComputer extends ItemComputer
         setCreativeTab( ComputerCraft.mainCreativeTab );
     }
 
+    @Override
     public ItemStack create( int id, String label, ComputerFamily family )
     {
         // Ignore types we can't handle

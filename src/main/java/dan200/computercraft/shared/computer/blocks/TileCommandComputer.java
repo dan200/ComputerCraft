@@ -33,7 +33,7 @@ public class TileCommandComputer extends TileComputer
 
         public CommandSender()
         {
-            m_outputTable = new HashMap<Integer, String>();
+            m_outputTable = new HashMap<>();
         }
 
         public void clearOutput()
@@ -48,7 +48,7 @@ public class TileCommandComputer extends TileComputer
 
         public Map<Integer, String> copyOutput()
         {
-            return new HashMap<Integer, String>( m_outputTable );
+            return new HashMap<>( m_outputTable );
         }
 
         // ICommandSender

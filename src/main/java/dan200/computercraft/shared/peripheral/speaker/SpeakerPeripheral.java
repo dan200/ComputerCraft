@@ -75,17 +75,6 @@ public class SpeakerPeripheral implements IPeripheral {
         }
     }
 
-
-    @Override
-    public void attach( @Nonnull IComputerAccess computerAccess )
-    {
-    }
-
-    @Override
-    public void detach( @Nonnull IComputerAccess computerAccess )
-    {
-    }
-
     @Nonnull
     @Override
     public String getType()

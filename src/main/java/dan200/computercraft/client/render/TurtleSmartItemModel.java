@@ -96,9 +96,9 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
 
     public TurtleSmartItemModel()
     {
-        m_cachedModels = new HashMap<TurtleModelCombination, IBakedModel>();
+        m_cachedModels = new HashMap<>();
         m_defaultCombination = new TurtleModelCombination( ComputerFamily.Normal, false, null, null, null, false );
-        m_overrides = new ItemOverrideList( new ArrayList<ItemOverride>() )
+        m_overrides = new ItemOverrideList( new ArrayList<>() )
         {
             @Nonnull
             @Override

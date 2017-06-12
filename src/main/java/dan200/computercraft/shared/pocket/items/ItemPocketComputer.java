@@ -184,7 +184,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia, I
 
             if( !stop ) ComputerCraft.openPocketComputerGUI( player, hand );
         }
-        return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
+        return new ActionResult<>( EnumActionResult.SUCCESS, stack );
     }
 
     @Nonnull

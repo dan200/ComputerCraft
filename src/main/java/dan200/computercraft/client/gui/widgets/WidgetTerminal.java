@@ -76,7 +76,7 @@ public class WidgetTerminal extends Widget
         m_topMargin = topMargin;
         m_bottomMargin = bottomMargin;
 
-        m_keysDown = new ArrayList<Integer>();
+        m_keysDown = new ArrayList<>();
     }
 
     public void setAllowFocusLoss( boolean allowFocusLoss )
