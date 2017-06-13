@@ -1,17 +1,9 @@
-
-local function drawPixelInternal( xPos, yPos )
-    term.setCursorPos( xPos, yPos )
-    term.write(" ")
-end
-
-local function drawLineHorizontal( xPos, yPos , nLen )
-    term.setCursorPos( xPos, yPos )
-    term.write(string.rep( " ", nLen ))
-end
+local setPos, write, setCol, blit = term.setCursorPos, term.write, term.setBackgroundColour, term.blit
 
 local tColourLookup = {}
 for n=1,16 do
-    tColourLookup[ string.byte( "0123456789abcdef",n,n ) ] = 2^(n-1)
+    tColourLookup[ string.sub( "0123456789abcdef",n,n ) ] = 2^(n-1)
+    tColourLookup[ 2^(n-1) ] = string.sub( "0123456789abcdef",n,n )
 end
 
 function loadImage( sPath )
@@ -21,37 +13,53 @@ function loadImage( sPath )
 
     local tImage = {}
     if fs.exists( sPath ) then
-        local file = io.open(sPath, "r" )
-        local sLine = file:read()
-        while sLine do
+        for sLine in io.lines(sPath) do
             local tLine = {}
-            for x=1,sLine:len() do
-                tLine[x] = tColourLookup[ string.byte(sLine,x,x) ] or 0
+            for x=1,#sLine do
+                tLine[x] = tColourLookup[ string.sub(sLine,x,x) ] or 0
             end
             table.insert( tImage, tLine )
-            sLine = file:read()
         end
-        file:close()
         return tImage
     end
     return nil
 end
 
+function saveImage( tImage, sPath )
+    if type( tImage ) ~= "table" then
+        error( "Expected paintutils image", 2 )
+    elseif type( sPath ) ~= "string" then
+        error( "Expected path", 2 )
+    end
+
+    local file = fs.open(sPath, "w" )
+    
+    for y=1,#tImage do
+        local tOld, tNew = tImage[y], {}
+        for x=1,#tOld do
+            tNew[x] = tColourLookup[ tOld[x] ] or " "
+        end
+        file.writeLine( table.concat( tNew ) )
+    end
+    file.close()
+end
+
 function drawPixel( xPos, yPos, nColour )
     if type( xPos ) ~= "number" or type( yPos ) ~= "number" or (nColour ~= nil and type( nColour ) ~= "number") then
-        error( "Expected x, y, colour", 2 )
+        error( "Expected x, y [, colour]", 2 )
     end
     if nColour then
-        term.setBackgroundColor( nColour )
+        setCol( nColour )
     end
-    drawPixelInternal( xPos, yPos )
+    setPos( xPos, yPos )
+    write( " " )
 end
 
 function drawLine( startX, startY, endX, endY, nColour )
     if type( startX ) ~= "number" or type( startX ) ~= "number" or
        type( endX ) ~= "number" or type( endY ) ~= "number" or
        (nColour ~= nil and type( nColour ) ~= "number") then
-        error( "Expected startX, startY, endX, endY, colour", 2 )
+        error( "Expected startX, startY, endX, endY [, colour]", 2 )
     end
     
     startX = math.floor(startX)
@@ -60,14 +68,15 @@ function drawLine( startX, startY, endX, endY, nColour )
     endY = math.floor(endY)
 
     if nColour then
-        term.setBackgroundColor( nColour )
+        setCol( nColour )
     end
     if startX == endX and startY == endY then
-        drawPixelInternal( startX, startY )
+        setPos( startX, startY )
+        write(" ")
         return
     end
     
-    local minX = math.min( startX, endX )
+    local minX, minY, maxX, maxY = math.min( startX, endX )
     if minX == startX then
         minY = startY
         maxX = endX
@@ -84,7 +93,9 @@ function drawLine( startX, startY, endX, endY, nColour )
     local yDiff = maxY - minY
     
     if minY == maxY then
-        drawLineHorizontal( minX, minY , xDiff + 1 )
+        local sStr = string.rep( " ", xDiff + 1 )
+        setPos( minX, minY )
+        write( sStr )
         return
     end
             
@@ -92,22 +103,17 @@ function drawLine( startX, startY, endX, endY, nColour )
         local y = minY
         local dy = yDiff / xDiff
         for x=minX,maxX do
-            drawPixelInternal( x, math.floor( y + 0.5 ) )
+            setPos( x, math.floor( y + 0.5 ) )
+            write( " " )
             y = y + dy
         end
     else
-        local x = minX
-        local dx = xDiff / yDiff
-        if maxY >= minY then
-            for y=minY,maxY do
-                drawPixelInternal( math.floor( x + 0.5 ), y )
-                x = x + dx
-            end
-        else
-            for y=minY,maxY,-1 do
-                drawPixelInternal( math.floor( x + 0.5 ), y )
-                x = x - dx
-            end
+        local x, mul = minX, maxY >= minY and 1 or -1
+        local dx = xDiff / yDiff * mul
+        for y=minY,maxY,mul do
+            setPos( math.floor( x + 0.5 ), y )
+            write( " " )
+            x = x + dx
         end
     end
 end
@@ -116,7 +122,7 @@ function drawBox( startX, startY, endX, endY, nColour )
     if type( startX ) ~= "number" or type( startX ) ~= "number" or
        type( endX ) ~= "number" or type( endY ) ~= "number" or
        (nColour ~= nil and type( nColour ) ~= "number") then
-        error( "Expected startX, startY, endX, endY, colour", 2 )
+        error( "Expected startX, startY, endX, endY [, colour]", 2 )
     end
 
     startX = math.floor(startX)
@@ -125,32 +131,29 @@ function drawBox( startX, startY, endX, endY, nColour )
     endY = math.floor(endY)
 
     if nColour then
-        term.setBackgroundColor( nColour )
+        setCol( nColour )
     end
     if startX == endX and startY == endY then
-        drawPixelInternal( startX, startY )
+        setPos( startX, startY )
+        write( " " )
         return
     end
+    
+    local minX, minY, maxX, maxY
+    if startX < endX then minX, maxX = startX, endX else minX, maxX = endX, startX end
+    if startY < endY then minY, maxY = startY, endY else minY, maxY = endY, startY end
 
-    local minX = math.min( startX, endX )
-    if minX == startX then
-        minY = startY
-        maxX = endX
-        maxY = endY
-    else
-        minY = endY
-        maxX = startX
-        maxY = startY
-    end
-
-    drawLineHorizontal( minX, minY , maxX - minX + 1 )
-    drawLineHorizontal( minX, maxY , maxX - minX + 1 )
-
-    if (maxY - minY) >= 2 then
-        for y=(minY+1),(maxY-1) do
-            drawPixelInternal( minX, y )
-            drawPixelInternal( maxX, y )
-        end
+    local sStr = string.rep( " ", maxX - minX + 1 )
+    setPos( minX, minY )
+    write( sStr )
+    setPos( minX, maxY )
+    write( sStr )
+    
+    for y=(minY+1),(maxY-1) do
+        setPos( minX, y )
+        write( " " )
+        setPos( maxX, y )
+        write( " " )
     end
 end
 
@@ -158,7 +161,7 @@ function drawFilledBox( startX, startY, endX, endY, nColour )
     if type( startX ) ~= "number" or type( startX ) ~= "number" or
        type( endX ) ~= "number" or type( endY ) ~= "number" or
        (nColour ~= nil and type( nColour ) ~= "number") then
-        error( "Expected startX, startY, endX, endY, colour", 2 )
+        error( "Expected startX, startY, endX, endY [, colour]", 2 )
     end
 
     startX = math.floor(startX)
@@ -167,26 +170,22 @@ function drawFilledBox( startX, startY, endX, endY, nColour )
     endY = math.floor(endY)
 
     if nColour then
-        term.setBackgroundColor( nColour )
+        setCol( nColour )
     end
     if startX == endX and startY == endY then
-        drawPixelInternal( startX, startY )
+        setPos( startX, startY )
+        write( " " )
         return
     end
 
-    local minX = math.min( startX, endX )
-    if minX == startX then
-        minY = startY
-        maxX = endX
-        maxY = endY
-    else
-        minY = endY
-        maxX = startX
-        maxY = startY
-    end
+    local minX, minY, maxX, maxY
+    if startX < endX then minX, maxX = startX, endX else minX, maxX = endX, startX end
+    if startY < endY then minY, maxY = startY, endY else minY, maxY = endY, startY end
 
+    local sStr = string.rep( " ", maxX - minX + 1 )
     for y=minY,maxY do
-        drawLineHorizontal( minX, y , maxX - minX + 1 )
+        setPos( minX, y )
+        write( sStr )
     end
 end
 
@@ -195,11 +194,17 @@ function drawImage( tImage, xPos, yPos )
         error( "Expected image, x, y", 2 )
     end
     for y=1,#tImage do
-        local tLine = tImage[y]
-        for x=1,#tLine do
-            if tLine[x] > 0 then
-                term.setBackgroundColor( tLine[x] )
-                drawPixelInternal( x + xPos - 1, y + yPos - 1 )
+        local tLine, sBG, counter = tImage[y], {}, 0
+        for x=1,#tLine+1 do
+            local px = tLine[x] or 0
+            if px > 0 then
+                counter = counter + 1
+                sBG[counter] = tColourLookup[ px ]
+            elseif counter > 0 then
+                setPos( x + xPos - 1 - counter, y + yPos - 1 )	
+                local sT = string.rep( " ", counter )
+                blit( sT, sT, table.concat( sBG ) )
+                sBG, counter = {}, 0
             end
         end
     end
