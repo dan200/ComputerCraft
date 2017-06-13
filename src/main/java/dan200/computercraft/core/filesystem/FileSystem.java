@@ -172,7 +172,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access Denied" );
+                throw new FileSystemException( "Access denied" );
             }
             try
             {
@@ -199,7 +199,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access Denied" );
+                throw new FileSystemException( "Access denied" );
             }
             try
             {
@@ -219,7 +219,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access Denied" );
+                throw new FileSystemException( "Access denied" );
             }
             try
             {
@@ -251,7 +251,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access Denied" );
+                throw new FileSystemException( "Access denied" );
             }
             try
             {
