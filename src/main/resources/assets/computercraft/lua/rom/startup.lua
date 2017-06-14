@@ -225,14 +225,6 @@ if turtle then
     shell.setCompletionFunction( "rom/programs/turtle/unequip.lua", completeUnequip )
 end
 
-if commands then
-    local function completExec( shell, nIndex, sText )
-        if nIndex == 1 then
-            return completeMultipleChoice( sText, commands.list() )
-        end
-    end
-    shell.setCompletionFunction( "rom/programs/command/exec.lua", completExec )
-end
 
 -- Run autorun files
 if fs.exists( "/rom/autorun" ) and fs.isDir( "/rom/autorun" ) then
