@@ -276,12 +276,17 @@ function printError( ... )
     end
 end
 
-function read( _sReplaceChar, _tHistory, _fnComplete )
+function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     term.setCursorBlink( true )
 
-    local sLine = ""
+    local sLine
+    if type( _sDefault ) == "string" then
+        sLine = _sDefault
+    else
+        sLine = ""
+    end
     local nHistoryPos
-    local nPos = 0
+    local nPos = #sLine
     if _sReplaceChar then
         _sReplaceChar = string.sub( _sReplaceChar, 1, 1 )
     end
