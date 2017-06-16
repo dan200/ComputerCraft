@@ -135,39 +135,65 @@ local tKeywords = {
     ["while"] = true,
 }
 
-local function tryWrite( sLine, regex, colour )
-    local match = string.match( sLine, regex )
-    if match then
-        if type(colour) == "number" then
-            term.setTextColour( colour )
-        else
-            term.setTextColour( colour(match) )
-        end
-        term.write( match )
-        term.setTextColour( textColour )
-        return string.sub( sLine, string.len(match) + 1 )
-    end
-    return nil
-end
+local tHex = {
+    [ colors.white ] = "0",
+    [ colors.orange ] = "1",
+    [ colors.magenta ] = "2",
+    [ colors.lightBlue ] = "3",
+    [ colors.yellow ] = "4",
+    [ colors.lime ] = "5",
+    [ colors.pink ] = "6",
+    [ colors.gray ] = "7",
+    [ colors.lightGray ] = "8",
+    [ colors.cyan ] = "9",
+    [ colors.purple ] = "a",
+    [ colors.blue ] = "b",
+    [ colors.brown ] = "c",
+    [ colors.green ] = "d",
+    [ colors.red ] = "e",
+    [ colors.black ] = "f",
+}
+
+local tPattern = {
+    [ 1 ] = "^(%-%-%[%[.-%]%])()",
+    [ 2 ] = "^(%-%-.*)()",
+    [ 3 ] = "^(\"\")()",
+    [ 4 ] = "^(\".-[^\\]\")()",
+    [ 5 ] = "^(\'\')()",
+    [ 6 ] = "^(\'.-[^\\]\')()",
+    [ 7 ] = "^(%[%[.-%]%])()",
+    [ 8 ] = "^([%w_]+)()",
+    [ 9 ] = "^([^%w_])()",
+}
+
+local tPatternColors = {
+    [ 1 ] = commentColour,
+    [ 2 ] = commentColour,
+    [ 3 ] = stringColour,
+    [ 4 ] = stringColour,
+    [ 5 ] = stringColour,
+    [ 6 ] = stringColour,
+    [ 7 ] = stringColour,
+    [ 8 ] = function( sMatch ) return tKeywords[ sMatch ] and keywordColour or textColour end,
+    [ 9 ] = textColour,
+}
 
 local function writeHighlighted( sLine )
-    while string.len(sLine) > 0 do    
-        sLine = 
-            tryWrite( sLine, "^%-%-%[%[.-%]%]", commentColour ) or
-            tryWrite( sLine, "^%-%-.*", commentColour ) or
-            tryWrite( sLine, "^\"\"", stringColour ) or
-            tryWrite( sLine, "^\".-[^\\]\"", stringColour ) or
-            tryWrite( sLine, "^\'\'", stringColour ) or
-            tryWrite( sLine, "^\'.-[^\\]\'", stringColour ) or
-            tryWrite( sLine, "^%[%[.-%]%]", stringColour ) or
-            tryWrite( sLine, "^[%w_]+", function( match )
-                if tKeywords[ match ] then
-                    return keywordColour
-                end
-                return textColour
-            end ) or
-            tryWrite( sLine, "^[^%w_]", textColour )
+    local tColor = {}
+    local nPosition = 1
+    local sMatch,nNextPosition
+    local nColor
+    while nPosition <= #sLine do
+        local i = 0
+        repeat 
+            i=i+1
+            sMatch,nNextPosition = string.match( sLine, tPattern[i] , nPosition)
+        until sMatch
+        nColor = tPatternColors[i]
+        tColor[#tColor+1] = string.rep( tHex[ type(nColor) == "number" and nColor or  nColor(sMatch) ] , nNextPosition - nPosition)
+        nPosition = nNextPosition
     end
+    term.blit( sLine, table.concat( tColor ), string.rep( tHex[bgColour], #sLine ) )
 end
 
 local tCompletions
