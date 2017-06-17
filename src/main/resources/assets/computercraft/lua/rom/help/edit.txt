@@ -2,3 +2,5 @@ edit is a text editor for creating or modifying programs or text files. After cr
 
 ex:
 "edit hello" opens a file called "hello" for editing.
+
+By changing setting "edit.advanced_functionality" to true you can unlock ability to jump to specific line in longer files.

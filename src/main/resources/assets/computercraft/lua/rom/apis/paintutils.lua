@@ -12,8 +12,8 @@ end
 
 local tColourLookup = {}
 for n=1,16 do
-    tColourLookup[ string.sub( "0123456789abcdef",n,n ) ] = 2^(n-1)
-    tColourLookup[ 2^(n-1) ] = string.sub( "0123456789abcdef",n,n )
+    tColourLookup[ string.byte( "0123456789abcdef",n,n ) ] = 2^(n-1)
+    tColourLookup[ 2^(n-1) ] = string.byte( "0123456789abcdef",n,n )
 end
 
 function loadImage( sPath )
@@ -26,7 +26,7 @@ function loadImage( sPath )
         for sLine in io.lines(sPath) do
             local tLine = {}
             for x=1,#sLine do
-                tLine[x] = tColourLookup[ string.sub(sLine,x,x) ] or 0
+                tLine[x] = tColourLookup[ string.byte(sLine,x,x) ] or 0
             end
             table.insert( tImage, tLine )
         end

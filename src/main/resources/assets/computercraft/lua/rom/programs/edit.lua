@@ -59,7 +59,9 @@ end
 if peripheral.find( "printer" ) then
     table.insert( tMenuItems, "Print" )
 end
-table.insert( tMenuItems, "Jump" )
+if settings.get( "edit.advanced_functionality" ) then
+    table.insert( tMenuItems, "Jump" )
+end
 table.insert( tMenuItems, "Exit" )
 
 local sStatus = "Press Ctrl to access menu"
