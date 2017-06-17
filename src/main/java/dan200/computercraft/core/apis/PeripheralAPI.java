@@ -21,6 +21,8 @@ import dan200.computercraft.core.filesystem.FileSystemException;
 import javax.annotation.Nonnull;
 import java.util.*;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+
 public class PeripheralAPI implements ILuaAPI, IAPIEnvironment.IPeripheralChangeListener
 {
     private class PeripheralWrapper implements IComputerAccess
@@ -460,14 +462,10 @@ public class PeripheralAPI implements ILuaAPI, IAPIEnvironment.IPeripheralChange
             case 3:
             {
                 // call
-                if( args.length < 2 || args[1] == null || !(args[1] instanceof String) )
-                {
-                    throw new LuaException( "Expected string, string" );
-                }
-                String methodName = (String)args[1];
+                int side = parseSide( args );
+                String methodName = getString( args, 1 );
                 Object[] methodArgs = trimArray( args, 2 );
                 
-                int side = parseSide( args );
                 if( side >= 0 )
                 {
                     PeripheralWrapper p;
@@ -498,11 +496,7 @@ public class PeripheralAPI implements ILuaAPI, IAPIEnvironment.IPeripheralChange
 
     private int parseSide( Object[] args ) throws LuaException
     {
-        if( args.length < 1 || args[0] == null || !(args[0] instanceof String) )
-        {
-            throw new LuaException( "Expected string" );
-        }
-        String side = (String)args[0];
+        String side = getString( args, 0 );
         for( int n=0; n<Computer.s_sideNames.length; ++n )
         {
             if( side.equals( Computer.s_sideNames[n] ) )

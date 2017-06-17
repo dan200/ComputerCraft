@@ -22,6 +22,8 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
+
 public class TurtleAPI implements ILuaAPI
 {
     private IAPIEnvironment m_environment;
@@ -115,38 +117,23 @@ public class TurtleAPI implements ILuaAPI
 
     private int parseSlotNumber( Object[] arguments, int index ) throws LuaException
     {
-        int slot = parseOptionalSlotNumber( arguments, index, 99 );
-        if( slot == 99 )
-        {
-            throw new LuaException( "Expected number" );
-        }
-        return slot;
+        int slot = getInt( arguments, index );
+        if( slot < 1 || slot > 16 ) throw new LuaException( "Slot number " + slot + " out of range" );
+        return slot - 1;
     }
 
     private int parseOptionalSlotNumber( Object[] arguments, int index, int fallback ) throws LuaException
     {
-        if( arguments.length <= index || !(arguments[index] instanceof Number) )
-        {
-            return fallback;
-        }
-        int slot = ((Number)arguments[index]).intValue();
-        if( slot >= 1 && slot <= 16 )
-        {
-            return slot - 1;
-        }
-        else
-        {
-            throw new LuaException( "Slot number " + slot + " out of range" );
-        }
+        if( index >= arguments.length || arguments[ index ] == null ) return fallback;
+
+        int slot = getInt( arguments, index );
+        if( slot < 1 || slot > 16 ) throw new LuaException( "Slot number " + slot + " out of range" );
+        return slot - 1;
     }
     
     private int parseCount( Object[] arguments, int index ) throws LuaException
     {
-        if( arguments.length <= index || !(arguments[index] instanceof Number) )
-        {
-            throw new LuaException( "Expected number" );
-        }
-        int count = ((Number)arguments[index]).intValue();
+        int count = optInt( arguments, index, 64 );
         if( count >= 0 && count <= 64 )
         {
             return count;
@@ -159,19 +146,16 @@ public class TurtleAPI implements ILuaAPI
 
     private Optional<TurtleSide> parseSide( Object[] arguments, int index ) throws LuaException
     {
-        if( arguments.length <= index || arguments[index] == null )
+        String side = optString( arguments, index, null );
+        if( side == null )
         {
             return Optional.absent();
         }
-        if( !(arguments[ index ] instanceof String) )
-        {
-            throw new LuaException( "Expected string" );
-        }
-        if( arguments[ index ].equals( "left" ) )
+        else if( side.equalsIgnoreCase( "left" ) )
         {
             return Optional.of( TurtleSide.Left );
         }
-        else if( arguments[ index ].equals( "right" ) )
+        else if( side.equalsIgnoreCase( "right" ) )
         {
             return Optional.of( TurtleSide.Right );
         }
@@ -252,11 +236,7 @@ public class TurtleAPI implements ILuaAPI
             case 12:
             {
                 // drop
-                int count = 64;
-                if( args.length > 0 )
-                {
-                    count = parseCount( args, 0 );
-                }
+                int count = parseCount( args, 0 );
                 return tryCommand( context, new TurtleDropCommand( InteractDirection.Forward, count ) );
             }
             case 13:
@@ -343,51 +323,31 @@ public class TurtleAPI implements ILuaAPI
             case 25:
             {
                 // dropUp
-                int count = 64;
-                if( args.length > 0 )
-                {
-                    count = parseCount( args, 0 );
-                }
+                int count = parseCount( args, 0 );
                 return tryCommand( context, new TurtleDropCommand( InteractDirection.Up, count ) );
             }
             case 26:
             {
                 // dropDown
-                int count = 64;
-                if( args.length > 0 )
-                {
-                    count = parseCount( args, 0 );
-                }
+                int count = parseCount( args, 0 );
                 return tryCommand( context, new TurtleDropCommand( InteractDirection.Down, count ) );
             }
             case 27:
             {
                 // suck
-                int count = 64;
-                if( args.length > 0 )
-                {
-                    count = parseCount( args, 0 );
-                }
+                int count = parseCount( args, 0 );
                 return tryCommand( context, new TurtleSuckCommand( InteractDirection.Forward, count ) );
             }
             case 28:
             {
                 // suckUp
-                int count = 64;
-                if( args.length > 0 )
-                {
-                    count = parseCount( args, 0 );
-                }
+                int count = parseCount( args, 0 );
                 return tryCommand( context, new TurtleSuckCommand( InteractDirection.Up, count ) );
             }
             case 29:
             {
                 // suckDown
-                int count = 64;
-                if( args.length > 0 )
-                {
-                    count = parseCount( args, 0 );
-                }
+                int count = parseCount( args, 0 );
                 return tryCommand( context, new TurtleSuckCommand( InteractDirection.Down, count ) );
             }
             case 30:
@@ -405,11 +365,7 @@ public class TurtleAPI implements ILuaAPI
             case 31:
             {
                 // refuel
-                int count = 64;
-                if( args.length > 0 )
-                {
-                    count = parseCount( args, 0 );
-                }
+                int count = parseCount( args, 0 );
                 return tryCommand( context, new TurtleRefuelCommand( count ) );
             }
             case 32:
@@ -422,11 +378,7 @@ public class TurtleAPI implements ILuaAPI
             {
                 // transferTo
                 int slot = parseSlotNumber( args, 0 );
-                int count = 64;
-                if( args.length > 1 )
-                {
-                    count = parseCount( args, 1 );
-                }
+                int count = parseCount( args, 1 );
                 return tryCommand( context, new TurtleTransferToCommand( slot, count ) );
             }
             case 34:

@@ -21,6 +21,8 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+
 public class FSAPI implements ILuaAPI
 {
     private IAPIEnvironment m_env;
@@ -89,11 +91,7 @@ public class FSAPI implements ILuaAPI
             case 0:
             {
                 // list
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try {
                     String[] results = m_fileSystem.list( path );
                     Map<Object,Object> table = new HashMap<Object,Object>();
@@ -110,32 +108,20 @@ public class FSAPI implements ILuaAPI
             case 1:
             {
                 // combine
-                if( args.length != 2 || args[0] == null || !(args[0] instanceof String) || args[1] == null || !(args[1] instanceof String) )
-                {
-                    throw new LuaException( "Expected string, string" );
-                }
-                String pathA = (String)args[0];
-                String pathB = (String)args[1];
+                String pathA = getString( args, 0 );
+                String pathB = getString( args, 1 );
                 return new Object[] { m_fileSystem.combine( pathA, pathB ) };
             }
             case 2:
             {
                 // getName
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 return new Object[]{ FileSystem.getName( path ) };
             }
             case 3:
             {
                 // getSize
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try
                 {
                     return new Object[]{ m_fileSystem.getSize( path ) };
@@ -148,11 +134,7 @@ public class FSAPI implements ILuaAPI
             case 4:
             {
                 // exists
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try {
                     return new Object[]{ m_fileSystem.exists( path ) };
                 } catch( FileSystemException e ) {
@@ -162,11 +144,7 @@ public class FSAPI implements ILuaAPI
             case 5:
             {
                 // isDir
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try {
                     return new Object[]{ m_fileSystem.isDir( path ) };
                 } catch( FileSystemException e ) {
@@ -176,11 +154,7 @@ public class FSAPI implements ILuaAPI
             case 6:
             {
                 // isReadOnly
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try {
                     return new Object[]{ m_fileSystem.isReadOnly( path ) };
                 } catch( FileSystemException e ) {
@@ -190,11 +164,7 @@ public class FSAPI implements ILuaAPI
             case 7:
             {
                 // makeDir
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try {
                     m_fileSystem.makeDir( path );
                     return null;
@@ -205,12 +175,8 @@ public class FSAPI implements ILuaAPI
             case 8:
             {
                 // move
-                if( args.length != 2 || args[0] == null || !(args[0] instanceof String) || args[1] == null || !(args[1] instanceof String) )
-                {
-                    throw new LuaException( "Expected string, string" );
-                }
-                String path = (String)args[0];
-                String dest = (String)args[1];
+                String path = getString( args, 0 );
+                String dest = getString( args, 1 );
                 try {
                     m_fileSystem.move( path, dest );
                     return null;
@@ -221,12 +187,8 @@ public class FSAPI implements ILuaAPI
             case 9:
             {
                 // copy
-                if( args.length != 2 || args[0] == null || !(args[0] instanceof String) || args[1] == null || !(args[1] instanceof String) )
-                {
-                    throw new LuaException( "Expected string, string" );
-                }
-                String path = (String)args[0];
-                String dest = (String)args[1];
+                String path = getString( args, 0 );
+                String dest = getString( args, 1 );
                 try {
                     m_fileSystem.copy( path, dest );
                     return null;
@@ -237,11 +199,7 @@ public class FSAPI implements ILuaAPI
             case 10:
             {
                 // delete
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try {
                     m_fileSystem.delete( path );
                     return null;
@@ -252,12 +210,8 @@ public class FSAPI implements ILuaAPI
             case 11:
             {
                 // open
-                if( args.length < 2 || args[0] == null || !(args[0] instanceof String) || args[1] == null || !(args[1] instanceof String) )
-                {
-                    throw new LuaException( "Expected string, string" );
-                }
-                String path = (String)args[0];
-                String mode = (String)args[1];
+                String path = getString( args, 0 );
+                String mode = getString( args, 1 );
                 try {
                     if( mode.equals( "r" ) ) {
                         // Open the file for reading, then create a wrapper around the reader
@@ -300,11 +254,7 @@ public class FSAPI implements ILuaAPI
             case 12:
             {
                 // getDrive
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try {
                     if( !m_fileSystem.exists( path ) )
                     {
@@ -318,11 +268,7 @@ public class FSAPI implements ILuaAPI
             case 13:
             {
                 // getFreeSpace
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try {
                     long freeSpace = m_fileSystem.getFreeSpace( path );
                     if( freeSpace >= 0 )
@@ -337,11 +283,7 @@ public class FSAPI implements ILuaAPI
             case 14:
             {
                 // find
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 try {
                     String[] results = m_fileSystem.find( path );
                     Map<Object,Object> table = new HashMap<Object,Object>();
@@ -356,11 +298,7 @@ public class FSAPI implements ILuaAPI
             case 15:
             {
                 // getDir
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String path = (String)args[0];
+                String path = getString( args, 0 );
                 return new Object[]{ FileSystem.getDirectory( path ) };
             }
             default:

@@ -13,11 +13,9 @@ import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.shared.util.Palette;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import javax.annotation.Nonnull;
+
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
 public class TermAPI implements ILuaAPI
 {
@@ -86,11 +84,7 @@ public class TermAPI implements ILuaAPI
     
     public static int parseColour( Object[] args ) throws LuaException
     {
-        if( args.length < 1 || args[0] == null || !(args[0] instanceof Double) )
-        {
-            throw new LuaException( "Expected number" );
-        }            
-        int colour = (int)((Double)args[0]).doubleValue();
+        int colour = getInt( args, 0 );
         if( colour <= 0 )
         {
             throw new LuaException( "Colour out of range" );
@@ -144,12 +138,7 @@ public class TermAPI implements ILuaAPI
             case 1:
             {
                 // scroll
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof Double) )
-                {
-                    throw new LuaException( "Expected number" );
-                }
-                
-                int y = (int)((Double)args[0]).doubleValue();
+                int y = getInt( args, 0 );
                 synchronized( m_terminal )
                 {
                     m_terminal.scroll(y);
@@ -159,12 +148,8 @@ public class TermAPI implements ILuaAPI
             case 2:
             {
                 // setCursorPos
-                if( args.length != 2 || args[0] == null || !(args[0] instanceof Double) || args[1] == null || !(args[1] instanceof Double) )
-                {
-                    throw new LuaException( "Expected number, number" );
-                }
-                int x = (int)((Double)args[0]).doubleValue() - 1;
-                int y = (int)((Double)args[1]).doubleValue() - 1;
+                int x = getInt( args, 0 ) - 1;
+                int y = getInt( args, 1 ) - 1;
                 synchronized( m_terminal )
                 {
                     m_terminal.setCursorPos( x, y );
@@ -174,11 +159,7 @@ public class TermAPI implements ILuaAPI
             case 3:
             {
                 // setCursorBlink
-                if( args.length != 1 || args[0] == null || !(args[0] instanceof Boolean) )
-                {
-                    throw new LuaException( "Expected boolean" );
-                }
-                boolean b = (Boolean) args[ 0 ];
+                boolean b = getBoolean( args, 0 );
                 synchronized( m_terminal )
                 {
                     m_terminal.setCursorBlink( b );
@@ -268,14 +249,9 @@ public class TermAPI implements ILuaAPI
             case 18:
             {
                 // blit
-                if( args.length < 3 || !(args[0] instanceof String) || !(args[1] instanceof String) || !(args[2] instanceof String) )
-                {
-                    throw new LuaException( "Expected string, string, string" );
-                }
-
-                String text = (String)args[0];
-                String textColour = (String)args[1];
-                String backgroundColour = (String)args[2];
+                String text = getString( args, 0 );
+                String textColour = getString( args, 1 );
+                String backgroundColour = getString( args, 2 );
                 if( textColour.length() != text.length() || backgroundColour.length() != text.length() )
                 {
                     throw new LuaException( "Arguments must be the same length" );
@@ -292,36 +268,26 @@ public class TermAPI implements ILuaAPI
             case 20:
             {
                 // setPaletteColour/setPaletteColor
-                if(args.length == 2 && args[0] instanceof Double && args[1] instanceof Double)
+                int colour = 15 - parseColour( args );
+                if( args.length == 2 )
                 {
-                    int colour = 15 - parseColour( args );
-                    int hex = ((Double)args[1]).intValue();
+                    int hex = getInt( args, 1 );
                     double[] rgb = Palette.decodeRGB8( hex );
-                    setColour( m_terminal, colour, rgb[0], rgb[1], rgb[2] );
-                    return null;
+                    setColour( m_terminal, colour, rgb[ 0 ], rgb[ 1 ], rgb[ 2 ] );
                 }
-
-                if(args.length >= 4 && args[0] instanceof Double && args[1] instanceof Double && args[2] instanceof Double && args[3] instanceof Double)
+                else
                 {
-                    int colour = 15 - parseColour( args );
-                    double r = (Double)args[1];
-                    double g = (Double)args[2];
-                    double b = (Double)args[3];
+                    double r = getReal( args, 1 );
+                    double g = getReal( args, 2 );
+                    double b = getReal( args, 3 );
                     setColour( m_terminal, colour, r, g, b );
-                    return null;
                 }
-
-                throw new LuaException( "Expected number, number or number, number, number, number" );
+                return null;
             }
             case 21:
             case 22:
             {
                 // getPaletteColour/getPaletteColor
-                if(args.length < 1 || !(args[0] instanceof Double))
-                {
-                    throw new LuaException( "Expected number" );
-                }
-
                 int colour = 15 - parseColour( args );
                 synchronized( m_terminal )
                 {

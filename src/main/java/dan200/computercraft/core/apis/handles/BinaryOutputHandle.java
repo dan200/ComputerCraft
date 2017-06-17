@@ -2,6 +2,7 @@ package dan200.computercraft.core.apis.handles;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.core.apis.ArgumentHelper;
 import dan200.computercraft.shared.util.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -51,7 +52,7 @@ public class BinaryOutputHandle extends HandleGeneric
                     }
                     else
                     {
-                        throw new LuaException( "Expected number" );
+                        throw ArgumentHelper.badArgument( 0, "string or number", args.length > 0 ? args[ 0 ] : null );
                     }
                     return null;
                 }

@@ -13,6 +13,9 @@ import dan200.computercraft.core.terminal.TextBuffer;
 
 import javax.annotation.Nonnull;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
+
 public class BufferAPI implements ILuaAPI
 {
     private static class BufferLuaObject implements ILuaObject
@@ -55,81 +58,25 @@ public class BufferAPI implements ILuaAPI
                 case 2:
                 {
                     // read
-                    int start = 0;
-                    if( arguments.length >= 1 && (arguments[0] != null) )
-                    {
-                        if( !(arguments[0] instanceof Number) )
-                        {
-                            throw new LuaException( "Expected number" );
-                        }
-                        start = ((Number)arguments[1]).intValue() - 1;
-                    }
-                    int end = m_buffer.length();
-                    if( arguments.length >= 2 && (arguments[1] != null) )
-                    {
-                        if( !(arguments[1] instanceof Number) )
-                        {
-                            throw new LuaException( "Expected number, number" );
-                        }
-                        end = ((Number)arguments[1]).intValue();
-                    }
+                    int start = optInt( arguments, 0, 0 );
+                    int end = optInt( arguments, 1, m_buffer.length() );
                     return new Object[] { m_buffer.read( start, end ) };
                 }
                 case 3:
                 {
                     // write
-                    if( arguments.length < 1 || !(arguments[0] instanceof String) )
-                    {
-                        throw new LuaException( "Expected string" );
-                    }
-                    String text = (String)(arguments[0]);
-                    int start = 0;
-                    if( arguments.length >= 2 && (arguments[1] != null) )
-                    {
-                        if( !(arguments[1] instanceof Number) )
-                        {
-                            throw new LuaException( "Expected string, number" );
-                        }
-                        start = ((Number)arguments[1]).intValue() - 1;
-                    }
-                    int end = start + text.length();
-                    if( arguments.length >= 3 && (arguments[2] != null) )
-                    {
-                        if( !(arguments[2] instanceof Number) )
-                        {
-                            throw new LuaException( "Expected string, number, number" );
-                        }
-                        end = ((Number)arguments[2]).intValue();
-                    }
+                    String text = getString( arguments, 0 );
+                    int start = optInt( arguments, 1, 0 );
+                    int end = optInt( arguments, 2, start + text.length() );
                     m_buffer.write( text, start, end );
                     return null;
                 }
                 case 4:
                 {
                     // fill
-                    if( arguments.length < 1 || !(arguments[0] instanceof String) )
-                    {
-                        throw new LuaException( "Expected string" );
-                    }
-                    String text = (String)(arguments[0]);
-                    int start = 0;
-                    if( arguments.length >= 2 && (arguments[1] != null) )
-                    {
-                        if( !(arguments[1] instanceof Number) )
-                        {
-                            throw new LuaException( "Expected string, number" );
-                        }
-                        start = ((Number)arguments[1]).intValue() - 1;
-                    }
-                    int end = m_buffer.length();
-                    if( arguments.length >= 3 && (arguments[2] != null) )
-                    {
-                        if( !(arguments[2] instanceof Number) )
-                        {
-                            throw new LuaException( "Expected string, number, number" );
-                        }
-                        end = ((Number)arguments[2]).intValue();
-                    }
+                    String text = getString( arguments, 0 );
+                    int start = optInt( arguments, 1, 0 );
+                    int end = optInt( arguments, 2, m_buffer.length() );
                     m_buffer.fill( text, start, end );
                     return null;
                 }
@@ -184,23 +131,11 @@ public class BufferAPI implements ILuaAPI
         {
             case 0:
             {
-                if( arguments.length < 1 || !(arguments[0] instanceof String) )
+                String text = getString( arguments, 0 );
+                int repetitions = optInt( arguments, 1, 1 );
+                if( repetitions < 0 )
                 {
-                    throw new LuaException( "Expected string" );
-                }
-                String text = (String)(arguments[0]);
-                int repetitions = 1;
-                if( arguments.length >= 2 && arguments[1] != null )
-                {
-                    if( !(arguments[1] instanceof Number) )
-                    {
-                        throw new LuaException( "Expected string, number" );
-                    }
-                    repetitions = ((Number)arguments[1]).intValue();
-                    if( repetitions < 0 )
-                    {
-                        throw new LuaException( "Expected positive number" );
-                    }
+                    throw ArgumentHelper.badArgument( 1, "positive number", Integer.toString( repetitions ) );
                 }
                 TextBuffer buffer = new TextBuffer( text, repetitions );
                 return new Object[] { new BufferLuaObject( buffer ) };
