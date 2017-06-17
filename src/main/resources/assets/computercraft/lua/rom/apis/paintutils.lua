@@ -18,7 +18,7 @@ end
 
 function loadImage( sPath )
     if type( sPath ) ~= "string" then
-        error( "Expected path", 2 )
+        error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 )
     end
 
     local tImage = {}
@@ -62,9 +62,10 @@ function saveImage( tImage, sPath )
 end
 
 function drawPixel( xPos, yPos, nColour )
-    if type( xPos ) ~= "number" or type( yPos ) ~= "number" or (nColour ~= nil and type( nColour ) ~= "number") then
-        error( "Expected x, y [, colour]", 2 )
-    end
+    if type( xPos ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( xPos ) .. ")", 2 ) end
+    if type( yPos ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( yPos ) .. ")", 2 ) end
+    if nColour ~= nil and type( nColour ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( nColour ) .. ")", 2 ) end
+
     if nColour then
         setCol( nColour )
     end
@@ -73,11 +74,11 @@ function drawPixel( xPos, yPos, nColour )
 end
 
 function drawLine( startX, startY, endX, endY, nColour )
-    if type( startX ) ~= "number" or type( startX ) ~= "number" or
-       type( endX ) ~= "number" or type( endY ) ~= "number" or
-       (nColour ~= nil and type( nColour ) ~= "number") then
-        error( "Expected startX, startY, endX, endY [, colour]", 2 )
-    end
+    if type( startX ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( startX ) .. ")", 2 ) end
+    if type( startY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( startY ) .. ")", 2 ) end
+    if type( endX ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( endX ) .. ")", 2 ) end
+    if type( endY ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( endY ) .. ")", 2 ) end
+    if nColour ~= nil and type( nColour ) ~= "string" then error( "bad argument #5 (expected number, got " .. type( nColour ) .. ")", 2 ) end
     
     startX = math.floor(startX)
     startY = math.floor(startY)
@@ -135,11 +136,11 @@ function drawLine( startX, startY, endX, endY, nColour )
 end
 
 function drawBox( startX, startY, endX, endY, nColour )
-    if type( startX ) ~= "number" or type( startX ) ~= "number" or
-       type( endX ) ~= "number" or type( endY ) ~= "number" or
-       (nColour ~= nil and type( nColour ) ~= "number") then
-        error( "Expected startX, startY, endX, endY [, colour]", 2 )
-    end
+    if type( startX ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( startX ) .. ")", 2 ) end
+    if type( startY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( startY ) .. ")", 2 ) end
+    if type( endX ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( endX ) .. ")", 2 ) end
+    if type( endY ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( endY ) .. ")", 2 ) end
+    if nColour ~= nil and type( nColour ) ~= "string" then error( "bad argument #5 (expected number, got " .. type( nColour ) .. ")", 2 ) end
 
     startX = math.floor(startX)
     startY = math.floor(startY)
@@ -174,11 +175,11 @@ function drawBox( startX, startY, endX, endY, nColour )
 end
 
 function drawFilledBox( startX, startY, endX, endY, nColour )
-    if type( startX ) ~= "number" or type( startX ) ~= "number" or
-       type( endX ) ~= "number" or type( endY ) ~= "number" or
-       (nColour ~= nil and type( nColour ) ~= "number") then
-        error( "Expected startX, startY, endX, endY [, colour]", 2 )
-    end
+    if type( startX ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( startX ) .. ")", 2 ) end
+    if type( startY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( startY ) .. ")", 2 ) end
+    if type( endX ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( endX ) .. ")", 2 ) end
+    if type( endY ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( endY ) .. ")", 2 ) end
+    if nColour ~= nil and type( nColour ) ~= "string" then error( "bad argument #5 (expected number, got " .. type( nColour ) .. ")", 2 ) end
 
     startX = math.floor(startX)
     startY = math.floor(startY)
@@ -206,9 +207,9 @@ function drawFilledBox( startX, startY, endX, endY, nColour )
 end
 
 function drawImage( tImage, xPos, yPos )
-    if type( tImage ) ~= "table" or type( xPos ) ~= "number" or type( yPos ) ~= "number" then
-        error( "Expected image, x, y", 2 )
-    end
+    if type( tImage ) ~= "table" then error( "bad argument #1 (expected number, got " .. type( tImage ) .. ")", 2 ) end
+    if type( xPos ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( xPos ) .. ")", 2 ) end
+    if type( yPos ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( yPos ) .. ")", 2 ) end
     for y=1,maxn( tImage ) do
         local tLine, sBG, counter = tImage[y], {}, 0
         if tLine then for x=1,maxn( tLine )+1 do

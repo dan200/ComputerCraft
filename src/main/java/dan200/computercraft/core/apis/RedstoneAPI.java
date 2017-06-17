@@ -14,6 +14,8 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
+
 public class RedstoneAPI implements ILuaAPI
 {
     private IAPIEnvironment m_environment;
@@ -86,12 +88,8 @@ public class RedstoneAPI implements ILuaAPI
             case 1:
             {
                 // setOutput
-                if( args.length < 2 || args[0] == null || !(args[0] instanceof String) || args[1] == null || !(args[1] instanceof Boolean) )
-                {
-                    throw new LuaException( "Expected string, boolean" );
-                }
                 int side = parseSide( args );
-                boolean output = (Boolean) args[ 1 ];
+                boolean output = getBoolean( args, 1 );
                 m_environment.setOutput( side, output ? 15 : 0 );
                 return null;
             }
@@ -110,12 +108,8 @@ public class RedstoneAPI implements ILuaAPI
             case 4:
             {
                 // setBundledOutput
-                if( args.length < 2 || args[0] == null || !(args[0] instanceof String) || args[1] == null || !(args[1] instanceof Double) )
-                {
-                    throw new LuaException( "Expected string, number" );
-                }
                 int side = parseSide( args );
-                int output = ((Double)args[1]).intValue();
+                int output = getInt( args, 1 );
                 m_environment.setBundledOutput( side, output );
                 return null;
             }
@@ -134,12 +128,8 @@ public class RedstoneAPI implements ILuaAPI
             case 7:
             {
                 // testBundledInput
-                if( args.length < 2 || args[0] == null || !(args[0] instanceof String) || args[1] == null || !(args[1] instanceof Double) )
-                {
-                    throw new LuaException( "Expected string, number" );
-                }
                 int side = parseSide( args );
-                int mask = ((Double)args[1]).intValue();
+                int mask = getInt( args, 1 );
                 int input = m_environment.getBundledInput( side );
                 return new Object[] { ((input & mask) == mask) };
             }
@@ -147,12 +137,8 @@ public class RedstoneAPI implements ILuaAPI
             case 9:
             {
                 // setAnalogOutput/setAnalogueOutput
-                if( args.length < 2 || args[0] == null || !(args[0] instanceof String) || args[1] == null || !(args[1] instanceof Double) )
-                {
-                    throw new LuaException( "Expected string, number" );
-                }
                 int side = parseSide( args );
-                int output = ((Double)args[1]).intValue();
+                int output = getInt( args, 1 );
                 if( output < 0 || output > 15 )
                 {
                     throw new LuaException( "Expected number in range 0-15" );
@@ -183,11 +169,7 @@ public class RedstoneAPI implements ILuaAPI
     
     private int parseSide( Object[] args ) throws LuaException
     {
-        if( args.length < 1 || args[0] == null || !(args[0] instanceof String) )
-        {
-            throw new LuaException( "Expected string" );
-        }
-        String side = (String)args[0];
+        String side = getString( args, 0 );
         for( int n=0; n<Computer.s_sideNames.length; ++n )
         {
             if( side.equals( Computer.s_sideNames[n] ) )

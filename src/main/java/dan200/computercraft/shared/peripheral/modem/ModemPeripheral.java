@@ -21,6 +21,8 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+
 public abstract class ModemPeripheral
     implements IPeripheral, IPacketSender, IPacketReceiver
 {
@@ -147,11 +149,7 @@ public abstract class ModemPeripheral
     
     private static int parseChannel( Object[] arguments, int index ) throws LuaException
     {
-        if( arguments.length <= index || !(arguments[index] instanceof Double) )
-        {
-            throw new LuaException( "Expected number" );
-        }
-        int channel = (int)((Double)arguments[index]).doubleValue();
+        int channel = getInt( arguments, index );
         if( channel < 0 || channel > 65535 )
         {
             throw new LuaException( "Expected number in range 0-65535" );

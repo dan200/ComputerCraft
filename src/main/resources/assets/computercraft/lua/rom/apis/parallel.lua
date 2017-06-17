@@ -1,12 +1,17 @@
 
-local function create( first, ... )
-	if first ~= nil then
-	    if type( first ) ~= "function" then
-    		error( "Expected function, got "..type( first ), 3 )
-    	end
- 		return coroutine.create(first), create( ... )
+local function create( ... )
+    local tFns = table.pack(...)
+    local tCos = {}
+    for i = 1, tFns.n, 1 do
+        local fn = tFns[i]
+        if type( fn ) ~= "function" then 
+            error( "bad argument #" .. i .. " (expected function, got " .. type( fn ) .. ")", 3 ) 
+        end
+        
+        tCos[i] = coroutine.create(fn)
     end
-    return nil
+    
+    return tCos
 end
 
 local function runUntilLimit( _routines, _limit )
@@ -51,11 +56,11 @@ local function runUntilLimit( _routines, _limit )
 end
 
 function waitForAny( ... )
-    local routines = { create( ... ) }
+    local routines = create( ... )
     return runUntilLimit( routines, #routines - 1 )
 end
 
 function waitForAll( ... )
-    local routines = { create( ... ) }
+    local routines = create( ... )
 	runUntilLimit( routines, 0 )
 end

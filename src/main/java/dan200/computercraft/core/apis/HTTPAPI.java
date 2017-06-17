@@ -16,6 +16,8 @@ import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.util.*;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
+
 public class HTTPAPI implements ILuaAPI
 {
     private final IAPIEnvironment m_apiEnvironment;
@@ -155,24 +157,16 @@ public class HTTPAPI implements ILuaAPI
             {
                 // request
                 // Get URL
-                if( args.length < 1 || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String urlString = args[0].toString();
+                String urlString = getString( args, 0 );
 
                 // Get POST
-                String postString = null;
-                if( args.length >= 2 && args[1] instanceof String )
-                {
-                    postString = args[1].toString();
-                }
+                String postString = optString( args, 1, null );
 
                 // Get Headers
                 Map<String, String> headers = null;
-                if( args.length >= 3 && args[2] instanceof Map )
+                Map<Object, Object> table = optTable( args, 2, null );
+                if( table != null )
                 {
-                    Map<?, ?> table = (Map<?, ?>)args[2];
                     headers = new HashMap<String, String>( table.size() );
                     for( Object key : table.keySet() )
                     {
@@ -210,11 +204,7 @@ public class HTTPAPI implements ILuaAPI
             {
                 // checkURL
                 // Get URL
-                if( args.length < 1 || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                String urlString = args[0].toString();
+                String urlString = getString( args, 0 );
 
                 // Check URL
                 try

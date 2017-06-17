@@ -18,20 +18,18 @@ local tHex = {
     [ colors.black ] = "f",
 }
 
+local type = type
 local string_rep = string.rep
 local string_sub = string.sub
 local table_unpack = table.unpack
 
 function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
-
-    if type( parent ) ~= "table" or
-       type( nX ) ~= "number" or
-       type( nY ) ~= "number" or
-       type( nWidth ) ~= "number" or
-       type( nHeight ) ~= "number" or
-       (bStartVisible ~= nil and type( bStartVisible ) ~= "boolean") then
-        error( "Expected object, number, number, number, number, [boolean]", 2 )
-    end
+    if type( parent ) ~= "table" then error( "bad argument #1 (expected table, got " .. type( parent ) .. ")", 2 ) end
+    if type( nX ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( nX ) .. ")", 2 ) end
+    if type( nY ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( nY ) .. ")", 2 ) end
+    if type( nWidth ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( nWidth ) .. ")", 2 ) end
+    if type( nHeight ) ~= "number" then error( "bad argument #5 (expected number, got " .. type( nHeight ) .. ")", 2 ) end
+    if bStartVisible ~= nil and type( bStartVisible ) ~= "boolean" then error( "bad argument #6 (expected boolean, got " .. type( bStartVisible ) .. ")", 2 ) end
 
     if parent == term then
         error( "term is not a recommended window parent, try term.current() instead", 2 )
@@ -193,9 +191,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.blit( sText, sTextColor, sBackgroundColor )
-        if type(sText) ~= "string" or type(sTextColor) ~= "string" or type(sBackgroundColor) ~= "string" then
-            error( "Expected string, string, string", 2 )
-        end
+        if type( sText ) ~= "string" then error( "bad argument #1 (expected string, got " .. type( sText ) .. ")", 2 ) end
+        if type( sTextColor ) ~= "string" then error( "bad argument #2 (expected string, got " .. type( sTextColor ) .. ")", 2 ) end
+        if type( sBackgroundColor ) ~= "string" then error( "bad argument #3 (expected string, got " .. type( sBackgroundColor ) .. ")", 2 ) end
         if #sTextColor ~= #sText or #sBackgroundColor ~= #sText then
             error( "Arguments must be the same length", 2 )
         end
@@ -243,9 +241,8 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.setCursorPos( x, y )
-        if type( x ) ~= "number" or type( y ) ~= "number" then
-            error( "Expected number, number", 2 )
-        end
+        if type( x ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( x ) .. ")", 2 ) end
+        if type( y ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( y ) .. ")", 2 ) end
         nCursorX = math.floor( x )
         nCursorY = math.floor( y )
         if bVisible then
@@ -254,9 +251,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.setCursorBlink( blink )
-        if type( blink ) ~= "boolean" then
-            error( "Expected boolean", 2 )
-        end
+        if type( blink ) ~= "boolean" then error( "bad argument #1 (expected boolean, got " .. type( blink ) .. ")", 2 ) end
         bCursorBlink = blink
         if bVisible then
             updateCursorBlink()
@@ -276,10 +271,10 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function setTextColor( color )
-        if type(color) ~= "number" then
-            error( "Expected number", 3 )
+        if type( color ) ~= "number" then 
+            error( "bad argument #1 (expected number, got " .. type( color ) .. ")", 2 )
         elseif tHex[color] == nil then
-            error( "Invalid color", 3 )
+            error( "Invalid color", 2 )
         end
         nTextColor = color
         if bVisible then
@@ -287,26 +282,25 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         end
     end
 
-    function window.setTextColor( color )
-        setTextColor( color )
-    end
-
-    function window.setTextColour( color )
-        setTextColor( color )
-    end
+    window.setTextColor = setTextColor
+    window.setTextColour = setTextColor
 
     function window.setPaletteColour( colour, r, g, b )
+        if type( colour ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( colour ) .. ")", 2 ) end
+        
         local tCol
-        if type(colour) == "number" and type(r) == "number" and g == nil and b == nil then
+        if type(r) == "number" and g == nil and b == nil then
             tCol = { colours.rgb8( r ) }
             tPalette[ colour ] = tCol
-        elseif type(colour) == "number" and type(r) == "number" and type(g) == "number" and type(b) == "number" then
+        else
+            if type( r ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( r ) .. ")", 2 ) end
+            if type( g ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( g ) .. ")", 2 ) end
+            if type( b ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( b ) .. ")", 2 ) end
+            
             tCol = tPalette[ colour ]
             tCol[1] = r
             tCol[2] = g
             tCol[3] = b
-        else
-            error( "Expected number, number, number, number", 2 )
         end
 
         if bVisible then
@@ -324,30 +318,23 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     window.getPaletteColor = window.getPaletteColour
 
     local function setBackgroundColor( color )
-        if type(color) ~= "number" then
-            error( "Expected number", 3 )
+        if type( color ) ~= "number" then
+            error( "bad argument #1 (expected number, got " .. type( color ) .. ")", 2 )
         elseif tHex[color] == nil then
             error( "Invalid color", 3 )
         end
         nBackgroundColor = color
     end
 
-    function window.setBackgroundColor( color )
-        setBackgroundColor( color )
-    end
-
-    function window.setBackgroundColour( color )
-        setBackgroundColor( color )
-    end
+    window.setBackgroundColor = setBackgroundColor
+    window.setBackgroundColour = setBackgroundColor
 
     function window.getSize()
         return nWidth, nHeight
     end
 
     function window.scroll( n )
-        if type( n ) ~= "number" then
-            error( "Expected number", 2 )
-        end
+        if type( n ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( n ) .. ")", 2 ) end
         if n ~= 0 then
             local tNewLines = {}
             local sEmptyText = sEmptySpaceLine
@@ -392,9 +379,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
     -- Other functions
     function window.setVisible( bVis )
-        if type( bVis) ~= "boolean" then
-            error( "Expected boolean", 2 )
-        end
+        if type( bVis ) ~= "boolean" then error( "bad argument #1 (expected boolean, got " .. type( bVis ) .. ")", 2 ) end
         if bVisible ~= bVis then
             bVisible = bVis
             if bVisible then
@@ -426,9 +411,11 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     function window.reposition( nNewX, nNewY, nNewWidth, nNewHeight )
-        if type( nNewX ) ~= "number" or type( nNewY ) ~= "number" or type( nNewWidth ) ~= "number" or type( nNewWidth ) ~= "number" then
-            error( "Expected number, number, number, number", 2 )
-        end
+        if type( nNewX ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( nNewX ) .. ")", 2 ) end
+        if type( nNewY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( nNewY ) .. ")", 2 ) end
+        if type( nNewWidth ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( nNewWidth ) .. ")", 2 ) end
+        if type( nNewHeight ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( nNewHeight ) .. ")", 2 ) end
+
         nX = nNewX
         nY = nNewY
         if nNewWidth and nNewHeight then
