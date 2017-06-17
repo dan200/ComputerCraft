@@ -11,9 +11,10 @@ local maxn = table.maxn or function( tTable )
 end
 
 local tColourLookup = {}
+local tColourReverseLookup = {}
 for n=1,16 do
     tColourLookup[ string.byte( "0123456789abcdef",n,n ) ] = 2^(n-1)
-    tColourLookup[ 2^(n-1) ] = string.byte( "0123456789abcdef",n,n )
+    tColourReverseLookup[ 2^(n-1) ] = string.sub( "0123456789abcdef",n,n )
 end
 
 function loadImage( sPath )
@@ -36,11 +37,8 @@ function loadImage( sPath )
 end
 
 function saveImage( tImage, sPath )
-    if type( tImage ) ~= "table" then
-        error( "Expected paintutils image", 2 )
-    elseif type( sPath ) ~= "string" then
-        error( "Expected path", 2 )
-    end
+    if type( tImage ) ~= "table" then error( "bad argument #1 (expected table, got " .. type( tImage ) .. ")", 2 ) end
+    if type( sPath ) ~= "string" then error( "bad argument #2 (expected string, got " .. type( sPath ) .. ")", 2 ) end
 
     local file = fs.open(sPath, "w" )
     if not file then return false end
@@ -48,7 +46,7 @@ function saveImage( tImage, sPath )
     for y=1,maxn( tImage ) do
         local tOld, tNew, last = tImage[y], {}, 0
         if tOld then for x=1,maxn( tOld ) do
-            local thisCol = tColourLookup[ tOld[x] ]
+            local thisCol = tColourReverseLookup[ tOld[x] ]
             if thisCol then
                 tNew[x], last = thisCol, x
             else
@@ -78,7 +76,7 @@ function drawLine( startX, startY, endX, endY, nColour )
     if type( startY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( startY ) .. ")", 2 ) end
     if type( endX ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( endX ) .. ")", 2 ) end
     if type( endY ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( endY ) .. ")", 2 ) end
-    if nColour ~= nil and type( nColour ) ~= "string" then error( "bad argument #5 (expected number, got " .. type( nColour ) .. ")", 2 ) end
+    if nColour ~= nil and type( nColour ) ~= "number" then error( "bad argument #5 (expected number, got " .. type( nColour ) .. ")", 2 ) end
     
     startX = math.floor(startX)
     startY = math.floor(startY)
@@ -140,7 +138,7 @@ function drawBox( startX, startY, endX, endY, nColour )
     if type( startY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( startY ) .. ")", 2 ) end
     if type( endX ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( endX ) .. ")", 2 ) end
     if type( endY ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( endY ) .. ")", 2 ) end
-    if nColour ~= nil and type( nColour ) ~= "string" then error( "bad argument #5 (expected number, got " .. type( nColour ) .. ")", 2 ) end
+    if nColour ~= nil and type( nColour ) ~= "number" then error( "bad argument #5 (expected number, got " .. type( nColour ) .. ")", 2 ) end
 
     startX = math.floor(startX)
     startY = math.floor(startY)
@@ -179,7 +177,7 @@ function drawFilledBox( startX, startY, endX, endY, nColour )
     if type( startY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( startY ) .. ")", 2 ) end
     if type( endX ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( endX ) .. ")", 2 ) end
     if type( endY ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( endY ) .. ")", 2 ) end
-    if nColour ~= nil and type( nColour ) ~= "string" then error( "bad argument #5 (expected number, got " .. type( nColour ) .. ")", 2 ) end
+    if nColour ~= nil and type( nColour ) ~= "number" then error( "bad argument #5 (expected number, got " .. type( nColour ) .. ")", 2 ) end
 
     startX = math.floor(startX)
     startY = math.floor(startY)
@@ -216,7 +214,7 @@ function drawImage( tImage, xPos, yPos )
             local px = tLine[x] or 0
             if px > 0 then
                 counter = counter + 1
-                sBG[counter] = tColourLookup[ px ]
+                sBG[counter] = tColourReverseLookup[ px ]
             elseif counter > 0 then
                 setPos( x + xPos - 1 - counter, y + yPos - 1 )	
                 local sT = string.rep( " ", counter )
