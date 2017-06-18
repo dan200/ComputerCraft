@@ -7,7 +7,7 @@ function slowWrite( sText, nRate )
     local nSleep = 1 / nRate
         
     sText = tostring( sText )
-    local x,y = term.getCursorPos(x,y)
+    local x,y = term.getCursorPos()
     local len = string.len( sText )
     
     for n=1,len do

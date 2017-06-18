@@ -233,7 +233,7 @@ function run()
     			if type( tMessage ) == "table" and tMessage.nMessageID then
 	    			if not tReceivedMessages[ tMessage.nMessageID ] then
 		    			tReceivedMessages[ tMessage.nMessageID ] = true
-                        tReceivedMessageTimeouts[ os.startTimer( 30 ) ] = nMessageID
+                        tReceivedMessageTimeouts[ os.startTimer( 30 ) ] = tMessage.nMessageID
 			    		os.queueEvent( "rednet_message", nReplyChannel, tMessage.message, tMessage.sProtocol )
 				    end
 			    end
