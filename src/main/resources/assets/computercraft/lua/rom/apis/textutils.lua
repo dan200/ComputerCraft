@@ -353,8 +353,19 @@ function complete( sSearchText, tSearchTable )
             return tEmpty
         end
     end
-
-    local sPart = string.sub( sSearchText, nStart, nDot )
+    local nColon = string.find( sSearchText, ":", nStart, true )
+    if nColon then
+        local sPart = string.sub( sSearchText, nStart, nColon - 1 )
+        local value = tTable[ sPart ]
+        if type( value ) == "table" then
+            tTable = value
+            nStart = nColon + 1
+        else
+            return tEmpty
+        end
+    end
+    
+    local sPart = string.sub( sSearchText, nStart )
     local nPartLength = string.len( sPart )
 
     local tResults = {}
