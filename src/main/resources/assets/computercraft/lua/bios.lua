@@ -184,6 +184,9 @@ end
 
 -- Install globals
 function sleep( nTime )
+    if nTime ~= nil and type( nTime ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( nTime ) .. ")", 2 ) 
+    end
     local timer = os.startTimer( nTime or 0 )
     repeat
         local sEvent, param = os.pullEvent( "timer" )
@@ -191,6 +194,10 @@ function sleep( nTime )
 end
 
 function write( sText )
+    if sText ~= nil and type( sText ) ~= "string" and type( sText ) ~= "number" then
+        error( "bad argument #1 (expected string, got " .. type( sText ) .. ")", 2 ) 
+    end
+
     local w,h = term.getSize()        
     local x,y = term.getCursorPos()
     
@@ -277,6 +284,18 @@ function printError( ... )
 end
 
 function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
+    if _sReplaceChar ~= nil and type( _sReplaceChar ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sReplaceChar ) .. ")", 2 ) 
+    end
+    if _tHistory ~= nil and type( _tHistory ) ~= "table" then
+        error( "bad argument #2 (expected table, got " .. type( _tHistory ) .. ")", 2 ) 
+    end
+    if _fnComplete ~= nil and type( _fnComplete ) ~= "function" then
+        error( "bad argument #3 (expected function, got " .. type( _fnComplete ) .. ")", 2 ) 
+    end
+    if _sDefault ~= nil and type( _sDefault ) ~= "string" then
+        error( "bad argument #4 (expected string, got " .. type( _sDefault ) .. ")", 2 ) 
+    end
     term.setCursorBlink( true )
 
     local sLine
@@ -535,6 +554,12 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
 end
 
 loadfile = function( _sFile, _tEnv )
+    if type( _sFile ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sFile ) .. ")", 2 ) 
+    end
+    if _tEnv ~= nil and type( _tEnv ) ~= "table" then
+        error( "bad argument #2 (expected table, got " .. type( _tEnv ) .. ")", 2 ) 
+    end
     local file = fs.open( _sFile, "r" )
     if file then
         local func, err = load( file.readAll(), fs.getName( _sFile ), "t", _tEnv )
@@ -545,6 +570,9 @@ loadfile = function( _sFile, _tEnv )
 end
 
 dofile = function( _sFile )
+    if type( _sFile ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sFile ) .. ")", 2 ) 
+    end
     local fnFile, e = loadfile( _sFile, _G )
     if fnFile then
         return fnFile()
@@ -555,6 +583,12 @@ end
 
 -- Install the rest of the OS api
 function os.run( _tEnv, _sPath, ... )
+    if type( _tEnv ) ~= "table" then
+        error( "bad argument #1 (expected table, got " .. type( _tEnv ) .. ")", 2 ) 
+    end
+    if type( _sPath ) ~= "string" then
+        error( "bad argument #2 (expected string, got " .. type( _sPath ) .. ")", 2 ) 
+    end
     local tArgs = table.pack( ... )
     local tEnv = _tEnv
     setmetatable( tEnv, { __index = _G } )
@@ -579,6 +613,9 @@ end
 
 local tAPIsLoading = {}
 function os.loadAPI( _sPath )
+    if type( _sPath ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sPath ) .. ")", 2 ) 
+    end
     local sName = fs.getName( _sPath )
     if sName:sub(-4) == ".lua" then
         sName = sName:sub(1,-5)
@@ -618,6 +655,9 @@ function os.loadAPI( _sPath )
 end
 
 function os.unloadAPI( _sName )
+    if type( _sName ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sName ) .. ")", 2 ) 
+    end
     if _sName ~= "_G" and type(_G[_sName]) == "table" then
         _G[_sName] = nil
     end
@@ -663,14 +703,38 @@ if http then
     end
     
     http.get = function( _url, _headers, _binary)
+        if type( _url ) ~= "string" then
+            error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 ) 
+        end
+        if _headers ~= nil and type( _headers ) ~= "table" then
+            error( "bad argument #2 (expected table, got " .. type( _headers ) .. ")", 2 ) 
+        end
         return wrapRequest( _url, nil, _headers, _binary)
     end
 
     http.post = function( _url, _post, _headers, _binary)
+        if type( _url ) ~= "string" then
+            error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 ) 
+        end
+        if type( _post ) ~= "string" then
+            error( "bad argument #2 (expected string, got " .. type( _post ) .. ")", 2 ) 
+        end
+        if _headers ~= nil and type( _headers ) ~= "table" then
+            error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 ) 
+        end
         return wrapRequest( _url, _post or "", _headers, _binary)
     end
 
     http.request = function( _url, _post, _headers, _binary )
+        if type( _url ) ~= "string" then
+            error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 ) 
+        end
+        if _post ~= nil and type( _post ) ~= "table" then
+            error( "bad argument #2 (expected table, got " .. type( _post ) .. ")", 2 ) 
+        end
+        if _headers ~= nil and type( _headers ) ~= "table" then
+            error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 ) 
+        end
         local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary )
         if not ok then
             os.queueEvent( "http_failure", _url, err )
@@ -682,6 +746,18 @@ end
 -- Install the lua part of the FS api
 local tEmpty = {}
 function fs.complete( sPath, sLocation, bIncludeFiles, bIncludeDirs )
+    if type( sPath ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 ) 
+    end
+    if type( sLocation ) ~= "string" then
+        error( "bad argument #2 (expected string, got " .. type( sLocation ) .. ")", 2 ) 
+    end
+    if bIncludeFiles ~= nil and type( bIncludeFiles ) ~= "boolean" then
+        error( "bad argument #3 (expected boolean, got " .. type( bIncludeFiles ) .. ")", 2 ) 
+    end
+    if bIncludeDirs ~= nil and type( bIncludeDirs ) ~= "boolean" then
+        error( "bad argument #4 (expected boolean, got " .. type( bIncludeDirs ) .. ")", 2 ) 
+    end
     bIncludeFiles = (bIncludeFiles ~= false)
     bIncludeDirs = (bIncludeDirs ~= false)
     local sDir = sLocation
