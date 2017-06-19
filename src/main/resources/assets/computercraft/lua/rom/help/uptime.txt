@@ -1,0 +1,1 @@
+uptime prints how long your computer has been running
