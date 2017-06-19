@@ -108,7 +108,7 @@ function find( sType, fnFilter )
     if type( sType ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sType ) .. ")", 2 )
     end
-    if fnFilter ~= nil and type( fnFilter ) ~= "string" then
+    if fnFilter ~= nil and type( fnFilter ) ~= "function" then
         error( "bad argument #2 (expected function, got " .. type( fnFilter ) .. ")", 2 )
     end
 	local tResults = {}
