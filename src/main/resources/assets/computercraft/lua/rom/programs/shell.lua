@@ -12,11 +12,12 @@ local sDir = (parentShell and parentShell.dir()) or ""
 local sPath = (parentShell and parentShell.path()) or ".:/rom/programs"
 local tAliases = (parentShell and parentShell.aliases()) or {}
 local tCompletionInfo = (parentShell and parentShell.getCompletionInfo()) or {}
+local tApis =  (parentShell and parentShell.getApis()) or {}
 local tProgramStack = {}
 
 local shell = {}
 local function createShellEnv( sDir )
-    local tEnv = {}
+    local tEnv = tApis
     tEnv[ "shell" ] = shell
     tEnv[ "multishell" ] = multishell
 
@@ -277,6 +278,60 @@ function shell.programs( _bIncludeHidden )
     end
     table.sort( tItemList )
     return tItemList
+end
+
+local tAPIsLoading = {}
+function shell.loadAPI( _sPath )
+    if type( _sPath ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sPath ) .. ")", 2 ) 
+    end
+    local sName = fs.getName( _sPath )
+    if sName:sub(-4) == ".lua" then
+        sName = sName:sub(1,-5)
+    end
+    if tAPIsLoading[sName] == true then
+        printError( "API "..sName.." is already being loaded" )
+        return false
+    end
+    tAPIsLoading[sName] = true
+
+    local tEnv = {}
+    setmetatable( tEnv, { __index = createShellEnv( sDir ) } )
+    local fnAPI, err = loadfile( _sPath, tEnv )
+    if fnAPI then
+        local ok, err = pcall( fnAPI )
+        if not ok then
+            printError( err )
+            tAPIsLoading[sName] = nil
+            return false
+        end
+    else
+        printError( err )
+        tAPIsLoading[sName] = nil
+        return false
+    end
+    
+    local tAPI = {}
+    for k,v in pairs( tEnv ) do
+        if k ~= "_ENV" then
+            tAPI[k] =  v
+        end
+    end
+
+    tApis[sName] = tAPI    
+    tAPIsLoading[sName] = nil
+    return true
+end
+
+function shell.unloadAPI( _sName )
+    if type( _sName ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sName ) .. ")", 2 ) 
+    end
+    tApis[_sName] = nil
+end
+
+function shell.getApis()
+    return tApis
 end
 
 local function completeProgram( sLine )
