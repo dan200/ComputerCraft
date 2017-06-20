@@ -12,6 +12,7 @@ local sDir = (parentShell and parentShell.dir()) or ""
 local sPath = (parentShell and parentShell.path()) or ".:/rom/programs"
 local tAliases = (parentShell and parentShell.aliases()) or {}
 local tCompletionInfo = (parentShell and parentShell.getCompletionInfo()) or {}
+local tShellenv = (parentShell and parentShell.getenv()) or {}
 local tProgramStack = {}
 
 local shell = {}
@@ -19,7 +20,6 @@ local function createShellEnv( sDir )
     local tEnv = {}
     tEnv[ "shell" ] = shell
     tEnv[ "multishell" ] = multishell
-    shellenv = {}
 
     local package = {}
     package.loaded = {
@@ -120,10 +120,10 @@ local function run( _sCommand, ... )
     for k, v in ipairs( checkvar ) do
         if v:find( "$", 1, true ) == 1 then
             v = v:sub( 2, -1)
-            if type( shellenv[v] ) == "string" or type( shellenv[v] ) == "number" or type( shellenv[v] ) == "boolean" then
-                v = tostring( shellenv[v] )
-            elseif type( shellenv[v] ) == "function" then
-                v = tostring( shellenv[v]() )
+            if type( tShellenv[v] ) == "string" or type( tShellenv[v] ) == "number" or type( tShellenv[v] ) == "boolean" then
+                v = tostring( tShellenv[v] )
+            elseif type( tShellenv[v] ) == "function" then
+                v = tostring( tShellenv[v]() )
             else
                 v = ""
             end
@@ -182,14 +182,14 @@ end
 -- Install shell API
 
 function shell.setenv( key, value )
-    shellenv[key] = value
+    tShellenv[key] = value
 end
 
 function shell.getenv( key )
     if key == nil then
-        return shellenv
+        return tShellenv
     else
-        return shellenv[key]
+        return tShellenv[key]
     end
 end
 
