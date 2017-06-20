@@ -33,17 +33,14 @@ New Features in ComputerCraft 1.80:
 * Added speaker block, turtle upgrade, pocket upgrade, and peripheral api
 * Startup can now be a directory containing multiple startup files
 * wget download now all filetypes and not only textfiles
-* Added .lua extension to all programs and apis in /rom
+* Add file extensions to various lua files and assets.
 * help.lookup and help.topics now picks up on *.txt files
-* Added .txt extension to all helpfiles
-* Added .dat extension to all redirection levels
 * Added defaulttext to read()
 * Changed style of error messages
 * Added require()
 * Edit add .lua extension to new files
 * Paint add .nfp extension to new files
 * Apis program now show multishell
-* Added .lua extension to all programs in treasure disks
 
 New Features in ComputerCraft 1.79:
 
