@@ -76,7 +76,7 @@ public class PocketAPI implements ILuaAPI
                     @Override
                     public Object[] execute() throws LuaException
                     {
-                        if( !(m_computer.getEntity() instanceof EntityPlayer) || !m_computer.isInPlayerInventory() )
+                        if( !(m_computer.getEntity() instanceof EntityPlayer) )
                         {
                             throw new LuaException( "Cannot find player" );
                         }
@@ -123,7 +123,7 @@ public class PocketAPI implements ILuaAPI
                     @Override
                     public Object[] execute() throws LuaException
                     {
-                        if( !(m_computer.getEntity() instanceof EntityPlayer) || !m_computer.isInPlayerInventory() )
+                        if( !(m_computer.getEntity() instanceof EntityPlayer) )
                         {
                             throw new LuaException( "Cannot find player" );
                         }

@@ -101,11 +101,6 @@ public class ServerComputer extends ServerTerminal
         m_ticksSincePing = 0;
     }
 
-    public boolean isUpToDate()
-    {
-        return m_ticksSincePing == 0;
-    }
-
     public boolean hasTimedOut()
     {
         return m_ticksSincePing > 100;
