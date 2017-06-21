@@ -1,9 +1,9 @@
-local setPos, write, setCol, blit = term.setCursorPos, term.write, term.setBackgroundColour, term.blit
+local setPos, write, setCol, blit, rep, concat = term.setCursorPos, term.write, term.setBackgroundColour, term.blit, string.rep, table.concat
 
 local maxn = table.maxn or function( tTable )
     local maxn = 0
     for n in pairs( tTable ) do
-        if type( n ) == "number" and n > max then
+        if type( n ) == "number" and n > maxn then
             maxn = n
         end
     end
@@ -27,7 +27,7 @@ function loadImage( sPath )
         for sLine in io.lines(sPath) do
             local tLine = {}
             for x=1,#sLine do
-                tLine[x] = tColourLookup[ string.byte(sLine,x,x) ] or 0
+                tLine[x] = tColourLookup[ string.byte( sLine,x ) ] or 0
             end
             table.insert( tImage, tLine )
         end
@@ -40,21 +40,34 @@ function saveImage( tImage, sPath )
     if type( tImage ) ~= "table" then error( "bad argument #1 (expected table, got " .. type( tImage ) .. ")", 2 ) end
     if type( sPath ) ~= "string" then error( "bad argument #2 (expected string, got " .. type( sPath ) .. ")", 2 ) end
 
-    local file = fs.open(sPath, "w" )
+    local file, lines, lastRow = fs.open(sPath, "w" ), {}, 0
     if not file then return false end
     
     for y=1,maxn( tImage ) do
-        local tOld, tNew, last = tImage[y], {}, 0
-        if tOld then for x=1,maxn( tOld ) do
-            local thisCol = tColourReverseLookup[ tOld[x] ]
-            if thisCol then
-                tNew[x], last = thisCol, x
-            else
-                tNew[x] = " "
+        local tIn, tOut, lastCol = tImage[y], {}, 0
+        
+        if tIn then
+            for x=1,maxn( tIn ) do
+                local pixel = tColourReverseLookup[ tIn[x] ]
+                if pixel then
+                    tOut[x], lastCol = pixel, x
+                else
+                    tOut[x] = " "
+                end
             end
-        end end
-        file.writeLine( table.concat( tNew, "", 1, last ) )
+        end
+
+        if lastCol > 0 then
+        	lines[y], lastRow = concat( tOut, "", 1, lastCol ), y
+        else
+        	lines[y] = ""
+        end
     end
+    
+    for y=1,lastRow do
+        file.writeLine(lines[y])
+    end
+    
     file.close()
     return true
 end
@@ -110,7 +123,7 @@ function drawLine( startX, startY, endX, endY, nColour )
     
     if minY == maxY then
         setPos( minX, minY )
-        write( string.rep( " ", xDiff + 1 ) )
+        write( rep( " ", xDiff + 1 ) )
         return
     end
             
@@ -158,7 +171,7 @@ function drawBox( startX, startY, endX, endY, nColour )
     if startX < endX then minX, maxX = startX, endX else minX, maxX = endX, startX end
     if startY < endY then minY, maxY = startY, endY else minY, maxY = endY, startY end
 
-    local sStr = string.rep( " ", maxX - minX + 1 )
+    local sStr = rep( " ", maxX - minX + 1 )
     setPos( minX, minY )
     write( sStr )
     setPos( minX, maxY )
@@ -197,7 +210,7 @@ function drawFilledBox( startX, startY, endX, endY, nColour )
     if startX < endX then minX, maxX = startX, endX else minX, maxX = endX, startX end
     if startY < endY then minY, maxY = startY, endY else minY, maxY = endY, startY end
 
-    local sStr = string.rep( " ", maxX - minX + 1 )
+    local sStr = rep( " ", maxX - minX + 1 )
     for y=minY,maxY do
         setPos( minX, y )
         write( sStr )
@@ -205,20 +218,20 @@ function drawFilledBox( startX, startY, endX, endY, nColour )
 end
 
 function drawImage( tImage, xPos, yPos )
-    if type( tImage ) ~= "table" then error( "bad argument #1 (expected number, got " .. type( tImage ) .. ")", 2 ) end
+    if type( tImage ) ~= "table" then error( "bad argument #1 (expected table, got " .. type( tImage ) .. ")", 2 ) end
     if type( xPos ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( xPos ) .. ")", 2 ) end
     if type( yPos ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( yPos ) .. ")", 2 ) end
-    for y=1,maxn( tImage ) do
+    for y=1,#tImage do
         local tLine, sBG, counter = tImage[y], {}, 0
-        if tLine then for x=1,maxn( tLine )+1 do
+        if tLine then for x=1,#tLine+1 do
             local px = tLine[x] or 0
             if px > 0 then
                 counter = counter + 1
                 sBG[counter] = tColourReverseLookup[ px ]
             elseif counter > 0 then
                 setPos( x + xPos - 1 - counter, y + yPos - 1 )	
-                local sT = string.rep( " ", counter )
-                blit( sT, sT, table.concat( sBG ) )
+                local sT = rep( " ", counter )
+                blit( sT, sT, concat( sBG ) )
                 sBG, counter = {}, 0
             end
         end end
