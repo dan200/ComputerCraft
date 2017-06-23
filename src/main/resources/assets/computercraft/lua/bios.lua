@@ -9,7 +9,7 @@ if _VERSION == "Lua 5.1" then
         if mode ~= nil and mode ~= "t" then
             error( "Binary chunk loading prohibited", 2 )
         end
-        local ok, p1, p2 = pcall( function()        
+        local ok, p1, p2 = pcall( function()
             if type(x) == "string" then
                 local result, err = nativeloadstring( x, name )
                 if result then
@@ -38,7 +38,7 @@ if _VERSION == "Lua 5.1" then
             return p1, p2
         else
             error( p1, 2 )
-        end        
+        end
     end
     table.unpack = unpack
     table.pack = function( ... ) return { n = select( "#", ... ), ... } end
@@ -184,8 +184,8 @@ end
 
 -- Install globals
 function sleep( nTime )
-    if nTime ~= nil and type( nTime ) ~= "number" then
-        error( "bad argument #1 (expected number, got " .. type( nTime ) .. ")", 2 ) 
+    if nTime and type( nTime ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( nTime ) .. ")", 2 )
     end
     local timer = os.startTimer( nTime or 0 )
     repeat
@@ -194,13 +194,13 @@ function sleep( nTime )
 end
 
 function write( sText )
-    if sText ~= nil and type( sText ) ~= "string" and type( sText ) ~= "number" then
-        error( "bad argument #1 (expected string, got " .. type( sText ) .. ")", 2 ) 
+    if sText and type( sText ) ~= "string" and type( sText ) ~= "number" then
+        error( "bad argument #1 (expected string, got " .. type( sText ) .. ")", 2 )
     end
 
-    local w,h = term.getSize()        
+    local w,h = term.getSize()
     local x,y = term.getCursorPos()
-    
+
     local nLinesPrinted = 0
     local function newLine()
         if y + 1 <= h then
@@ -212,7 +212,7 @@ function write( sText )
         x, y = term.getCursorPos()
         nLinesPrinted = nLinesPrinted + 1
     end
-    
+
     -- Print the line with proper word wrapping
     while string.len(sText) > 0 do
         local whitespace = string.match( sText, "^[ \t]+" )
@@ -222,19 +222,19 @@ function write( sText )
             x,y = term.getCursorPos()
             sText = string.sub( sText, string.len(whitespace) + 1 )
         end
-        
+
         local newline = string.match( sText, "^\n" )
         if newline then
             -- Print newlines
             newLine()
             sText = string.sub( sText, 2 )
         end
-        
+
         local text = string.match( sText, "^[^ \t\n]+" )
         if text then
             sText = string.sub( sText, string.len(text) + 1 )
             if string.len(text) > w then
-                -- Print a multiline word                
+                -- Print a multiline word
                 while string.len( text ) > 0 do
                     if x > w then
                         newLine()
@@ -253,7 +253,7 @@ function write( sText )
             end
         end
     end
-    
+
     return nLinesPrinted
 end
 
@@ -284,17 +284,17 @@ function printError( ... )
 end
 
 function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
-    if _sReplaceChar ~= nil and type( _sReplaceChar ) ~= "string" then
-        error( "bad argument #1 (expected string, got " .. type( _sReplaceChar ) .. ")", 2 ) 
+    if _sReplaceChar and type( _sReplaceChar ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sReplaceChar ) .. ")", 2 )
     end
-    if _tHistory ~= nil and type( _tHistory ) ~= "table" then
-        error( "bad argument #2 (expected table, got " .. type( _tHistory ) .. ")", 2 ) 
+    if _tHistory and type( _tHistory ) ~= "table" then
+        error( "bad argument #2 (expected table, got " .. type( _tHistory ) .. ")", 2 )
     end
-    if _fnComplete ~= nil and type( _fnComplete ) ~= "function" then
-        error( "bad argument #3 (expected function, got " .. type( _fnComplete ) .. ")", 2 ) 
+    if _fnComplete and type( _fnComplete ) ~= "function" then
+        error( "bad argument #3 (expected function, got " .. type( _fnComplete ) .. ")", 2 )
     end
-    if _sDefault ~= nil and type( _sDefault ) ~= "string" then
-        error( "bad argument #4 (expected string, got " .. type( _sDefault ) .. ")", 2 ) 
+    if _sDefault and type( _sDefault ) ~= "string" then
+        error( "bad argument #4 (expected string, got " .. type( _sDefault ) .. ")", 2 )
     end
     term.setCursorBlink( true )
 
@@ -371,7 +371,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
 
         term.setCursorPos( sx + nPos - nScroll, cy )
     end
-    
+
     local function clear()
         redraw( true )
     end
@@ -421,7 +421,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
                     redraw()
                 end
                 break
-                
+
             elseif param == keys.left then
                 -- Left
                 if nPos > 0 then
@@ -430,9 +430,9 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
                     recomplete()
                     redraw()
                 end
-                
+
             elseif param == keys.right then
-                -- Right                
+                -- Right
                 if nPos < string.len(sLine) then
                     -- Move right
                     clear()
@@ -480,11 +480,11 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
                             nHistoryPos = nil
                         elseif nHistoryPos ~= nil then
                             nHistoryPos = nHistoryPos + 1
-                        end                        
+                        end
                     end
                     if nHistoryPos then
                         sLine = _tHistory[nHistoryPos]
-                        nPos = string.len( sLine ) 
+                        nPos = string.len( sLine )
                     else
                         sLine = ""
                         nPos = 0
@@ -517,7 +517,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
                 -- Delete
                 if nPos < string.len(sLine) then
                     clear()
-                    sLine = string.sub( sLine, 1, nPos ) .. string.sub( sLine, nPos + 2 )                
+                    sLine = string.sub( sLine, 1, nPos ) .. string.sub( sLine, nPos + 2 )
                     recomplete()
                     redraw()
                 end
@@ -549,16 +549,16 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     term.setCursorBlink( false )
     term.setCursorPos( w + 1, cy )
     print()
-    
+
     return sLine
 end
 
 loadfile = function( _sFile, _tEnv )
     if type( _sFile ) ~= "string" then
-        error( "bad argument #1 (expected string, got " .. type( _sFile ) .. ")", 2 ) 
+        error( "bad argument #1 (expected string, got " .. type( _sFile ) .. ")", 2 )
     end
-    if _tEnv ~= nil and type( _tEnv ) ~= "table" then
-        error( "bad argument #2 (expected table, got " .. type( _tEnv ) .. ")", 2 ) 
+    if _tEnv and type( _tEnv ) ~= "table" then
+        error( "bad argument #2 (expected table, got " .. type( _tEnv ) .. ")", 2 )
     end
     local file = fs.open( _sFile, "r" )
     if file then
@@ -571,7 +571,7 @@ end
 
 dofile = function( _sFile )
     if type( _sFile ) ~= "string" then
-        error( "bad argument #1 (expected string, got " .. type( _sFile ) .. ")", 2 ) 
+        error( "bad argument #1 (expected string, got " .. type( _sFile ) .. ")", 2 )
     end
     local fnFile, e = loadfile( _sFile, _G )
     if fnFile then
@@ -584,10 +584,10 @@ end
 -- Install the rest of the OS api
 function os.run( _tEnv, _sPath, ... )
     if type( _tEnv ) ~= "table" then
-        error( "bad argument #1 (expected table, got " .. type( _tEnv ) .. ")", 2 ) 
+        error( "bad argument #1 (expected table, got " .. type( _tEnv ) .. ")", 2 )
     end
     if type( _sPath ) ~= "string" then
-        error( "bad argument #2 (expected string, got " .. type( _sPath ) .. ")", 2 ) 
+        error( "bad argument #2 (expected string, got " .. type( _sPath ) .. ")", 2 )
     end
     local tArgs = table.pack( ... )
     local tEnv = _tEnv
@@ -614,7 +614,7 @@ end
 local tAPIsLoading = {}
 function os.loadAPI( _sPath )
     if type( _sPath ) ~= "string" then
-        error( "bad argument #1 (expected string, got " .. type( _sPath ) .. ")", 2 ) 
+        error( "bad argument #1 (expected string, got " .. type( _sPath ) .. ")", 2 )
     end
     local sName = fs.getName( _sPath )
     if sName:sub(-4) == ".lua" then
@@ -641,7 +641,7 @@ function os.loadAPI( _sPath )
         tAPIsLoading[sName] = nil
         return false
     end
-    
+
     local tAPI = {}
     for k,v in pairs( tEnv ) do
         if k ~= "_ENV" then
@@ -649,14 +649,14 @@ function os.loadAPI( _sPath )
         end
     end
 
-    _G[sName] = tAPI    
+    _G[sName] = tAPI
     tAPIsLoading[sName] = nil
     return true
 end
 
 function os.unloadAPI( _sName )
     if type( _sName ) ~= "string" then
-        error( "bad argument #1 (expected string, got " .. type( _sName ) .. ")", 2 ) 
+        error( "bad argument #1 (expected string, got " .. type( _sName ) .. ")", 2 )
     end
     if _sName ~= "_G" and type(_G[_sName]) == "table" then
         _G[_sName] = nil
@@ -701,39 +701,39 @@ if http then
         end
         return nil, err
     end
-    
+
     http.get = function( _url, _headers, _binary)
         if type( _url ) ~= "string" then
-            error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 ) 
+            error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 )
         end
-        if _headers ~= nil and type( _headers ) ~= "table" then
-            error( "bad argument #2 (expected table, got " .. type( _headers ) .. ")", 2 ) 
+        if _headers and type( _headers ) ~= "table" then
+            error( "bad argument #2 (expected table, got " .. type( _headers ) .. ")", 2 )
         end
         return wrapRequest( _url, nil, _headers, _binary)
     end
 
     http.post = function( _url, _post, _headers, _binary)
         if type( _url ) ~= "string" then
-            error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 ) 
+            error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 )
         end
         if type( _post ) ~= "string" then
-            error( "bad argument #2 (expected string, got " .. type( _post ) .. ")", 2 ) 
+            error( "bad argument #2 (expected string, got " .. type( _post ) .. ")", 2 )
         end
-        if _headers ~= nil and type( _headers ) ~= "table" then
-            error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 ) 
+        if _headers and type( _headers ) ~= "table" then
+            error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 )
         end
         return wrapRequest( _url, _post or "", _headers, _binary)
     end
 
     http.request = function( _url, _post, _headers, _binary )
         if type( _url ) ~= "string" then
-            error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 ) 
+            error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 )
         end
-        if _post ~= nil and type( _post ) ~= "table" then
-            error( "bad argument #2 (expected table, got " .. type( _post ) .. ")", 2 ) 
+        if _post and type( _post ) ~= "table" then
+            error( "bad argument #2 (expected table, got " .. type( _post ) .. ")", 2 )
         end
-        if _headers ~= nil and type( _headers ) ~= "table" then
-            error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 ) 
+        if _headers and type( _headers ) ~= "table" then
+            error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 )
         end
         local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary )
         if not ok then
@@ -747,16 +747,16 @@ end
 local tEmpty = {}
 function fs.complete( sPath, sLocation, bIncludeFiles, bIncludeDirs )
     if type( sPath ) ~= "string" then
-        error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 ) 
+        error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 )
     end
     if type( sLocation ) ~= "string" then
-        error( "bad argument #2 (expected string, got " .. type( sLocation ) .. ")", 2 ) 
+        error( "bad argument #2 (expected string, got " .. type( sLocation ) .. ")", 2 )
     end
-    if bIncludeFiles ~= nil and type( bIncludeFiles ) ~= "boolean" then
-        error( "bad argument #3 (expected boolean, got " .. type( bIncludeFiles ) .. ")", 2 ) 
+    if bIncludeFiles and type( bIncludeFiles ) ~= "boolean" then
+        error( "bad argument #3 (expected boolean, got " .. type( bIncludeFiles ) .. ")", 2 )
     end
-    if bIncludeDirs ~= nil and type( bIncludeDirs ) ~= "boolean" then
-        error( "bad argument #4 (expected boolean, got " .. type( bIncludeDirs ) .. ")", 2 ) 
+    if bIncludeDirs and type( bIncludeDirs ) ~= "boolean" then
+        error( "bad argument #4 (expected boolean, got " .. type( bIncludeDirs ) .. ")", 2 )
     end
     bIncludeFiles = (bIncludeFiles ~= false)
     bIncludeDirs = (bIncludeDirs ~= false)
@@ -898,7 +898,7 @@ end
 settings.set( "shell.allow_startup", true )
 settings.set( "shell.allow_disk_startup", (commands == nil) )
 settings.set( "shell.autocomplete", true )
-settings.set( "edit.autocomplete", true ) 
+settings.set( "edit.autocomplete", true )
 settings.set( "edit.default_extension", "lua" )
 settings.set( "paint.default_extension", "nfp" )
 settings.set( "lua.autocomplete", true )
@@ -938,7 +938,7 @@ end
 
 -- Run the shell
 local ok, err = pcall( function()
-    parallel.waitForAny( 
+    parallel.waitForAny(
         function()
             local sShell
             if term.isColour() and settings.get( "bios.use_multishell" ) then
