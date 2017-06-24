@@ -168,6 +168,15 @@ local function completeSet( shell, nIndex, sText, tPreviousText )
         return completeMultipleChoice( sText, settings.getNames(), true )
     end
 end
+local tCommands 
+if commands then
+    tCommands = commands.list()
+end
+local function completeExec( shell, nIndex, sText, tPreviousText )
+    if nIndex == 1 and commands then
+        return completeMultipleChoice( sText, tCommands, true )
+    end
+end
 shell.setCompletionFunction( "rom/programs/alias.lua", completeAlias )
 shell.setCompletionFunction( "rom/programs/cd.lua", completeDir )
 shell.setCompletionFunction( "rom/programs/copy.lua", completeEitherEither )
@@ -194,6 +203,7 @@ shell.setCompletionFunction( "rom/programs/fun/dj.lua", completeDJ )
 shell.setCompletionFunction( "rom/programs/fun/advanced/paint.lua", completeFile )
 shell.setCompletionFunction( "rom/programs/http/pastebin.lua", completePastebin )
 shell.setCompletionFunction( "rom/programs/rednet/chat.lua", completeChat )
+shell.setCompletionFunction( "rom/programs/command/exec.lua", completeExec )
 
 if turtle then
     local tGoOptions = { "left", "right", "forward", "back", "down", "up" }
