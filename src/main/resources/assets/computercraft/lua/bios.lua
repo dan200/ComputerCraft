@@ -19,7 +19,11 @@ if _VERSION == "Lua 5.1" then
                     end
                     return result
                 else
-                    return nil, name..err:sub(25+#name,-1)
+                    if err == nil then
+                        return
+                    else
+                        return nil, tostring( name )..err:sub( 25+#tostring( name ) )
+                    end
                 end
             else
                 local result, err = nativeload( x, name )
@@ -30,7 +34,11 @@ if _VERSION == "Lua 5.1" then
                     end
                     return result
                 else
-                    return nil, name..err:sub(25+#name,-1)
+                    if err == nil then
+                        return
+                    else
+                        return nil, tostring( name )..err:sub( 25+#tostring( name ) )
+                    end
                 end
             end
         end )
@@ -283,7 +291,7 @@ function printError( ... )
     end
 end
 
-function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
+function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault, _nCharlimit )
     if _sReplaceChar ~= nil and type( _sReplaceChar ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sReplaceChar ) .. ")", 2 ) 
     end
@@ -358,6 +366,11 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
                 term.setTextColor( colors.white )
                 term.setBackgroundColor( colors.gray )
             end
+            if type( _nCharlimit ) == "number" then
+                if #sCompletion+#sLine > _nCharlimit then
+                    sCompletion = sCompletion:sub(1,-(((#sCompletion+#sLine)-_nCharlimit)+#sLine))
+                end
+            end
             if sReplace then
                 term.write( string.rep( sReplace, string.len( sCompletion ) ) )
             else
@@ -387,6 +400,11 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
             -- Find the common prefix of all the other suggestions which start with the same letter as the current one
             local sCompletion = tCompletions[ nCompletion ]
             sLine = sLine .. sCompletion
+            if type( _nCharlimit ) == "number" then
+                if #sLine > _nCharlimit then
+                    sLine = sLine:sub(1,-((#sLine-_nCharlimit)+1))
+                end
+            end
             nPos = string.len( sLine )
 
             -- Redraw
@@ -396,7 +414,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     end
     while true do
         local sEvent, param = os.pullEvent()
-        if sEvent == "char" then
+        if sEvent == "char" and nPos ~= _nCharlimit then
             -- Typed key
             clear()
             sLine = string.sub( sLine, 1, nPos ) .. param .. string.sub( sLine, nPos + 1 )
