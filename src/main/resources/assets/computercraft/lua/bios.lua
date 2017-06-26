@@ -291,7 +291,7 @@ function printError( ... )
     end
 end
 
-function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault, _nCharlimit )
+function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     if _sReplaceChar ~= nil and type( _sReplaceChar ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sReplaceChar ) .. ")", 2 ) 
     end
@@ -366,11 +366,6 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault, _nCharlimit )
                 term.setTextColor( colors.white )
                 term.setBackgroundColor( colors.gray )
             end
-            if type( _nCharlimit ) == "number" then
-                if #sCompletion+#sLine > _nCharlimit then
-                    sCompletion = sCompletion:sub(1,-(((#sCompletion+#sLine)-_nCharlimit)+#sLine))
-                end
-            end
             if sReplace then
                 term.write( string.rep( sReplace, string.len( sCompletion ) ) )
             else
@@ -400,11 +395,6 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault, _nCharlimit )
             -- Find the common prefix of all the other suggestions which start with the same letter as the current one
             local sCompletion = tCompletions[ nCompletion ]
             sLine = sLine .. sCompletion
-            if type( _nCharlimit ) == "number" then
-                if #sLine > _nCharlimit then
-                    sLine = sLine:sub(1,-((#sLine-_nCharlimit)+1))
-                end
-            end
             nPos = string.len( sLine )
 
             -- Redraw
@@ -414,7 +404,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault, _nCharlimit )
     end
     while true do
         local sEvent, param = os.pullEvent()
-        if sEvent == "char" and nPos ~= _nCharlimit then
+        if sEvent == "char" then
             -- Typed key
             clear()
             sLine = string.sub( sLine, 1, nPos ) .. param .. string.sub( sLine, nPos + 1 )
