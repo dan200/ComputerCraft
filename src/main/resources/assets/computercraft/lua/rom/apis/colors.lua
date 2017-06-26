@@ -48,3 +48,18 @@ function rgb8( r, g, b )
         error( "Expected 1 or 3 numbers", 2 )
     end
 end
+
+local tColorcheck = {1}
+for i=1, 15 do
+    tColorcheck[2^i] = true
+end
+function isValid( color )
+    if type( color ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( color ) .. ")", 2 )
+    end
+    if tColorcheck[color] then
+        return true
+    else
+        return false
+    end
+end
