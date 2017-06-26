@@ -25,6 +25,12 @@ function slowPrint( sText, nRate )
 end
 
 function formatTime( nTime, bTwentyFourHour )
+    if type( nTime ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( nTime ) .. ")", 2 )
+    end
+    if bTwentyFourHour ~= nil and type( bTwentyFourHour ) ~= "boolean" then
+        error( "bad argument #2 (expected boolean, got " .. type( bTwentyFourHour ) .. ")", 2 ) 
+    end
     local sTOD = nil
     if not bTwentyFourHour then
         if nTime >= 12 then
@@ -68,6 +74,9 @@ local function makePagedScroll( _term, _nFreeLines )
 end
 
 function pagedPrint( _sText, _nFreeLines )
+    if _nFreeLines ~= nil and type( _nFreeLines ) ~= "number" then
+        error( "bad argument #2 (expected number, got " .. type( _nFreeLines ) .. ")", 2 ) 
+    end
     -- Setup a redirector
     local oldTerm = term.current()
     local newTerm = {}
@@ -149,10 +158,32 @@ local function tabulateCommon( bPaged, ... )
 end
 
 function tabulate( ... )
+    tArgs = { ... }
+    for i=1,#tArgs,2 do
+        if type( tArgs[i] ) ~= "number" then
+            error( "bad argument #"..i.." (expected number, got " .. type( tArgs[i] ) .. ")", 2 )
+        end
+    end
+    for i=2,#tArgs,2 do
+        if type( tArgs[i] ) ~= "table" then
+            error( "bad argument #"..i.." (expected table, got " .. type( tArgs[i] ) .. ")", 2 )
+        end
+    end
     tabulateCommon( false, ... )
 end
 
 function pagedTabulate( ... )
+    tArgs = { ... }
+    for i=1,#tArgs,2 do
+        if type( tArgs[i] ) ~= "number" then
+            error( "bad argument #"..i.." (expected number, got " .. type( tArgs[i] ) .. ")", 2 )
+        end
+    end
+    for i=2,#tArgs,2 do
+        if type( tArgs[i] ) ~= "table" then
+            error( "bad argument #"..i.." (expected table, got " .. type( tArgs[i] ) .. ")", 2 )
+        end
+    end
     tabulateCommon( true, ... )
 end
 
@@ -301,6 +332,9 @@ function serialize( t )
 end
 
 function unserialize( s )
+    if type( s ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( s ) .. ")", 2 )
+    end
     local func = load( "return "..s, "unserialize", "t", {} )
     if func then
         local ok, result = pcall( func )
@@ -312,11 +346,20 @@ function unserialize( s )
 end
 
 function serializeJSON( t, bNBTStyle )
+    if type( t ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( t ) .. ")", 2 )
+    end
+    if bNBTStyle ~= nil and type( bNBTStyle ) ~= "boolean" then
+        error( "bad argument #2 (expected boolean, got " .. type( bNBTStyle ) .. ")", 2 ) 
+    end
     local tTracking = {}
     return serializeJSONImpl( t, tTracking, bNBTStyle or false )
 end
 
 function urlEncode( str )
+    if type( str ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( str ) .. ")", 2 )
+    end
     if str then
         str = string.gsub(str, "\n", "\r\n")
         str = string.gsub(str, "([^A-Za-z0-9 %-%_%.])", function(c)
@@ -338,6 +381,12 @@ end
 
 local tEmpty = {}
 function complete( sSearchText, tSearchTable )
+    if type( sSearchText ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( sSearchText ) .. ")", 2 )
+    end
+    if type( tSearchTable ) ~= "table" then
+        error( "bad argument #2 (expected table, got " .. type( tSearchTable ) .. ")", 2 )
+    end
     local nStart = 1
     local nDot = string.find( sSearchText, ".", nStart, true )
     local tTable = tSearchTable or _ENV
