@@ -19,7 +19,11 @@ if _VERSION == "Lua 5.1" then
                     end
                     return result
                 else
-                    return nil, err
+                    if err == nil then
+                        return
+                    else
+                        return nil, tostring( name )..err:sub( 25+#tostring( name ) )
+                    end
                 end
             else
                 local result, err = nativeload( x, name )
@@ -30,7 +34,11 @@ if _VERSION == "Lua 5.1" then
                     end
                     return result
                 else
-                    return nil, err
+                    if err == nil then
+                        return
+                    else
+                        return nil, tostring( name )..err:sub( 25+#tostring( name ) )
+                    end
                 end
             end
         end )
