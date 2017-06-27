@@ -75,12 +75,12 @@ public class PocketAPI implements ILuaAPI
                 {
                     if( !(m_computer.getEntity() instanceof EntityPlayer) )
                     {
-                        throw new LuaException( "Cannot find player" );
+                        return new Object[] { false, "Cannot find player" };
                     }
 
                     EntityPlayer player = (EntityPlayer) m_computer.getEntity();
                     InventoryPlayer inventory = player.inventory;
-                    if( !m_computer.inInventory() ) throw new LuaException( "Not in an inventory" );
+                    if( !m_computer.inInventory() ) return new Object[] { false, "Not in an inventory" };
 
                     IPocketUpgrade previousUpgrade = m_computer.getUpgrade();
 
@@ -91,7 +91,7 @@ public class PocketAPI implements ILuaAPI
                     {
                         newUpgrade = findUpgrade( inventory.offHandInventory, 0, previousUpgrade );
                     }
-                    if( newUpgrade == null ) throw new LuaException( "Cannot find a valid upgrade" );
+                    if( newUpgrade == null ) return new Object[] { false, "Cannot find a valid upgrade" };
 
                     // Remove the current upgrade
                     if( previousUpgrade != null )
@@ -110,7 +110,7 @@ public class PocketAPI implements ILuaAPI
                     // Set the new upgrade
                     m_computer.setUpgrade( newUpgrade );
 
-                    return null;
+                    return new Object[] { true };
                 } );
 
             case 1:
@@ -119,15 +119,15 @@ public class PocketAPI implements ILuaAPI
                 {
                     if( !(m_computer.getEntity() instanceof EntityPlayer) )
                     {
-                        throw new LuaException( "Cannot find player" );
+                        return new Object[] { false, "Cannot find player" };
                     }
 
                     EntityPlayer player = (EntityPlayer) m_computer.getEntity();
                     InventoryPlayer inventory = player.inventory;
-                    if( !m_computer.inInventory() ) throw new LuaException( "Not in an inventory" );
+                    if( !m_computer.inInventory() ) return new Object[] { false, "Not in an inventory" };
 
                     IPocketUpgrade previousUpgrade = m_computer.getUpgrade();
-                    if( previousUpgrade == null ) throw new LuaException( "Nothing to unequip" );
+                    if( previousUpgrade == null ) return new Object[] { false, "Nothing to unequip" };
 
                     m_computer.setUpgrade( null );
 
@@ -139,6 +139,8 @@ public class PocketAPI implements ILuaAPI
                         {
                             WorldUtil.dropItemStack( stack, player.getEntityWorld(), player.posX, player.posY, player.posZ );
                         }
+
+                        return new Object[] { true };
                     }
 
                     return null;
