@@ -175,7 +175,7 @@ local nCompletion
 local tCompleteEnv = _ENV
 local function complete( sLine )
     if settings.get( "edit.autocomplete" ) then
-        local nStartPos = string.find( sLine, "[a-zA-Z0-9_%.]+$" )
+        local nStartPos = string.find( sLine, "[a-zA-Z0-9_%.:]+$" )
         if nStartPos then
             sLine = string.sub( sLine, nStartPos )
         end
