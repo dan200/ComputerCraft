@@ -283,7 +283,7 @@ function printError( ... )
     end
 end
 
-function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
+function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault, _nCharlimit )
     if _sReplaceChar ~= nil and type( _sReplaceChar ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sReplaceChar ) .. ")", 2 ) 
     end
@@ -295,6 +295,9 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     end
     if _sDefault ~= nil and type( _sDefault ) ~= "string" then
         error( "bad argument #4 (expected string, got " .. type( _sDefault ) .. ")", 2 ) 
+    end
+    if _nCharlimit ~= nil and type( _nCharlimit ) ~= "number" then
+        error( "bad argument #5 (expected number, got " .. type( _nCharlimit ) .. ")", 2 ) 
     end
     term.setCursorBlink( true )
 
@@ -358,6 +361,11 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
                 term.setTextColor( colors.white )
                 term.setBackgroundColor( colors.gray )
             end
+            if type( _nCharlimit ) == "number" then
+                if #sCompletion+#sLine > _nCharlimit then
+                    sCompletion = sCompletion:sub(1,-(((#sCompletion+#sLine)-_nCharlimit)+#sLine))
+                end
+            end
             if sReplace then
                 term.write( string.rep( sReplace, string.len( sCompletion ) ) )
             else
@@ -387,6 +395,11 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
             -- Find the common prefix of all the other suggestions which start with the same letter as the current one
             local sCompletion = tCompletions[ nCompletion ]
             sLine = sLine .. sCompletion
+            if type( _nCharlimit ) == "number" then
+                if #sLine > _nCharlimit then
+                    sLine = sLine:sub(1,-((#sLine-_nCharlimit)+1))
+                end
+            end
             nPos = string.len( sLine )
 
             -- Redraw
@@ -396,7 +409,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     end
     while true do
         local sEvent, param = os.pullEvent()
-        if sEvent == "char" then
+        if sEvent == "char" and nPos ~= _nCharlimit then
             -- Typed key
             clear()
             sLine = string.sub( sLine, 1, nPos ) .. param .. string.sub( sLine, nPos + 1 )
