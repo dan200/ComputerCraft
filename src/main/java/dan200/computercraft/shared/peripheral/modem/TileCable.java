@@ -336,29 +336,41 @@ public class TileCable extends TileModemBase
 
     @Override
     public void onNeighbourChange()
-    {
-        EnumFacing dir = getDirection();
-        if( !worldObj.isSideSolid(
+    {   
+        // Break if placed on non solid and non peripheral. Client don't know peripherals so this cheack is only done on server.
+        if( !worldObj.isRemote )
+        {
+           
+            EnumFacing dir = getDirection();
+            if( worldObj.isAirBlock(getPos().offset( dir )) || ( !worldObj.isSideSolid(
             getPos().offset( dir ),
             dir.getOpposite()
-        ) )
-        {
-            switch( getPeripheralType() )
+            ) && PeripheralUtil.getPeripheral( worldObj, getPos().offset( dir ), dir.getOpposite() ) == null )
+            )
             {
-                case WiredModem:
+                switch( getPeripheralType() )
                 {
-                    // Drop everything and remove block
-                    ((BlockGeneric)getBlockType()).dropAllItems( worldObj, getPos(), false );
-                    worldObj.setBlockToAir( getPos() );
-                    break;
-                }
-                case WiredModemWithCable:
-                {
-                    // Drop the modem and convert to cable
-                    ((BlockGeneric)getBlockType()).dropItem( worldObj, getPos(), PeripheralItemFactory.create( PeripheralType.WiredModem, getLabel(), 1 ) );
-                    setLabel( null );
-                    setBlockState( getBlockState().withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.None ) );
-                    break;
+                    case WiredModem:
+                    {
+                        // Drop everything and remove block
+                        ((BlockGeneric)getBlockType()).dropAllItems( worldObj, getPos(), false );
+                        worldObj.setBlockToAir( getPos() );
+                        break;
+                    }
+                    case WiredModemWithCable:
+                    {
+                        if( m_peripheralAccessAllowed == true ) //Make sure to disconnect peripheral when breaking
+                        {
+                            m_peripheralAccessAllowed = false;
+                            updateAnim(); 
+                            networkChanged();
+                        }
+                        // Drop the modem and convert to cable
+                        ((BlockGeneric)getBlockType()).dropItem( worldObj, getPos(), PeripheralItemFactory.create( PeripheralType.WiredModem, getLabel(), 1 ) );
+                        setLabel( null );
+                        setBlockState( getBlockState().withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.None ) );
+                        break;
+                    }
                 }
             }
         }

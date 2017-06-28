@@ -7,6 +7,7 @@
 package dan200.computercraft.shared.peripheral.common;
 
 import dan200.computercraft.shared.peripheral.PeripheralType;
+import dan200.computercraft.shared.util.PeripheralUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -40,8 +41,11 @@ public abstract class ItemPeripheralBase extends ItemBlock implements IPeriphera
         PeripheralType type = getPeripheralType( stack );
         switch( type )
         {
+            case WiredModem: // Client don't know peripherals so its always true. On server side we allow only on peripherals or full blocks. 
+            {
+                return ( world.isRemote || ( world.isSideSolid( pos, side ) || PeripheralUtil.getPeripheral( world, pos, side ) != null ) );
+            }
             case WirelessModem:
-            case WiredModem:
             case AdvancedModem:
             {
                 return world.isSideSolid( pos, side );

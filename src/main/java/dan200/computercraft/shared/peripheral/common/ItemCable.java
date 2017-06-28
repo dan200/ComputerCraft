@@ -9,6 +9,7 @@ package dan200.computercraft.shared.peripheral.common;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.modem.TileCable;
+import dan200.computercraft.shared.util.PeripheralUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -107,7 +108,7 @@ public class ItemCable extends ItemPeripheralBase
         }
 
         // Try to add on the side of something
-        if( !existing.isAir( existingState, world, pos ) && (type == PeripheralType.Cable || existing.isSideSolid( existingState, world, pos, side )) )
+        if( !existing.isAir( existingState, world, pos ) && (type == PeripheralType.Cable || existing.isSideSolid( existingState, world, pos, side ) || PeripheralUtil.getPeripheral( world, pos, side ) != null ) )
         {
             BlockPos offset = pos.offset( side );
             Block offsetExisting = world.getBlockState( offset ).getBlock();
