@@ -177,6 +177,12 @@ local function completeExec( shell, nIndex, sText, tPreviousText )
         return completeMultipleChoice( sText, tCommands, true )
     end
 end
+local tTimeOptions = { "ingame", "local", "utc" }
+local function completeTime( shell, nIndex, sText, tPreviousText )
+    if nIndex == 1 then
+        return completeMultipleChoice( sText, tTimeOptions )
+    end
+end
 shell.setCompletionFunction( "rom/programs/alias.lua", completeAlias )
 shell.setCompletionFunction( "rom/programs/cd.lua", completeDir )
 shell.setCompletionFunction( "rom/programs/copy.lua", completeEitherEither )
@@ -204,6 +210,7 @@ shell.setCompletionFunction( "rom/programs/fun/advanced/paint.lua", completeFile
 shell.setCompletionFunction( "rom/programs/http/pastebin.lua", completePastebin )
 shell.setCompletionFunction( "rom/programs/rednet/chat.lua", completeChat )
 shell.setCompletionFunction( "rom/programs/command/exec.lua", completeExec )
+shell.setCompletionFunction( "rom/programs/time.lua", completeTime )
 
 -- Run autorun files
 if fs.exists( "/rom/autorun" ) and fs.isDir( "/rom/autorun" ) then
