@@ -310,14 +310,14 @@ elseif sCommand == "join" then
     function printMessage( sMessage )
         term.redirect( historyWindow )
         print()
-        if string.match( sMessage, "^\*" ) then
+        if string.match( sMessage, "^%*" ) then
             -- Information
             term.setTextColour( highlightColour )
             write( sMessage )
             term.setTextColour( textColour )
         else
             -- Chat
-            local sUsernameBit = string.match( sMessage, "^\<[^\>]*\>" )
+            local sUsernameBit = string.match( sMessage, "^<[^>]*>" )
             if sUsernameBit then
                 term.setTextColour( highlightColour )
                 write( sUsernameBit )

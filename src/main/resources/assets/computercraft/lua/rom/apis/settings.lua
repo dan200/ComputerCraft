@@ -56,6 +56,7 @@ function getNames()
     for k,v in pairs( tSettings ) do
         result[ #result + 1 ] = k
     end
+    table.sort(result)
     return result
 end
 

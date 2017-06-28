@@ -729,8 +729,8 @@ if http then
         if type( _url ) ~= "string" then
             error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 ) 
         end
-        if _post ~= nil and type( _post ) ~= "table" then
-            error( "bad argument #2 (expected table, got " .. type( _post ) .. ")", 2 ) 
+        if _post ~= nil and type( _post ) ~= "string" then
+            error( "bad argument #2 (expected string, got " .. type( _post ) .. ")", 2 ) 
         end
         if _headers ~= nil and type( _headers ) ~= "table" then
             error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 ) 
@@ -828,7 +828,7 @@ for n,sFile in ipairs( tApis ) do
     end
 end
 
-if turtle then
+if turtle and fs.isDir( "rom/apis/turtle" ) then
     -- Load turtle APIs
     local tApis = fs.list( "rom/apis/turtle" )
     for n,sFile in ipairs( tApis ) do
