@@ -107,9 +107,18 @@ public class ComputerCraft
     public static final int pocketComputerGUIID = 106;
 
     // Configuration options
+    private static final String[] DEFAULT_HTTP_WHITELIST = new String[] { "*" };
+    private static final String[] DEFAULT_HTTP_BLACKLIST = new String[] {
+        "127.0.0.0/8",
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16",
+        "fd00::/8",
+    };
+    
     public static boolean http_enable = true;
-    public static AddressPredicate http_whitelist = new AddressPredicate( "*" );
-    public static AddressPredicate http_blacklist = new AddressPredicate( );
+    public static AddressPredicate http_whitelist = new AddressPredicate( DEFAULT_HTTP_WHITELIST );
+    public static AddressPredicate http_blacklist = new AddressPredicate( DEFAULT_HTTP_BLACKLIST );
     public static boolean disable_lua51_features = false;
     public static String default_computer_settings = "";
     public static boolean logPeripheralErrors = false;
@@ -263,7 +272,7 @@ public class ComputerCraft
             Property currentProperty = category.get( "http_whitelist" );
             if( currentProperty != null && !currentProperty.isList() ) category.remove( "http_whitelist" );
 
-            Config.http_whitelist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_whitelist", new String[] { "*" } );
+            Config.http_whitelist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_whitelist", DEFAULT_HTTP_WHITELIST );
 
             if( currentProperty != null && !currentProperty.isList() )
             {
@@ -274,13 +283,7 @@ public class ComputerCraft
             "Set this to \"*\" to access to the entire internet. Example: \"*.pastebin.com\" will restrict access to just subdomains of pastebin.com.\n" +
             "You can use domain names (\"pastebin.com\"), wilcards (\"*.pastebin.com\") or CIDR notation (\"127.0.0.0/8\")." );
 
-        Config.http_blacklist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_blacklist", new String[] {
-            "127.0.0.0/8",
-            "10.0.0.0/8",
-            "172.16.0.0/12",
-            "192.168.0.0/16",
-            "fd00::/8",
-        } );
+        Config.http_blacklist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_blacklist", DEFAULT_HTTP_BLACKLIST );
         Config.http_blacklist.setComment( "A list of wildcards for domains or IP ranges that cannot be accessed through the \"http\" API on Computers.\n" +
             "If this is empty then all whitelisted domains will be accessible. Example: \"*.github.com\" will block access to all subdomains of github.com.\n" +
             "You can use domain names (\"pastebin.com\"), wilcards (\"*.pastebin.com\") or CIDR notation (\"127.0.0.0/8\")." );
