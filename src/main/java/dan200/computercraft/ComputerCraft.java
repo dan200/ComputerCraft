@@ -18,6 +18,7 @@ import dan200.computercraft.api.permissions.ITurtlePermissionProvider;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.core.apis.AddressPredicate;
 import dan200.computercraft.core.filesystem.ComboMount;
 import dan200.computercraft.core.filesystem.FileMount;
 import dan200.computercraft.core.filesystem.JarMount;
@@ -60,6 +61,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -105,8 +107,18 @@ public class ComputerCraft
     public static final int pocketComputerGUIID = 106;
 
     // Configuration options
+    private static final String[] DEFAULT_HTTP_WHITELIST = new String[] { "*" };
+    private static final String[] DEFAULT_HTTP_BLACKLIST = new String[] {
+        "127.0.0.0/8",
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16",
+        "fd00::/8",
+    };
+    
     public static boolean http_enable = true;
-    public static String http_whitelist = "*";
+    public static AddressPredicate http_whitelist = new AddressPredicate( DEFAULT_HTTP_WHITELIST );
+    public static AddressPredicate http_blacklist = new AddressPredicate( DEFAULT_HTTP_BLACKLIST );
     public static boolean disable_lua51_features = false;
     public static String default_computer_settings = "";
     public static boolean logPeripheralErrors = false;
@@ -185,6 +197,7 @@ public class ComputerCraft
 
         public static Property http_enable;
         public static Property http_whitelist;
+        public static Property http_blacklist;
         public static Property disable_lua51_features;
         public static Property default_computer_settings;
         public static Property logPeripheralErrors;
@@ -252,10 +265,28 @@ public class ComputerCraft
         Config.config.load();
 
         Config.http_enable = Config.config.get( Configuration.CATEGORY_GENERAL, "http_enable", http_enable );
-        Config.http_enable.setComment( "Enable the \"http\" API on Computers (see \"http_whitelist\" for more fine grained control than this)" );
+        Config.http_enable.setComment( "Enable the \"http\" API on Computers (see \"http_whitelist\" and \"http_blacklist\" for more fine grained control than this)" );
 
-        Config.http_whitelist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_whitelist", http_whitelist );
-        Config.http_whitelist.setComment( "A semicolon limited list of wildcards for domains that can be accessed through the \"http\" API on Computers. Set this to \"*\" to access to the entire internet. Example: \"*.pastebin.com;*.github.com;*.computercraft.info\" will restrict access to just those 3 domains." );
+        {
+            ConfigCategory category = Config.config.getCategory( Configuration.CATEGORY_GENERAL );
+            Property currentProperty = category.get( "http_whitelist" );
+            if( currentProperty != null && !currentProperty.isList() ) category.remove( "http_whitelist" );
+
+            Config.http_whitelist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_whitelist", DEFAULT_HTTP_WHITELIST );
+
+            if( currentProperty != null && !currentProperty.isList() )
+            {
+                Config.http_whitelist.setValues( currentProperty.getString().split( ";" ) );
+            }
+        }
+        Config.http_whitelist.setComment( "A list of wildcards for domains or IP ranges that can be accessed through the \"http\" API on Computers.\n" +
+            "Set this to \"*\" to access to the entire internet. Example: \"*.pastebin.com\" will restrict access to just subdomains of pastebin.com.\n" +
+            "You can use domain names (\"pastebin.com\"), wilcards (\"*.pastebin.com\") or CIDR notation (\"127.0.0.0/8\")." );
+
+        Config.http_blacklist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_blacklist", DEFAULT_HTTP_BLACKLIST );
+        Config.http_blacklist.setComment( "A list of wildcards for domains or IP ranges that cannot be accessed through the \"http\" API on Computers.\n" +
+            "If this is empty then all whitelisted domains will be accessible. Example: \"*.github.com\" will block access to all subdomains of github.com.\n" +
+            "You can use domain names (\"pastebin.com\"), wilcards (\"*.pastebin.com\") or CIDR notation (\"127.0.0.0/8\")." );
 
         Config.disable_lua51_features = Config.config.get( Configuration.CATEGORY_GENERAL, "disable_lua51_features", disable_lua51_features );
         Config.disable_lua51_features.setComment( "Set this to true to disable Lua 5.1 functions that will be removed in a future update. Useful for ensuring forward compatibility of your programs now." );
@@ -327,7 +358,8 @@ public class ComputerCraft
     public static void syncConfig() {
 
         http_enable = Config.http_enable.getBoolean();
-        http_whitelist = Config.http_whitelist.getString();
+        http_whitelist = new AddressPredicate( Config.http_whitelist.getStringList() );
+        http_blacklist = new AddressPredicate( Config.http_blacklist.getStringList() );
         disable_lua51_features = Config.disable_lua51_features.getBoolean();
         default_computer_settings = Config.default_computer_settings.getString();
 

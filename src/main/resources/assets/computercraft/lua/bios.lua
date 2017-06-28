@@ -741,6 +741,18 @@ if http then
         end
         return ok, err
     end
+    
+    local nativeCheckURL = http.checkURL
+    http.checkURLAsync = nativeCheckURL
+    http.checkURL = function( _url )
+        local ok, err = nativeCheckURL( _url )
+        if not ok then return ok, err end
+    
+        while true do
+            local event, url, ok, err = os.pullEvent( "http_check" )
+            if url == _url then return ok, err end
+        end
+    end
 end
 
 -- Install the lua part of the FS api

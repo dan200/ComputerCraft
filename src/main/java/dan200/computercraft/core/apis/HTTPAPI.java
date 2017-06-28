@@ -7,13 +7,13 @@
 package dan200.computercraft.core.apis;
 
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.core.apis.handles.BinaryInputHandle;
-import dan200.computercraft.core.apis.handles.EncodedInputHandle;
+import dan200.computercraft.core.apis.http.HTTPCheck;
+import dan200.computercraft.core.apis.http.HTTPRequest;
+import dan200.computercraft.core.apis.http.HTTPTask;
 
 import javax.annotation.Nonnull;
-import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
@@ -21,12 +21,12 @@ import static dan200.computercraft.core.apis.ArgumentHelper.*;
 public class HTTPAPI implements ILuaAPI
 {
     private final IAPIEnvironment m_apiEnvironment;
-    private final List<HTTPRequest> m_httpRequests;
+    private final List<HTTPTask> m_httpTasks;
     
     public HTTPAPI( IAPIEnvironment environment )
     {
         m_apiEnvironment = environment;
-        m_httpRequests = new ArrayList<HTTPRequest>();
+        m_httpTasks = new ArrayList<HTTPTask>();
     }
     
     @Override
@@ -46,95 +46,31 @@ public class HTTPAPI implements ILuaAPI
     public void advance( double _dt )
     {
         // Wait for all of our http requests 
-        synchronized( m_httpRequests )
+        synchronized( m_httpTasks )
         {
-            Iterator<HTTPRequest> it = m_httpRequests.iterator();
-            while( it.hasNext() ) {
-                final HTTPRequest h = it.next();
-                if( h.isComplete() ) {
-                    final String url = h.getURL();
-                    if( h.wasSuccessful() ) {
-                        // Queue the "http_success" event
-                        InputStream contents = h.getContents();
-                        Object result = wrapStream(
-                            h.isBinary() ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, h.getEncoding() ),
-                            h.getResponseCode(), h.getResponseHeaders()
-                        );
-                        m_apiEnvironment.queueEvent( "http_success", new Object[] { url, result } );
-                    } else {
-                        // Queue the "http_failure" event
-                        InputStream contents = h.getContents();
-                        Object result = null;
-                        if( contents != null ) {
-                            result = wrapStream(
-                                h.isBinary() ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, h.getEncoding() ),
-                                h.getResponseCode(), h.getResponseHeaders()
-                            );
-                        }
-                        m_apiEnvironment.queueEvent( "http_failure", new Object[]{ url, "Could not connect", result } );
-                    }
+            Iterator<HTTPTask> it = m_httpTasks.iterator();
+            while( it.hasNext() )
+            {
+                final HTTPTask h = it.next();
+                if( h.isFinished() )
+                {
+                    h.whenFinished( m_apiEnvironment );
                     it.remove();
                 }
             }
         }
     }
-
-    private static ILuaObject wrapStream( final ILuaObject reader, final int responseCode, final Map<String, String> responseHeaders )
-    {
-        String[] oldMethods = reader.getMethodNames();
-        final int methodOffset = oldMethods.length;
-
-        final String[] newMethods = Arrays.copyOf( oldMethods, oldMethods.length + 2 );
-        newMethods[ methodOffset + 0 ] = "getResponseCode";
-        newMethods[ methodOffset + 1 ] = "getResponseHeaders";
-
-        return new ILuaObject()
-        {
-            @Nonnull
-            @Override
-            public String[] getMethodNames()
-            {
-                return newMethods;
-            }
-
-            @Override
-            public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException, InterruptedException
-            {
-                if( method < methodOffset )
-                {
-                    return reader.callMethod( context, method, args );
-                }
-                switch( method - methodOffset )
-                {
-                    case 0:
-                    {
-                        // getResponseCode
-                        return new Object[] { responseCode };
-                    }
-                    case 1:
-                    {
-                        // getResponseHeaders
-                        return new Object[] { responseHeaders };
-                    }
-                    default:
-                    {
-                        return null;
-                    }
-                }
-            }
-        };
-    }
     
     @Override
     public void shutdown( )
     {
-        synchronized( m_httpRequests )
+        synchronized( m_httpTasks )
         {
-            for( HTTPRequest r : m_httpRequests )
+            for( HTTPTask r : m_httpTasks )
             {
                 r.cancel();
             }
-            m_httpRequests.clear();
+            m_httpTasks.clear();
         }
     }
 
@@ -188,10 +124,11 @@ public class HTTPAPI implements ILuaAPI
                 // Make the request
                 try
                 {
-                    HTTPRequest request = new HTTPRequest( urlString, postString, headers, binary );
-                    synchronized( m_httpRequests )
+                    URL url = HTTPRequest.checkURL( urlString );
+                    HTTPRequest request = new HTTPRequest( urlString, url, postString, headers, binary );
+                    synchronized( m_httpTasks )
                     {
-                        m_httpRequests.add( request );
+                        m_httpTasks.add( HTTPTask.submit( request ) );
                     }
                     return new Object[] { true };
                 }
@@ -209,7 +146,11 @@ public class HTTPAPI implements ILuaAPI
                 // Check URL
                 try
                 {
-                    HTTPRequest.checkURL( urlString );
+                    URL url = HTTPRequest.checkURL( urlString );
+                    HTTPCheck check = new HTTPCheck( urlString, url );
+                    synchronized( m_httpTasks ) {
+                        m_httpTasks.add( HTTPTask.submit( check ) );
+                    }
                     return new Object[] { true };
                 }
                 catch( HTTPRequestException e )

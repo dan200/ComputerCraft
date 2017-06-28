@@ -1,5 +1,6 @@
 Functions in the HTTP API:
 http.checkURL( url )
+http.checkURLAsync( url )
 http.request( url, [postData], [headers] )
 http.get( url, [headers] )
 http.post( url, postData, [headers] )
