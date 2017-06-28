@@ -341,7 +341,7 @@ elseif sCommand == "join" then
             
             if sUsernameBit ~= tmp then
               local speaker = peripheral.find("speaker")
-              if speaker and mute ~= true then 
+              if speaker and muted ~= true then 
                 speaker.playNote("harp", 1,10)
               end
             end
