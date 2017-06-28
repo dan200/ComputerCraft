@@ -68,6 +68,9 @@ local function createShellEnv( sDir )
 
     local sentinel = {}
     local function require( name )
+        if type( name ) ~= "string" then
+            error( "bad argument #1 (expected string, got " .. type( name ) .. ")", 2 )
+        end
         if package.loaded[name] == sentinel then
             error("Loop detected requiring '" .. name .. "'", 0)
         end
@@ -181,6 +184,12 @@ function shell.dir()
 end
 
 function shell.setDir( _sDir )
+    if type( _sDir ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sDir ) .. ")", 2 )
+    end
+    if not fs.isDir( _sDir ) then
+        error( "Not a directory", 2 )
+    end
     sDir = _sDir
 end
 
@@ -189,10 +198,16 @@ function shell.path()
 end
 
 function shell.setPath( _sPath )
+    if type( _sPath ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sPath ) .. ")", 2 )
+    end
     sPath = _sPath
 end
 
 function shell.resolve( _sPath )
+    if type( _sPath ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sPath ) .. ")", 2 )
+    end
     local sStartChar = string.sub( _sPath, 1, 1 )
     if sStartChar == "/" or sStartChar == "\\" then
         return fs.combine( "", _sPath )
@@ -212,6 +227,9 @@ local function pathWithExtension( _sPath, _sExt )
 end
 
 function shell.resolveProgram( _sCommand )
+    if type( _sCommand ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sCommand ) .. ")", 2 )
+    end
     -- Substitute aliases firsts
     if tAliases[ _sCommand ] ~= nil then
         _sCommand = tAliases[ _sCommand ]
@@ -327,6 +345,9 @@ local function completeProgramArgument( sProgram, nArgument, sPart, tPreviousPar
 end
 
 function shell.complete( sLine )
+    if type( sLine ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( sLine ) .. ")", 2 )
+    end
     if #sLine > 0 then
         local tWords = tokenise( sLine )
         local nIndex = #tWords
@@ -363,10 +384,19 @@ function shell.complete( sLine )
 end
 
 function shell.completeProgram( sProgram )
+    if type( sProgram ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( sProgram ) .. ")", 2 )
+    end
     return completeProgram( sProgram )
 end
 
 function shell.setCompletionFunction( sProgram, fnComplete )
+    if type( sProgram ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( sProgram ) .. ")", 2 )
+    end
+    if type( fnComplete ) ~= "function" then
+        error( "bad argument #2 (expected function, got " .. type( fnComplete ) .. ")", 2 )
+    end
     tCompletionInfo[ sProgram ] = {
         fnComplete = fnComplete
     }
@@ -384,10 +414,19 @@ function shell.getRunningProgram()
 end
 
 function shell.setAlias( _sCommand, _sProgram )
+    if type( _sCommand ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sCommand ) .. ")", 2 )
+    end
+    if type( _sProgram ) ~= "string" then
+        error( "bad argument #2 (expected string, got " .. type( _sProgram ) .. ")", 2 )
+    end
     tAliases[ _sCommand ] = _sProgram
 end
 
 function shell.clearAlias( _sCommand )
+    if type( _sCommand ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( _sCommand ) .. ")", 2 )
+    end
     tAliases[ _sCommand ] = nil
 end
 
@@ -417,6 +456,9 @@ if multishell then
     end
 
     function shell.switchTab( nID )
+        if type( nID ) ~= "number" then
+            error( "bad argument #1 (expected number, got " .. type( nID ) .. ")", 2 )
+        end
         multishell.setFocus( nID )
     end
 end
