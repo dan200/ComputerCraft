@@ -24,13 +24,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -215,7 +218,6 @@ public class TurtlePlaceCommand implements ITurtleCommand
         }
 
         // Load up the turtle's inventory
-        Item item = stack.getItem();
         ItemStack stackCopy = stack.copy();
         turtlePlayer.loadInventory( stackCopy );
 
@@ -237,21 +239,26 @@ public class TurtlePlaceCommand implements ITurtleCommand
 
         // Place on the entity
         boolean placed = false;
-        if( hitEntity.applyPlayerInteraction( turtlePlayer, hitPos, stackCopy, EnumHand.MAIN_HAND ) == EnumActionResult.SUCCESS )
+        if( !ForgeHooks.onInteractEntityAt( turtlePlayer, hitEntity, hitPos, stack, EnumHand.MAIN_HAND ) &&
+            hitEntity.applyPlayerInteraction( turtlePlayer, hitPos, stackCopy, EnumHand.MAIN_HAND ) == EnumActionResult.SUCCESS )
         {
             placed = true;
             turtlePlayer.loadInventory( stackCopy );
         }
-        else if( hitEntity.processInitialInteract( turtlePlayer, stackCopy, EnumHand.MAIN_HAND ) )
+        else if( !ForgeHooks.onInteractEntity( turtlePlayer, hitEntity, stack, EnumHand.MAIN_HAND ) )
         {
-            placed = true;
-        }
-        else if( hitEntity instanceof EntityLivingBase )
-        {
-            placed = item.itemInteractionForEntity( stackCopy, turtlePlayer, (EntityLivingBase)hitEntity, EnumHand.MAIN_HAND );
-            if( placed )
+            // See EntityPlayer.interact
+            if( hitEntity.processInitialInteract( turtlePlayer, stackCopy, EnumHand.MAIN_HAND ) )
             {
-                turtlePlayer.loadInventory( stackCopy );
+                placed = true;
+            }
+            else if( hitEntity instanceof EntityLivingBase )
+            {
+                placed = stackCopy.interactWithEntity( turtlePlayer, (EntityLivingBase) hitEntity, EnumHand.MAIN_HAND );
+                if( placed )
+                {
+                    turtlePlayer.loadInventory( stackCopy );
+                }
             }
         }
 
@@ -352,19 +359,29 @@ public class TurtlePlaceCommand implements ITurtleCommand
 
         // Do the deploying (put everything in the players inventory)
         boolean placed = false;
-        if( item.onItemUseFirst( stackCopy, turtlePlayer, turtle.getWorld(), position, side, hitX, hitY, hitZ, EnumHand.MAIN_HAND ) == EnumActionResult.SUCCESS )
+
+
+        // See PlayerInteractionManager.processRightClickBlock
+        PlayerInteractEvent.RightClickBlock event = ForgeHooks.onRightClickBlock( turtlePlayer, EnumHand.MAIN_HAND, stackCopy, position, side, new Vec3d( hitX, hitY, hitZ ) );
+        if( !event.isCanceled() )
         {
-            placed = true;
-            turtlePlayer.loadInventory( stackCopy );
+            if( item.onItemUseFirst( stackCopy, turtlePlayer, turtle.getWorld(), position, side, hitX, hitY, hitZ, EnumHand.MAIN_HAND ) == EnumActionResult.SUCCESS )
+            {
+                placed = true;
+                turtlePlayer.loadInventory( stackCopy );
+            }
+            else if( event.getUseItem() != Event.Result.DENY &&
+                stackCopy.onItemUse( turtlePlayer, turtle.getWorld(), position, EnumHand.MAIN_HAND, side, hitX, hitY, hitZ ) == EnumActionResult.SUCCESS )
+            {
+                placed = true;
+                turtlePlayer.loadInventory( stackCopy );
+            }
         }
-        else if( item.onItemUse( stackCopy, turtlePlayer, turtle.getWorld(), position, EnumHand.MAIN_HAND, side, hitX, hitY, hitZ ) == EnumActionResult.SUCCESS )
+
+        if( !placed && (item instanceof ItemBucket || item instanceof ItemBoat || item instanceof ItemLilyPad || item instanceof ItemGlassBottle)
+            && ForgeHooks.onItemRightClick( turtlePlayer, EnumHand.MAIN_HAND, stackCopy ) )
         {
-            placed = true;
-            turtlePlayer.loadInventory( stackCopy );
-        }
-        else if( item instanceof ItemBucket || item instanceof ItemBoat || item instanceof ItemLilyPad || item instanceof ItemGlassBottle )
-        {
-            ActionResult<ItemStack> result = item.onItemRightClick( stackCopy, turtle.getWorld(), turtlePlayer, EnumHand.MAIN_HAND );
+            ActionResult<ItemStack> result = stackCopy.useItemRightClick( turtle.getWorld(), turtlePlayer, EnumHand.MAIN_HAND );
             if( result.getType() == EnumActionResult.SUCCESS && !ItemStack.areItemStacksEqual( stack, result.getResult() ) )
             {
                 placed = true;
