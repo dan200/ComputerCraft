@@ -1,4 +1,4 @@
--- Paint created by nitrogenfingers (edited by dan200 & co)
+-- Paint created by nitrogenfingers (edited by dan200)
 -- http://www.youtube.com/user/NitrogenFingers
 
 ------------
@@ -21,15 +21,9 @@ local mChoices = { "Save","Exit" }
 -- The message displayed in the footer bar
 local fMessage = "Press Ctrl to access menu"
 
--- Colour to character conversions
-local tColourLookup = {}
-for n=1,16 do
-    tColourLookup[ 2^(n-1) ] = string.sub( "0123456789abcdef",n,n )
-end
-
------------------------
--- Pre-Flight Checks --
------------------------
+-------------------------
+-- Initialisation --
+-------------------------
 
 -- Determine if we can even run this
 if not term.isColour() then
@@ -38,13 +32,14 @@ if not term.isColour() then
 end
 
 -- Determines if the file exists, and can be edited on this computer
-local sPath = ...
-if not sPath then
+local tArgs = {...}
+if #tArgs == 0 then
     print("Usage: paint <path>")
     return
 end
-sPath = shell.resolve( sPath )
-if fs.isDir( sPath ) then
+local sPath = shell.resolve(tArgs[1])
+local bReadOnly = fs.isReadOnly(sPath)
+if fs.exists(sPath) and fs.isDir(sPath) then
     print("Cannot edit a directory.")
     return
 end
@@ -57,14 +52,117 @@ if not fs.exists( sPath ) and not string.find( sPath, "%." ) then
     end
 end
 
-local bReadOnly = fs.isReadOnly(sPath)
 
 ---------------
 -- Functions --
 ---------------
 
+local function getCanvasPixel( x, y )
+    if canvas[y] then
+        return canvas[y][x]
+    end
+    return nil
+end
+
+--[[
+    Converts a colour value to a text character
+    params: colour = the number to convert to a hex value
+    returns: a string representing the chosen colour
+]]
+local function getCharOf( colour )
+    -- Incorrect values always convert to nil
+    if type(colour) == "number" then
+        local value = math.floor( math.log(colour) / math.log(2) ) + 1
+        if value >= 1 and value <= 16 then
+            return string.sub( "0123456789abcdef", value, value )
+        end
+    end
+    return " "
+end    
+
+--[[
+    Converts a text character to colour value
+    params: char = the char (from string.byte) to convert to number
+    returns: the colour number of the hex value
+]]
+local tColourLookup = {}
+for n=1,16 do
+    tColourLookup[ string.byte( "0123456789abcdef",n,n ) ] = 2^(n-1)
+end
+local function getColourOf( char )
+    -- Values not in the hex table are transparent (canvas coloured)
+    return tColourLookup[char]
+end
+
+--[[ 
+    Loads the file into the canvas
+    params: path = the path of the file to open
+    returns: nil
+]]
+local function load(path)
+    -- Load the file
+    if fs.exists(path) then
+        local file = fs.open(sPath, "r")
+        local sLine = file.readLine()
+        while sLine do
+            local line = {}
+            for x=1,w-2 do
+                line[x] = getColourOf( string.byte(sLine,x,x) )
+            end
+            table.insert( canvas, line )
+            sLine = file.readLine()
+        end
+        file.close()
+    end
+end
+
 --[[  
-    Draws colour picker sidebar, the palette and the footer
+    Saves the current canvas to file  
+    params: path = the path of the file to save
+    returns: true if save was successful, false otherwise
+]]
+local function save(path)
+    -- Open file
+    local sDir = string.sub(sPath, 1, #sPath - #fs.getName(sPath))
+    if not fs.exists(sDir) then
+        fs.makeDir(sDir)
+    end
+
+    local file = fs.open( path, "w" )
+    if not file then
+        return false
+    end
+
+    -- Encode (and trim)
+    local tLines = {}
+    local nLastLine = 0
+    for y=1,h-1 do
+        local sLine = ""
+        local nLastChar = 0
+        for x=1,w-2 do
+            local c = getCharOf( getCanvasPixel( x, y ) )
+            sLine = sLine .. c
+            if c ~= " " then
+                nLastChar = x
+            end
+        end
+        sLine = string.sub( sLine, 1, nLastChar )
+        tLines[y] = sLine
+        if string.len( sLine ) > 0 then
+            nLastLine = y
+        end
+    end
+
+    -- Save out
+    for n=1,nLastLine do
+           file.writeLine( tLines[ n ] )
+    end
+    file.close()
+    return true
+end
+
+--[[  
+    Draws colour picker sidebar, the pallette and the footer
     returns: nil
 ]]
 local function drawInterface()
@@ -88,22 +186,24 @@ local function drawInterface()
     term.write("\127\127")
             
     -- Left and Right Selected Colours
-    term.setCursorPos(w-1, 18)
-    if leftColour ~= nil then
-        term.setBackgroundColour( leftColour )
-        term.write(" ")
-    else
-        term.setBackgroundColour( canvasColour )
-        term.setTextColour( colours.grey )
-        term.write("\127")
-    end
-    if rightColour ~= nil then
-        term.setBackgroundColour( rightColour )
-        term.write(" ")
-    else
-        term.setBackgroundColour( canvasColour )
-        term.setTextColour( colours.grey )
-        term.write("\127")
+    for i=18,18 do
+        term.setCursorPos(w-1, i)
+        if leftColour ~= nil then
+            term.setBackgroundColour( leftColour )
+            term.write(" ")
+        else
+            term.setBackgroundColour( canvasColour )
+            term.setTextColour( colours.grey )
+            term.write("\127")
+        end
+        if rightColour ~= nil then
+            term.setBackgroundColour( rightColour )
+            term.write(" ")
+        else
+            term.setBackgroundColour( canvasColour )
+            term.setTextColour( colours.grey )
+            term.write("\127")
+        end
     end
 
     -- Padding
@@ -115,23 +215,40 @@ local function drawInterface()
 end
 
 --[[  
+    Converts a single pixel of a single line of the canvas and draws it
+    returns: nil
+]]
+local function drawCanvasPixel( x, y )
+    local pixel = getCanvasPixel( x, y )
+    if pixel then
+        term.setBackgroundColour( pixel or canvasColour )
+        term.setCursorPos(x, y)
+        term.write(" ")
+    else
+        term.setBackgroundColour( canvasColour )
+        term.setTextColour( colours.grey )
+        term.setCursorPos(x, y)
+        term.write("\127")
+    end
+end
+
+--[[  
+    Converts each colour in a single line of the canvas and draws it
+    returns: nil
+]]
+local function drawCanvasLine( y )
+    for x = 1, w-2 do
+        drawCanvasPixel( x, y )
+    end
+end
+
+--[[  
     Converts each colour in the canvas and draws it
     returns: nil
 ]]
 local function drawCanvas()
-    local TC = string.rep( "7", w-2 )
     for y = 1, h-1 do
-        local T, BC = {}, {}
-        for x = 1, w-2 do
-            local pixel = canvas[y] and canvas[y][x]
-            if pixel and pixel ~= 0 then
-                T[x], BC[x] = " ", tColourLookup[pixel]
-            else
-                T[x], BC[x] = "\127", tColourLookup[canvasColour]
-            end
-        end
-        term.setCursorPos( 1, y )
-        term.blit( table.concat( T ), TC, table.concat( BC ) )
+        drawCanvasLine( y )
     end
 end
 
@@ -142,15 +259,22 @@ end
 local function accessMenu()
     -- Selected menu option
     local selection = 1
-    term.setTextColour(colours.white)
+    
     term.setBackgroundColour(colours.black)
     while true do
         -- Draw the menu
         term.setCursorPos(1,h)
         term.clearLine()
+        term.setTextColour(colours.white)
         for k,v in pairs(mChoices) do
             if selection==k then 
-                term.blit( "["..v.."]", "4"..string.rep(" ",#v).."4", string.rep("f",#v+2) )
+                term.setTextColour(colours.yellow)
+                local ox,_ = term.getCursorPos()
+                term.write("["..string.rep(" ",#v).."]")
+                term.setCursorPos(ox+1,h)
+                term.setTextColour(colours.white)
+                term.write(v)
+                term.setCursorPos(term.getCursorPos()+1,h)
             else
                 term.write(" "..v.." ")
             end
@@ -158,39 +282,51 @@ local function accessMenu()
         
         -- Handle input in the menu
         local id,key = os.pullEvent("key")
-        
-        -- S and E are shortcuts
-        if key == keys.s then
-            selection = 1
-            key = keys.enter
-        elseif key == keys.e then
-            selection = 2
-            key = keys.enter
-        end
-        
-        if key == keys.right then
-            -- Move right
-            selection = selection == #mChoices and 1 or (selection + 1)
-        
-        elseif key == keys.left then
-            -- Move left
-            selection = selection == 1 and #mChoices or (selection - 1)
-        
-        elseif key == keys.enter then
-            -- Select an option
-            if mChoices[selection]=="Save" then
-                if bReadOnly then 
-                    fMessage = "Access denied"
-                    return false
-                end
-                fMessage = (paintutils.saveImage( canvas, sPath ) and "Saved to " or "Error saving to ")..sPath
-                return false
-            elseif mChoices[selection]=="Exit" then 
-                return true
+        if id == "key" then
+            -- S and E are shortcuts
+            if key == keys.s then
+                selection = 1
+                key = keys.enter
+            elseif key == keys.e then
+                selection = 2
+                key = keys.enter
             end
-        elseif key == keys.leftCtrl or keys == keys.rightCtrl then
-            -- Cancel the menu
-            return false 
+        
+            if key == keys.right then
+                -- Move right
+                selection = selection + 1
+                if selection > #mChoices then
+                    selection = 1
+                end
+                
+            elseif key == keys.left and selection > 1 then
+                -- Move left
+                selection = selection - 1
+                if selection < 1 then
+                    selection = #mChoices
+                end
+                
+            elseif key == keys.enter then
+                -- Select an option
+                if mChoices[selection]=="Save" then 
+                    if bReadOnly then 
+                        fMessage = "Access denied"
+                        return false
+                    end
+                    local success = save(sPath)
+                    if success then
+                        fMessage = "Saved to "..sPath
+                    else
+                        fMessage = "Error saving to "..sPath
+                    end
+                    return false
+                elseif mChoices[selection]=="Exit" then 
+                    return true
+                end
+            elseif key == keys.leftCtrl or keys == keys.rightCtrl then
+                -- Cancel the menu
+                return false 
+            end
         end
     end
 end
@@ -201,10 +337,11 @@ end
     returns: nil
 ]]
 local function handleEvents()
-    while true do
+    local programActive = true
+    while programActive do
         local id,p1,p2,p3 = os.pullEvent()
-        if id=="mouse_click" or id=="mouse_drag" and p1 < 3 and p2 > 0 and p2 <= w and p3 > 0 and p3 < h then
-            if p2 >= w-1 and p3 <= 17 then
+        if id=="mouse_click" or id=="mouse_drag" then
+            if p2 >= w-1 and p3 >= 1 and p3 <= 17 then
                 if id ~= "mouse_drag" then
                     -- Selecting an items in the colour picker
                     if p3 <= 16 then
@@ -220,14 +357,15 @@ local function handleEvents()
                             rightColour = nil
                         end
                     end
+                    --drawCanvas()
                     drawInterface()
                 end
-            elseif p2 < w-1 then
+            elseif p2 < w-1 and p3 <= h-1 then
                 -- Clicking on the canvas
-                local paintColour
+                local paintColour = nil
                 if p1==1 then
                     paintColour = leftColour
-                else
+                elseif p1==2 then
                     paintColour = rightColour
                 end
                 if not canvas[p3] then
@@ -235,16 +373,11 @@ local function handleEvents()
                 end
                 canvas[p3][p2] = paintColour
 
-                term.setCursorPos( p2, p3 )
-                if paintColour then
-                    term.blit( " ", " ", tColourLookup[paintColour] )
-                else
-                    term.blit( "\127", "7", tColourLookup[canvasColour] )
-                end
+                drawCanvasPixel( p2, p3 )
             end
         elseif id=="key" then
             if p1==keys.leftCtrl or p1==keys.rightCtrl then
-                if accessMenu() then return end
+                programActive = not accessMenu()
                 drawInterface()
             end
         elseif id=="term_resize" then
@@ -255,24 +388,15 @@ local function handleEvents()
     end
 end
 
---------------------
--- Initialisation --
---------------------
-
-if fs.exists( sPath ) then canvas = paintutils.loadImage( sPath ) end
+-- Init
+load(sPath)
 drawCanvas()
 drawInterface()
 
----------------
--- Main Loop --
----------------
-
+-- Main loop
 handleEvents()
 
---------------
--- Shutdown --
---------------
-
+-- Shutdown
 term.setBackgroundColour(colours.black)
 term.setTextColour(colours.white)
 term.clear()

@@ -59,9 +59,6 @@ end
 if peripheral.find( "printer" ) then
     table.insert( tMenuItems, "Print" )
 end
-if settings.get( "edit.advanced_functionality" ) then
-    table.insert( tMenuItems, "Jump" )
-end
 table.insert( tMenuItems, "Exit" )
 
 local sStatus = "Press Ctrl to access menu"
@@ -137,65 +134,39 @@ local tKeywords = {
     ["while"] = true,
 }
 
-local tHex = {
-    [ colors.white ] = "0",
-    [ colors.orange ] = "1",
-    [ colors.magenta ] = "2",
-    [ colors.lightBlue ] = "3",
-    [ colors.yellow ] = "4",
-    [ colors.lime ] = "5",
-    [ colors.pink ] = "6",
-    [ colors.gray ] = "7",
-    [ colors.lightGray ] = "8",
-    [ colors.cyan ] = "9",
-    [ colors.purple ] = "a",
-    [ colors.blue ] = "b",
-    [ colors.brown ] = "c",
-    [ colors.green ] = "d",
-    [ colors.red ] = "e",
-    [ colors.black ] = "f",
-}
-
-local tPattern = {
-    [ 1 ] = "^(%-%-%[%[.-%]%])()",
-    [ 2 ] = "^(%-%-.*)()",
-    [ 3 ] = "^(\"\")()",
-    [ 4 ] = "^(\".-[^\\]\")()",
-    [ 5 ] = "^(\'\')()",
-    [ 6 ] = "^(\'.-[^\\]\')()",
-    [ 7 ] = "^(%[%[.-%]%])()",
-    [ 8 ] = "^([%w_]+)()",
-    [ 9 ] = "^([^%w_])()",
-}
-
-local tPatternColors = {
-    [ 1 ] = commentColour,
-    [ 2 ] = commentColour,
-    [ 3 ] = stringColour,
-    [ 4 ] = stringColour,
-    [ 5 ] = stringColour,
-    [ 6 ] = stringColour,
-    [ 7 ] = stringColour,
-    [ 8 ] = function( sMatch ) return tKeywords[ sMatch ] and keywordColour or textColour end,
-    [ 9 ] = textColour,
-}
+local function tryWrite( sLine, regex, colour )
+    local match = string.match( sLine, regex )
+    if match then
+        if type(colour) == "number" then
+            term.setTextColour( colour )
+        else
+            term.setTextColour( colour(match) )
+        end
+        term.write( match )
+        term.setTextColour( textColour )
+        return string.sub( sLine, string.len(match) + 1 )
+    end
+    return nil
+end
 
 local function writeHighlighted( sLine )
-    local tColor = {}
-    local nPosition = 1
-    local sMatch,nNextPosition
-    local nColor
-    while nPosition <= #sLine do
-        local i = 0
-        repeat 
-            i=i+1
-            sMatch,nNextPosition = string.match( sLine, tPattern[i] , nPosition)
-        until sMatch
-        nColor = tPatternColors[i]
-        tColor[#tColor+1] = string.rep( tHex[ type(nColor) == "number" and nColor or  nColor(sMatch) ] , nNextPosition - nPosition)
-        nPosition = nNextPosition
+    while string.len(sLine) > 0 do    
+        sLine = 
+            tryWrite( sLine, "^%-%-%[%[.-%]%]", commentColour ) or
+            tryWrite( sLine, "^%-%-.*", commentColour ) or
+            tryWrite( sLine, "^\"\"", stringColour ) or
+            tryWrite( sLine, "^\".-[^\\]\"", stringColour ) or
+            tryWrite( sLine, "^\'\'", stringColour ) or
+            tryWrite( sLine, "^\'.-[^\\]\'", stringColour ) or
+            tryWrite( sLine, "^%[%[.-%]%]", stringColour ) or
+            tryWrite( sLine, "^[%w_]+", function( match )
+                if tKeywords[ match ] then
+                    return keywordColour
+                end
+                return textColour
+            end ) or
+            tryWrite( sLine, "^[^%w_]", textColour )
     end
-    term.blit( sLine, table.concat( tColor ), string.rep( tHex[bgColour], #sLine ) )
 end
 
 local tCompletions
@@ -204,7 +175,7 @@ local nCompletion
 local tCompleteEnv = _ENV
 local function complete( sLine )
     if settings.get( "edit.autocomplete" ) then
-        local nStartPos = string.find( sLine, "[a-zA-Z0-9_%.:]+$" )
+        local nStartPos = string.find( sLine, "[a-zA-Z0-9_%.]+$" )
         if nStartPos then
             sLine = string.sub( sLine, nStartPos )
         end
@@ -309,47 +280,6 @@ local function redrawMenu()
 
     -- Reset cursor
     term.setCursorPos( x - scrollX, y - scrollY )
-end
-
-local function setCursor( newX, newY )
-    local oldX, oldY = x, y
-    x, y = newX, newY
-    local screenX = x - scrollX
-    local screenY = y - scrollY
-    
-    local bRedraw = false
-    if screenX < 1 then
-        scrollX = x - 1
-        screenX = 1
-        bRedraw = true
-    elseif screenX > w then
-        scrollX = x - w
-        screenX = w
-        bRedraw = true
-    end
-    
-    if screenY < 1 then
-        scrollY = y - 1
-        screenY = 1
-        bRedraw = true
-    elseif screenY > h-1 then
-        scrollY = y - (h-1)
-        screenY = h-1
-        bRedraw = true
-    end
-
-    recomplete()
-    if bRedraw then
-        redrawText()
-    elseif y ~= oldY then
-        redrawLine( oldY )
-        redrawLine( y )
-    else
-        redrawLine( y )
-    end
-    term.setCursorPos( screenX, screenY )
-
-    redrawMenu()
 end
 
 local tMenuFuncs = { 
@@ -465,26 +395,7 @@ local tMenuFuncs = {
             sStatus="Error saving to "..sTempPath
         end
         redrawMenu()
-    end,
-    Jump = function()
-        term.setCursorPos( 1, h )
-        term.clearLine()
-        term.setTextColour( highlightColour )
-        term.write( "Line : " )
-        term.setTextColour( textColour )
-        local nLine = tonumber(read())
-        if type(nLine) == "number" then
-            nLine = math.min(math.max( 1, nLine ), #tLines )
-            setCursor( 1, nLine )
-            sStatus="Jumped to line "..nLine
-            redrawMenu()
-            redrawText()
-        else
-            sStatus="Invalid line number"
-            redrawMenu()
-            redrawText()
-        end
-    end,
+    end
 }
 
 local function doMenuItem( _n )
@@ -493,6 +404,47 @@ local function doMenuItem( _n )
         bMenu = false
         term.setCursorBlink( true )
     end
+    redrawMenu()
+end
+
+local function setCursor( newX, newY )
+    local oldX, oldY = x, y
+    x, y = newX, newY
+    local screenX = x - scrollX
+    local screenY = y - scrollY
+    
+    local bRedraw = false
+    if screenX < 1 then
+        scrollX = x - 1
+        screenX = 1
+        bRedraw = true
+    elseif screenX > w then
+        scrollX = x - w
+        screenX = w
+        bRedraw = true
+    end
+    
+    if screenY < 1 then
+        scrollY = y - 1
+        screenY = 1
+        bRedraw = true
+    elseif screenY > h-1 then
+        scrollY = y - (h-1)
+        screenY = h-1
+        bRedraw = true
+    end
+
+    recomplete()
+    if bRedraw then
+        redrawText()
+    elseif y ~= oldY then
+        redrawLine( oldY )
+        redrawLine( y )
+    else
+        redrawLine( y )
+    end
+    term.setCursorPos( screenX, screenY )
+
     redrawMenu()
 end
 

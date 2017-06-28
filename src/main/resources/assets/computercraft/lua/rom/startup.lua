@@ -208,9 +208,7 @@ shell.setCompletionFunction( "rom/programs/command/exec.lua", completeExec )
 if turtle then
     local tGoOptions = { "left", "right", "forward", "back", "down", "up" }
     local function completeGo( shell, nIndex, sText )
-        if nIndex == 1 then
-            return completeMultipleChoice(sText,tGoOptions)
-        end
+        return completeMultipleChoice(sText,tGoOptions)
     end
     local tTurnOptions = { "left", "right" }
     local function completeTurn( shell, nIndex, sText )
