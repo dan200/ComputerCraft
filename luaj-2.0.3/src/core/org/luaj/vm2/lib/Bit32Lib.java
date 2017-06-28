@@ -19,22 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  ******************************************************************************/
-package dan200.computercraft.core.lua;
+package org.luaj.vm2.lib;
 
 import org.luaj.vm2.LuaInteger;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.TwoArgFunction;
-import org.luaj.vm2.lib.VarArgFunction;
-import org.luaj.vm2.lib.ZeroArgFunction;
 
 /**
  * Subclass of LibFunction that implements the Lua standard {@code bit32} library.
  */
-public class LuaJBit32Lib extends ZeroArgFunction
+public class Bit32Lib extends ZeroArgFunction
 {
-    @Override
     public LuaValue call( )
     {
         LuaTable t = new LuaTable();
@@ -50,7 +46,6 @@ public class LuaJBit32Lib extends ZeroArgFunction
 
     public static final class Bit32LibV extends VarArgFunction
     {
-        @Override
         public Varargs invoke( Varargs args )
         {
             switch( opcode )
@@ -126,7 +121,6 @@ public class LuaJBit32Lib extends ZeroArgFunction
 
     public static final class Bit32Lib2 extends TwoArgFunction
     {
-        @Override
         public LuaValue call( LuaValue arg1, LuaValue arg2 )
         {
             switch( opcode )
