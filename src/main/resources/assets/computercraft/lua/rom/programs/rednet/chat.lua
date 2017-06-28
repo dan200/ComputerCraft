@@ -153,6 +153,15 @@ if sCommand == "host" then
                         end
                         send( sUsers, tUser.nUserID )
                     end,
+                    ["mute"] = function( tUser, sContent )
+                       if muted then
+                         muted = false
+                         send("* Sucessfully unmuted notifications.", tUser.nUserID)
+                       else
+                         muted = true
+                         send("* Sucessfully muted notifications.", tUser.nUserID)
+                       end
+                    end,   
                     ["help"] = function( tUser, sContent )
                         send( "* Available commands:", tUser.nUserID )
                         local sCommands = "*"
@@ -310,6 +319,7 @@ elseif sCommand == "join" then
     function printMessage( sMessage )
         term.redirect( historyWindow )
         print()
+        
         if string.match( sMessage, "^\*" ) then
             -- Information
             term.setTextColour( highlightColour )
@@ -325,6 +335,15 @@ elseif sCommand == "join" then
                 write( string.sub( sMessage, string.len( sUsernameBit ) + 1 ) )
             else
                 write( sMessage )
+            end
+            
+            local tmp = "<"..sUsername..">"
+            
+            if sUsernameBit ~= tmp then
+              local speaker = peripheral.find("speaker")
+              if speaker and mute ~= true then 
+                speaker.playNote("harp", 1,10)
+              end
             end
         end
         term.redirect( promptWindow )
