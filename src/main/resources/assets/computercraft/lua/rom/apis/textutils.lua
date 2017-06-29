@@ -108,14 +108,9 @@ end
 
 local function tabulateCommon( bPaged, ... )
     local tAll = { ... }
-    for i=1,#tAll,2 do
-        if type( tAll[i] ) ~= "number" then
-            error( "bad argument #"..i.." (expected number, got " .. type( tAll[i] ) .. ")", 3 )
-        end
-    end    
-    for i=2,#tAll,2 do
-        if type( tAll[i] ) ~= "table" then
-            error( "bad argument #"..i.." (expected table, got " .. type( tAll[i] ) .. ")", 3 )
+    for k,v in ipairs( tAll ) do
+        if type( v ) ~= "number" and type( v ) ~= "table" then
+            error( "bad argument #"..k.." (expected number/table, got " .. type( v ) .. ")", 3 ) 
         end
     end
     
