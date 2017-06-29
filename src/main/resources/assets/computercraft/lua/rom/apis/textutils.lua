@@ -108,6 +108,16 @@ end
 
 local function tabulateCommon( bPaged, ... )
     local tAll = { ... }
+    for i=1,#tAll,2 do
+        if type( tAll[i] ) ~= "number" then
+            error( "bad argument #"..i.." (expected number, got " .. type( tAll[i] ) .. ")", 3 )
+        end
+    end    
+    for i=2,#tAll,2 do
+        if type( tAll[i] ) ~= "table" then
+            error( "bad argument #"..i.." (expected table, got " .. type( tAll[i] ) .. ")", 3 )
+        end
+    end
     
     local w,h = term.getSize()
     local nMaxLen = w / 8
@@ -158,32 +168,10 @@ local function tabulateCommon( bPaged, ... )
 end
 
 function tabulate( ... )
-    tArgs = { ... }
-    for i=1,#tArgs,2 do
-        if type( tArgs[i] ) ~= "number" then
-            error( "bad argument #"..i.." (expected number, got " .. type( tArgs[i] ) .. ")", 2 )
-        end
-    end
-    for i=2,#tArgs,2 do
-        if type( tArgs[i] ) ~= "table" then
-            error( "bad argument #"..i.." (expected table, got " .. type( tArgs[i] ) .. ")", 2 )
-        end
-    end
     tabulateCommon( false, ... )
 end
 
 function pagedTabulate( ... )
-    tArgs = { ... }
-    for i=1,#tArgs,2 do
-        if type( tArgs[i] ) ~= "number" then
-            error( "bad argument #"..i.." (expected number, got " .. type( tArgs[i] ) .. ")", 2 )
-        end
-    end
-    for i=2,#tArgs,2 do
-        if type( tArgs[i] ) ~= "table" then
-            error( "bad argument #"..i.." (expected table, got " .. type( tArgs[i] ) .. ")", 2 )
-        end
-    end
     tabulateCommon( true, ... )
 end
 
