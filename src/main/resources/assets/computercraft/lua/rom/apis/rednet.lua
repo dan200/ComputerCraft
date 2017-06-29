@@ -7,14 +7,14 @@ local tReceivedMessageTimeouts = {}
 local tHostnames = {}
 
 function open( sModem )
-	if type( sModem ) ~= "string" then
-		error( "expected string", 2 )
-	end
-	if peripheral.getType( sModem ) ~= "modem" then	
-		error( "No such modem: "..sModem, 2 )
-	end
-	peripheral.call( sModem, "open", os.getComputerID() )
-	peripheral.call( sModem, "open", CHANNEL_BROADCAST )
+    if type( sModem ) ~= "string" then
+        error( "expected string", 2 )
+    end
+    if peripheral.getType( sModem ) ~= "modem" then 
+        error( "No such modem: "..sModem, 2 )
+    end
+    peripheral.call( sModem, "open", os.getComputerID() )
+    peripheral.call( sModem, "open", CHANNEL_BROADCAST )
 end
 
 function close( sModem )
@@ -55,7 +55,7 @@ function isOpen( sModem )
             end
         end
     end
-	return false
+    return false
 end
 
 function send( nRecipient, message, sProtocol )
@@ -93,7 +93,7 @@ function send( nRecipient, message, sProtocol )
 end
 
 function broadcast( message, sProtocol )
-	send( CHANNEL_BROADCAST, message, sProtocol )
+    send( CHANNEL_BROADCAST, message, sProtocol )
 end
 
 function receive( sProtocolFilter, nTimeout )
@@ -103,31 +103,31 @@ function receive( sProtocolFilter, nTimeout )
     end
 
     -- Start the timer
-	local timer = nil
-	local sFilter = nil
-	if nTimeout then
-		timer = os.startTimer( nTimeout )
-		sFilter = nil
-	else
-		sFilter = "rednet_message"
-	end
+    local timer = nil
+    local sFilter = nil
+    if nTimeout then
+        timer = os.startTimer( nTimeout )
+        sFilter = nil
+    else
+        sFilter = "rednet_message"
+    end
 
-	-- Wait for events
-	while true do
-		local sEvent, p1, p2, p3 = os.pullEvent( sFilter )
-		if sEvent == "rednet_message" then
-		    -- Return the first matching rednet_message
-			local nSenderID, message, sProtocol = p1, p2, p3
-			if sProtocolFilter == nil or sProtocol == sProtocolFilter then
-    			return nSenderID, message, sProtocol
-    	    end
-		elseif sEvent == "timer" then
-		    -- Return nil if we timeout
-		    if p1 == timer then
-    			return nil
-    		end
-		end
-	end
+    -- Wait for events
+    while true do
+        local sEvent, p1, p2, p3 = os.pullEvent( sFilter )
+        if sEvent == "rednet_message" then
+            -- Return the first matching rednet_message
+            local nSenderID, message, sProtocol = p1, p2, p3
+            if sProtocolFilter == nil or sProtocol == sProtocolFilter then
+                return nSenderID, message, sProtocol
+            end
+        elseif sEvent == "timer" then
+            -- Return nil if we timeout
+            if p1 == timer then
+                return nil
+            end
+        end
+    end
 end
 
 function host( sProtocol, sHostname )
@@ -219,41 +219,41 @@ end
 
 local bRunning = false
 function run()
-	if bRunning then
-		error( "rednet is already running", 2 )
-	end
-	bRunning = true
-	
-	while bRunning do
-		local sEvent, p1, p2, p3, p4 = os.pullEventRaw()
-		if sEvent == "modem_message" then
-			-- Got a modem message, process it and add it to the rednet event queue
-    		local sModem, nChannel, nReplyChannel, tMessage = p1, p2, p3, p4
-		    if isOpen( sModem ) and ( nChannel == os.getComputerID() or nChannel == CHANNEL_BROADCAST ) then
-    			if type( tMessage ) == "table" and tMessage.nMessageID then
-	    			if not tReceivedMessages[ tMessage.nMessageID ] then
-		    			tReceivedMessages[ tMessage.nMessageID ] = true
-                        tReceivedMessageTimeouts[ os.startTimer( 30 ) ] = nMessageID
-			    		os.queueEvent( "rednet_message", nReplyChannel, tMessage.message, tMessage.sProtocol )
-				    end
-			    end
-			end
+    if bRunning then
+        error( "rednet is already running", 2 )
+    end
+    bRunning = true
+    
+    while bRunning do
+        local sEvent, p1, p2, p3, p4 = os.pullEventRaw()
+        if sEvent == "modem_message" then
+            -- Got a modem message, process it and add it to the rednet event queue
+            local sModem, nChannel, nReplyChannel, tMessage = p1, p2, p3, p4
+            if isOpen( sModem ) and ( nChannel == os.getComputerID() or nChannel == CHANNEL_BROADCAST ) then
+                if type( tMessage ) == "table" and tMessage.nMessageID then
+                    if not tReceivedMessages[ tMessage.nMessageID ] then
+                        tReceivedMessages[ tMessage.nMessageID ] = true
+                        tReceivedMessageTimeouts[ os.startTimer( 30 ) ] = tMessage.nMessageID
+                        os.queueEvent( "rednet_message", nReplyChannel, tMessage.message, tMessage.sProtocol )
+                    end
+                end
+            end
 
-		elseif sEvent == "rednet_message" then
-		    -- Got a rednet message (queued from above), respond to dns lookup
-		    local nSenderID, tMessage, sProtocol = p1, p2, p3
-		    if sProtocol == "dns" and type(tMessage) == "table" and tMessage.sType == "lookup" then
-		        local sHostname = tHostnames[ tMessage.sProtocol ]
-		        if sHostname ~= nil and (tMessage.sHostname == nil or tMessage.sHostname == sHostname) then
-		            rednet.send( nSenderID, {
-		                sType = "lookup response",
-		                sHostname = sHostname,
-		                sProtocol = tMessage.sProtocol,
-		            }, "dns" )
-		        end
-		    end
+        elseif sEvent == "rednet_message" then
+            -- Got a rednet message (queued from above), respond to dns lookup
+            local nSenderID, tMessage, sProtocol = p1, p2, p3
+            if sProtocol == "dns" and type(tMessage) == "table" and tMessage.sType == "lookup" then
+                local sHostname = tHostnames[ tMessage.sProtocol ]
+                if sHostname ~= nil and (tMessage.sHostname == nil or tMessage.sHostname == sHostname) then
+                    rednet.send( nSenderID, {
+                        sType = "lookup response",
+                        sHostname = sHostname,
+                        sProtocol = tMessage.sProtocol,
+                    }, "dns" )
+                end
+            end
 
-		elseif sEvent == "timer" then
+        elseif sEvent == "timer" then
             -- Got a timer event, use it to clear the event queue
             local nTimer = p1
             local nMessage = tReceivedMessageTimeouts[ nTimer ]
@@ -261,6 +261,6 @@ function run()
                 tReceivedMessageTimeouts[ nTimer ] = nil
                 tReceivedMessages[ nMessage ] = nil
             end
-		end
-	end
+        end
+    end
 end

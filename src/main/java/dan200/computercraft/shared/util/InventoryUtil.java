@@ -163,13 +163,13 @@ public class InventoryUtil
         }
 
         // Inspect the slots in order and try to find empty or stackable slots
-        ItemStack remainder = stack;
+        ItemStack remainder = stack.copy();
         for( int slot : slots )
         {
             if( remainder == null ) break;
             remainder = inventory.insertItem( slot, remainder, false );
         }
-        return remainder;
+        return areItemsEqual( stack, remainder ) ? stack : remainder;
     }
 
     private static ItemStack takeItems( int count, IItemHandler inventory, int[] slots )

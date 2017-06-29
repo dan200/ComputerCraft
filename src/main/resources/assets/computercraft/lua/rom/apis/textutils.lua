@@ -7,7 +7,7 @@ function slowWrite( sText, nRate )
     local nSleep = 1 / nRate
         
     sText = tostring( sText )
-    local x,y = term.getCursorPos(x,y)
+    local x,y = term.getCursorPos()
     local len = string.len( sText )
     
     for n=1,len do
@@ -375,6 +375,8 @@ function complete( sSearchText, tSearchTable )
     if type( tSearchTable ) ~= "table" then
         error( "bad argument #2 (expected table, got " .. type( tSearchTable ) .. ")", 2 )
     end
+
+    if g_tLuaKeywords[sSearchText] then return tEmpty end
     local nStart = 1
     local nDot = string.find( sSearchText, ".", nStart, true )
     local tTable = tSearchTable or _ENV
@@ -389,8 +391,19 @@ function complete( sSearchText, tSearchTable )
             return tEmpty
         end
     end
-
-    local sPart = string.sub( sSearchText, nStart, nDot )
+    local nColon = string.find( sSearchText, ":", nStart, true )
+    if nColon then
+        local sPart = string.sub( sSearchText, nStart, nColon - 1 )
+        local value = tTable[ sPart ]
+        if type( value ) == "table" then
+            tTable = value
+            nStart = nColon + 1
+        else
+            return tEmpty
+        end
+    end
+    
+    local sPart = string.sub( sSearchText, nStart )
     local nPartLength = string.len( sPart )
 
     local tResults = {}

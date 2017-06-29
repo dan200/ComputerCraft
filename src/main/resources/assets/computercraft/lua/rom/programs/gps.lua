@@ -57,10 +57,6 @@ elseif sCommand == "host" then
         x,y,z = gps.locate( 2, true )
         if x == nil then
             print( "Run \"gps host <x> <y> <z>\" to set position manually" )
-            if bCloseChannel then
-                print( "Closing GPS channel" )
-                modem.close( gps.CHANNEL_GPS )
-            end
             return
         end
     end
