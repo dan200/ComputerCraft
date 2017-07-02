@@ -190,6 +190,7 @@ else
     bootfile = fs.open( "rom/boot", "r" )
 end
 local boot, err = load( bootfile.readAll(), "boot", "t", _G )
+bootfile.close()
 boot()
 
 -- End
