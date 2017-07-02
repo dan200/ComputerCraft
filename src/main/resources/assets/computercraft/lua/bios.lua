@@ -189,7 +189,7 @@ if fs.exists( "boot" ) and not fs.isDir( "boot" ) then
 else
     bootfile = fs.open( "rom/boot", "r" )
 end
-local boot, err = load( bootfile.readAll(), "boot", "t", {} )
+local boot, err = load( bootfile.readAll(), "boot", "t", _G )
 boot()
 
 -- End
