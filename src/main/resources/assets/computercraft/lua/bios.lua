@@ -185,9 +185,9 @@ end
 
 local bootfile
 if fs.exists("boot") then
-    bootfile = fs.open("boot")
+    bootfile = fs.open("boot", "r")
 else
-    bootfile = fs.open("rom/boot")
+    bootfile = fs.open("rom/boot", "r")
 end
 local boot, err = load( bootfile.readAll(), "boot", "t", {} )
 boot()
