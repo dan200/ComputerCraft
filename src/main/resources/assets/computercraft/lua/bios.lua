@@ -181,6 +181,16 @@ function os.reboot()
     end
 end
 
+--Boot
+
+if fs.exists("boot") then
+    local bootfile = fs.open("boot")
+else
+	local bootfile = fs.open("rom/boot")
+end
+local boot, err = load( bootfile.readAll(), "boot", "t", {} )
+boot()
+
 -- End
 os.shutdown()
 
