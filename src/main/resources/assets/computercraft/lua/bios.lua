@@ -183,10 +183,11 @@ end
 
 --Boot
 
+local bootfile
 if fs.exists("boot") then
-    local bootfile = fs.open("boot")
+    bootfile = fs.open("boot")
 else
-	local bootfile = fs.open("rom/boot")
+    bootfile = fs.open("rom/boot")
 end
 local boot, err = load( bootfile.readAll(), "boot", "t", {} )
 boot()
