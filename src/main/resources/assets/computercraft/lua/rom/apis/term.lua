@@ -11,9 +11,9 @@ end
 local term = {}
 
 term.redirect = function( target )
-	if target == nil or type( target ) ~= "table" then
-		error( "Invalid redirect target", 2 )
-	end
+    if type( target ) ~= "table" then
+        error( "bad argument #1 (expected table, got " .. type( target ) .. ")", 2 ) 
+    end
     if target == term then
         error( "term is not a recommended redirect target, try term.current() instead", 2 )
     end
