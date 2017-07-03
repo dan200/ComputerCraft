@@ -12,19 +12,17 @@ local term = {}
 
 term.redirect = function( target )
 	if target == nil or type( target ) ~= "table" then
-		error( "Invalid redirect target", 2 )
+		error( "bad argument #1 (expected table, got " .. type( target ) .. ")", 2 )
 	end
     if target == term then
         error( "term is not a recommended redirect target, try term.current() instead", 2 )
     end
 	for k,v in pairs( native ) do
-		if type( k ) == "string" and type( v ) == "function" then
-			if type( target[k] ) ~= "function" then
+		if type( target[k] ) ~= "function" then
 				target[k] = function()
 					error( "Redirect object is missing method "..k..".", 2 )
 				end
-			end
-		end
+        end
 	end
 	local oldRedirectTarget = redirectTarget
 	redirectTarget = target
