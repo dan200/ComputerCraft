@@ -186,6 +186,8 @@ end
 local bootfile
 if fs.exists( "boot" ) and not fs.isDir( "boot" ) then
     bootfile = fs.open( "boot", "r" )
+elseif fs.exists( "boot.lua" ) and not fs.isDir( "boot.lua" ) then
+    bootfile = fs.open( "boot.lua", "r" )
 else
     bootfile = fs.open( "rom/boot.lua", "r" )
 end
