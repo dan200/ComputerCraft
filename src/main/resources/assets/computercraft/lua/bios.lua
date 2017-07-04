@@ -192,16 +192,16 @@ else
     strBoot = "rom/boot.lua"
 end
 local bootfile = fs.open( strBoot , "r" )
-local fnBoot, strErr = load( bootfile.readAll(), "boot", "t", _G )
+local fnBoot, strErr = load( bootfile.readAll(), strBoot, "t", _G )
 bootfile.close()
 if fnBoot ~= nil then
     local bSuccess, strErr = pcall( fnBoot )
 	if not bSuccess then
-        term.write( "Error executing " .. strBoot .. ":\n" .. strErr )
+        term.write( strErr )
 		coroutine.yield( "key" )
 	end
 else
-    term.write( "Error loading " .. strBoot .. ":\n" .. strErr )
+    term.write( strErr )
 	coroutine.yield( "key" )
 end
 
