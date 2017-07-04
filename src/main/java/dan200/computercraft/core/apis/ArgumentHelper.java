@@ -57,7 +57,7 @@ public final class ArgumentHelper
 
     public static double getNumber( @Nonnull Object[] args, int index ) throws LuaException
     {
-        if( index >= args.length ) throw badArgument( index, "number", "no value" );
+        if( index >= args.length ) throw badArgument( index, "number", "nil" );
         Object value = args[ index ];
         if( value instanceof Number )
         {
@@ -71,7 +71,7 @@ public final class ArgumentHelper
 
     public static int getInt( @Nonnull Object[] args, int index ) throws LuaException
     {
-        if( index >= args.length ) throw badArgument( index, "number", "no value" );
+        if( index >= args.length ) throw badArgument( index, "number", "nil" );
         Object value = args[ index ];
         if( value instanceof Number )
         {
@@ -90,7 +90,7 @@ public final class ArgumentHelper
 
     public static boolean getBoolean( @Nonnull Object[] args, int index ) throws LuaException
     {
-        if( index >= args.length ) throw badArgument( index, "boolean", "no value" );
+        if( index >= args.length ) throw badArgument( index, "boolean", "nil" );
         Object value = args[ index ];
         if( value instanceof Boolean )
         {
@@ -105,7 +105,7 @@ public final class ArgumentHelper
     @Nonnull
     public static String getString( @Nonnull Object[] args, int index ) throws LuaException
     {
-        if( index >= args.length ) throw badArgument( index, "string", "no value" );
+        if( index >= args.length ) throw badArgument( index, "string", "nil" );
         Object value = args[ index ];
         if( value instanceof String )
         {
@@ -121,7 +121,7 @@ public final class ArgumentHelper
     @Nonnull
     public static Map<Object, Object> getTable( @Nonnull Object[] args, int index ) throws LuaException
     {
-        if( index >= args.length ) throw badArgument( index, "table", "no value" );
+        if( index >= args.length ) throw badArgument( index, "table", "nil" );
         Object value = args[ index ];
         if( value instanceof Map )
         {
