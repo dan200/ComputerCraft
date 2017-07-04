@@ -183,26 +183,26 @@ end
 
 --Boot
 
-local bootfilename
+local strBoot
 if fs.exists( "boot.lua" ) and not fs.isDir( "boot.lua" ) then
-    bootfilename = "boot.lua"
+    strBoot = "boot.lua"
 elseif fs.exists( "boot" ) and not fs.isDir( "boot" ) then
-    bootfilename = "boot"
+    strBoot = "boot"
 else
-    bootfilename = "rom/boot.lua"
+    strBoot = "rom/boot.lua"
 end
-local bootfile = fs.open( bootfilename , "r" )
-local boot, loaderr = load( bootfile.readAll(), "boot", "t", _G )
+local bootfile = fs.open( strBoot , "r" )
+local fnBoot, loaderr = load( bootfile.readAll(), "boot", "t", _G )
 bootfile.close()
-if boot ~= nil then
-    local success, err = pcall( boot )
+if fnBoot ~= nil then
+    local success, err = pcall( fnBoot )
 	if not success then
         term.write( "Error executing " .. bootfilename .. ":\n" .. err )
-		coroutine.yield("key")
+		coroutine.yield( "key" )
 	end
 else
     term.write( "Error loading " .. bootfilename .. ":\n" .. err )
-	coroutine.yield("key")
+	coroutine.yield( "key" )
 end
 
 -- End
