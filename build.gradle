@@ -31,7 +31,7 @@ minecraft {
     version = "1.9.4-12.17.0.1959"
     runDir = "run"
     replace '${version}', project.version
-    
+
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
@@ -46,7 +46,7 @@ dependencies {
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-      
+
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -78,23 +78,25 @@ processResources {
     inputs.property "mcversion", project.minecraft.version
 
     def grgit = Grgit.open(dir: '.')
-    inputs.property "commithash", grgit.log(maxCommits: 1)[0].id
+    inputs.property "commithash", grgit.head().id
 
     def blacklist = ['GitHub', 'dan200', 'Daniel Ratcliffe']
     Set<String> contributors = []
-    
+
     grgit.log().each {
-        if (!blacklist.contains(it.committer.name))
-            contributors.add(it.committer.name)
+        if (!blacklist.contains(it.author.name)) contributors.add(it.author.name)
+        if (!blacklist.contains(it.committer.name)) contributors.add(it.committer.name)
     }
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         include 'assets/computercraft/lua/rom/help/credits.txt'
 
-        expand 'version':project.version, 'mcversion':project.minecraft.version, 'gitcontributors':contributors.sort().join('\n')
-    }        
-    
+        expand 'version':project.version,
+               'mcversion':project.minecraft.version,
+               'gitcontributors':contributors.sort(false, String.CASE_INSENSITIVE_ORDER).join('\n')
+    }
+
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
         exclude 'assets/computercraft/lua/rom/help/credits.txt'
