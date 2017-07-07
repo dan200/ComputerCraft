@@ -440,6 +440,16 @@ function shell.aliases()
     return tCopy
 end
 
+function shell.createEnviroment( sDir )
+    if type( sDir ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( sDir ) .. ")", 2 ) 
+    end
+    if not fs.isDir( sDir ) then
+        error( "Not a directory", 2 )
+    end
+    return createShellEnv( sDir )
+end
+
 if multishell then
     function shell.openTab( ... )
         local tWords = tokenise( ... )
