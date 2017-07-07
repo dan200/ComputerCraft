@@ -409,12 +409,23 @@ function complete( sSearchText, tSearchTable )
                 if string.find( k, sPart, 1, true ) == 1 then
                     if not g_tLuaKeywords[k] and string.match( k, "^[%a_][%a%d_]*$" ) then
                         local sResult = string.sub( k, nPartLength + 1 )
-                        if type(v) == "function" then
-                            sResult = sResult .. "("
-                        elseif type(v) == "table" and next(v) ~= nil then
-                            sResult = sResult .. "."
+                        if nColon then
+                            if type(v) == "function" then
+                                table.insert( tResults, sResult .. "(" )
+                            elseif type(v) == "table" then
+                                local tMetatable = getmetatable( v )
+                                if tMetatable and ( type( tMetatable.__call ) == "function" or  type( tMetatable.__call ) == "table" ) then
+                                    table.insert( tResults, sResult .. "(" )
+                                end
+                            end
+                        else
+                            if type(v) == "function" then
+                                sResult = sResult .. "("
+                            elseif type(v) == "table" and next(v) ~= nil then
+                                sResult = sResult .. "."
+                            end
+                            table.insert( tResults, sResult )
                         end
-                        table.insert( tResults, sResult )
                     end
                 end
             end
