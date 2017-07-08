@@ -175,7 +175,7 @@ local nCompletion
 local tCompleteEnv = _ENV
 local function complete( sLine )
     if settings.get( "edit.autocomplete" ) then
-        local nStartPos = string.find( sLine, "[a-zA-Z0-9_%.]+$" )
+        local nStartPos = string.find( sLine, "[a-zA-Z0-9_%.:]+$" )
         if nStartPos then
             sLine = string.sub( sLine, nStartPos )
         end
@@ -709,7 +709,13 @@ while bRunning do
         end
 
     elseif sEvent == "paste" then
-        if not bMenu and not bReadOnly then
+        if not bReadOnly then
+            -- Close menu if open
+            if bMenu then
+                bMenu = false
+                term.setCursorBlink( true )
+                redrawMenu()
+            end
             -- Input text
             local sLine = tLines[y]
             tLines[y] = string.sub(sLine,1,x-1) .. param .. string.sub(sLine,x)

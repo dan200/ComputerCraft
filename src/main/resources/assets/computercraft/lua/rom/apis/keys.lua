@@ -55,5 +55,8 @@ end
 keys["return"] = keys.enter
 
 function getName( _nKey )
+    if type( _nKey ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( _nKey ) .. ")", 2 ) 
+    end
 	return tKeys[ _nKey ]
 end

@@ -17,8 +17,12 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+import static dan200.computercraft.core.apis.ArgumentHelper.optReal;
 
 public class SpeakerPeripheral implements IPeripheral {
     private TileSpeaker m_speaker;
@@ -127,47 +131,20 @@ public class SpeakerPeripheral implements IPeripheral {
     @Nonnull
     private synchronized Object[] playNote( Object[] arguments, ILuaContext context ) throws LuaException
     {
-        float volume = 1.0f;
-        float pitch = 1.0f;
+        String name = getString(arguments, 0);
+        float volume = (float) optReal( arguments, 1, 1.0 );
+        float pitch = (float) optReal( arguments, 2, 1.0 );
 
-        // Check if arguments are correct
-        if( arguments.length == 0 ) // Too few args
-        {
-            throw new LuaException( "Expected string, number (optional), number (optional)" );
-        }
-
-        if( !(arguments[0] instanceof String) ) // Arg wrong type
-        {
-            throw new LuaException("Expected string, number (optional), number (optional)");
-        }
-
-        if ( !SoundEvent.REGISTRY.containsKey( new ResourceLocation( "block.note." + arguments[0] ) ) )
+        // Check if sound exists
+        if ( !SoundEvent.REGISTRY.containsKey( new ResourceLocation( "block.note." + name ) ) )
         {
             throw new LuaException("Invalid instrument, \"" + arguments[0] + "\"!");
-        }
-
-        if ( arguments.length > 1 )
-        {
-            if ( arguments[1] != null && !(arguments[1] instanceof Double) )   // Arg wrong type
-            {
-                throw new LuaException( "Expected string, number (optional), number (optional)" );
-            }
-            volume = arguments[1] != null ? ((Double) arguments[1]).floatValue() : 1f;
-        }
-
-        if( arguments.length > 2 )
-        {
-            if( arguments[2] != null && !(arguments[2] instanceof Double) )  // Arg wrong type
-            {
-                throw new LuaException("Expected string, number (optional), number (optional)");
-            }
-            pitch = arguments[2] != null ? ((Double) arguments[2]).floatValue() : 1f;
         }
 
         // If the resource location for note block notes changes, this method call will need to be updated
         Object[] returnValue = playSound(
             new Object[] {
-                "block.note." + arguments[0],
+                "block.note." + name,
                 (double)Math.min( volume, 3f ),
                 Math.pow( 2.0f, ( pitch - 12.0f ) / 12.0f)
             }, context, true
@@ -184,42 +161,11 @@ public class SpeakerPeripheral implements IPeripheral {
     @Nonnull
     private synchronized Object[] playSound( Object[] arguments, ILuaContext context, boolean isNote ) throws LuaException
     {
+        String name = getString(arguments, 0);
+        float volume = (float) optReal( arguments, 1, 1.0 );
+        float pitch = (float) optReal( arguments, 2, 1.0 );
 
-        float volume = 1.0f;
-        float pitch = 1.0f;
-
-        // Check if arguments are correct
-        if( arguments.length == 0 ) // Too few args
-        {
-            throw new LuaException( "Expected string, number (optional), number (optional)" );
-        }
-
-        if( !(arguments[0] instanceof String) ) // Arg wrong type
-        {
-            throw new LuaException( "Expected string, number (optional), number (optional)" );
-        }
-
-        if( arguments.length > 1 )
-        {
-            if( arguments[1] != null && !(arguments[1] instanceof Double) )  // Arg wrong type
-            {
-                throw new LuaException( "Expected string, number (optional), number (optional)" );
-            }
-
-            volume = arguments[1] != null ? ((Double) arguments[1]).floatValue() : 1f;
-
-        }
-
-        if( arguments.length > 2 )
-        {
-            if( arguments[2] != null && !(arguments[2] instanceof Double) )  // Arg wrong type
-            {
-                throw new LuaException( "Expected string, number (optional), number (optional)" );
-            }
-            pitch = arguments[2] != null ? ((Double) arguments[2]).floatValue() : 1f;
-        }
-
-        ResourceLocation resourceName = new ResourceLocation( (String) arguments[0] );
+        ResourceLocation resourceName = new ResourceLocation( name );
 
         if( m_clock - m_lastPlayTime >= TileSpeaker.MIN_TICKS_BETWEEN_SOUNDS || ( ( m_clock - m_lastPlayTime == 0 ) && ( m_notesThisTick < ComputerCraft.maxNotesPerTick ) && isNote ) )
         {

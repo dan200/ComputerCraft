@@ -171,6 +171,9 @@ function multishell.getFocus()
 end
 
 function multishell.setFocus( n )
+    if type( n ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( n ) .. ")", 2 )
+    end
     if n >= 1 and n <= #tProcesses then
         selectProcess( n )
         redrawMenu()
@@ -180,6 +183,9 @@ function multishell.setFocus( n )
 end
 
 function multishell.getTitle( n )
+    if type( n ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( n ) .. ")", 2 )
+    end
     if n >= 1 and n <= #tProcesses then
         return tProcesses[n].sTitle
     end
@@ -187,6 +193,12 @@ function multishell.getTitle( n )
 end
 
 function multishell.setTitle( n, sTitle )
+    if type( n ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( n ) .. ")", 2 )
+    end
+    if type( sTitle ) ~= "string" then
+        error( "bad argument #2 (expected string, got " .. type( sTitle ) .. ")", 2 )
+    end
     if n >= 1 and n <= #tProcesses then
         setProcessTitle( n, sTitle )
         redrawMenu()
@@ -198,6 +210,12 @@ function multishell.getCurrent()
 end
 
 function multishell.launch( tProgramEnv, sProgramPath, ... )
+    if type( tProgramArgs ) ~= "table" then
+        error( "bad argument #1 (expected table, got " .. type( tProgramEnv ) .. ")", 2 )
+    end
+    if type( sProgramPath ) ~= "string" then
+        error( "bad argument #2 (expected string, got " .. type( sProgramPath ) .. ")", 2 )
+    end
     local previousTerm = term.current()
     setMenuVisible( (#tProcesses + 1) >= 2 )
     local nResult = launchProcess( tProgramEnv, sProgramPath, ... )

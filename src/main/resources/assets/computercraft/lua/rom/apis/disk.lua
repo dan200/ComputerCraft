@@ -1,5 +1,8 @@
 
 local function isDrive( name )
+    if type( name ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( name ) .. ")", 3 ) 
+    end
 	return peripheral.getType( name ) == "drive"
 end
 

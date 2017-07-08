@@ -7,7 +7,7 @@ function slowWrite( sText, nRate )
     local nSleep = 1 / nRate
         
     sText = tostring( sText )
-    local x,y = term.getCursorPos(x,y)
+    local x,y = term.getCursorPos()
     local len = string.len( sText )
     
     for n=1,len do
@@ -25,6 +25,12 @@ function slowPrint( sText, nRate )
 end
 
 function formatTime( nTime, bTwentyFourHour )
+    if type( nTime ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( nTime ) .. ")", 2 )
+    end
+    if bTwentyFourHour ~= nil and type( bTwentyFourHour ) ~= "boolean" then
+        error( "bad argument #2 (expected boolean, got " .. type( bTwentyFourHour ) .. ")", 2 ) 
+    end
     local sTOD = nil
     if not bTwentyFourHour then
         if nTime >= 12 then
@@ -68,6 +74,9 @@ local function makePagedScroll( _term, _nFreeLines )
 end
 
 function pagedPrint( _sText, _nFreeLines )
+    if _nFreeLines ~= nil and type( _nFreeLines ) ~= "number" then
+        error( "bad argument #2 (expected number, got " .. type( _nFreeLines ) .. ")", 2 ) 
+    end
     -- Setup a redirector
     local oldTerm = term.current()
     local newTerm = {}
@@ -99,6 +108,11 @@ end
 
 local function tabulateCommon( bPaged, ... )
     local tAll = { ... }
+    for k,v in ipairs( tAll ) do
+        if type( v ) ~= "number" and type( v ) ~= "table" then
+            error( "bad argument #"..k.." (expected number/table, got " .. type( v ) .. ")", 3 ) 
+        end
+    end
     
     local w,h = term.getSize()
     local nMaxLen = w / 8
@@ -301,6 +315,9 @@ function serialize( t )
 end
 
 function unserialize( s )
+    if type( s ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( s ) .. ")", 2 )
+    end
     local func = load( "return "..s, "unserialize", "t", {} )
     if func then
         local ok, result = pcall( func )
@@ -312,11 +329,20 @@ function unserialize( s )
 end
 
 function serializeJSON( t, bNBTStyle )
+    if type( t ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( t ) .. ")", 2 )
+    end
+    if bNBTStyle ~= nil and type( bNBTStyle ) ~= "boolean" then
+        error( "bad argument #2 (expected boolean, got " .. type( bNBTStyle ) .. ")", 2 ) 
+    end
     local tTracking = {}
     return serializeJSONImpl( t, tTracking, bNBTStyle or false )
 end
 
 function urlEncode( str )
+    if type( str ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( str ) .. ")", 2 )
+    end
     if str then
         str = string.gsub(str, "\n", "\r\n")
         str = string.gsub(str, "([^A-Za-z0-9 %-%_%.])", function(c)
@@ -338,6 +364,14 @@ end
 
 local tEmpty = {}
 function complete( sSearchText, tSearchTable )
+    if type( sSearchText ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( sSearchText ) .. ")", 2 )
+    end
+    if type( tSearchTable ) ~= "table" then
+        error( "bad argument #2 (expected table, got " .. type( tSearchTable ) .. ")", 2 )
+    end
+
+    if g_tLuaKeywords[sSearchText] then return tEmpty end
     local nStart = 1
     local nDot = string.find( sSearchText, ".", nStart, true )
     local tTable = tSearchTable or _ENV
@@ -352,8 +386,19 @@ function complete( sSearchText, tSearchTable )
             return tEmpty
         end
     end
-
-    local sPart = string.sub( sSearchText, nStart, nDot )
+    local nColon = string.find( sSearchText, ":", nStart, true )
+    if nColon then
+        local sPart = string.sub( sSearchText, nStart, nColon - 1 )
+        local value = tTable[ sPart ]
+        if type( value ) == "table" then
+            tTable = value
+            nStart = nColon + 1
+        else
+            return tEmpty
+        end
+    end
+    
+    local sPart = string.sub( sSearchText, nStart )
     local nPartLength = string.len( sPart )
 
     local tResults = {}

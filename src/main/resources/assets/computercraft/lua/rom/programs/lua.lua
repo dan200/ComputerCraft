@@ -34,7 +34,7 @@ while bRunning do
 
     local s = read( nil, tCommandHistory, function( sLine )
         if settings.get( "lua.autocomplete" ) then
-            local nStartPos = string.find( sLine, "[a-zA-Z0-9_%.]+$" )
+            local nStartPos = string.find( sLine, "[a-zA-Z0-9_%.:]+$" )
             if nStartPos then
                 sLine = string.sub( sLine, nStartPos )
             end
@@ -64,10 +64,10 @@ while bRunning do
     end
     
     if func then
-        local tResults = { pcall( func ) }
+        local tResults = table.pack( pcall( func ) )
         if tResults[1] then
             local n = 1
-            while (tResults[n + 1] ~= nil) or (n <= nForcePrint) do
+            while n < tResults.n or (n <= nForcePrint) do
                 local value = tResults[ n + 1 ]
                 if type( value ) == "table" then
                     local metatable = getmetatable( value )

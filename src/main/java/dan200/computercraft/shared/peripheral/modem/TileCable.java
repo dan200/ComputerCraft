@@ -40,6 +40,8 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.*;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+
 public class TileCable extends TileModemBase
     implements IPacketNetwork
 {
@@ -116,15 +118,6 @@ public class TileCable extends TileModemBase
             return newMethods;
         }
 
-        private String parseString( Object[] arguments, int index ) throws LuaException
-        {
-            if( arguments.length < (index + 1) || !(arguments[index] instanceof String) )
-            {
-                throw new LuaException( "Expected string" );
-            }
-            return (String)arguments[index];
-        }
-
         @Override
         public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
         {
@@ -148,13 +141,13 @@ public class TileCable extends TileModemBase
                 case 1:
                 {
                     // isPresentRemote
-                    String type = m_entity.getTypeRemote( parseString( arguments, 0 ) );
+                    String type = m_entity.getTypeRemote( getString( arguments, 0 ) );
                     return new Object[] { type != null };
                 }
                 case 2:
                 {
                     // getTypeRemote
-                    String type = m_entity.getTypeRemote( parseString( arguments, 0 ) );
+                    String type = m_entity.getTypeRemote( getString( arguments, 0 ) );
                     if( type != null )
                     {
                         return new Object[] { type };
@@ -164,7 +157,7 @@ public class TileCable extends TileModemBase
                 case 3:
                 {
                     // getMethodsRemote
-                    String[] methodNames = m_entity.getMethodNamesRemote( parseString( arguments, 0 ) );
+                    String[] methodNames = m_entity.getMethodNamesRemote( getString( arguments, 0 ) );
                     if( methodNames != null )
                     {
                         Map<Object,Object> table = new HashMap<Object,Object>();
@@ -178,8 +171,8 @@ public class TileCable extends TileModemBase
                 case 4:
                 {
                     // callRemote
-                    String remoteName = parseString( arguments, 0 );
-                    String methodName = parseString( arguments, 1 );
+                    String remoteName = getString( arguments, 0 );
+                    String methodName = getString( arguments, 1 );
                     Object[] methodArgs = new Object[ arguments.length - 2 ];
                     System.arraycopy( arguments, 2, methodArgs, 0, arguments.length - 2 );
                     return m_entity.callMethodRemote( remoteName, context, methodName, methodArgs );

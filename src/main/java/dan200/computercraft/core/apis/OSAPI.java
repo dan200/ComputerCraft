@@ -13,6 +13,8 @@ import dan200.computercraft.shared.util.StringUtil;
 import javax.annotation.Nonnull;
 import java.util.*;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
+
 public class OSAPI implements ILuaAPI
 {
     private IAPIEnvironment m_apiEnvironment;
@@ -225,21 +227,13 @@ public class OSAPI implements ILuaAPI
             case 0:
             {
                 // queueEvent
-                if( args.length == 0 || args[0] == null || !(args[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-                queueLuaEvent( (String)args[0], trimArray( args, 1 ) );
+                queueLuaEvent( getString( args, 0 ), trimArray( args, 1 ) );
                 return null;
             }
             case 1:
             {
                 // startTimer
-                if( args.length < 1 || args[0] == null || !(args[0] instanceof Number) )
-                {
-                    throw new LuaException( "Expected number" );
-                }
-                double timer = ((Number)args[0]).doubleValue();
+                double timer = getReal( args, 0 );
                 synchronized( m_timers )
                 {
                     m_timers.put( m_nextTimerToken, new Timer( (int)Math.round( timer / 0.05 ) ) );
@@ -249,11 +243,7 @@ public class OSAPI implements ILuaAPI
             case 2:
             {
                 // setAlarm
-                if( args.length < 1 || args[0] == null || !(args[0] instanceof Number) )
-                {
-                    throw new LuaException( "Expected number" );
-                }
-                double time = ((Number)args[0]).doubleValue();
+                double time = getReal( args, 0 );
                 if( time < 0.0 || time >= 24.0 )
                 {
                     throw new LuaException( "Number out of range" );
@@ -286,16 +276,8 @@ public class OSAPI implements ILuaAPI
             case 7:
             {
                 // setComputerLabel
-                String label = null;
-                if( args.length > 0 && args[0] != null )
-                {
-                    if(!(args[0] instanceof String))
-                    {
-                        throw new LuaException( "Expected string or nil" );
-                    }
-                    label = StringUtil.normaliseLabel( (String) args[0] );
-                }
-                m_apiEnvironment.setLabel( label );
+                String label = optString( args, 0, null );
+                m_apiEnvironment.setLabel( StringUtil.normaliseLabel( label ) );
                 return null;
             }
             case 8:
@@ -320,13 +302,7 @@ public class OSAPI implements ILuaAPI
             case 11:
             {
                 // time
-                String param = "ingame";
-                if (args.length > 0 && args[0] != null) {
-                    if (!(args[0] instanceof String)) {
-                        throw new LuaException("Expected string");
-                    }
-                    param = (String)args[0];
-                }
+                String param = optString( args, 0, "ingame" );
 
                 if (param.equals("utc")) {
                     // Get Hour of day (UTC)
@@ -351,13 +327,7 @@ public class OSAPI implements ILuaAPI
             case 12:
             {
                 // day
-                String param = "ingame";
-                if (args.length > 0 && args[0] != null) {
-                    if (!(args[0] instanceof String)) {
-                        throw new LuaException("Expected string");
-                    }
-                    param = (String)args[0];
-                }
+                String param = optString( args, 0, "ingame" );
                 if (param.equals("utc")) {
                     // Get numbers of days since 1970-01-01 (utc)
                     Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -381,11 +351,7 @@ public class OSAPI implements ILuaAPI
             case 13:
             {
                 // cancelTimer
-                if( args.length < 1 || args[0] == null || !(args[0] instanceof Number) )
-                {
-                    throw new LuaException( "Expected number" );
-                }
-                int token = ((Number)args[0]).intValue();
+                int token = getInt( args, 0 );
                 synchronized( m_timers )
                 {
                     if( m_timers.containsKey( token ) )
@@ -398,11 +364,7 @@ public class OSAPI implements ILuaAPI
             case 14:
             {
                 // cancelAlarm
-                if( args.length < 1 || args[0] == null || !(args[0] instanceof Number) )
-                {
-                    throw new LuaException( "Expected number" );
-                }
-                int token = ((Number)args[0]).intValue();
+                int token = getInt( args, 0 );
                 synchronized( m_alarms )
                 {
                     if( m_alarms.containsKey( token ) )
@@ -415,13 +377,7 @@ public class OSAPI implements ILuaAPI
             case 15:
             {
                 // epoch
-                String param = "ingame";
-                if (args.length > 0 && args[0] != null) {
-                    if (!(args[0] instanceof String)) {
-                        throw new LuaException("Expected string");
-                    }
-                    param = (String)args[0];
-                }
+                String param = optString( args, 0, "ingame" );
                 if (param.equals("utc")) {
                     // Get utc epoch
                     Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));

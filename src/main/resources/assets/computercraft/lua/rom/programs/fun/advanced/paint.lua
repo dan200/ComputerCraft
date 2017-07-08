@@ -310,7 +310,7 @@ local function accessMenu()
                 -- Select an option
                 if mChoices[selection]=="Save" then 
                     if bReadOnly then 
-                        fMessage = "Access Denied"
+                        fMessage = "Access denied"
                         return false
                     end
                     local success = save(sPath)
