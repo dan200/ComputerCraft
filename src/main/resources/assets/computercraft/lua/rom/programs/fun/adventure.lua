@@ -276,7 +276,6 @@ local tMonsters = {
 local tRecipes = {
     ["some planks"] = { "some wood" },
     ["some sticks"] = { "some planks" },
-    ["some sticks"] = { "some planks" },
     ["a crafting table"] = { "some planks" },
     ["a furnace"] = { "some stone" },
     ["some torches"] = { "some sticks", "some coal" },
@@ -753,7 +752,6 @@ function commands.dig( _sDir, _sTool )
         tTool = inventory[ sTool ]
     end
     
-    local room = getRoom( x, y, z )
     local bActuallyDigging = (room.exits[ _sDir ] ~= true)
     if bActuallyDigging then
         if sTool == nil or tTool.toolType ~= "pick" then

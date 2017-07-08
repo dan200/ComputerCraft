@@ -62,7 +62,7 @@ function drawLine( startX, startY, endX, endY, nColour )
         return
     end
     
-    local minX = math.min( startX, endX )
+    local minX, maxX, minY, maxY = math.min( startX, endX )
     if minX == startX then
         minY = startY
         maxX = endX
@@ -122,7 +122,7 @@ function drawBox( startX, startY, endX, endY, nColour )
         return
     end
 
-    local minX = math.min( startX, endX )
+    local minX, maxX, minY, maxY = math.min( startX, endX )
     if minX == startX then
         minY = startY
         maxX = endX
@@ -166,7 +166,7 @@ function drawFilledBox( startX, startY, endX, endY, nColour )
         return
     end
 
-    local minX = math.min( startX, endX )
+    local minX, maxX, minY, maxY = math.min( startX, endX )
     if minX == startX then
         minY = startY
         maxX = endX

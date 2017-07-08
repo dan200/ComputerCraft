@@ -197,7 +197,7 @@ local function loadLevel(nNum)
     fLevel = fs.open(sLevelD,"r")
     fLevel.readLine()
     for Line=2,Lines-1 do
-        sLine = fLevel.readLine()
+        local sLine = fLevel.readLine()
         local chars = string.len(sLine)
         for char = 1, chars do
             local el = string.sub(sLine,char,char)
@@ -313,7 +313,7 @@ local function drawMap()
             term.setBackgroundColor(cG)
                 term.setCursorPos(XOrgin+x,YOrgin+y+1)
             
-                sSide = string.sub(st,1,1)
+                local sSide = string.sub(st,1,1)
                 if sSide == "a" then
                     print("^")
                 elseif sSide == "b" then
@@ -348,7 +348,7 @@ local function drawMap()
                 term.setBackgroundColor(Cr)
                 term.setTextColor(colors.white)
                 term.setCursorPos(XOrgin+x,YOrgin+y+1)
-                sSide = string.sub(rb,1,1)
+                local sSide = string.sub(rb,1,1)
                 if sSide == "a" then
                     print("^")
                 elseif sSide == "b" then

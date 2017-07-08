@@ -58,7 +58,7 @@ if sCommand == "host" then
 
     local tUsers = {}
     local nUsers = 0
-    function send( sText, nUserID )
+    local function send( sText, nUserID )
         if nUserID then
             local tUser = tUsers[ nUserID ]
             if tUser then
@@ -81,7 +81,7 @@ if sCommand == "host" then
 
     -- Setup ping pong
     local tPingPongTimer = {}
-    function ping( nUserID )
+    local function ping( nUserID )
         local tUser = tUsers[ nUserID ]
         rednet.send( tUser.nID, {
             sType = "ping to client",
@@ -93,7 +93,7 @@ if sCommand == "host" then
         tPingPongTimer[ timer ] = nUserID
     end
 
-    function printUsers()
+    local function printUsers()
         local x,y = term.getCursorPos()
         term.setCursorPos( 1, y - 1 )
         term.clearLine()
@@ -274,7 +274,7 @@ elseif sCommand == "join" then
     local bPingPonged = true
     local pingPongTimer = os.startTimer( 0 )
 
-    function ping()
+    local function ping()
         rednet.send( nHostID, {
             sType = "ping to server",
             nUserID = nUserID,
@@ -296,7 +296,7 @@ elseif sCommand == "join" then
     term.redirect( promptWindow )
     promptWindow.restoreCursor()
 
-    function drawTitle()
+    local function drawTitle()
         local x,y = titleWindow.getCursorPos()
         local w,h = titleWindow.getSize()
         local sTitle = sUsername.." on "..sHostname
@@ -307,7 +307,7 @@ elseif sCommand == "join" then
         promptWindow.restoreCursor()
     end
 
-    function printMessage( sMessage )
+    local function printMessage( sMessage )
         term.redirect( historyWindow )
         print()
         if string.match( sMessage, "^%*" ) then

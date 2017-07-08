@@ -210,7 +210,7 @@ function multishell.getCurrent()
 end
 
 function multishell.launch( tProgramEnv, sProgramPath, ... )
-    if type( tProgramArgs ) ~= "table" then
+    if type( tProgramEnv ) ~= "table" then
         error( "bad argument #1 (expected table, got " .. type( tProgramEnv ) .. ")", 2 )
     end
     if type( sProgramPath ) ~= "string" then
@@ -264,7 +264,7 @@ while #tProcesses > 0 do
             -- Switch process
             local tabStart = 1
             for n=1,#tProcesses do
-                tabEnd = tabStart + string.len( tProcesses[n].sTitle ) + 1
+                local tabEnd = tabStart + string.len( tProcesses[n].sTitle ) + 1
                 if x >= tabStart and x <= tabEnd then
                     selectProcess( n )
                     redrawMenu()
