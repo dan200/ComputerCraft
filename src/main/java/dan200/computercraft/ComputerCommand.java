@@ -44,7 +44,7 @@ public class ComputerCommand extends CommandBase {
         }
         try {
             ServerComputer computer = ComputerCraft.serverComputerRegistry.lookup(Integer.valueOf(args[0]));
-            if( computer.getFamily().equals( ComputerFamily.Command ) ){
+            if( computer != null && computer.getFamily() == ComputerFamily.Command ){
                 computer.queueEvent( "computer_command", ArrayUtils.remove( args, 0 ) );
             }else{
                 throw new CommandException( "Computer #" + args[0] + " is not a Command Computer" );
