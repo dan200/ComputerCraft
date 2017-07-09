@@ -171,6 +171,14 @@ function shell.run( ... )
     local tWords = tokenise( ... )
     local sCommand = tWords[1]
     if sCommand then
+        local nExtensionPos = sCommand:find(".",1,true)
+        if nExtensionPos ~= nil then
+            sExtension = sCommand:sub(nExtensionPos+1)
+            if settings.get("filetype."..sExtension) ~= nil then
+                shell.run(settings.get("filetype."..sExtension):gsub("{}",sCommand))
+                return true
+            end
+        end
         return run( sCommand, table.unpack( tWords, 2 ) )
     end
     return false
