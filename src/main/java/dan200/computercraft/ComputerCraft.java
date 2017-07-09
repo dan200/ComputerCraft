@@ -408,6 +408,7 @@ public class ComputerCraft
     @Mod.EventHandler
     public void onServerStarting( FMLServerStartingEvent event )
     {
+        event.registerServerCommand( new ComputerCommand() );
     }
 
     @Mod.EventHandler
