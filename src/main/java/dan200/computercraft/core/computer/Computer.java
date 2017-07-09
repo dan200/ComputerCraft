@@ -28,8 +28,6 @@ public class Computer
     public static final String[] s_sideNames = new String[] {
         "bottom", "top", "back", "front", "right", "left",
     };
-
-    public static ArrayList<Computer> computers = new ArrayList<Computer>();
     
     private enum State
     {
@@ -249,7 +247,6 @@ public class Computer
 
         m_rootMount = null;
         createAPIs();
-        computers.add( this );
     }
     
     public IAPIEnvironment getAPIEnvironment()
