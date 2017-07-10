@@ -179,7 +179,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         GlStateManager.callList( origin.m_renderDisplayList );
 
                         // Draw text
-                        mc.getTextureManager().bindTexture( FixedWidthFontRenderer.font );
+                        fontRenderer.bindFont();
                         if( redraw )
                         {
                             // Build text display list
@@ -206,7 +206,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         GlStateManager.callList( origin.m_renderDisplayList + 1 );
 
                         // Draw cursor
-                        mc.getTextureManager().bindTexture( FixedWidthFontRenderer.font );
+                        fontRenderer.bindFont();
                         if( redraw )
                         {
                             // Build cursor display list
