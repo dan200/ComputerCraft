@@ -1,0 +1,64 @@
+tile.computercraft:computer.name=Ordenador
+tile.computercraft:advanced_computer.name=Ordenador Avanzado
+tile.computercraft:drive.name=Disqueteira
+tile.computercraft:printer.name=Impresora
+tile.computercraft:monitor.name=Monitor
+tile.computercraft:advanced_monitor.name=Monitor Avanzado
+tile.computercraft:wireless_modem.name=Módem Inalámbrico
+tile.computercraft:wired_modem.name=Módem por cable
+tile.computercraft:cable.name=Cable de Rede
+tile.computercraft:command_computer.name=Ordenador de Comandos
+tile.computercraft:advanced_modem.name=Modem do Fin
+tile.computercraft:speaker.name=Altofalante
+
+tile.computercraft:turtle.name=Tartaruga
+tile.computercraft:turtle.upgraded.name=Tartaruga %s
+tile.computercraft:turtle.upgraded_twice.name=Tartaruga %s %s
+tile.computercraft:advanced_turtle.name=Tartaruga Avanzada
+tile.computercraft:advanced_turtle.upgraded.name=Tartaruga %s Avanzada
+tile.computercraft:advanced_turtle.upgraded_twice.name=Tartaruga %s %s Avanzada
+
+item.computercraft:disk.name=Disco Flexible
+item.computercraft:treasure_disk.name=Disco Flexible
+item.computercraft:page.name=Páxina Impresa
+item.computercraft:pages.name=Páxinas Impresas
+item.computercraft:book.name=Libro Impreso
+
+item.computercraft:pocket_computer.name=Ordenador de Peto
+item.computercraft:pocket_computer.upgraded.name=Ordenador %s de Peto
+item.computercraft:advanced_pocket_computer.name=Ordenador Avanzado de Peto
+item.computercraft:advanced_pocket_computer.upgraded.name=Ordenador Avanzado %s de Peto
+
+upgrade.minecraft:diamond_sword.adjective=de Combate
+upgrade.minecraft:diamond_shovel.adjective=Excavadora
+upgrade.minecraft:diamond_pickaxe.adjective=Mineira
+upgrade.minecraft:diamond_axe.adjective=Leñadora
+upgrade.minecraft:diamond_hoe.adjective=de Granxa
+upgrade.computercraft:wireless_modem.adjective=con conexión inalámbrica
+upgrade.minecraft:crafting_table.adjective=de Traballo
+upgrade.computercraft:advanced_modem.adjective=do Fin
+upgrade.computercraft:speaker.adjective=con Altofalante
+
+gui.computercraft:wired_modem.peripheral_connected=Periférico "%s" conectado á rede
+gui.computercraft:wired_modem.peripheral_disconnected=Peripheral "%s" desconectado á rede
+
+gui.computercraft:config.http_enable=Activar HTTP
+gui.computercraft:config.http_whitelist=Lista branca HTTP
+gui.computercraft:config.http_blacklist=Lista negra HTTP
+gui.computercraft:config.disable_lua51_features=Desactivar características de Lua 5.1
+gui.computercraft:config.default_computer_settings=Configuración por defecto dos Ordenadores
+gui.computercraft:config.log_peripheral_errors=Rexistrar errores de periféricos
+gui.computercraft:config.enable_command_block=Activar o Bloque de Comandos como periférico
+gui.computercraft:config.modem_range=Rango do Módem (por defecto)
+gui.computercraft:config.modem_high_altitude_range=Rango do Módem (altitude elevada)
+gui.computercraft:config.modem_range_during_storm=Rango do Módem (mal tempo)
+gui.computercraft:config.modem_high_altitude_range_during_storm=Rango do Módem (altitude elevada, mal tempo)
+gui.computercraft:config.computer_space_limit=Límite de almacenamiento dos Ordenadores (bytes)
+gui.computercraft:config.floppy_space_limit=Límite de espacio dos Discos Flexibles (bytes)
+gui.computercraft:config.turtles_need_fuel=Activar combustible
+gui.computercraft:config.turtle_fuel_limit=Límite de combustible
+gui.computercraft:config.advanced_turtle_fuel_limit=Límite de combustible das Tartarugas Avanzadas
+gui.computercraft:config.turtles_obey_block_protection=As Tartarugas respetan la protección de bloques
+gui.computercraft:config.turtles_can_push=As Tartarugas poden empurrar entidades
+gui.computercraft:config.maximum_files_open=Máximo de archivos abertos por Ordenador
+gui.computercraft:config.max_notes_per_tick=Máximo de notas que un Ordenador pode tocar á vez
