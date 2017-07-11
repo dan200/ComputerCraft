@@ -137,8 +137,8 @@ local function update( )
     end
     
     local newHead = screen[newXPos][newYPos]
-    term.setCursorPos(1,1);
-    print( newHead.snake )
+    -- term.setCursorPos(1,1);
+    -- print( newHead.snake )
     if newHead.snake == true or newHead.wall == true then
         bRunning = false
         
