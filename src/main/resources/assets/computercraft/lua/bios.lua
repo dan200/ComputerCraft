@@ -186,8 +186,6 @@ end
 local strBoot
 if fs.exists( "boot.lua" ) and not fs.isDir( "boot.lua" ) then
     strBoot = "boot.lua"
-elseif fs.exists( "boot" ) and not fs.isDir( "boot" ) then
-    strBoot = "boot"
 else
     strBoot = "rom/boot.lua"
 end
