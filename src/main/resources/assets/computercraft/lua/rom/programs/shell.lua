@@ -30,7 +30,7 @@ local function createShellEnv( sDir )
         string = string,
         table = table,
     }
-    package.path = "?;?.lua;?/init.lua"
+    package.path = "?;?.lua;?/init.lua;/apis/?.lua;/apis/?/init.lua"
     package.config = "/\n;\n?\n!\n-"
     package.preload = {}
     package.loaders = {
