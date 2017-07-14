@@ -12,6 +12,7 @@ local sDir = (parentShell and parentShell.dir()) or ""
 local sPath = (parentShell and parentShell.path()) or ".:/rom/programs"
 local tAliases = (parentShell and parentShell.aliases()) or {}
 local tCompletionInfo = (parentShell and parentShell.getCompletionInfo()) or {}
+local sPackagePath = (parentShell and parentShell.getPackagePath()) or "?;?.lua;?/init.lua"
 local tProgramStack = {}
 
 local shell = {}
@@ -30,7 +31,7 @@ local function createShellEnv( sDir )
         string = string,
         table = table,
     }
-    package.path = "?;?.lua;?/init.lua"
+    package.path = sPackagePath
     package.config = "/\n;\n?\n!\n-"
     package.preload = {}
     package.loaders = {
@@ -438,6 +439,17 @@ function shell.aliases()
         tCopy[sAlias] = sCommand
     end
     return tCopy
+end
+
+function shell.setPackagePath( sPath )
+    if type( sPath ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 )
+    end
+    sPackagePath = sPath
+end
+
+function shell.getPackagePath()
+    return sPackagePath
 end
 
 if multishell then
