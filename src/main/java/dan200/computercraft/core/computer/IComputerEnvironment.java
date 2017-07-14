@@ -8,6 +8,8 @@ package dan200.computercraft.core.computer;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 
+import java.io.InputStream;
+
 public interface IComputerEnvironment
 {
     int getDay();
@@ -19,4 +21,5 @@ public interface IComputerEnvironment
     int assignNewID();
     IWritableMount createSaveDirMount( String subPath, long capacity );
     IMount createResourceMount( String domain, String subPath );
+    InputStream createResourceFile( String domain, String subPath );
 }
