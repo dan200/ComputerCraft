@@ -129,7 +129,7 @@ public class FileMount implements IWritableMount
         {
             if( path.length() != 0 )
             {
-                throw new IOException( "Not a directory" );
+                throw new IOException( "Not a directory (" + path + ")" );
             }
         }
         else
@@ -148,7 +148,7 @@ public class FileMount implements IWritableMount
             }
             else
             {
-                throw new IOException( "Not a directory" );
+                throw new IOException( "Not a directory (" + path + ")" );
             }
         }    
     }
@@ -178,7 +178,7 @@ public class FileMount implements IWritableMount
                 }
             }
         }
-        throw new IOException( "No such file" );
+        throw new IOException( "No such file (" + path + ")" );
     }
     
     @Nonnull
@@ -193,7 +193,7 @@ public class FileMount implements IWritableMount
                 return new FileInputStream( file );
             }
         }
-        throw new IOException( "No such file" );
+        throw new IOException( "No such file (" + path + ")" );
     }
     
     // IWritableMount implementation
@@ -207,7 +207,7 @@ public class FileMount implements IWritableMount
         {
             if( !file.isDirectory() )
             {
-                throw new IOException( "File exists" );
+                throw new IOException( "File exists (" + path + ")" );
             }
         }
         else
@@ -222,7 +222,7 @@ public class FileMount implements IWritableMount
 
             if( getRemainingSpace() < dirsToCreate * MINIMUM_FILE_SIZE )
             {
-                throw new IOException( "Out of space" );
+                throw new IOException( "Out of space (" + path + ")" );
             }
             
             boolean success = file.mkdirs();
@@ -232,7 +232,7 @@ public class FileMount implements IWritableMount
             }
             else
             {
-                throw new IOException( "Access denied" );
+                throw new IOException( "Access denied (" + path + ")" );
             }
         }
     }
@@ -242,7 +242,7 @@ public class FileMount implements IWritableMount
     {
         if( path.length() == 0 )
         {
-            throw new IOException( "Access denied" );
+            throw new IOException( "Access denied (" + path + ")" );
         }
         
         if( created() )
@@ -276,7 +276,7 @@ public class FileMount implements IWritableMount
         }
         else
         {
-            throw new IOException( "Access denied" );
+            throw new IOException( "Access denied (" + path + ")" );
         }
     }
     
@@ -288,7 +288,7 @@ public class FileMount implements IWritableMount
         File file = getRealPath( path );
         if( file.exists() && file.isDirectory() )
         {
-            throw new IOException( "Cannot write to directory" );
+            throw new IOException( "Cannot write to directory (" + path + ")" );
         }
         else
         {
@@ -296,7 +296,7 @@ public class FileMount implements IWritableMount
             {
                 if( getRemainingSpace() < MINIMUM_FILE_SIZE )
                 {
-                    throw new IOException( "Out of space" );
+                    throw new IOException( "Out of space (" + path + ")" );
                 }
                 else
                 {
@@ -321,11 +321,11 @@ public class FileMount implements IWritableMount
             File file = getRealPath( path );
             if( !file.exists() )
             {
-                throw new IOException( "No such file" );
+                throw new IOException( "No such file (" + path + ")" );
             }
             else if( file.isDirectory() )
             {
-                throw new IOException( "Cannot write to directory" );
+                throw new IOException( "Cannot write to directory (" + path + ")" );
             }
             else
             {
@@ -334,7 +334,7 @@ public class FileMount implements IWritableMount
         }
         else
         {
-            throw new IOException( "No such file" );
+            throw new IOException( "No such file (" + path + ")" );
         }
     }
     
@@ -361,7 +361,7 @@ public class FileMount implements IWritableMount
             boolean success = m_rootPath.mkdirs();
             if( !success )
             {
-                throw new IOException( "Access denied" );
+                throw new IOException( "Access denied (" + path + ")" );
             }
         }
     }

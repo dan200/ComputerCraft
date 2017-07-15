@@ -203,7 +203,7 @@ public class JarMount implements IMount
         }
         else
         {
-            throw new IOException( "Not a directory" );
+            throw new IOException( "Not a directory (" + path + ")" );
         }
     }
     
@@ -215,7 +215,7 @@ public class JarMount implements IMount
         {
             return file.getSize();
         }
-        throw new IOException( "No such file" );
+        throw new IOException( "No such file (" + path + ")" );
     }
 
     @Nonnull
@@ -243,6 +243,6 @@ public class JarMount implements IMount
                 // treat errors as non-existance of file
             }
         }
-        throw new IOException( "No such file" );
+        throw new IOException( "No such file (" + path + ")" );
     }
 }
