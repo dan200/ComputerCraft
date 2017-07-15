@@ -276,7 +276,7 @@ public class FileMount implements IWritableMount
         }
         else
         {
-            throw new IOException( "Access denied (" + path + ")" );
+            throw new IOException( "Access denied" );
         }
     }
     
@@ -361,7 +361,7 @@ public class FileMount implements IWritableMount
             boolean success = m_rootPath.mkdirs();
             if( !success )
             {
-                throw new IOException( "Access denied (" + path + ")" );
+                throw new IOException( "Access denied" );
             }
         }
     }
