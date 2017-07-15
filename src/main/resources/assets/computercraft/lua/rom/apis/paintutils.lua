@@ -41,17 +41,17 @@ function loadImage( sPath )
         error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 )
     end
 
-    if fs.exists( sPath ) and not bLoadRawData then
+    if fs.exists( sPath ) then
         local tImage = {}
         local file = io.open( sPath, "r" )
         local sLine = file:read()
         local sContent = ""
         while sLine do
-            sContent = sContent .. sLine .. "\n"
+            sContent = sContent .. "\n" .. sLine
             sLine = file:read()
         end
         file:close()
-        return parseImage( sContent ) -- delegate parsing of images to parseImage function as suggested by @SquidDev in discussion of PR #378
+        return parseImage( sContent:sub(2) ) -- remove first newline and delegate parsing of images to parseImage function as suggested by @SquidDev in discussion of PR #378
     end
     return nil
 end
