@@ -9,25 +9,48 @@ for n=1,16 do
     tColourLookup[ string.byte( "0123456789abcdef",n,n ) ] = 2^(n-1)
 end
 
-function loadImage( sPath )
+function loadImage( sPath, bLoadRawData )
     if type( sPath ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 )
     end
+    if bLoadRawData ~= nil and type(bLoadRawData) ~= "boolean" then
+        error( "bad argument #2 (expected nil or boolean, got " .. type( sPath ) .. ")" )
+    end
 
-    local tImage = {}
-    if fs.exists( sPath ) then
-        local file = io.open(sPath, "r" )
+    local function parseLine( tImageArg, sLine )
+        local tLine = {}
+        for x=1,sLine:len() do
+            tLine[x] = tColourLookup[ string.byte(sLine,x,x) ] or 0
+        end
+        table.insert( tImageArg, tLine )
+        return tImageArg
+    end
+    
+    if fs.exists( sPath ) and not bLoadRawData then
+        local tImage = {}
+        local file = io.open( sPath, "r" )
         local sLine = file:read()
         while sLine do
-            local tLine = {}
-            for x=1,sLine:len() do
-                tLine[x] = tColourLookup[ string.byte(sLine,x,x) ] or 0
-            end
-            table.insert( tImage, tLine )
+            tImage = parseLine( tImage, sLine )
             sLine = file:read()
         end
         file:close()
         return tImage
+    else
+        if bLoadRawData then
+            local function split( str, delim ) -- modified split function from https://codea.io/talk/discussion/2118/split-a-string-by-return-newline
+                if string.find( str, delim ) == nil then return { str } end
+                local result, pat, lastpos = {}, "(.-)" .. delim .. "()", nil
+                for part, pos in string.gfind( str, pat ) do table.insert( result, part ); lastpos = pos; end
+                table.insert( result, string.sub( str, lastpos ) )
+                return result
+            end
+            local tImage = {}
+            for _, sLine in pairs( split( sPath, "\n" ) ) do -- read each line like original file handling did
+                tImage = parseLine( tImage, sLine )
+            end
+            return tImage
+        end
     end
     return nil
 end
