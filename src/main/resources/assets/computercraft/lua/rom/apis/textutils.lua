@@ -1,8 +1,8 @@
 
 function slowWrite( sText, nRate )
-	if nRate ~= nil and type( nRate ) ~= "number" then
-		error( "bad argument #2 (expected number, got " .. type( nRate ) .. ")", 2 )
-	end
+    if nRate ~= nil and type( nRate ) ~= "number" then
+        error( "bad argument #2 (expected number, got " .. type( nRate ) .. ")", 2 )
+    end
     nRate = nRate or 20
     if nRate < 0 then
         error( "Rate must be positive", 2 )
