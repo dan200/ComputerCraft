@@ -20,17 +20,10 @@ end
 
 function parseImage( sRawData )
     if type( sRawData ) ~= "string" then
-        error ( "bad argument #1 (expected string, got " .. type( sRawData ) .. ")" )
-    end
-    local function split( str, delim ) -- modified split function from https://codea.io/talk/discussion/2118/split-a-string-by-return-newline
-        if string.find( str, delim ) == nil then return { str } end
-        local result, pat, lastpos = {}, "(.-)" .. delim .. "()", nil
-        for part, pos in string.gfind( str, pat ) do table.insert( result, part ); lastpos = pos; end
-        table.insert( result, string.sub( str, lastpos ) )
-        return result
+        error( "bad argument #1 (expected string, got " .. type( sRawData ) .. ")" )
     end
     local tImage = {}
-    for _, sLine in pairs( split( sPath, "\n" ) ) do -- read each line like original file handling did
+    for sLine in ( sRawData .. "\n" ):gmatch( "(.-)\n" ) do -- read each line like original file handling did
         tImage = parseLine( tImage, sLine )
     end
     return tImage
