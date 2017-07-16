@@ -44,7 +44,7 @@ function loadImage( sPath )
             sLine = file:read()
         end
         file:close()
-        return parseImage( sContent:sub(2) ) -- remove first newline and delegate parsing of images to parseImage function as suggested by @SquidDev in discussion of PR #378
+        return parseImage( sContent:sub(2) ) -- remove first newline and delegate image parse to parseImage
     end
     return nil
 end
