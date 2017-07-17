@@ -37,14 +37,9 @@ function loadImage( sPath )
     if fs.exists( sPath ) then
         local tImage = {}
         local file = io.open( sPath, "r" )
-        local sLine = file:read()
-        local sContent = ""
-        while sLine do
-            sContent = sContent .. "\n" .. sLine
-            sLine = file:read()
-        end
+        local sContent = file:readAll()
         file:close()
-        return parseImage( sContent:sub(2) ) -- remove first newline and delegate image parse to parseImage
+        return parseImage( sContent ) -- delegate image parse to parseImage
     end
     return nil
 end
