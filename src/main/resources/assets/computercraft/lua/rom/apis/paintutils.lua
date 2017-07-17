@@ -15,7 +15,6 @@ local function parseLine( tImageArg, sLine )
         tLine[x] = tColourLookup[ string.byte(sLine,x,x) ] or 0
     end
     table.insert( tImageArg, tLine )
-    return tImageArg
 end
 
 function parseImage( sRawData )
@@ -24,7 +23,7 @@ function parseImage( sRawData )
     end
     local tImage = {}
     for sLine in ( sRawData .. "\n" ):gmatch( "(.-)\n" ) do -- read each line like original file handling did
-        tImage = parseLine( tImage, sLine )
+        parseLine( tImage, sLine )
     end
     return tImage
 end
@@ -35,7 +34,6 @@ function loadImage( sPath )
     end
 
     if fs.exists( sPath ) then
-        local tImage = {}
         local file = io.open( sPath, "r" )
         local sContent = file:readAll()
         file:close()
