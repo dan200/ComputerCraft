@@ -274,7 +274,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         if type( color ) ~= "number" then 
             error( "bad argument #1 (expected number, got " .. type( color ) .. ")", 2 )
         elseif tHex[color] == nil then
-            error( "Invalid color", 2 )
+            error( "Invalid color (got " .. color .. ")" , 2 )
         end
         nTextColor = color
         if bVisible then
@@ -321,7 +321,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         if type( color ) ~= "number" then
             error( "bad argument #1 (expected number, got " .. type( color ) .. ")", 2 )
         elseif tHex[color] == nil then
-            error( "Invalid color", 3 )
+            error( "Invalid color (got " .. color .. ")", 2 )
         end
         nBackgroundColor = color
     end
