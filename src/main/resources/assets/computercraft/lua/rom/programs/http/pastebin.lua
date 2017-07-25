@@ -21,7 +21,7 @@ end
 local function get(paste)
     write( "Connecting to pastebin.com... " )
     local response = http.get(
-        "http://pastebin.com/raw/"..textutils.urlEncode( paste )
+        "https://pastebin.com/raw/"..textutils.urlEncode( paste )
     )
         
     if response then
@@ -56,7 +56,7 @@ if sCommand == "put" then
     write( "Connecting to pastebin.com... " )
     local key = "0ec2eb25b6166c0c27a394ae118ad829"
     local response = http.post(
-        "http://pastebin.com/api/api_post.php", 
+        "https://pastebin.com/api/api_post.php", 
         "api_option=paste&"..
         "api_dev_key="..key.."&"..
         "api_paste_format=lua&"..
