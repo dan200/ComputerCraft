@@ -45,6 +45,7 @@ public class ComputerPeripheral
             "reboot",
             "getID",
             "isOn",
+            "getLabel",
         };
     }
 
@@ -83,6 +84,9 @@ public class ComputerPeripheral
                 // isOn
                 return new Object[] { m_computer.isOn() };
             }
+            case 5:
+                // getLabel
+                return new Object[] { m_computer.getLabel() };
             default:
             {
                 return null;
