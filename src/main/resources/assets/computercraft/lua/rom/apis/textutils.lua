@@ -332,7 +332,7 @@ function unserialize( s )
 end
 
 function serializeJSON( t, bNBTStyle )
-    if type( t ) ~= "table" or type( t ) == "string" or type( t ) == "number" or type( t ) == "boolean" then
+    if type( t ) ~= "table" and type( t ) ~= "string" and type( t ) ~= "number" and type( t ) ~= "boolean" then
         error( "bad argument #1 (expected table/string/number/boolean, got " .. type( t ) .. ")", 2 )
     end
     if bNBTStyle ~= nil and type( bNBTStyle ) ~= "boolean" then
