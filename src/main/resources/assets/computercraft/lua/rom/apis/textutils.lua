@@ -1,5 +1,8 @@
 
 function slowWrite( sText, nRate )
+    if nRate ~= nil and type( nRate ) ~= "number" then
+        error( "bad argument #2 (expected number, got " .. type( nRate ) .. ")", 2 )
+    end
     nRate = nRate or 20
     if nRate < 0 then
         error( "Rate must be positive", 2 )
@@ -20,7 +23,7 @@ function slowWrite( sText, nRate )
 end
 
 function slowPrint( sText, nRate )
-    slowWrite( sText, nRate)
+    slowWrite( sText, nRate )
     print()
 end
 
@@ -329,11 +332,11 @@ function unserialize( s )
 end
 
 function serializeJSON( t, bNBTStyle )
-    if type( t ) ~= "string" then
-        error( "bad argument #1 (expected string, got " .. type( t ) .. ")", 2 )
+    if type( t ) ~= "table" and type( t ) ~= "string" and type( t ) ~= "number" and type( t ) ~= "boolean" then
+        error( "bad argument #1 (expected table/string/number/boolean, got " .. type( t ) .. ")", 2 )
     end
     if bNBTStyle ~= nil and type( bNBTStyle ) ~= "boolean" then
-        error( "bad argument #2 (expected boolean, got " .. type( bNBTStyle ) .. ")", 2 ) 
+        error( "bad argument #2 (expected boolean, got " .. type( bNBTStyle ) .. ")", 2 )
     end
     local tTracking = {}
     return serializeJSONImpl( t, tTracking, bNBTStyle or false )
@@ -367,7 +370,7 @@ function complete( sSearchText, tSearchTable )
     if type( sSearchText ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sSearchText ) .. ")", 2 )
     end
-    if type( tSearchTable ) ~= "table" then
+    if tSearchTable ~= nil and type( tSearchTable ) ~= "table" then
         error( "bad argument #2 (expected table, got " .. type( tSearchTable ) .. ")", 2 )
     end
 
