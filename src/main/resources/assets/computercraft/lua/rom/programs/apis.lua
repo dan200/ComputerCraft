@@ -6,6 +6,7 @@ for k,v in pairs( _G ) do
     end
 end
 table.insert( tApis, "shell" )
+table.insert( tApis, "package" )
 if multishell then
     table.insert( tApis, "multishell" )
 end
