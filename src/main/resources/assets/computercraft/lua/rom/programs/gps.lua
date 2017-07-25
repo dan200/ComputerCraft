@@ -87,11 +87,6 @@ elseif sCommand == "host" then
             end
         end
     end
-
-    -- Close the channel
-    print( "Closing channel" )
-    modem.close( gps.CHANNEL_GPS )
-
 else
     -- "gps somethingelse"
     -- Error

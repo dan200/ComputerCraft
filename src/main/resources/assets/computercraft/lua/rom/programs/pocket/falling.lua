@@ -473,7 +473,7 @@ local function playGame()
     if testBlockAt(curBlock,curX,curY+1,curRot) then
       pitBlock(curBlock,curX,curY,curRot)
       --detect rows that clear
-      clearRows(rows)
+      clearRows()
 
       curBlock=next
       curX=4
