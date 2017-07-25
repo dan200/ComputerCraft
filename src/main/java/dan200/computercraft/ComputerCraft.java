@@ -72,10 +72,10 @@ import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -83,6 +83,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 ///////////////
 // UNIVERSAL //
@@ -873,6 +875,88 @@ public class ComputerCraft
         {
             return null;
         }
+    }
+
+    public static InputStream getResourceFile( Class<?> modClass, String domain, String subPath )
+    {
+        // Start searching in possible locations
+        subPath = "assets/" + domain + "/" + subPath;
+
+        // Look in resource packs
+        File resourcePackDir = getResourcePackDir();
+        if( resourcePackDir.exists() && resourcePackDir.isDirectory() )
+        {
+            String[] resourcePacks = resourcePackDir.list();
+            for( String resourcePackPath : resourcePacks )
+            {
+                File resourcePack = new File( resourcePackDir, resourcePackPath );
+                if( resourcePack.isDirectory() )
+                {
+                    // Mount a resource pack from a folder
+                    File subResource = new File( resourcePack, subPath );
+                    if( subResource.exists() && subResource.isFile() )
+                    {
+                        try
+                        {
+                            return new FileInputStream( subResource );
+                        }
+                        catch( FileNotFoundException ignored )
+                        {
+                        }
+                    }
+                }
+                else
+                {
+                    ZipFile zipFile = null;
+                    try
+                    {
+                        final ZipFile zip = zipFile = new ZipFile( resourcePack );
+                        ZipEntry entry = zipFile.getEntry( subPath );
+                        if( entry != null )
+                        {
+                            // Return a custom InputStream which will close the original zip when finished.
+                            return new FilterInputStream( zipFile.getInputStream( entry ) )
+                            {
+                                @Override
+                                public void close() throws IOException
+                                {
+                                    super.close();
+                                    zip.close();
+                                }
+                            };
+                        }
+                        else
+                        {
+                            IOUtils.closeQuietly( zipFile );
+                        }
+                    }
+                    catch( IOException e )
+                    {
+                        if( zipFile != null ) IOUtils.closeQuietly( zipFile );
+                    }
+                }
+            }
+        }
+
+        // Look in debug dir
+        File codeDir = getDebugCodeDir( modClass );
+        if( codeDir != null )
+        {
+            File subResource = new File( codeDir, subPath );
+            if( subResource.exists() && subResource.isFile() )
+            {
+                try
+                {
+                    return new FileInputStream( subResource );
+                }
+                catch( FileNotFoundException ignored )
+                {
+                }
+            }
+        }
+
+        // Look in class loader
+        return modClass.getClassLoader().getResourceAsStream( subPath );
     }
 
     private static File getContainingJar( Class<?> modClass )
