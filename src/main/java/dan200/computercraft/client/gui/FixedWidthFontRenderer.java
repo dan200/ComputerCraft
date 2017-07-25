@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 public class FixedWidthFontRenderer
 {
-    public static ResourceLocation font = new ResourceLocation( "computercraft", "textures/gui/term_font.png" );
+    private static ResourceLocation font = new ResourceLocation( "computercraft", "textures/gui/term_font.png" );
     public static ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/term_background.png" );
 
     public static int FONT_HEIGHT = 9;
@@ -52,12 +52,15 @@ public class FixedWidthFontRenderer
         float g = (float)colour[1];
         float b = (float)colour[2];
 
-        renderer.pos( x, y, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT ) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) (row * FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( (double) (column * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (double) ((column + 1) * FONT_WIDTH) / 256.0, (double) ((row + 1) * FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
+        int xStart = 1 + column * (FONT_WIDTH + 2);
+        int yStart = 1 + row * (FONT_HEIGHT + 2);
+
+        renderer.pos( x, y, 0.0 ).tex( xStart / 256.0, yStart / 256.0 ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, yStart / 256.0 ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, yStart / 256.0 ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
     }
 
     private void drawQuad( VertexBuffer renderer, double x, double y, int color, double width, Palette p, boolean greyscale )
@@ -164,7 +167,7 @@ public class FixedWidthFontRenderer
         if( s != null && textColour != null )
         {
             // Bind the font texture
-            m_textureManager.bindTexture( font );
+            bindFont();
             
             // Draw the quads
             drawStringTextPart( x, y, s, textColour, greyScale, p );
@@ -178,5 +181,11 @@ public class FixedWidthFontRenderer
             return 0;
         }
         return s.length() * FONT_WIDTH;
+    }
+
+    public void bindFont()
+    {
+        m_textureManager.bindTexture( font );
+        GlStateManager.glTexParameteri( GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP );
     }
 }
