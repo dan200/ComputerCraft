@@ -177,6 +177,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                             }
                         }
                         GlStateManager.callList( origin.m_renderDisplayList );
+                        GlStateManager.resetColor();
 
                         // Draw text
                         mc.getTextureManager().bindTexture( FixedWidthFontRenderer.font );
@@ -204,6 +205,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                             }
                         }
                         GlStateManager.callList( origin.m_renderDisplayList + 1 );
+                        GlStateManager.resetColor();
 
                         // Draw cursor
                         mc.getTextureManager().bindTexture( FixedWidthFontRenderer.font );
@@ -237,6 +239,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         if( ComputerCraft.getGlobalCursorBlink() )
                         {
                             GlStateManager.callList( origin.m_renderDisplayList + 2 );
+                            GlStateManager.resetColor();
                         }
                     }
                     finally
