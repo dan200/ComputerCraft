@@ -683,6 +683,14 @@ function os.reboot()
     end
 end
 
+local tKeydown = {}
+function os.isKeyDown(nKey)
+    if type( nKey ) ~= "number" then
+        error( "bad argument #1 (expected number, got " .. type( nKey ) .. ")", 2 ) 
+    end
+    return tKeydown[nKey] or false
+end
+
 -- Install the lua part of the HTTP api (if enabled)
 if http then
     local nativeHTTPRequest = http.request
@@ -963,6 +971,16 @@ local ok, err = pcall( function()
         end,
         function()
             rednet.run()
+        end,
+        function()
+            while true do
+                local sEv, nKey = os.pullEvent()
+                if sEv == "key" then
+                    tKeydown[nKey] = true
+                elseif sEv == "key_up" then
+                    tKeydown[nKey] = false
+                end
+            end
         end )
 end )
 
