@@ -915,8 +915,10 @@ settings.set( "edit.default_extension", "lua" )
 settings.set( "paint.default_extension", "nfp" )
 settings.set( "lua.autocomplete", true )
 settings.set( "list.show_hidden", false )
+settings.set( "filetype.txt", "edit {}" )
 if term.isColour() then
     settings.set( "bios.use_multishell", true )
+    settings.set( "filetype.nfp", "paint {}" )
 end
 if _CC_DEFAULT_SETTINGS then
     for sPair in string.gmatch( _CC_DEFAULT_SETTINGS, "[^,]+" ) do
