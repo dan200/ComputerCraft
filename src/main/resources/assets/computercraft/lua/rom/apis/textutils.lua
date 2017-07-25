@@ -52,6 +52,57 @@ function formatTime( nTime, bTwentyFourHour )
     end
 end
 
+local function isLeapYear( nNum )
+nNum = nNum / 4
+local a, b = math.modf( nNum )
+if b == 0 then
+    return true
+else
+    return false
+end
+end
+
+local function round( nNum )
+local a, b = math.modf( nNum )
+if b > 0.5 then
+    return a+1
+else
+    return a
+end
+end
+
+function formatDate( nDays )
+if type( nDays ) ~= "number" then
+    error( "bad argument #1 (expected number, got " .. type( nDays ) .. ")", 2 )
+end
+if nDays < 0 then
+    error( "No negative Numbers allowed", 2 )
+end
+nDays = math.floor( nDays )
+nYear = round( nDays/369 )+1970
+for i=1970,nYear-1 do
+    if isLeapYear( i ) == true then
+        nDays = nDays - 366
+    else
+        nDays = nDays - 365
+    end
+end
+local tMonth = {31, 28 ,31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+if isLeapYear( nYear ) == true then
+    tMonth[2] = 29
+end
+local nMonth
+for k, v in ipairs( tMonth ) do
+    if v >= nDays then
+        nMonth = k
+        break
+    else
+        nDays = nDays - v
+    end
+end
+return nDays, nMonth, nYear
+end
+
 local function makePagedScroll( _term, _nFreeLines )
     local nativeScroll = _term.scroll
     local nFreeLines = _nFreeLines or 0
