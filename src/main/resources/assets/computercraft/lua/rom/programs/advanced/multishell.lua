@@ -210,7 +210,7 @@ function multishell.getCurrent()
 end
 
 function multishell.launch( tProgramEnv, sProgramPath, ... )
-    if type( tProgramArgs ) ~= "table" then
+    if type( tProgramEnv ) ~= "table" then
         error( "bad argument #1 (expected table, got " .. type( tProgramEnv ) .. ")", 2 )
     end
     if type( sProgramPath ) ~= "string" then
