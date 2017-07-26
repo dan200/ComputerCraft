@@ -283,7 +283,7 @@ function printError( ... )
     end
 end
 
-function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
+function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault, _bNewLine )
     if _sReplaceChar ~= nil and type( _sReplaceChar ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sReplaceChar ) .. ")", 2 ) 
     end
@@ -295,6 +295,9 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     end
     if _sDefault ~= nil and type( _sDefault ) ~= "string" then
         error( "bad argument #4 (expected string, got " .. type( _sDefault ) .. ")", 2 ) 
+    end
+    if _bNewLine ~= nil and type( _bNewLine ) ~= "boolean" then
+        error( "bad argument #5 (expected boolean, got " .. type( _bNewLine ) .. ")", 2)
     end
     term.setCursorBlink( true )
 
@@ -548,7 +551,9 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     local cx, cy = term.getCursorPos()
     term.setCursorBlink( false )
     term.setCursorPos( w + 1, cy )
-    print()
+    if _bNewLine == nil or true then
+        print()
+    end
     
     return sLine
 end
