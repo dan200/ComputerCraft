@@ -353,7 +353,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault, _nLimit )
         term.setCursorPos( sx, cy )
         local sReplace = (_bClear and " ") or _sReplaceChar
         if sReplace then
-            term.write( string.rep( sReplace, math.max( string.len(sLine) - nScroll, 0 ) ) )
+            term.write( string.sub( string.rep( sReplace, math.max( string.len(sLine) + nScroll, 0 ) ),  nScroll + 1, nScroll + w ) )
         else
             term.write( string.sub( sLine, nScroll + 1, nScroll + w ) )
         end
