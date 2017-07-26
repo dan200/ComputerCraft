@@ -635,7 +635,7 @@ public class Computer
         InputStream biosStream;
         try
         {
-            biosStream = m_environment.createResourceFile( "computercraft", "lua/bios.lua" );
+            biosStream = m_environment.createResourceFile( "computercraft", "lua/rom/bios.lua" );
         }
         catch( Exception e )
         {
