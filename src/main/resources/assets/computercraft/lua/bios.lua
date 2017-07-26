@@ -283,7 +283,7 @@ function printError( ... )
     end
 end
 
-function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
+function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault, _nLimit )
     if _sReplaceChar ~= nil and type( _sReplaceChar ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sReplaceChar ) .. ")", 2 ) 
     end
@@ -295,6 +295,9 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     end
     if _sDefault ~= nil and type( _sDefault ) ~= "string" then
         error( "bad argument #4 (expected string, got " .. type( _sDefault ) .. ")", 2 ) 
+    end
+    if _nLimit ~= nil and type( _nLimit ) ~= "number" then
+        error( "bad argument #5 (expected number, got " .. type( _nLimit ) .. ")", 2 ) 
     end
     term.setCursorBlink( true )
 
@@ -330,8 +333,14 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
         tCompletions = nil
         nCompletion = nil
     end
-
-    local w = term.getSize()
+    
+    local w
+    if not _nLimit then
+        w = term.getSize()
+    else
+        w = _nLimit
+    end
+    
     local sx = term.getCursorPos()
 
     local function redraw( _bClear )
@@ -346,7 +355,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
         if sReplace then
             term.write( string.rep( sReplace, math.max( string.len(sLine) - nScroll, 0 ) ) )
         else
-            term.write( string.sub( sLine, nScroll + 1 ) )
+            term.write( string.sub( sLine, nScroll + 1, nScroll + w ) )
         end
 
         if nCompletion then
@@ -539,7 +548,11 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
 
         elseif sEvent == "term_resize" then
             -- Terminal resized
-            w = term.getSize()
+            if not _nLimit then
+                w = term.getSize()
+            else
+                w = _nLimit
+            end
             redraw()
 
         end
