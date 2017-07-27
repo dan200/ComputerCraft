@@ -129,7 +129,7 @@ public class FileMount implements IWritableMount
         {
             if( path.length() != 0 )
             {
-                throw new IOException( "Not a directory (" + path + ")" );
+                throw new IOException( "/" + path + ": Not a directory" );
             }
         }
         else
@@ -148,7 +148,7 @@ public class FileMount implements IWritableMount
             }
             else
             {
-                throw new IOException( "Not a directory (" + path + ")" );
+                throw new IOException( "/" + path + ": Not a directory" );
             }
         }    
     }
@@ -178,7 +178,7 @@ public class FileMount implements IWritableMount
                 }
             }
         }
-        throw new IOException( "No such file (" + path + ")" );
+        throw new IOException( "/" + path + ": No such file" );
     }
     
     @Nonnull
@@ -193,7 +193,7 @@ public class FileMount implements IWritableMount
                 return new FileInputStream( file );
             }
         }
-        throw new IOException( "No such file (" + path + ")" );
+        throw new IOException( "/" + path +  ": No such file" );
     }
     
     // IWritableMount implementation
@@ -207,7 +207,7 @@ public class FileMount implements IWritableMount
         {
             if( !file.isDirectory() )
             {
-                throw new IOException( "File exists (" + path + ")" );
+                throw new IOException( "/" + path + ": File exists" );
             }
         }
         else
@@ -222,7 +222,7 @@ public class FileMount implements IWritableMount
 
             if( getRemainingSpace() < dirsToCreate * MINIMUM_FILE_SIZE )
             {
-                throw new IOException( "Out of space (" + path + ")" );
+                throw new IOException( "/" + path + ": Out of space" );
             }
             
             boolean success = file.mkdirs();
@@ -232,7 +232,7 @@ public class FileMount implements IWritableMount
             }
             else
             {
-                throw new IOException( "Access denied (" + path + ")" );
+                throw new IOException( "/" + path + ": Access denied" );
             }
         }
     }
@@ -242,7 +242,7 @@ public class FileMount implements IWritableMount
     {
         if( path.length() == 0 )
         {
-            throw new IOException( "Access denied (" + path + ")" );
+            throw new IOException( "/" + path + ": Access denied" );
         }
         
         if( created() )
@@ -288,7 +288,7 @@ public class FileMount implements IWritableMount
         File file = getRealPath( path );
         if( file.exists() && file.isDirectory() )
         {
-            throw new IOException( "Cannot write to directory (" + path + ")" );
+            throw new IOException( "/" + path + ": Cannot write to directory" );
         }
         else
         {
@@ -296,7 +296,7 @@ public class FileMount implements IWritableMount
             {
                 if( getRemainingSpace() < MINIMUM_FILE_SIZE )
                 {
-                    throw new IOException( "Out of space (" + path + ")" );
+                    throw new IOException( "/" + path + ": Out of space" );
                 }
                 else
                 {
@@ -321,11 +321,11 @@ public class FileMount implements IWritableMount
             File file = getRealPath( path );
             if( !file.exists() )
             {
-                throw new IOException( "No such file (" + path + ")" );
+                throw new IOException( "/" + path + ": No such file" );
             }
             else if( file.isDirectory() )
             {
-                throw new IOException( "Cannot write to directory (" + path + ")" );
+                throw new IOException( "/" + path + ": Cannot write to directory" );
             }
             else
             {
@@ -334,7 +334,7 @@ public class FileMount implements IWritableMount
         }
         else
         {
-            throw new IOException( "No such file (" + path + ")" );
+            throw new IOException( "/" + path + ": No such file" );
         }
     }
     

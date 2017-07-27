@@ -94,7 +94,7 @@ public class ComboMount implements IMount
         }
         else
         {
-            throw new IOException( "Not a directory (" + path + ")" );
+            throw new IOException( "/" + path + ": Not a directory" );
         }
     }
     
@@ -109,7 +109,7 @@ public class ComboMount implements IMount
                 return part.getSize( path );
             }
         }
-        throw new IOException( "No such file (" + path + ")" );
+        throw new IOException(  "/" + path + ": No such file" );
     }
 
     @Nonnull
@@ -124,6 +124,6 @@ public class ComboMount implements IMount
                 return part.openForRead( path );
             }
         }
-        throw new IOException( "No such file (" + path + ")" );
+        throw new IOException( "/" + path + ": No such file" );
     }
 }

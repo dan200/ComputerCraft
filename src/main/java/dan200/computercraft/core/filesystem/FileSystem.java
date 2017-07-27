@@ -110,7 +110,7 @@ public class FileSystem
                 }
                 else
                 {
-                    throw new FileSystemException( "Not a directory (" + path + ")" );
+                    throw new FileSystemException( "/" + path + ": Not a directory" );
                 }
             }
             catch( IOException e )
@@ -137,7 +137,7 @@ public class FileSystem
                 }
                 else
                 {
-                    throw new FileSystemException( "No such file (" + path + ")" );
+                    throw new FileSystemException( "/" + path + ": No such file" );
                 }
             }
             catch( IOException e )
@@ -157,7 +157,7 @@ public class FileSystem
                 }
                 else
                 {
-                    throw new FileSystemException( "No such file (" + path + ")" );
+                    throw new FileSystemException( "/" + path + ": No such file" );
                 }
             }
             catch( IOException e )
@@ -172,7 +172,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access denied (" + path + ")" );
+                throw new FileSystemException( "/" + path + ": Access denied" );
             }
             try
             {
@@ -181,7 +181,7 @@ public class FileSystem
                 {
                     if( !m_mount.isDirectory( path ) )
                     {
-                        throw new FileSystemException( "File exists (" + path + ")" );
+                        throw new FileSystemException( "/" + path + ": File exists" );
                     }
                 }
                 else
@@ -199,7 +199,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access denied (" + path + ")" );
+                throw new FileSystemException( "/" + path + ": Access denied" );
             }
             try
             {
@@ -219,14 +219,14 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access denied (" + path + ")" );
+                throw new FileSystemException( "/" + path + ": Access denied" );
             }
             try
             {
                 path = toLocal( path );
                 if( m_mount.exists( path ) && m_mount.isDirectory( path ) )
                 {
-                    throw new FileSystemException( "Cannot write to directory (" + path + ")" );
+                    throw new FileSystemException( "/" + path + ": Cannot write to directory" );
                 }
                 else
                 {
@@ -251,7 +251,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access denied (" + path + ")" );
+                throw new FileSystemException( "/" + path + ": Access denied" );
             }
             try
             {
@@ -270,7 +270,7 @@ public class FileSystem
                 }
                 else if( m_mount.isDirectory( path ) )
                 {
-                    throw new FileSystemException( "Cannot write to directory (" + path + ")" );
+                    throw new FileSystemException( "/" + path + ": Cannot write to directory" );
                 }
                 else
                 {
@@ -557,16 +557,16 @@ public class FileSystem
         sourcePath = sanitizePath( sourcePath );
         destPath = sanitizePath( destPath );
         if( isReadOnly( destPath ) ) {
-            throw new FileSystemException( "Access denied (" + destPath + ")" );
+            throw new FileSystemException( "/" + destPath + ": Access denied" );
         }
         if( !exists( sourcePath ) ) {
-            throw new FileSystemException( "No such file (" + sourcePath + ")" );
+            throw new FileSystemException( "/" + sourcePath + ": No such file" );
         }
         if( exists( destPath ) ) {
-            throw new FileSystemException( "File exists (" + destPath + ")" );
+            throw new FileSystemException( "/" + destPath + ": File exists" );
         }
         if( contains( sourcePath, destPath ) ) {
-            throw new FileSystemException( "Can't copy a directory inside itself (" + sourcePath + ")" );
+            throw new FileSystemException( "/" + sourcePath + ": Can't copy a directory inside itself" );
         }
         copyRecursive( sourcePath, getMount( sourcePath ), destPath, getMount( destPath ) );
     }
