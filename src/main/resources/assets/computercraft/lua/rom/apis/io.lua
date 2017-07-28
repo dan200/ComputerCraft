@@ -63,9 +63,9 @@ end
 
 function open( _sPath, _sMode )
 	local sMode = _sMode or "r"
-	local file = fs.open( _sPath, sMode )
+	local file, err = fs.open( _sPath, sMode )
 	if not file then
-		return nil
+		return nil, err
 	end
 	
 	if sMode == "r"then
