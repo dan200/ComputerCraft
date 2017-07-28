@@ -55,9 +55,9 @@ public class SpeakerPeripheral implements IPeripheral {
         return m_speaker.getPos();
     }
 
-    public synchronized boolean madeSound()
+    public synchronized boolean madeSound(long ticks)
     {
-        return (m_clock - m_lastPlayTime <= 20) ;
+        return (m_clock - m_lastPlayTime <= ticks) ;
     }
 
     /* IPeripheral implementation */

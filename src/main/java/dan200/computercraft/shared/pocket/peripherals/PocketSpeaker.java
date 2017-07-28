@@ -75,7 +75,7 @@ public class PocketSpeaker implements IPocketUpgrade
                 speaker.setLocation( entity.getEntityWorld(), entity.posX, entity.posY, entity.posZ );
             }
             speaker.update();
-            access.setLight( speaker.madeSound() ? 0x3320fc : -1 );
+            access.setLight( speaker.madeSound(20) ? 0x3320fc : -1 );
         }
     }
 
