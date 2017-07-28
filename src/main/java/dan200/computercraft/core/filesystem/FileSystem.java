@@ -126,14 +126,7 @@ public class FileSystem
             {
                 if( m_mount.exists( path ) )
                 {
-                    if( m_mount.isDirectory( path ) )
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return m_mount.getSize( path );
-                    }
+                    return m_mount.getSize( path );
                 }
                 else
                 {
