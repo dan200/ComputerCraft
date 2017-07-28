@@ -730,7 +730,7 @@ public class FileSystem
         }
         if( match == null )
         {
-            throw new FileSystemException( "Invalid Path (" + path + ")" );
+            throw new FileSystemException( "/" + path + ": Invalid Path" );
         }
         return match;
     }
