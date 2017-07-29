@@ -10,18 +10,19 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.http.HTTPCheck;
 import dan200.computercraft.core.apis.http.HTTPRequest;
-import dan200.computercraft.core.apis.http.HTTPTask;
+import dan200.computercraft.core.apis.http.HTTPExecutor;
 
 import javax.annotation.Nonnull;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.Future;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
 public class HTTPAPI implements ILuaAPI
 {
     private final IAPIEnvironment m_apiEnvironment;
-    private final List<HTTPTask> m_httpTasks;
+    private final List<Future<?>> m_httpTasks;
     
     public HTTPAPI( IAPIEnvironment environment )
     {
@@ -48,15 +49,11 @@ public class HTTPAPI implements ILuaAPI
         // Wait for all of our http requests 
         synchronized( m_httpTasks )
         {
-            Iterator<HTTPTask> it = m_httpTasks.iterator();
+            Iterator<Future<?>> it = m_httpTasks.iterator();
             while( it.hasNext() )
             {
-                final HTTPTask h = it.next();
-                if( h.isFinished() )
-                {
-                    h.whenFinished( m_apiEnvironment );
-                    it.remove();
-                }
+                final Future<?> h = it.next();
+                if( h.isDone() ) it.remove();
             }
         }
     }
@@ -66,9 +63,9 @@ public class HTTPAPI implements ILuaAPI
     {
         synchronized( m_httpTasks )
         {
-            for( HTTPTask r : m_httpTasks )
+            for( Future<?> r : m_httpTasks )
             {
-                r.cancel();
+                r.cancel( false );
             }
             m_httpTasks.clear();
         }
@@ -125,10 +122,10 @@ public class HTTPAPI implements ILuaAPI
                 try
                 {
                     URL url = HTTPRequest.checkURL( urlString );
-                    HTTPRequest request = new HTTPRequest( urlString, url, postString, headers, binary );
+                    HTTPRequest request = new HTTPRequest( m_apiEnvironment, urlString, url, postString, headers, binary );
                     synchronized( m_httpTasks )
                     {
-                        m_httpTasks.add( HTTPTask.submit( request ) );
+                        m_httpTasks.add( HTTPExecutor.EXECUTOR.submit( request ) );
                     }
                     return new Object[] { true };
                 }
@@ -147,9 +144,10 @@ public class HTTPAPI implements ILuaAPI
                 try
                 {
                     URL url = HTTPRequest.checkURL( urlString );
-                    HTTPCheck check = new HTTPCheck( urlString, url );
-                    synchronized( m_httpTasks ) {
-                        m_httpTasks.add( HTTPTask.submit( check ) );
+                    HTTPCheck check = new HTTPCheck( m_apiEnvironment, urlString, url );
+                    synchronized( m_httpTasks ) 
+                    {
+                        m_httpTasks.add( HTTPExecutor.EXECUTOR.submit( check ) );
                     }
                     return new Object[] { true };
                 }
