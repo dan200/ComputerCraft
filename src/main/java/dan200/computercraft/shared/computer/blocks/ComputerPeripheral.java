@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -45,6 +45,7 @@ public class ComputerPeripheral
             "reboot",
             "getID",
             "isOn",
+            "getLabel",
         };
     }
 
@@ -83,6 +84,9 @@ public class ComputerPeripheral
                 // isOn
                 return new Object[] { m_computer.isOn() };
             }
+            case 5:
+                // getLabel
+                return new Object[] { m_computer.getLabel() };
             default:
             {
                 return null;

@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -37,7 +37,7 @@ public class TurtleRecipe implements IRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return TurtleItemFactory.create( -1, null, null, m_family, null, null, 0, null );
+        return TurtleItemFactory.create( -1, null, -1, m_family, null, null, 0, null );
     }
 
     @Override
@@ -84,11 +84,11 @@ public class TurtleRecipe implements IRecipe
         // Construct the new stack
         if( m_family != ComputerFamily.Beginners )
         {
-            return TurtleItemFactory.create( computerID, label, null, m_family, null, null, 0, null );
+            return TurtleItemFactory.create( computerID, label, -1, m_family, null, null, 0, null );
         }
         else
         {
-            return TurtleItemFactory.create( -1, label, null, m_family, null, null, 0, null );
+            return TurtleItemFactory.create( -1, label, -1, m_family, null, null, 0, null );
         }
     }
 

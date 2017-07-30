@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -11,7 +11,6 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ItemComputer;
-import dan200.computercraft.shared.util.Colour;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,12 +26,12 @@ public class ItemTurtleLegacy extends ItemTurtleBase
     }
 
     @Override
-    public ItemStack create( int id, String label, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay )
+    public ItemStack create( int id, String label, int colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay )
     {
         // Legacy turtles only support pickaxes and modems
         if( (leftUpgrade != null && leftUpgrade != ComputerCraft.Upgrades.diamondPickaxe ) ||
             (rightUpgrade != null && rightUpgrade != ComputerCraft.Upgrades.wirelessModem) ||
-            (colour != null) || (overlay != null) )
+            (colour != -1) || (overlay != null) )
         {
             return null;
         }
@@ -130,9 +129,9 @@ public class ItemTurtleLegacy extends ItemTurtleBase
     }
 
     @Override
-    public Colour getColour( ItemStack stack )
+    public int getColour( ItemStack stack )
     {
-        return null;
+        return -1;
     }
 
     @Override

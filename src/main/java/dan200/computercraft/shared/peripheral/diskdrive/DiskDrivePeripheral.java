@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -17,6 +17,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+
+import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 
 public class DiskDrivePeripheral implements IPeripheral
 {
@@ -78,15 +80,7 @@ public class DiskDrivePeripheral implements IPeripheral
             case 2:
             {
                 // setDiskLabel
-                String label = null;
-                if( arguments.length > 0 )
-                {
-                    if( arguments[0] != null && !(arguments[0] instanceof String) )
-                    {
-                        throw new LuaException( "Expected string" );
-                    }
-                    label = (String)arguments[0];
-                }
+                String label = optString( arguments, 0, null );
 
                 IMedia media = m_diskDrive.getDiskMedia();
                 if( media != null )

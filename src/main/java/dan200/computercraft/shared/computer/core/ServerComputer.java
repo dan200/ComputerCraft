@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -25,6 +25,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
+
+import java.io.InputStream;
 
 public class ServerComputer extends ServerTerminal
     implements IComputer, IComputerEnvironment, INetworkedThing
@@ -307,6 +309,12 @@ public class ServerComputer extends ServerTerminal
     public IMount createResourceMount( String domain, String subPath )
     {
         return ComputerCraftAPI.createResourceMount( ComputerCraft.class, domain, subPath );
+    }
+
+    @Override
+    public InputStream createResourceFile( String domain, String subPath )
+    {
+        return ComputerCraft.getResourceFile( ComputerCraft.class, domain, subPath );
     }
 
     @Override

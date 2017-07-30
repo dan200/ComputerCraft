@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -10,6 +10,7 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
+import dan200.computercraft.shared.common.IColouredItem;
 import dan200.computercraft.shared.util.Colour;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +25,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemDiskLegacy extends Item
-    implements IMedia
+    implements IMedia, IColouredItem
 {
     public ItemDiskLegacy()
     {
@@ -142,7 +143,8 @@ public class ItemDiskLegacy extends Item
         return ComputerCraftAPI.createSaveDirMount( world, "computer/disk/" + diskID, ComputerCraft.floppySpaceLimit );
     }
 
-    public int getColor( ItemStack stack )
+    @Override
+    public int getColour( ItemStack stack )
     {
         return Colour.Blue.getHex();
     }
@@ -151,5 +153,11 @@ public class ItemDiskLegacy extends Item
     public boolean doesSneakBypassUse( ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player )
     {
         return true;
+    }
+
+    @Override
+    public ItemStack setColour( ItemStack stack, int colour )
+    {
+        return ItemDiskExpanded.createFromIDAndColour( getDiskID( stack ), getLabel( stack ), colour );
     }
 }

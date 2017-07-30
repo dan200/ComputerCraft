@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -42,14 +42,16 @@ public class TurtleModem implements ITurtleUpgrade
             m_turtle = turtle;
         }
 
+        @Nonnull
         @Override
-        protected World getWorld()
+        public World getWorld()
         {
             return m_turtle.getWorld();
         }
 
+        @Nonnull
         @Override
-        protected Vec3d getPosition()
+        public Vec3d getPosition()
         {
             BlockPos turtlePos = m_turtle.getPosition();
             return new Vec3d(

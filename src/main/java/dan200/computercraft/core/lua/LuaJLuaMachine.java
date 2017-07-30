@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -15,6 +15,7 @@ import dan200.computercraft.core.apis.ILuaAPI;
 import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.core.computer.ITask;
 import dan200.computercraft.core.computer.MainThread;
+
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
@@ -23,6 +24,7 @@ import org.luaj.vm2.lib.jse.JsePlatform;
 
 import javax.annotation.Nonnull;
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -183,6 +185,7 @@ public class LuaJLuaMachine implements ILuaMachine
         }
         catch( LuaError e )
         {
+            ComputerCraft.log.warn( "Could not load bios.lua ", e );
             if( m_mainRoutine != null )
             {
                 ((LuaThread)m_mainRoutine).abandon();
@@ -327,7 +330,8 @@ public class LuaJLuaMachine implements ILuaMachine
             {
                 final int method = i;
                 final ILuaObject apiObject = object;
-                table.set( methods[i], new VarArgFunction() {
+                final String methodName = methods[i];
+                table.set( methodName, new VarArgFunction() {
                     @Override
                     public Varargs invoke( Varargs _args )
                     {
@@ -412,6 +416,10 @@ public class LuaJLuaMachine implements ILuaMachine
                                             }
                                             catch( Throwable t )
                                             {
+                                                if( ComputerCraft.logPeripheralErrors )
+                                                {
+                                                    ComputerCraft.log.error( "Error running task", t );
+                                                }
                                                 m_computer.queueEvent( "task_complete", new Object[] {
                                                     taskID, false, "Java Exception Thrown: " + t.toString()
                                                 } );
@@ -478,6 +486,10 @@ public class LuaJLuaMachine implements ILuaMachine
                         }
                         catch( Throwable t )
                         {
+                            if( ComputerCraft.logPeripheralErrors )
+                            {
+                                ComputerCraft.log.error( "Error calling " + methodName + " on " + apiObject, t );
+                            }
                             throw new LuaError( "Java Exception Thrown: " + t.toString(), 0 );
                         }
                         return LuaValue.varargsOf( toValues( results, 0 ) );
@@ -508,6 +520,11 @@ public class LuaJLuaMachine implements ILuaMachine
         {
             String s = object.toString();
             return LuaValue.valueOf( s );
+        }
+        else if( object instanceof byte[] )
+        {
+            byte[] b = (byte[]) object;
+            return LuaValue.valueOf( Arrays.copyOf( b, b.length ) );
         }
         else if( object instanceof Map )
         {

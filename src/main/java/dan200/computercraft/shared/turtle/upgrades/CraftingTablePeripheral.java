@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -14,6 +14,8 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.shared.turtle.core.TurtleCraftCommand;
 
 import javax.annotation.Nonnull;
+
+import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 
 public class CraftingTablePeripheral
     implements IPeripheral
@@ -45,16 +47,7 @@ public class CraftingTablePeripheral
         
     private int parseCount( Object[] arguments ) throws LuaException
     {
-        if( arguments.length < 1 )
-        {
-            return 64;
-        }
-        
-        if( !(arguments[0] instanceof Number) )
-        {
-            throw new LuaException( "Expected number" );
-        }
-        int count = ((Number)arguments[0]).intValue();
+        int count = optInt( arguments, 0, 64 );
         if( count < 0 || count > 64 )
         {
             throw new LuaException( "Crafting count " + count + " out of range" );

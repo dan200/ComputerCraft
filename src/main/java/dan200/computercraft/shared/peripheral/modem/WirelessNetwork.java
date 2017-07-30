@@ -1,17 +1,22 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
 package dan200.computercraft.shared.peripheral.modem;
 
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import com.google.common.base.Preconditions;
+import dan200.computercraft.api.network.IPacketNetwork;
+import dan200.computercraft.api.network.IPacketReceiver;
+import dan200.computercraft.api.network.IPacketSender;
+import dan200.computercraft.api.network.Packet;
 
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.Set;
 
-public class WirelessNetwork implements INetwork
+public class WirelessNetwork implements IPacketNetwork
 {
     private static WirelessNetwork s_universalNetwork = null;
 
@@ -28,68 +33,65 @@ public class WirelessNetwork implements INetwork
     {
         s_universalNetwork = null;
     }
-    
-    private Map<Integer, Set<IReceiver>> m_receivers;
-    
+
+    private final Set<IPacketReceiver> m_receivers;
+
     private WirelessNetwork()
     {
-        m_receivers = new HashMap<Integer, Set<IReceiver>>();
+        m_receivers = new HashSet<IPacketReceiver>();
     }
 
     @Override
-    public synchronized void addReceiver( IReceiver receiver )
+    public synchronized void addReceiver( @Nonnull IPacketReceiver receiver )
     {
-        int channel = receiver.getChannel();
-        Set<IReceiver> receivers = m_receivers.get( channel );
-        if( receivers == null )
-        {
-            receivers = new HashSet<IReceiver>();
-            m_receivers.put( channel, receivers );
-        }
-        receivers.add( receiver );
+        Preconditions.checkNotNull( receiver, "device cannot be null" );
+        m_receivers.add( receiver );
     }
-    
+
     @Override
-    public synchronized void removeReceiver( IReceiver receiver )
+    public synchronized void removeReceiver( @Nonnull IPacketReceiver receiver )
     {
-        int channel = receiver.getChannel();
-        Set<IReceiver> receivers = m_receivers.get( channel );
-        if( receivers != null )
-        {
-            receivers.remove( receiver );
-        }
+        Preconditions.checkNotNull( receiver, "device cannot be null" );
+        m_receivers.remove( receiver );
     }
-    
+
     @Override
-    public synchronized void transmit( int channel, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
+    public synchronized void transmitSameDimension( @Nonnull Packet packet, double range )
     {
-        Set<IReceiver> receivers = m_receivers.get( channel );
-        if( receivers != null )
+        Preconditions.checkNotNull( packet, "packet cannot be null" );
+        for( IPacketReceiver device : m_receivers )
         {
-            for( IReceiver receiver : receivers )
-            {
-                tryTransmit( receiver, replyChannel, payload, world, pos, range, interdimensional, senderObject );
-            }
+            tryTransmit( device, packet, range, false );
         }
     }
-        
-    private void tryTransmit( IReceiver receiver, int replyChannel, Object payload, World world, Vec3d pos, double range, boolean interdimensional, Object senderObject )
+
+    @Override
+    public synchronized void transmitInterdimensional( @Nonnull Packet packet )
     {
-        if( receiver.getWorld() == world )
+        Preconditions.checkNotNull( packet, "packet cannot be null" );
+        for (IPacketReceiver device : m_receivers)
         {
-            Vec3d position = receiver.getWorldPosition();
-            double receiveRange = Math.max( range, receiver.getReceiveRange() ); // Ensure range is symmetrical
-            double distanceSq = position.squareDistanceTo( pos );
-            if( interdimensional || receiver.isInterdimensional() || distanceSq <= ( receiveRange * receiveRange ) )
+            tryTransmit( device, packet, 0, true );
+        }
+    }
+
+    private void tryTransmit( IPacketReceiver receiver, Packet packet, double range, boolean interdimensional )
+    {
+        IPacketSender sender = packet.getSender();
+        if( receiver.getWorld() == sender.getWorld() )
+        {
+            double receiveRange = Math.max( range, receiver.getRange() ); // Ensure range is symmetrical
+            double distanceSq = receiver.getPosition().squareDistanceTo( sender.getPosition() );
+            if( interdimensional || receiver.isInterdimensional() || distanceSq <= (receiveRange * receiveRange) )
             {
-                receiver.receiveSameDimension( replyChannel, payload, Math.sqrt( distanceSq ), senderObject );
+                receiver.receiveSameDimension( packet, Math.sqrt( distanceSq ) );
             }
         }
         else
         {
             if( interdimensional || receiver.isInterdimensional() )
             {
-                receiver.receiveDifferentDimension( replyChannel, payload, senderObject );
+                receiver.receiveDifferentDimension( packet );
             }
         }
     }

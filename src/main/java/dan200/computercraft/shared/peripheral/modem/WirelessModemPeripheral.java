@@ -1,12 +1,13 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
 package dan200.computercraft.shared.peripheral.modem;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.network.IPacketNetwork;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -20,13 +21,13 @@ public abstract class WirelessModemPeripheral extends ModemPeripheral
     }
 
     @Override
-    protected boolean isInterdimensional()
+    public boolean isInterdimensional()
     {
         return m_advanced;
     }
     
     @Override
-    protected double getTransmitRange()
+    public double getRange()
     {
         if( m_advanced )
         {
@@ -56,7 +57,7 @@ public abstract class WirelessModemPeripheral extends ModemPeripheral
     }
     
     @Override
-    protected INetwork getNetwork()
+    protected IPacketNetwork getNetwork()
     {
         return WirelessNetwork.getUniversal();
     }

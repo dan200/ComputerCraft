@@ -1,10 +1,12 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
 package dan200.computercraft.core.computer;
+
+import dan200.computercraft.ComputerCraft;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -106,8 +108,7 @@ public class ComputerThread
                                         try {
                                             task.execute();
                                         } catch( Throwable e ) {
-                                            System.out.println( "ComputerCraft: Error running task." );
-                                            e.printStackTrace();
+                                            ComputerCraft.log.error( "Error running task", e );
                                         }
                                     }
                                 } );
@@ -139,7 +140,7 @@ public class ComputerThread
                                     // Step 3: abandon
                                     if( worker.isAlive() )
                                     {
-                                        //System.out.println( "computercraft: Warning! Failed to abort Computer " + computercraft.getDescription() + ". Dangling lua thread could cause errors." );
+                                        // ComputerCraft.log.warn( "Failed to abort Computer " + computer.getID() + ". Dangling lua thread could cause errors." );
                                         worker.interrupt();
                                     }
                                 }                

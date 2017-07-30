@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -12,7 +12,6 @@ import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.turtle.items.ItemTurtleBase;
 import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
-import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.Holiday;
 import dan200.computercraft.shared.util.HolidayUtil;
 import net.minecraft.block.state.IBlockState;
@@ -40,13 +39,13 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
     private static class TurtleModelCombination
     {
         public final ComputerFamily m_family;
-        public final Colour m_colour;
+        public final boolean m_colour;
         public final ITurtleUpgrade m_leftUpgrade;
         public final ITurtleUpgrade m_rightUpgrade;
         public final ResourceLocation m_overlay;
         public final boolean m_christmas;
 
-        public TurtleModelCombination( ComputerFamily family, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, ResourceLocation overlay, boolean christmas )
+        public TurtleModelCombination( ComputerFamily family, boolean colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, ResourceLocation overlay, boolean christmas )
         {
             m_family = family;
             m_colour = colour;
@@ -83,7 +82,7 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
             final int prime = 31;
             int result = 1;
             result = prime * result + m_family.hashCode();
-            result = prime * result + (m_colour != null ? m_colour.hashCode() : 0);
+            result = prime * result + (m_colour ? 1 : 0);
             result = prime * result + (m_leftUpgrade != null ? m_leftUpgrade.hashCode() : 0);
             result = prime * result + (m_rightUpgrade != null ? m_rightUpgrade.hashCode() : 0);
             result = prime * result + (m_overlay != null ? m_overlay.hashCode() : 0);
@@ -98,7 +97,7 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
 
     public TurtleSmartItemModel()
     {
-        m_defaultItem = TurtleItemFactory.create( -1, null, null, ComputerFamily.Normal, null, null, 0, null );
+        m_defaultItem = TurtleItemFactory.create( -1, null, -1, ComputerFamily.Normal, null, null, 0, null );
         m_cachedModels = new HashMap<TurtleModelCombination, IBakedModel>();
         m_overrides = new ItemOverrideList( new ArrayList<ItemOverride>() )
         {
@@ -108,12 +107,12 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
             {
                 ItemTurtleBase turtle = (ItemTurtleBase) stack.getItem();
                 ComputerFamily family = turtle.getFamily( stack );
-                Colour colour = turtle.getColour( stack );
+                int colour = turtle.getColour( stack );
                 ITurtleUpgrade leftUpgrade = turtle.getUpgrade( stack, TurtleSide.Left );
                 ITurtleUpgrade rightUpgrade = turtle.getUpgrade( stack, TurtleSide.Right );
                 ResourceLocation overlay = turtle.getOverlay( stack );
                 boolean christmas = HolidayUtil.getCurrentHoliday() == Holiday.Christmas;
-                TurtleModelCombination combo = new TurtleModelCombination( family, colour, leftUpgrade, rightUpgrade, overlay, christmas );
+                TurtleModelCombination combo = new TurtleModelCombination( family, colour != -1, leftUpgrade, rightUpgrade, overlay, christmas );
                 if( m_cachedModels.containsKey( combo ) )
                 {
                     return m_cachedModels.get( combo );

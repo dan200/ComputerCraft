@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -15,6 +15,8 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 
 public class CommandBlockPeripheral implements IPeripheral
 {
@@ -67,12 +69,7 @@ public class CommandBlockPeripheral implements IPeripheral
             case 1:
             {
                 // setCommand
-                if( arguments.length < 1 || !(arguments[0] instanceof String) )
-                {
-                    throw new LuaException( "Expected string" );
-                }
-
-                final String command = (String) arguments[ 0 ];
+                final String command = getString( arguments, 0 );
                 context.issueMainThreadTask( new ILuaTask()
                 {
                     @Override

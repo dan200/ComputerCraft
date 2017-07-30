@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -12,6 +12,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class TileAdvancedModem extends TileModemBase
 {
@@ -27,14 +29,16 @@ public class TileAdvancedModem extends TileModemBase
             m_entity = entity;
         }
 
+        @Nonnull
         @Override
         public World getWorld()
         {
             return m_entity.getWorld();
         }
 
+        @Nonnull
         @Override
-        protected Vec3d getPosition()
+        public Vec3d getPosition()
         {
             BlockPos pos = m_entity.getPos().offset( m_entity.getDirection() );
             return new Vec3d( (double)pos.getX(), (double)pos.getY(), (double)pos.getZ() );

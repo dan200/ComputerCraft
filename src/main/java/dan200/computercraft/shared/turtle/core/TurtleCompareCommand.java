@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -14,8 +14,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -62,17 +62,13 @@ public class TurtleCompareCommand implements ITurtleCommand
                         {
                             Method method = ReflectionHelper.findMethod(
                                 Block.class, lookAtBlock,
-                                new String[]{ "func_149644_j", "j", "createStackedBlock" },
+                                new String[] { "func_180643_i", "createStackedBlock" },
                                 IBlockState.class
                             );
-                            if( method != null )
-                            {
-                                lookAtStack = (ItemStack)method.invoke( lookAtBlock, lookAtState );
-                            }
+                            lookAtStack = (ItemStack) method.invoke( lookAtBlock, lookAtState );
                         }
                         catch( Exception e )
                         {
-                            // ???
                         }
                     }
 

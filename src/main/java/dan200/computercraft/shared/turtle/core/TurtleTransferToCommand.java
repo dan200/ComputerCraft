@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -31,7 +31,7 @@ public class TurtleTransferToCommand implements ITurtleCommand
     public TurtleCommandResult execute( @Nonnull ITurtleAccess turtle )
     {
         // Take stack
-        ItemStack stack = InventoryUtil.takeItems( m_quantity, turtle.getInventory(), turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
+        ItemStack stack = InventoryUtil.takeItems( m_quantity, turtle.getItemHandler(), turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
         if( stack == null )
         {
             turtle.playAnimation( TurtleAnimation.Wait );
@@ -39,11 +39,11 @@ public class TurtleTransferToCommand implements ITurtleCommand
         }
 
         // Store stack
-        ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getInventory(), m_slot, 1, m_slot );
+        ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getItemHandler(), m_slot, 1, m_slot );
         if( remainder != null )
         {
             // Put the remainder back
-            InventoryUtil.storeItems( remainder, turtle.getInventory(), turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
+            InventoryUtil.storeItems( remainder, turtle.getItemHandler(), turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
         }
 
         // Return true if we moved anything

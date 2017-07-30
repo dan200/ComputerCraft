@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -177,9 +177,10 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                             }
                         }
                         GlStateManager.callList( origin.m_renderDisplayList );
+                        GlStateManager.resetColor();
 
                         // Draw text
-                        mc.getTextureManager().bindTexture( FixedWidthFontRenderer.font );
+                        fontRenderer.bindFont();
                         if( redraw )
                         {
                             // Build text display list
@@ -204,9 +205,10 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                             }
                         }
                         GlStateManager.callList( origin.m_renderDisplayList + 1 );
+                        GlStateManager.resetColor();
 
                         // Draw cursor
-                        mc.getTextureManager().bindTexture( FixedWidthFontRenderer.font );
+                        fontRenderer.bindFont();
                         if( redraw )
                         {
                             // Build cursor display list
@@ -237,6 +239,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         if( ComputerCraft.getGlobalCursorBlink() )
                         {
                             GlStateManager.callList( origin.m_renderDisplayList + 2 );
+                            GlStateManager.resetColor();
                         }
                     }
                     finally

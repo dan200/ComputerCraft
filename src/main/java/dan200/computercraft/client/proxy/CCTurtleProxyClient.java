@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -14,7 +14,6 @@ import dan200.computercraft.shared.proxy.CCTurtleProxyCommon;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import dan200.computercraft.shared.turtle.items.ItemTurtleBase;
-import dan200.computercraft.shared.util.Colour;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
@@ -156,6 +155,8 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
             loadModel( event, "advanced_turtle_modem_on_left" );
             loadModel( event, "advanced_turtle_modem_off_right" );
             loadModel( event, "advanced_turtle_modem_on_right" );
+            loadModel( event, "turtle_speaker_upgrade_left" );
+            loadModel( event, "turtle_speaker_upgrade_right" );
             loadSmartModel( event, "turtle_dynamic", m_turtleSmartItemModel );
         }
 
@@ -199,8 +200,8 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
             if( tintIndex == 0 )
             {
                 ItemTurtleBase turtle = (ItemTurtleBase) stack.getItem();
-                Colour colour = turtle.getColour( stack );
-                if( colour != null ) return colour.getHex();
+                int colour = turtle.getColour( stack );
+                if( colour != -1 ) return colour;
             }
 
             return 0xFFFFFF;

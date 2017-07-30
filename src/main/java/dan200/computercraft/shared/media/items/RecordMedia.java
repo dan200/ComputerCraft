@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -13,7 +13,6 @@ import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nonnull;
 
@@ -46,7 +45,7 @@ public class RecordMedia implements IMedia
     public SoundEvent getAudio( @Nonnull ItemStack stack )
     {
         ItemRecord itemRecord = (ItemRecord)stack.getItem();
-        return ObfuscationReflectionHelper.getPrivateValue(ItemRecord.class, itemRecord, "field_185076_b");
+        return itemRecord.sound;
     }
     
     @Override

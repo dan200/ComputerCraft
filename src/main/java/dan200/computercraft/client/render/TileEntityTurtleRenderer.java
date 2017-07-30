@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -12,7 +12,6 @@ import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.IComputer;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.entity.TurtleVisionCamera;
-import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.Holiday;
 import dan200.computercraft.shared.util.HolidayUtil;
 import net.minecraft.block.state.IBlockState;
@@ -51,24 +50,7 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
     private static ModelResourceLocation ADVANCED_TURTLE_MODEL = new ModelResourceLocation( "computercraft:turtle_advanced", "inventory" );
     private static ModelResourceLocation COLOUR_TURTLE_MODEL = new ModelResourceLocation( "computercraft:turtle_white", "inventory" );
     private static ModelResourceLocation BEGINNER_TURTLE_MODEL = new ModelResourceLocation( "computercraftedu:CC-TurtleJunior", "inventory" );
-    private static ModelResourceLocation[] BEGINNER_TURTLE_COLOUR_MODELS = new ModelResourceLocation[] {
-        new ModelResourceLocation( "computercraftedu:turtleJunior_black", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_red", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_green", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_brown", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_blue", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_purple", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_cyan", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_lightGrey", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_grey", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_pink", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_lime", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_yellow", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_lightBlue", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_magenta", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_orange", "inventory" ),
-        new ModelResourceLocation( "computercraftedu:turtleJunior_white", "inventory" ),
-    };
+    private static ModelResourceLocation BEGINNER_TURTLE_COLOUR_MODEL = new ModelResourceLocation( "computercraftedu:turtleJunior_white", "inventory" );
     private static ModelResourceLocation ELF_OVERLAY_MODEL = new ModelResourceLocation( "computercraft:turtle_elf_overlay", "inventory" );
 
     public TileEntityTurtleRenderer()
@@ -96,17 +78,17 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
         }
     }
 
-    public static ModelResourceLocation getTurtleModel( ComputerFamily family, Colour colour )
+    public static ModelResourceLocation getTurtleModel( ComputerFamily family, boolean coloured )
     {
         switch( family )
         {
             case Normal:
             default:
-                return colour != null ? COLOUR_TURTLE_MODEL : NORMAL_TURTLE_MODEL;
+                return coloured ? COLOUR_TURTLE_MODEL : NORMAL_TURTLE_MODEL;
             case Advanced:
-                return colour != null ? COLOUR_TURTLE_MODEL : ADVANCED_TURTLE_MODEL;
+                return coloured ? COLOUR_TURTLE_MODEL : ADVANCED_TURTLE_MODEL;
             case Beginners:
-                return colour != null ? BEGINNER_TURTLE_COLOUR_MODELS[ colour.ordinal() ] : BEGINNER_TURTLE_MODEL;
+                return coloured ? BEGINNER_TURTLE_COLOUR_MODEL : BEGINNER_TURTLE_MODEL;
         }
     }
 
@@ -161,7 +143,7 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
             GlStateManager.translate( -0.5f, 0.0f, -0.5f );
 
             // Render the turtle
-            Colour colour;
+            int colour;
             ComputerFamily family;
             ResourceLocation overlay;
             if( turtle != null )
@@ -172,12 +154,12 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
             }
             else
             {
-                colour = null;
+                colour = -1;
                 family = ComputerFamily.Normal;
                 overlay = null;
             }
 
-            renderModel( state, getTurtleModel( family, colour ), colour == null ? null : new int[] { colour.getHex() } );
+            renderModel( state, getTurtleModel( family, colour != -1 ), colour == -1 ? null : new int[] { colour } );
 
             // Render the overlay
             ModelResourceLocation overlayModel = getTurtleOverlayModel(

@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -11,12 +11,14 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.api.media.IMediaProvider;
+import dan200.computercraft.api.network.IPacketNetwork;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.api.permissions.ITurtlePermissionProvider;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.core.apis.AddressPredicate;
 import dan200.computercraft.core.filesystem.ComboMount;
 import dan200.computercraft.core.filesystem.FileMount;
 import dan200.computercraft.core.filesystem.JarMount;
@@ -40,6 +42,7 @@ import dan200.computercraft.shared.peripheral.modem.WirelessNetwork;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.peripherals.PocketModem;
+import dan200.computercraft.shared.pocket.peripherals.PocketSpeaker;
 import dan200.computercraft.shared.proxy.ICCTurtleProxy;
 import dan200.computercraft.shared.proxy.IComputerCraftProxy;
 import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
@@ -58,6 +61,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -68,9 +72,10 @@ import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -78,6 +83,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 ///////////////
 // UNIVERSAL //
@@ -90,6 +97,7 @@ import java.util.Map;
 public class ComputerCraft
 {
     public static final String MOD_ID = "ComputerCraft";
+    public static final String LOWER_ID = "computercraft";
 
     // GUI IDs
     public static final int diskDriveGUIID = 100;
@@ -101,10 +109,21 @@ public class ComputerCraft
     public static final int pocketComputerGUIID = 106;
 
     // Configuration options
+    private static final String[] DEFAULT_HTTP_WHITELIST = new String[] { "*" };
+    private static final String[] DEFAULT_HTTP_BLACKLIST = new String[] {
+        "127.0.0.0/8",
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16",
+        "fd00::/8",
+    };
+    
     public static boolean http_enable = true;
-    public static String http_whitelist = "*";
+    public static AddressPredicate http_whitelist = new AddressPredicate( DEFAULT_HTTP_WHITELIST );
+    public static AddressPredicate http_blacklist = new AddressPredicate( DEFAULT_HTTP_BLACKLIST );
     public static boolean disable_lua51_features = false;
     public static String default_computer_settings = "";
+    public static boolean logPeripheralErrors = false;
 
     public static boolean enableCommandBlock = false;
     public static boolean turtlesNeedFuel = true;
@@ -130,6 +149,8 @@ public class ComputerCraft
     public static int computerSpaceLimit = 1000 * 1000;
     public static int floppySpaceLimit = 125 * 1000;
     public static int maximumFilesOpen = 128;
+
+    public static int maxNotesPerTick = 8;
 
     // Blocks and Items
     public static class Blocks
@@ -163,12 +184,14 @@ public class ComputerCraft
         public static TurtleAxe diamondAxe;
         public static TurtleHoe diamondHoe;
         public static TurtleModem advancedModem;
+        public static TurtleSpeaker turtleSpeaker;
     }
 
     public static class PocketUpgrades
     {
         public static PocketModem wirelessModem;
         public static PocketModem advancedModem;
+        public static PocketSpeaker pocketSpeaker;
     }
 
     public static class Config {
@@ -176,8 +199,10 @@ public class ComputerCraft
 
         public static Property http_enable;
         public static Property http_whitelist;
+        public static Property http_blacklist;
         public static Property disable_lua51_features;
         public static Property default_computer_settings;
+        public static Property logPeripheralErrors;
 
         public static Property enableCommandBlock;
         public static Property turtlesNeedFuel;
@@ -194,6 +219,8 @@ public class ComputerCraft
         public static Property computerSpaceLimit;
         public static Property floppySpaceLimit;
         public static Property maximumFilesOpen;
+        public static Property maxNotesPerTick;
+
     }
 
     // Registries
@@ -205,6 +232,9 @@ public class ComputerCraft
 
     // Creative
     public static CreativeTabMain mainCreativeTab;
+
+    // Logging
+    public static Logger log;
 
     // API users
     private static List<IPeripheralProvider> peripheralProviders = new ArrayList<IPeripheralProvider>();
@@ -230,15 +260,35 @@ public class ComputerCraft
     @Mod.EventHandler
     public void preInit( FMLPreInitializationEvent event )
     {
+        log = event.getModLog();
+
         // Load config
         Config.config = new Configuration( event.getSuggestedConfigurationFile() );
         Config.config.load();
 
         Config.http_enable = Config.config.get( Configuration.CATEGORY_GENERAL, "http_enable", http_enable );
-        Config.http_enable.setComment( "Enable the \"http\" API on Computers (see \"http_whitelist\" for more fine grained control than this)" );
+        Config.http_enable.setComment( "Enable the \"http\" API on Computers (see \"http_whitelist\" and \"http_blacklist\" for more fine grained control than this)" );
 
-        Config.http_whitelist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_whitelist", http_whitelist );
-        Config.http_whitelist.setComment( "A semicolon limited list of wildcards for domains that can be accessed through the \"http\" API on Computers. Set this to \"*\" to access to the entire internet. Example: \"*.pastebin.com;*.github.com;*.computercraft.info\" will restrict access to just those 3 domains." );
+        {
+            ConfigCategory category = Config.config.getCategory( Configuration.CATEGORY_GENERAL );
+            Property currentProperty = category.get( "http_whitelist" );
+            if( currentProperty != null && !currentProperty.isList() ) category.remove( "http_whitelist" );
+
+            Config.http_whitelist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_whitelist", DEFAULT_HTTP_WHITELIST );
+
+            if( currentProperty != null && !currentProperty.isList() )
+            {
+                Config.http_whitelist.setValues( currentProperty.getString().split( ";" ) );
+            }
+        }
+        Config.http_whitelist.setComment( "A list of wildcards for domains or IP ranges that can be accessed through the \"http\" API on Computers.\n" +
+            "Set this to \"*\" to access to the entire internet. Example: \"*.pastebin.com\" will restrict access to just subdomains of pastebin.com.\n" +
+            "You can use domain names (\"pastebin.com\"), wilcards (\"*.pastebin.com\") or CIDR notation (\"127.0.0.0/8\")." );
+
+        Config.http_blacklist = Config.config.get( Configuration.CATEGORY_GENERAL, "http_blacklist", DEFAULT_HTTP_BLACKLIST );
+        Config.http_blacklist.setComment( "A list of wildcards for domains or IP ranges that cannot be accessed through the \"http\" API on Computers.\n" +
+            "If this is empty then all whitelisted domains will be accessible. Example: \"*.github.com\" will block access to all subdomains of github.com.\n" +
+            "You can use domain names (\"pastebin.com\"), wilcards (\"*.pastebin.com\") or CIDR notation (\"127.0.0.0/8\")." );
 
         Config.disable_lua51_features = Config.config.get( Configuration.CATEGORY_GENERAL, "disable_lua51_features", disable_lua51_features );
         Config.disable_lua51_features.setComment( "Set this to true to disable Lua 5.1 functions that will be removed in a future update. Useful for ensuring forward compatibility of your programs now." );
@@ -246,6 +296,10 @@ public class ComputerCraft
         Config.default_computer_settings = Config.config.get( Configuration.CATEGORY_GENERAL, "default_computer_settings", default_computer_settings );
         Config.default_computer_settings.setComment( "A comma seperated list of default system settings to set on new computers. Example: \"shell.autocomplete=false,lua.autocomplete=false,edit.autocomplete=false\" will disable all autocompletion" );
 
+        Config.logPeripheralErrors = Config.config.get( Configuration.CATEGORY_GENERAL, "logPeripheralErrors", logPeripheralErrors );
+        Config.logPeripheralErrors.setComment( "Log exceptions thrown by peripherals and other Lua objects.\n" +
+            "This makes it easier for mod authors to debug problems, but may result in log spam should people use buggy methods." );
+        
         Config.enableCommandBlock = Config.config.get( Configuration.CATEGORY_GENERAL, "enableCommandBlock", enableCommandBlock );
         Config.enableCommandBlock.setComment( "Enable Command Block peripheral support" );
 
@@ -285,6 +339,9 @@ public class ComputerCraft
         Config.turtlesCanPush = Config.config.get( Configuration.CATEGORY_GENERAL, "turtlesCanPush", turtlesCanPush );
         Config.turtlesCanPush.setComment( "If set to true, Turtles will push entities out of the way instead of stopping if there is space to do so" );
 
+        Config.maxNotesPerTick = Config.config.get( Configuration.CATEGORY_GENERAL, "maxNotesPerTick", maxNotesPerTick );
+        Config.maxNotesPerTick.setComment( "Maximum amount of notes a speaker can play at once" );
+
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
             property.setLanguageKey( "gui.computercraft:config." + CaseFormat.LOWER_CAMEL.to( CaseFormat.LOWER_UNDERSCORE, property.getName() ) );
@@ -303,7 +360,8 @@ public class ComputerCraft
     public static void syncConfig() {
 
         http_enable = Config.http_enable.getBoolean();
-        http_whitelist = Config.http_whitelist.getString();
+        http_whitelist = new AddressPredicate( Config.http_whitelist.getStringList() );
+        http_blacklist = new AddressPredicate( Config.http_blacklist.getStringList() );
         disable_lua51_features = Config.disable_lua51_features.getBoolean();
         default_computer_settings = Config.default_computer_settings.getString();
 
@@ -324,6 +382,8 @@ public class ComputerCraft
         turtlesObeyBlockProtection = Config.turtlesObeyBlockProtection.getBoolean();
         turtlesCanPush = Config.turtlesCanPush.getBoolean();
 
+        maxNotesPerTick = Math.max(1, Config.maxNotesPerTick.getInt());
+
         Config.config.save();
     }
 
@@ -332,6 +392,14 @@ public class ComputerCraft
     {
         proxy.init();
         turtleProxy.init();
+    }
+
+
+    @Mod.EventHandler
+    public void onMissingMappings( FMLMissingMappingsEvent event )
+    {
+        proxy.remap( event );
+        turtleProxy.remap( event );
     }
 
     @Mod.EventHandler
@@ -596,7 +664,7 @@ public class ComputerCraft
             }
             catch( Exception e )
             {
-                // mod misbehaved, ignore it
+                ComputerCraft.log.error( "Peripheral provider " + peripheralProvider + " errored.", e );
             }
         }
         return null;
@@ -640,7 +708,7 @@ public class ComputerCraft
             }
             catch( Exception e )
             {
-                // mod misbehaved, ignore it
+                ComputerCraft.log.error( "Bundled redstone provider " + bundledRedstoneProvider + " errored.", e );
             }
         }
         return combinedSignal;
@@ -664,6 +732,7 @@ public class ComputerCraft
                 catch( Exception e )
                 {
                     // mod misbehaved, ignore it
+                    ComputerCraft.log.error( "Media provider " + mediaProvider + " errored.", e );
                 }
             }
             return null;
@@ -694,12 +763,17 @@ public class ComputerCraft
     public static Iterable<IPocketUpgrade> getVanillaPocketUpgrades() {
         List<IPocketUpgrade> upgrades = new ArrayList<IPocketUpgrade>();
         for(IPocketUpgrade upgrade : pocketUpgrades.values()) {
-            if(upgrade instanceof PocketModem) {
+            if(upgrade instanceof PocketModem || upgrade instanceof PocketSpeaker) {
                 upgrades.add( upgrade );
             }
         }
 
         return upgrades;
+    }
+
+    public IPacketNetwork getWirelessNetwork()
+    {
+        return WirelessNetwork.getUniversal();
     }
 
     public static int createUniqueNumberedSaveDir( World world, String parentSubPath )
@@ -801,6 +875,88 @@ public class ComputerCraft
         {
             return null;
         }
+    }
+
+    public static InputStream getResourceFile( Class<?> modClass, String domain, String subPath )
+    {
+        // Start searching in possible locations
+        subPath = "assets/" + domain + "/" + subPath;
+
+        // Look in resource packs
+        File resourcePackDir = getResourcePackDir();
+        if( resourcePackDir.exists() && resourcePackDir.isDirectory() )
+        {
+            String[] resourcePacks = resourcePackDir.list();
+            for( String resourcePackPath : resourcePacks )
+            {
+                File resourcePack = new File( resourcePackDir, resourcePackPath );
+                if( resourcePack.isDirectory() )
+                {
+                    // Mount a resource pack from a folder
+                    File subResource = new File( resourcePack, subPath );
+                    if( subResource.exists() && subResource.isFile() )
+                    {
+                        try
+                        {
+                            return new FileInputStream( subResource );
+                        }
+                        catch( FileNotFoundException ignored )
+                        {
+                        }
+                    }
+                }
+                else
+                {
+                    ZipFile zipFile = null;
+                    try
+                    {
+                        final ZipFile zip = zipFile = new ZipFile( resourcePack );
+                        ZipEntry entry = zipFile.getEntry( subPath );
+                        if( entry != null )
+                        {
+                            // Return a custom InputStream which will close the original zip when finished.
+                            return new FilterInputStream( zipFile.getInputStream( entry ) )
+                            {
+                                @Override
+                                public void close() throws IOException
+                                {
+                                    super.close();
+                                    zip.close();
+                                }
+                            };
+                        }
+                        else
+                        {
+                            IOUtils.closeQuietly( zipFile );
+                        }
+                    }
+                    catch( IOException e )
+                    {
+                        if( zipFile != null ) IOUtils.closeQuietly( zipFile );
+                    }
+                }
+            }
+        }
+
+        // Look in debug dir
+        File codeDir = getDebugCodeDir( modClass );
+        if( codeDir != null )
+        {
+            File subResource = new File( codeDir, subPath );
+            if( subResource.exists() && subResource.isFile() )
+            {
+                try
+                {
+                    return new FileInputStream( subResource );
+                }
+                catch( FileNotFoundException ignored )
+                {
+                }
+            }
+        }
+
+        // Look in class loader
+        return modClass.getClassLoader().getResourceAsStream( subPath );
     }
 
     private static File getContainingJar( Class<?> modClass )

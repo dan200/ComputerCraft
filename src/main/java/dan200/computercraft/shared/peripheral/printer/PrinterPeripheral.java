@@ -1,6 +1,6 @@
 /*
  * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2016. Do not distribute without permission.
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
  * Send enquiries to dratcliffe@gmail.com
  */
 
@@ -13,6 +13,9 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.core.terminal.Terminal;
 
 import javax.annotation.Nonnull;
+
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 
 public class PrinterPeripheral implements IPeripheral
 {
@@ -70,13 +73,8 @@ public class PrinterPeripheral implements IPeripheral
             case 1:
             {
                 // setCursorPos
-                if( args.length != 2 || args[0] == null || !(args[0] instanceof Number) || args[1] == null || !(args[1] instanceof Number) )
-                {
-                    throw new LuaException( "Expected number, number" );
-                }
-
-                int x = ((Number)args[0]).intValue() - 1;
-                int y = ((Number)args[1]).intValue() - 1;
+                int x = getInt( args, 0 ) - 1;
+                int y = getInt( args, 1 ) - 1;
                 Terminal page = getCurrentPage();
                 page.setCursorPos( x, y );
                 return null;
@@ -116,16 +114,7 @@ public class PrinterPeripheral implements IPeripheral
             case 7:
             {
                 // setPageTitle
-                String title = "";
-                if( args.length > 0 && args[0] != null )
-                {
-                    if( !(args[0] instanceof String) )
-                    {
-                        throw new LuaException( "Expected string" );
-                    }
-                    title = (String)args[0];
-                }
-
+                String title = optString( args, 0, "" );
                 getCurrentPage();
                 m_printer.setPageTitle( title );
                 return null;
