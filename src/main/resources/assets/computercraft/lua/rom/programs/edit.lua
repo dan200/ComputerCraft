@@ -505,7 +505,19 @@ local function setCursor( newX, newY )
         bRedraw = true
     end
 
-    recomplete()
+    local bOnExpandedMsg = false
+    for nY,v in pairs( tMessages ) do
+        if y == nY and v.bExpanded then
+            bOnExpandedMsg = true
+            break
+        end
+    end
+
+    if not bOnExpandedMsg then
+        recomplete()
+    end
+    term.setCursorBlink( not bOnExpandedMsg )
+
     if bRedraw then
         redrawText()
     elseif y ~= oldY then
@@ -538,6 +550,11 @@ local function acceptCompletion()
         tLines[y] = tLines[y] .. sCompletion
         setCursor( x + string.len( sCompletion ), y )
     end
+end
+
+local function removeLine( nY )
+    table.remove( tLines, nY )
+    tMessages[ nY ] = nil 
 end
 
 -- Handle input
@@ -701,7 +718,7 @@ while bRunning do
                     redrawLine(y)
                 elseif y<#tLines then
                     tLines[y] = tLines[y] .. tLines[y+1]
-                    table.remove( tLines, y+1 )
+                    removeLine( y+1 )
                     recomplete()
                     redrawText()
                 end
@@ -724,7 +741,7 @@ while bRunning do
                     -- Remove newline
                     local sPrevLen = string.len( tLines[y-1] )
                     tLines[y-1] = tLines[y-1] .. tLines[y]
-                    table.remove( tLines, y )
+                    removeLine( y )
                     setCursor( sPrevLen + 1, y - 1 )
                     redrawText()
                 end
@@ -753,11 +770,7 @@ while bRunning do
         elseif param == keys.leftCtrl or param == keys.rightCtrl or param == keys.rightAlt then
             -- Menu toggle
             bMenu = not bMenu
-            if bMenu then
-                term.setCursorBlink( false )
-            else
-                term.setCursorBlink( true )
-            end
+            term.setCursorBlink( bMenu )
             redrawMenu()
 
         end
