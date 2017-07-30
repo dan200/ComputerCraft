@@ -31,8 +31,17 @@ local bRunning = true
 local tMessages = {}
 local tMessageColours = {
     error = colours.red,
-    warning = colours.yellow,
+    warning = colours.orange,
     info = colours.blue
+}
+
+local sLoadAPIDeprecated = "os.loadAPI is deprecated, use require instead"
+
+-- This is quite ugly, but we'd have to do outrageous bytecode analysis
+-- otherwise, so it's good enough.
+local tWarnings = {
+    ["os%.loadAPI%s?%(.+%)"] = sLoadAPIDeprecated,
+    ["os%.loadAPI%s?['\"].+['\"]"] = sLoadAPIDeprecated
 }
 
 -- Colours
@@ -89,10 +98,22 @@ local function clearMessages()
     tMessages = {}
 end
 
+local function findWarnings( tLines )
+    for i,v in pairs( tLines ) do
+        for p,m in pairs( tWarnings ) do
+            if string.match( v, p ) then
+                addMessage( i, "warning", m )
+                break
+            end
+        end
+    end
+end
+
 local function checkErrors()
     clearMessages()
     local fLoad = _G.load
     local sProgram = table.concat( tLines, "\n" )
+    findWarnings( tLines )
     local _, sErr = fLoad( sProgram )
     if sErr then
         local sLine, sMsg = string.match( sErr, ".+%:%d+%:%s%[.+%]%:(%d+)%:%s(.+)" )
@@ -554,7 +575,7 @@ end
 
 local function removeLine( nY )
     table.remove( tLines, nY )
-    tMessages[ nY ] = nil 
+    tMessages[ nY ] = nil
 end
 
 -- Handle input
