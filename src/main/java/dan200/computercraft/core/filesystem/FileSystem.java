@@ -765,14 +765,15 @@ public class FileSystem
         Stack<String> outputParts = new Stack<String>();
         for( String part : parts )
         {
-            if( part.length() == 0 || part.equals( "." ) )
+            if( part.length() == 0 || part.equals( "." ) || part.matches( "^\\.{3,}$" ) )
             {
                 // . is redundant
+                // ... and more are treated as .
                 continue;
             }
-            else if( part.equals( ".." ) || part.equals( "..." ) )
+            else if( part.equals( ".." ) )
             {
-                // .. or ... can cancel out the last folder entered
+                // .. can cancel out the last folder entered
                 if( !outputParts.empty() )
                 {
                     String top = outputParts.peek();
