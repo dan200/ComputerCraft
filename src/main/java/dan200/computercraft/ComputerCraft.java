@@ -79,10 +79,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -863,6 +860,7 @@ public class ComputerCraft
         // Return the combination of all the mounts found
         if( mounts.size() >= 2 )
         {
+            Collections.reverse( mounts );
             IMount[] mountArray = new IMount[ mounts.size() ];
             mounts.toArray( mountArray );
             return new ComboMount( mountArray );
