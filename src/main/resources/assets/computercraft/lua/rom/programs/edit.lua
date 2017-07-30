@@ -840,10 +840,9 @@ while bRunning do
                     if cx == w and tMsg then
                         tMsg.bExpanded = not tMsg.bExpanded
                         redrawLine( newY )
-                        setCursor( x, y )
-                    else
-                        setCursor( newX, newY )
                     end
+
+                    setCursor( newX, newY )
                 end
             end
         end
