@@ -284,6 +284,10 @@ function printError( ... )
 end
 
 local fnTablePack = table.pack
+local fnType = type
+local fnStringLower = string.lower
+local fnStringGmatch = string.gmatch
+local fnStringFormat = string.format
 
 function check( ... )
     local tArgs = fnTablePack( ... )
@@ -294,12 +298,12 @@ function check( ... )
 
     for i=1,nArgs,2 do
         local sParam = tArgs[ i ]
-        local sActualType = type( sParam )
+        local sActualType = fnType( sParam )
         local sExpectedTypes = tArgs[ i + 1 ]
 
-        if string.lower( sExpectedTypes ) ~= "any" then
+        if fnStringLower( sExpectedTypes ) ~= "any" then
             local bFound = false
-            for t in string.gmatch( sExpectedTypes, "[^,]+" ) do
+            for t in fnStringGmatch( sExpectedTypes, "[^,]+" ) do
                 if t == sActualType then
                     bFound = true
                     break
@@ -307,7 +311,7 @@ function check( ... )
             end
 
             if not bFound then
-                local sErr = string.format(
+                local sErr = fnStringFormat(
                     "bad argument #%d (expected %s; got %s)",
                     i / 2 + 1, sExpectedTypes, sActualType
                 )
