@@ -291,7 +291,6 @@ function check( ... )
     end
 
     for i=1,nArgs,2 do
-        local nArg = i / 2 + 1
         local sParam = tArgs[ i ]
         local sActualType = type( sParam )
         local sExpectedTypes = tArgs[ i + 1 ]
@@ -306,7 +305,7 @@ function check( ... )
         if tExpectedTypes and not tExpectedTypes[ sActualType ] then
             local sErr = string.format(
                 "bad argument #%d (expected %s; got %s)",
-                nArg, sExpectedTypes, sActualType
+                i / 2 + 1, sExpectedTypes, sActualType
             )
             return error( sErr, 2 )
         end
