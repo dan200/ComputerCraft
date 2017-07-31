@@ -296,20 +296,23 @@ function check( ... )
         local sParam = tArgs[ i ]
         local sActualType = type( sParam )
         local sExpectedTypes = tArgs[ i + 1 ]
-        local tExpectedTypes
-        if string.lower( sExpectedTypes ) ~= "any" then
-            tExpectedTypes = {}
-            for t in string.gmatch( sExpectedTypes, "[^,]+" ) do
-                tExpectedTypes[ t ] = true
-            end
-        end
 
-        if tExpectedTypes and not tExpectedTypes[ sActualType ] then
-            local sErr = string.format(
-                "bad argument #%d (expected %s; got %s)",
-                i / 2 + 1, sExpectedTypes, sActualType
-            )
-            return error( sErr, 2 )
+        if string.lower( sExpectedTypes ) ~= "any" then
+            local bFound = false
+            for t in string.gmatch( sExpectedTypes, "[^,]+" ) do
+                if t == sActualType then
+                    bFound = true
+                    break
+                end
+            end
+
+            if not bFound then
+                local sErr = string.format(
+                    "bad argument #%d (expected %s; got %s)",
+                    i / 2 + 1, sExpectedTypes, sActualType
+                )
+                return error( sErr, 2 )
+            end
         end
     end
 end
