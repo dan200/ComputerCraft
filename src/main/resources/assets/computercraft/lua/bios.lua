@@ -283,8 +283,10 @@ function printError( ... )
     end
 end
 
+local fnTablePack = table.pack
+
 function check( ... )
-    local tArgs = table.pack( ... )
+    local tArgs = fnTablePack( ... )
     local nArgs = tArgs.n
     if nArgs % 2 ~= 0 then
         return error( "amount of check args is not divisible by 2" )
