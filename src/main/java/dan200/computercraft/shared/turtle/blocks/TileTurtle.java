@@ -141,7 +141,7 @@ public class TileTurtle extends TileComputerBase
             // Just turn off any redstone we had on
             for( EnumFacing dir : EnumFacing.VALUES )
             {
-                RedstoneUtil.propogateRedstoneOutput( getWorld(), getPos(), dir );
+                RedstoneUtil.propagateRedstoneOutput( getWorld(), getPos(), dir );
             }
         }
     }

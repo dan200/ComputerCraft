@@ -68,9 +68,9 @@ public class RedstoneUtil
         return 0;
     }
 
-    public static void propogateRedstoneOutput( World world, BlockPos pos, EnumFacing side )
+    public static void propagateRedstoneOutput( World world, BlockPos pos, EnumFacing side )
     {
-        // Propogate ordinary output
+        // Propagate ordinary output
         IBlockState block = world.getBlockState( pos );
         BlockPos neighbourPos = pos.offset( side );
         IBlockState neighbour = world.getBlockState( neighbourPos );
@@ -79,7 +79,7 @@ public class RedstoneUtil
             world.neighborChanged( neighbourPos, block.getBlock(), pos );
             if( neighbour.getBlock().isNormalCube( neighbour, world, neighbourPos ) )
             {
-                world.notifyNeighborsOfStateExcept( neighbourPos, neighbour.getBlock(), side.getOpposite() );
+                world.notifyNeighborsOfStateExcept( neighbourPos, block.getBlock(), side.getOpposite() );
             }
         }
     }
