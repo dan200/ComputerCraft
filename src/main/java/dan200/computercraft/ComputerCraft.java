@@ -364,6 +364,7 @@ public class ComputerCraft
         http_blacklist = new AddressPredicate( Config.http_blacklist.getStringList() );
         disable_lua51_features = Config.disable_lua51_features.getBoolean();
         default_computer_settings = Config.default_computer_settings.getString();
+        logPeripheralErrors = Config.logPeripheralErrors.getBoolean();
 
         enableCommandBlock = Config.enableCommandBlock.getBoolean();
 
