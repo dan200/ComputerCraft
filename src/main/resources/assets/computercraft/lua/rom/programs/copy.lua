@@ -11,7 +11,7 @@ local tFiles = fs.find( sSource )
 if #tFiles > 0 then
     for n,sFile in ipairs( tFiles ) do
         if fs.exists( sDest ) == true then
-            printError( "File exists" )
+            printError( "Destination exists" )
         elseif fs.isDir( sDest ) then
             fs.copy( sFile, fs.combine( sDest, fs.getName(sFile) ) )
         elseif #tFiles == 1 then
