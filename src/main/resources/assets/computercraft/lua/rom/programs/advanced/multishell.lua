@@ -8,6 +8,8 @@ local nCurrentProcess = nil
 local nRunningProcess = nil
 local bShowMenu = false
 local bWindowsResized = false
+local nScrollpos = 1
+local bScrollRight = false
 
 local function selectProcess( n )
     if nCurrentProcess ~= n then
@@ -115,7 +117,14 @@ local function redrawMenu()
         parentTerm.setCursorPos( 1, 1 )
         parentTerm.setBackgroundColor( menuOtherBgColor )
         parentTerm.clearLine()
-        for n=1,#tProcesses do
+        local nCharcou = 0
+        local nSize = parentTerm.getSize()
+        if nScrollpos ~= 1 then
+            parentTerm.setTextColor( menuOtherTextColor )
+            parentTerm.write( "<" )
+            nCharcou = 1
+        end
+        for n=nScrollpos,#tProcesses do
             if n == nCurrentProcess then
                 parentTerm.setTextColor( menuMainTextColor )
                 parentTerm.setBackgroundColor( menuMainBgColor )
@@ -124,6 +133,15 @@ local function redrawMenu()
                 parentTerm.setBackgroundColor( menuOtherBgColor )
             end
             parentTerm.write( " " .. tProcesses[n].sTitle .. " " )
+            nCharcou = nCharcou + #tProcesses[n].sTitle + 2
+        end
+        if nCharcou > nSize then
+            parentTerm.setTextColor( menuOtherTextColor )
+            parentTerm.setCursorPos( nSize, 1 )
+            parentTerm.write( ">" )
+            bScrollRight = true
+        else
+            bScrollRight = false
         end
 
         -- Put the cursor back where it should be
@@ -262,15 +280,26 @@ while #tProcesses > 0 do
         local button, x, y = tEventData[2], tEventData[3], tEventData[4]
         if bShowMenu and y == 1 then
             -- Switch process
-            local tabStart = 1
-            for n=1,#tProcesses do
-                local tabEnd = tabStart + string.len( tProcesses[n].sTitle ) + 1
-                if x >= tabStart and x <= tabEnd then
-                    selectProcess( n )
-                    redrawMenu()
-                    break
+            if x == 1 and nScrollpos ~= 1 then
+                nScrollpos = nScrollpos - 1
+                redrawMenu()
+            elseif x == term.getSize() and bScrollRight == true then
+                nScrollpos = nScrollpos + 1
+                redrawMenu()
+            else
+                local tabStart = 1
+                if nScrollpos ~= 1 then
+                    tabStart = 2
                 end
-                tabStart = tabEnd + 1
+                for n=nScrollpos,#tProcesses do
+                    local tabEnd = tabStart + string.len( tProcesses[n].sTitle ) + 1
+                    if x >= tabStart and x <= tabEnd then
+                        selectProcess( n )
+                        redrawMenu()
+                        break
+                    end
+                    tabStart = tabEnd + 1
+                end
             end
         else
             -- Passthrough to current process
