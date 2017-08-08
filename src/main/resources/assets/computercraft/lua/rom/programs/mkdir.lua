@@ -7,7 +7,7 @@ end
 local sNewDir = shell.resolve( tArgs[1] )
 
 if fs.exists( sNewDir ) == true then
-    printError( "File exists" )
+    printError( "Destination exists" )
     return
 end
 

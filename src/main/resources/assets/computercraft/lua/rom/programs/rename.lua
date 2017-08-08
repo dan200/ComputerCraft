@@ -8,7 +8,7 @@ local sSource = shell.resolve( tArgs[1] )
 local sDest = shell.resolve( tArgs[2] )
 
 if fs.exists( sDest ) == true then
-    printError( "File exists" )
+    printError( "Destination exists" )
 end
 
 fs.move( sSource, sDest )
