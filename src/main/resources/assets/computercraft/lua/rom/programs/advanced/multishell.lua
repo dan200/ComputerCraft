@@ -121,6 +121,7 @@ local function redrawMenu()
         local nSize = parentTerm.getSize()
         if nScrollpos ~= 1 then
             parentTerm.setTextColor( menuOtherTextColor )
+            parentTerm.setBackgroundColor( menuOtherBgColor )
             parentTerm.write( "<" )
             nCharcou = 1
         end
@@ -137,6 +138,7 @@ local function redrawMenu()
         end
         if nCharcou > nSize then
             parentTerm.setTextColor( menuOtherTextColor )
+            parentTerm.setBackgroundColor( menuOtherBgColor )
             parentTerm.setCursorPos( nSize, 1 )
             parentTerm.write( ">" )
             bScrollRight = true
