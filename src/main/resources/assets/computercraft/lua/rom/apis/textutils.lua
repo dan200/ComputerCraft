@@ -122,6 +122,9 @@ local function tabulateCommon( bPaged, ... )
     for n, t in ipairs( tAll ) do
         if type(t) == "table" then
             for n, sItem in pairs(t) do
+                if type( sItem ) ~= "number" and type( sItem ) ~= "string" then
+                    error( "textutils.tabulate/pagedTabulate only allow strings and numbers in the table", 3 ) 
+                end
                 nMaxLen = math.max( string.len( sItem ) + 1, nMaxLen )
             end
         end
