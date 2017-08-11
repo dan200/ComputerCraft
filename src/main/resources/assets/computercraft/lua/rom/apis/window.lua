@@ -288,6 +288,10 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     function window.setPaletteColour( colour, r, g, b )
         if type( colour ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( colour ) .. ")", 2 ) end
         
+        if tHex[colour] == nil then
+            error( "Invalid color (got " .. colour .. ")" , 2 )
+        end
+
         local tCol
         if type(r) == "number" and g == nil and b == nil then
             tCol = { colours.rgb8( r ) }
@@ -311,6 +315,10 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     window.setPaletteColor = window.setPaletteColour
 
     function window.getPaletteColour( colour )
+        if type( colour ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( colour ) .. ")", 2 ) end
+        if tHex[colour] == nil then
+            error( "Invalid color (got " .. colour .. ")" , 2 )
+        end
         local tCol = tPalette[ colour ]
         return tCol[1], tCol[2], tCol[3]
     end
