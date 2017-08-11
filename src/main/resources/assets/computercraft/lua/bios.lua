@@ -688,14 +688,6 @@ if http then
     local nativeHTTPRequest = http.request
 
     local function wrapRequest( _url, _post, _headers, _binary )
-        if type ( _headers ) ~= "table" then
-            _headers = {}
-            _headers["User-Agent"] = "ComputerCraft/1.80"
-        else
-            if _headers["User-Agent"] == nil then
-                _headers["User-Agent"] = "ComputerCraft/1.80"
-            end
-        end
         local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary )
         if ok then
             while true do
