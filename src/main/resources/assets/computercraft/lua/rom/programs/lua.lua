@@ -72,13 +72,13 @@ while bRunning do
                 if type( value ) == "table" then
                     local metatable = getmetatable( value )
                     if type(metatable) == "table" and type(metatable.__tostring) == "function" then
-                        print( tostring( value ) )
+                        textutils.pagedPrint( tostring( value ) )
                     else
                         local ok, serialised = pcall( textutils.serialise, value )
                         if ok then
-                            print( serialised )
+                            textutils.pagedPrint( serialised )
                         else
-                            print( tostring( value ) )
+                            textutils.pagedPrint( tostring( value ) )
                         end
                     end
                 else
