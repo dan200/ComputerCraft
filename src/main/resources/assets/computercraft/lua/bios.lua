@@ -709,6 +709,9 @@ if http then
         if _headers ~= nil and type( _headers ) ~= "table" then
             error( "bad argument #2 (expected table, got " .. type( _headers ) .. ")", 2 ) 
         end
+        if _binary ~= nil and type( _binary ) ~= "boolean" then
+            error( "bad argument #3 (expected boolean, got " .. type( _binary ) .. ")", 2 ) 
+        end
         return wrapRequest( _url, nil, _headers, _binary)
     end
 
@@ -722,6 +725,9 @@ if http then
         if _headers ~= nil and type( _headers ) ~= "table" then
             error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 ) 
         end
+        if _binary ~= nil and type( _binary ) ~= "boolean" then
+            error( "bad argument #4 (expected boolean, got " .. type( _binary ) .. ")", 2 ) 
+        end
         return wrapRequest( _url, _post or "", _headers, _binary)
     end
 
@@ -734,6 +740,9 @@ if http then
         end
         if _headers ~= nil and type( _headers ) ~= "table" then
             error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 ) 
+        end
+        if _binary ~= nil and type( _binary ) ~= "boolean" then
+            error( "bad argument #4 (expected boolean, got " .. type( _binary ) .. ")", 2 ) 
         end
         local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary )
         if not ok then
