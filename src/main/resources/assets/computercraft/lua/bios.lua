@@ -6,6 +6,18 @@ if _VERSION == "Lua 5.1" then
     local nativeloadstring = loadstring
     local nativesetfenv = setfenv
     function load( x, name, mode, env )
+        if type( x ) ~= "string" then
+            error( "bad argument #1 (expected string, got " .. type( x ) .. ")", 2 ) 
+        end
+        if name ~= nil and type( name ) ~= "string" then
+            error( "bad argument #2 (expected string, got " .. type( name ) .. ")", 2 ) 
+        end
+        if mode ~= nil and type( mode ) ~= "string" then
+            error( "bad argument #3 (expected string, got " .. type( mode ) .. ")", 2 ) 
+        end
+        if env ~= nil and type( env) ~= "table" then
+            error( "bad argument #4 (expected table, got " .. type( env ) .. ")", 2 ) 
+        end
         if mode ~= nil and mode ~= "t" then
             error( "Binary chunk loading prohibited", 2 )
         end
