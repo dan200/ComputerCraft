@@ -106,15 +106,15 @@ function broadcast( message, sProtocol )
 end
 
 function receive( sProtocolFilter, nTimeout )
+    -- The parameters used to be ( nTimeout ), detect this case for backwards compatibility
+    if type(sProtocolFilter) == "number" and nTimeout == nil then
+        sProtocolFilter, nTimeout = nil, sProtocolFilter
+    end
     if sProtocolFilter ~= nil and type( sProtocolFilter ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sProtocolFilter ) .. ")", 2 )
     end
     if nTimeout ~= nil and type( nTimeoutl ) ~= "number" then
         error( "bad argument #2 (expected number, got " .. type( nTimeout ) .. ")", 2 )
-    end
-    -- The parameters used to be ( nTimeout ), detect this case for backwards compatibility
-    if type(sProtocolFilter) == "number" and nTimeout == nil then
-        sProtocolFilter, nTimeout = nil, sProtocolFilter
     end
 
     -- Start the timer
@@ -174,7 +174,7 @@ function lookup( sProtocol, sHostname )
     if type( sProtocol ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sProtocol ) .. ")", 2 )
     end
-    if type( sHostname ) ~= "string" then
+    if sHostname ~= nil and type( sHostname ) ~= "string" then
         error( "bad argument #2 (expected string, got " .. type( sHostname ) .. ")", 2 )
     end
 
