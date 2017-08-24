@@ -299,7 +299,7 @@ function shell.programs( _bIncludeHidden )
 end
 
 local function completeProgram( sLine )
-    if #sLine > 0 and string.sub( sLine, 1, 1 ) == "/" then
+    if #sLine > 0 and (string.sub( sLine, 1, 1 ) == "/" or string.sub( sLine, 1, 1 ) == "\\") then
         -- Add programs from the root
         return fs.complete( sLine, "", true, false )
 
