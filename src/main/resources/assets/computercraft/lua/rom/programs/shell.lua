@@ -398,9 +398,7 @@ function shell.setCompletionFunction( sProgram, fnComplete )
     if type( fnComplete ) ~= "function" then
         error( "bad argument #2 (expected function, got " .. type( fnComplete ) .. ")", 2 )
     end
-    if sProgram:find("/") == 1 then
-        sProgram = sProgram:sub(2)
-    end
+    sProgram = fs.combine( sProgram, "" )
     tCompletionInfo[ sProgram ] = {
         fnComplete = fnComplete
     }
