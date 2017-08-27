@@ -12,6 +12,7 @@ local sDir = (parentShell and parentShell.dir()) or ""
 local sPath = (parentShell and parentShell.path()) or ".:/rom/programs"
 local tAliases = (parentShell and parentShell.aliases()) or {}
 local tCompletionInfo = (parentShell and parentShell.getCompletionInfo()) or {}
+local tShellenv = (parentShell and parentShell.getenv()) or {}
 local tProgramStack = {}
 
 local shell = {}
@@ -118,7 +119,22 @@ else
 end
 
 local function run( _sCommand, ... )
-    local sPath = shell.resolveProgram( _sCommand )
+    local checkvar = { ... }
+    table.insert( checkvar, 1, _sCommand )
+    for k, v in ipairs( checkvar ) do
+        if v:find( "$", 1, true ) == 1 then
+            v = v:sub( 2, -1)
+            if type( tShellenv[v] ) == "string" or type( tShellenv[v] ) == "number" or type( tShellenv[v] ) == "boolean" then
+                v = tostring( tShellenv[v] )
+            elseif type( tShellenv[v] ) == "function" then
+                v = tostring( tShellenv[v]() )
+            else
+                v = ""
+            end
+        end
+        checkvar[k] = v
+    end
+    local sPath = shell.resolveProgram( checkvar[1] )
     if sPath ~= nil then
         tProgramStack[#tProgramStack + 1] = sPath
         if multishell then
@@ -128,8 +144,9 @@ local function run( _sCommand, ... )
             end
             multishell.setTitle( multishell.getCurrent(), sTitle )
         end
+        table.remove( checkvar, 1 )
         local sDir = fs.getDir( sPath )
-        local result = os.run( createShellEnv( sDir ), sPath, ... )
+        local result = os.run( createShellEnv( sDir ), sPath, table.unpack(checkvar) )
         tProgramStack[#tProgramStack] = nil
         if multishell then
             if #tProgramStack > 0 then
@@ -167,6 +184,19 @@ local function tokenise( ... )
 end
 
 -- Install shell API
+
+function shell.setenv( key, value )
+    tShellenv[key] = value
+end
+
+function shell.getenv( key )
+    if key == nil then
+        return tShellenv
+    else
+        return tShellenv[key]
+    end
+end
+
 function shell.run( ... )
     local tWords = tokenise( ... )
     local sCommand = tWords[1]
