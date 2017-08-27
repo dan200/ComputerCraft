@@ -6,8 +6,8 @@ if _VERSION == "Lua 5.1" then
     local nativeloadstring = loadstring
     local nativesetfenv = setfenv
     function load( x, name, mode, env )
-        if type( x ) ~= "string" then
-            error( "bad argument #1 (expected string, got " .. type( x ) .. ")", 2 ) 
+        if type( x ) ~= "string" and type( x ) ~= "function" then
+            error( "bad argument #1 (expected string or function, got " .. type( x ) .. ")", 2 ) 
         end
         if name ~= nil and type( name ) ~= "string" then
             error( "bad argument #2 (expected string, got " .. type( name ) .. ")", 2 ) 
