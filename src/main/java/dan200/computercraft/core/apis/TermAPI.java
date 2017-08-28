@@ -78,7 +78,8 @@ public class TermAPI implements ILuaAPI
             "setPaletteColour",
             "setPaletteColor",
             "getPaletteColour",
-            "getPaletteColor"
+            "getPaletteColor",
+            "setPixel"
         };
     }
     
@@ -294,6 +295,31 @@ public class TermAPI implements ILuaAPI
                     if ( m_terminal.getPalette() != null )
                     {
                         return ArrayUtils.toObject( m_terminal.getPalette().getColour( colour ) );
+                    }
+                }
+                return null;
+            }
+            case 23:
+            {
+                // setPixel
+                int x = getInt( args, 0 ) - 1;
+                int y = getInt( args, 1 ) - 1;
+                String text = optString( args, 2, null );
+                String textColour = optString( args, 3, null );
+                String backgroundColour = optString( args, 4, null );
+                synchronized( m_terminal )
+                {
+                    if ( x <= 0 || x >= m_terminal.getWidth() || y <= 0 || y >= m_terminal.getHeight() ) {
+                        throw new LuaException( "Position out of range" );
+                    }
+                    if ( text != null ) {
+                        m_terminal.setPixelChar( x, y, text.substring( 0, 1) );
+                    }
+                    if ( textColour != null ) {
+                        m_terminal.setPixelTextColour( x, y, textColour.substring( 0, 1) );
+                    }
+                    if ( backgroundColour != null ) {
+                        m_terminal.setPixelBackgroundColour( x, y, backgroundColour.substring( 0, 1) );
                     }
                 }
                 return null;

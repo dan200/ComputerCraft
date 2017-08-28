@@ -268,6 +268,21 @@ public class Terminal
         }
     }
         
+    public void setPixelChar( int x, int y, String text ) {
+        m_text[ y ].write( text, x );
+        m_changed = true;
+    }
+    
+    public void setPixelTextColour( int x, int y, String colour ) {
+        m_textColour[ y ].write( colour, x );
+        m_changed = true;
+    }
+    
+    public void setPixelBackgroundColour( int x, int y, String colour ) {
+        m_backgroundColour[ y ].write( colour, x );
+        m_changed = true;
+    }
+
     public TextBuffer getLine( int y )
     {
         if( y >= 0 && y < m_height )

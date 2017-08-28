@@ -376,6 +376,29 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     function window.getBackgroundColour()
         return nBackgroundColor
     end
+    
+    function window.setPixel( x, y, sChar, sTextColor, sBackgroundColor )
+        if type( x ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( x ) .. ")", 2 ) end
+        if type( y ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( y ) .. ")", 2 ) end
+        if sChar ~= nil and type( sChar ) ~= "string" then error( "bad argument #3 (expected string, got " .. type( sChar ) .. ")", 2 ) end
+        if sTextColor ~= nil and type( sTextColor ) ~= "string" then error( "bad argument #4 (expected string, got " .. type( sTextColor ) .. ")", 2 ) end
+        if sBackgroundColor ~= nil and type( sBackgroundColor ) ~= "string" then error( "bad argument #5 (expected string, got " .. type( sBackgroundColor ) .. ")", 2 ) end
+        if x <= 0 or x > nWidth or y <= 0 or y > nHeight then
+            error( "Position out of range", 2 )
+        end
+        if sChar ~= nil then
+            tLines[y]["text"] = tLines[y]["text"]:sub(1, x-1) .. sChar:sub(1,1) .. tLines[y]["text"]:sub(x+1)
+        end
+        if sTextColor ~= nil then
+            tLines[y]["textColor"] = tLines[y]["text"]:sub(1, x-1) .. sTextColor:sub(1,1) .. tLines[y]["textColor"]:sub(x+1)
+        end
+        if sBackgroundColor ~= nil then
+            tLines[y]["backgroundColor"] = tLines[y]["backgroundColor"]:sub(1, x-1) .. sBackgroundColor:sub(1,1) .. tLines[y]["backgroundColor"]:sub(x+1)
+        end
+        if bVisible then
+            redraw()
+        end
+    end
 
     -- Other functions
     function window.setVisible( bVis )

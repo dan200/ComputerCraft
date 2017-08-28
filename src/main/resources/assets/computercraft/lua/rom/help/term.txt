@@ -17,6 +17,7 @@ term.redirect( object )
 term.current()
 term.setPaletteColor( color, r, g, b )
 term.getPaletteColor( color )
+term.setPixel( x, y, text, textColor, backgroundColor )
 
 Events emitted by the terminals:
 "term_resize", when the size of a terminal changes. This can happen in multitasking environments, or when the terminal out is being redirected by the "monitor" program.
