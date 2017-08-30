@@ -318,7 +318,7 @@ local function accessMenu()
                         fMessage = "Saved to "..sPath
                     else
                         if err then
-                            fMessage = "Error saving to "..sPath.." ("..err..")"
+                            fMessage = "Error saving to "..err
                         else
                             fMessage = "Error saving to "..sPath
                         end
@@ -405,3 +405,4 @@ term.setBackgroundColour(colours.black)
 term.setTextColour(colours.white)
 term.clear()
 term.setCursorPos(1,1)
+

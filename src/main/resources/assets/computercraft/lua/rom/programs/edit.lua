@@ -292,7 +292,7 @@ local tMenuFuncs = {
                 sStatus="Saved to "..sPath
             else
                 if fileerr then
-                    sStatus="Error saving to "..sPath.." ("..fileerr..")"
+                    sStatus="Error saving to "..fileerr
                 else
                     sStatus="Error saving to "..sPath
                 end
@@ -774,3 +774,4 @@ end
 term.clear()
 term.setCursorBlink( false )
 term.setCursorPos( 1, 1 )
+
