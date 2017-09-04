@@ -10,6 +10,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.computer.IComputerEnvironment;
 import dan200.computercraft.core.terminal.Terminal;
+import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.Palette;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -78,7 +79,9 @@ public class TermAPI implements ILuaAPI
             "setPaletteColour",
             "setPaletteColor",
             "getPaletteColour",
-            "getPaletteColor"
+            "getPaletteColor",
+            "nativePaletteColor",
+            "nativePaletteColour"
         };
     }
     
@@ -306,6 +309,29 @@ public class TermAPI implements ILuaAPI
                     }
                 }
                 return null;
+            }
+            case 23:
+            case 24:
+            {
+                // nativePaletteColour/nativePaletteColor
+                int colour = 15 - parseColour( args );
+                Colour c = Colour.fromInt( colour );
+                if ( c != null )
+                {
+                    float[] rgb = c.getRGB();
+                    Object[] rgb8 = new Object[ rgb.length ];
+
+                    for ( int i = 0; i < rgb8.length; ++i )
+                    {
+                        rgb8[i] = (int) ( rgb[i] * 255.0f );
+                    }
+
+                    return rgb8;
+                }
+                else
+                {
+                    return null;
+                }
             }
             default:
             {

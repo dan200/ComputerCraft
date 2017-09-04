@@ -458,6 +458,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         end
     end
 
+    window.nativePaletteColor = parent.nativePaletteColor
+    window.nativePaletteColour = parent.nativePaletteColour
+
     if bVisible then
         window.redraw()
     end
