@@ -277,10 +277,10 @@ public class TermAPI implements ILuaAPI
                 }
                 else
                 {
-                    double r = getReal( args, 1 );
-                    double g = getReal( args, 2 );
-                    double b = getReal( args, 3 );
-                    setColour( m_terminal, colour, r, g, b );
+                    int r = getInt( args, 1 );
+                    int g = getInt( args, 2 );
+                    int b = getInt( args, 3 );
+                    setColour( m_terminal, colour, r / 255.0, g / 255.0, b / 255.0 );
                 }
                 return null;
             }
@@ -293,7 +293,16 @@ public class TermAPI implements ILuaAPI
                 {
                     if ( m_terminal.getPalette() != null )
                     {
-                        return ArrayUtils.toObject( m_terminal.getPalette().getColour( colour ) );
+                        Palette palette = m_terminal.getPalette();
+                        double[] colours = palette.getColour( colour );
+                        Object[] colours8 = new Object[ colours.length ];
+
+                        for ( int i = 0; i < colours8.length; ++i )
+                        {
+                            colours8[ i ] = (int) ( colours[ i ] * 255.0 );
+                        }
+
+                        return colours8;
                     }
                 }
                 return null;

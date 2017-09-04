@@ -107,7 +107,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
     local function updatePalette()
         for k,v in pairs( tPalette ) do
-            parent.setPaletteColour( k, v[1], v[2], v[3] )
+            parent.setPaletteColour( k, math.floor( v[1] ), math.floor( v[2] ), math.floor( v[3] ) )
         end
     end
 
@@ -289,7 +289,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         if type( colour ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( colour ) .. ")", 2 ) end
         
         local tCol
-        if type(r) == "number" and g == nil and b == nil then
+        if type( r ) == "number" and g == nil and b == nil then
             tCol = { colours.rgb8( r ) }
             tPalette[ colour ] = tCol
         else
@@ -304,15 +304,14 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         end
 
         if bVisible then
-            return parent.setPaletteColour( colour, tCol[1], tCol[2], tCol[3] )
+            return parent.setPaletteColour( colour, math.floor( tCol[1] ), math.floor( tCol[2] ), math.floor( tCol[3] ) )
         end
     end
 
     window.setPaletteColor = window.setPaletteColour
 
     function window.getPaletteColour( colour )
-        local tCol = tPalette[ colour ]
-        return tCol[1], tCol[2], tCol[3]
+        return table.unpack( tPalette[ colour ] )
     end
 
     window.getPaletteColor = window.getPaletteColour

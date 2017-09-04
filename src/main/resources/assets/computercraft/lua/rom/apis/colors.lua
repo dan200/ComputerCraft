@@ -48,19 +48,19 @@ function test( colors, color )
     if type( color ) ~= "number" then
         error( "bad argument #2 (expected number, got " .. type( color ) .. ")", 2 )
     end
-    return ((bit32.band(colors, color)) == color)
+    return bit32.band( colors, color ) == color
 end
 
 function rgb8( r, g, b )
     if type( r ) ~= "number" then
         error( "bad argument #1 (expected number, got " .. type( r ) .. ")", 2 )
-    elseif type(r) == "number" and g == nil and b == nil then
-        return bit32.band( bit32.rshift( r, 16 ), 0xFF ) / 255, bit32.band( bit32.rshift( r, 8 ), 0xFF ) / 255, bit32.band( r, 0xFF ) / 255
-    elseif type(r) == "number" and type(g) == "number" and type(b) == "number" then
+    elseif type( r ) == "number" and g == nil and b == nil then
+        return bit32.band( bit32.rshift( r, 16 ), 0xFF ), bit32.band( bit32.rshift( r, 8 ), 0xFF ), bit32.band( r, 0xFF )
+    elseif type( r ) == "number" and type( g ) == "number" and type( b ) == "number" then
         return 
-            bit32.lshift( bit32.band(r * 255, 0xFF), 16 ) +
-            bit32.lshift( bit32.band(g * 255, 0xFF), 8 ) +
-            bit32.band(b * 255, 0xFF)
+            bit32.lshift( bit32.band( r, 0xFF ), 16 ) +
+            bit32.lshift( bit32.band( g, 0xFF ), 8 ) +
+            bit32.band( b, 0xFF )
     elseif type( g ) ~= "number" then
         error( "bad argument #2 (expected number, got " .. type( g ) .. ")", 2 )
     elseif type( b ) ~= "number" then
