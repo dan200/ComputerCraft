@@ -12,7 +12,6 @@ import dan200.computercraft.core.computer.IComputerEnvironment;
 import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.Palette;
-import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 
