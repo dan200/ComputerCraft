@@ -15,7 +15,7 @@ end
     
 local w,h = term.getSize()
 local sFile = help.lookup( sTopic )
-local file = ((sFile ~= nil) and io.open( sFile )) or nil
+local file = ((sFile ~= nil) and io.open( sFile, "r" )) or nil
 local nLinesPrinted = 0
 if file then
     local sLine = file:read()
