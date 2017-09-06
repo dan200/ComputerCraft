@@ -366,15 +366,19 @@ function urlEncode( str )
 end
 
 local tEmpty = {}
-function complete( sSearchText, tSearchTable )
+function complete( sSearchText, tSearchTable, bKeyword )
     if type( sSearchText ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sSearchText ) .. ")", 2 )
     end
     if tSearchTable ~= nil and type( tSearchTable ) ~= "table" then
         error( "bad argument #2 (expected table, got " .. type( tSearchTable ) .. ")", 2 )
     end
+    if bKeyword ~= nil and type( bKeyword ) ~= "boolean" then
+        error( "bad argument #3 (expected boolean, got " .. type( bKeyword ) .. ")", 2 )
+    end
 
-    if g_tLuaKeywords[sSearchText] then return tEmpty end
+    if g_tLuaKeywords[sSearchText] and not bKeyword then return tEmpty end
+
     local nStart = 1
     local nDot = string.find( sSearchText, ".", nStart, true )
     local tTable = tSearchTable or _ENV
@@ -410,7 +414,7 @@ function complete( sSearchText, tSearchTable )
         for k,v in pairs( tTable ) do
             if not tSeen[k] and type(k) == "string" then
                 if string.find( k, sPart, 1, true ) == 1 then
-                    if not g_tLuaKeywords[k] and string.match( k, "^[%a_][%a%d_]*$" ) then
+                    if ( not g_tLuaKeywords[k] or bKeyword ) and string.match( k, "^[%a_][%a%d_]*$" ) then
                         local sResult = string.sub( k, nPartLength + 1 )
                         if nColon then
                             if type(v) == "function" then
