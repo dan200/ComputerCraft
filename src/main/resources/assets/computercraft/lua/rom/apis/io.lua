@@ -68,7 +68,7 @@ function open( _sPath, _sMode )
     if _G.type( _sPath ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. _G.type( _sPath ) .. ")", 2 )
     end
-    if _G.type( _sMode ) ~= "string" then
+    if _sMode ~= nil and _G.type( _sMode ) ~= "string" then
         error( "bad argument #2 (expected string, got " .. _G.type( _sMode ) .. ")", 2 )
     end
 	local sMode = _sMode or "r"
