@@ -40,10 +40,10 @@ if term.isColour() then
 else
     bgColour = colours.black
     textColour = colours.white
-    highlightColour = colours.white
-    keywordColour = colours.white
-    commentColour = colours.white
-    stringColour = colours.white
+    highlightColour = colours.lightGrey
+    keywordColour = colours.lightGrey
+    commentColour = colours.grey
+    stringColour = colours.grey
 end
 
 -- Menus
