@@ -49,13 +49,13 @@ function input( _arg )
 	elseif _G.type( _arg ) == "nil" then
 		return g_currentInput
 	else
-		error( "bad argument #1 (expected string/table/nil, got " .. type( _arg ) .. ")", 2 )
+		error( "bad argument #1 (expected string/table/nil, got " .. _G.type( _arg ) .. ")", 2 )
 	end
 end
 
 function lines( _sFileName )
-    if type( _sFileNamel ) ~= "string" then
-        error( "bad argument #1 (expected string, got " .. type( _sFileName ) .. ")", 2 )
+    if _G.type( _sFileNamel ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. _G.type( _sFileName ) .. ")", 2 )
     end
 	if _sFileName then
 		return open( _sFileName, "r" ):lines()
@@ -65,11 +65,11 @@ function lines( _sFileName )
 end
 
 function open( _sPath, _sMode )
-    if type( _sPath ) ~= "string" then
-        error( "bad argument #1 (expected string, got " .. type( _sPath ) .. ")", 2 )
+    if _G.type( _sPath ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. _G.type( _sPath ) .. ")", 2 )
     end
-    if type( _sMode ) ~= "string" then
-        error( "bad argument #2 (expected string, got " .. type( _sMode ) .. ")", 2 )
+    if _sMode ~= nil and _G.type( _sMode ) ~= "string" then
+        error( "bad argument #2 (expected string, got " .. _G.type( _sMode ) .. ")", 2 )
     end
 	local sMode = _sMode or "r"
 	local file, err = fs.open( _sPath, sMode )
@@ -167,7 +167,7 @@ function output( _arg )
 	elseif _G.type( _arg ) == "nil" then
 		return g_currentOutput
 	else
-		error( "bad argument #1 (expected string/table/nil, got " .. type( _arg ) .. ")", 2 )
+		error( "bad argument #1 (expected string/table/nil, got " .. _G.type( _arg ) .. ")", 2 )
 	end
 end
 
