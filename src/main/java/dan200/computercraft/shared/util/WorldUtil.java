@@ -14,6 +14,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class WorldUtil
@@ -112,12 +113,12 @@ public class WorldUtil
         return null;
     }
 
-    public static void dropItemStack( ItemStack stack, World world, BlockPos pos )
+    public static void dropItemStack( @Nonnull ItemStack stack, World world, BlockPos pos )
     {
         dropItemStack( stack, world, pos, null );
     }
 
-    public static void dropItemStack( ItemStack stack, World world, BlockPos pos, EnumFacing direction )
+    public static void dropItemStack( @Nonnull ItemStack stack, World world, BlockPos pos, EnumFacing direction )
     {
         double xDir;
         double yDir;
@@ -141,18 +142,18 @@ public class WorldUtil
         dropItemStack( stack, world, xPos, yPos, zPos, xDir, yDir, zDir );
     }
 
-    public static void dropItemStack( ItemStack stack, World world, double xPos, double yPos, double zPos )
+    public static void dropItemStack( @Nonnull ItemStack stack, World world, double xPos, double yPos, double zPos )
     {
         dropItemStack( stack, world, xPos, yPos, zPos, 0.0, 0.0, 0.0 );
     }
 
-    public static void dropItemStack( ItemStack stack, World world, double xPos, double yPos, double zPos, double xDir, double yDir, double zDir )
+    public static void dropItemStack( @Nonnull ItemStack stack, World world, double xPos, double yPos, double zPos, double xDir, double yDir, double zDir )
     {
         EntityItem entityItem = new EntityItem( world, xPos, yPos, zPos, stack.copy() );
         entityItem.motionX = xDir * 0.7 + world.rand.nextFloat() * 0.2 - 0.1;
         entityItem.motionY = yDir * 0.7 + world.rand.nextFloat() * 0.2 - 0.1;
         entityItem.motionZ = zDir * 0.7 + world.rand.nextFloat() * 0.2 - 0.1;
         entityItem.setDefaultPickupDelay();
-        world.spawnEntityInWorld( entityItem );
+        world.spawnEntity( entityItem );
     }
 }

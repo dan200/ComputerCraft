@@ -35,7 +35,7 @@ public class TileComputer extends TileComputerBase
     {
         ComputerFamily family = getFamily();
         ServerComputer computer = new ServerComputer(
-            worldObj,
+            getWorld(),
             id,
             m_label,
             instanceID,

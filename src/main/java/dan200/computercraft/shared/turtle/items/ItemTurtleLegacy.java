@@ -16,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class ItemTurtleLegacy extends ItemTurtleBase
 {
     public ItemTurtleLegacy( Block block )
@@ -81,7 +83,7 @@ public class ItemTurtleLegacy extends ItemTurtleBase
     // IComputerItem implementation
 
     @Override
-    public int getComputerID( ItemStack stack )
+    public int getComputerID( @Nonnull ItemStack stack )
     {
         if( stack.hasTagCompound() && stack.getTagCompound().hasKey( "computerID" ) )
         {
@@ -103,7 +105,7 @@ public class ItemTurtleLegacy extends ItemTurtleBase
     // ITurtleItem implementation
 
     @Override
-    public ITurtleUpgrade getUpgrade( ItemStack stack, TurtleSide side )
+    public ITurtleUpgrade getUpgrade( @Nonnull ItemStack stack, TurtleSide side )
     {
         int damage = stack.getItemDamage();
         switch( side )
@@ -129,16 +131,16 @@ public class ItemTurtleLegacy extends ItemTurtleBase
     }
 
     @Override
-    public int getColour( ItemStack stack )
+    public int getColour( @Nonnull ItemStack stack )
     {
         return -1;
     }
 
     @Override
-    public ResourceLocation getOverlay( ItemStack stack ) { return null; }
+    public ResourceLocation getOverlay( @Nonnull ItemStack stack ) { return null; }
 
     @Override
-    public int getFuelLevel( ItemStack stack )
+    public int getFuelLevel( @Nonnull ItemStack stack )
     {
         if( stack.hasTagCompound() )
         {

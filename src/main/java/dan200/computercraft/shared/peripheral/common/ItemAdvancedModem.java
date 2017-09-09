@@ -12,10 +12,10 @@ import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class ItemAdvancedModem extends ItemPeripheralBase
 {
@@ -26,6 +26,7 @@ public class ItemAdvancedModem extends ItemPeripheralBase
         setCreativeTab( ComputerCraft.mainCreativeTab );
     }
 
+    @Nonnull
     public ItemStack create( PeripheralType type, String label, int quantity )
     {
         ItemStack stack;
@@ -39,7 +40,7 @@ public class ItemAdvancedModem extends ItemPeripheralBase
             default:
             {
                 // Ignore types we can't handle
-                return null;
+                return ItemStack.EMPTY;
             }
         }
         if( label != null )
@@ -50,7 +51,7 @@ public class ItemAdvancedModem extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
+    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
         list.add( PeripheralItemFactory.create( PeripheralType.AdvancedModem, null, 1 ) );
     }

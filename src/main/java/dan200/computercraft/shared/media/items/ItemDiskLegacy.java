@@ -16,6 +16,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -36,7 +37,7 @@ public class ItemDiskLegacy extends Item
     }
     
     @Override
-    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List<ItemStack> list )
+    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list )
     {
         for( int colour=0; colour<16; ++colour )
         {
@@ -47,7 +48,8 @@ public class ItemDiskLegacy extends Item
             }
         }
     }
-            
+
+    @Nonnull
     public static ItemStack createFromIDAndColour( int id, String label, int colour )
     {
         if( colour != Colour.Blue.getHex() )
@@ -61,7 +63,7 @@ public class ItemDiskLegacy extends Item
         return stack;
     }
     
-    public int getDiskID( ItemStack stack )
+    public int getDiskID( @Nonnull ItemStack stack )
     {
         int damage = stack.getItemDamage();
         if( damage > 0 )
@@ -71,7 +73,7 @@ public class ItemDiskLegacy extends Item
         return -1;
     }
 
-    protected void setDiskID( ItemStack stack, int id )
+    protected void setDiskID( @Nonnull ItemStack stack, int id )
     {
         if( id > 0 ) {
             stack.setItemDamage( id );
@@ -81,7 +83,7 @@ public class ItemDiskLegacy extends Item
     }
 
     @Override
-    public void addInformation( ItemStack stack, EntityPlayer player, List<String> list, boolean debug )
+    public void addInformation( @Nonnull ItemStack stack, EntityPlayer player, List<String> list, boolean debug )
     {
         if( debug )
         {
@@ -144,13 +146,13 @@ public class ItemDiskLegacy extends Item
     }
 
     @Override
-    public int getColour( ItemStack stack )
+    public int getColour( @Nonnull ItemStack stack )
     {
         return Colour.Blue.getHex();
     }
 
     @Override
-    public boolean doesSneakBypassUse( ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player )
+    public boolean doesSneakBypassUse( @Nonnull ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player )
     {
         return true;
     }

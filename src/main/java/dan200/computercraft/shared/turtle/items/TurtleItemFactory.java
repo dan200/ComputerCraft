@@ -12,15 +12,17 @@ import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.IComputer;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
-import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.ReflectionUtil;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class TurtleItemFactory
 {
+    @Nonnull
     public static ItemStack create( ITurtleTile turtle )
     {
         ITurtleUpgrade leftUpgrade = turtle.getAccess().getUpgrade( TurtleSide.Left );
@@ -47,6 +49,7 @@ public class TurtleItemFactory
         return create( -1, null, turtle.getColour(), turtle.getFamily(), leftUpgrade, rightUpgrade, 0, turtle.getOverlay() );
     }
 
+    @Nonnull
     public static ItemStack create( int id, String label, int colour, ComputerFamily family, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay )
     {
         switch( family )
@@ -81,9 +84,9 @@ public class TurtleItemFactory
                     ItemTurtleBase beginnersItem = ((ItemTurtleBase)Item.getItemFromBlock( beginnersBlock ));
                     return beginnersItem.create( id, label, colour, leftUpgrade, rightUpgrade, fuelLevel, overlay );
                 }
-                return null;
+                return ItemStack.EMPTY;
             }
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 }

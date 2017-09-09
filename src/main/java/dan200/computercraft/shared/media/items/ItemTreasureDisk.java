@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -36,12 +37,12 @@ public class ItemTreasureDisk extends Item
     }
     
     @Override
-    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, List<ItemStack> list )
+    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list )
     {
     }
     
     @Override
-    public void addInformation( ItemStack stack, EntityPlayer player, List<String> list, boolean bool )
+    public void addInformation( @Nonnull ItemStack stack, EntityPlayer player, List<String> list, boolean bool )
     {
         String label = getTitle( stack );
         if( label != null && label.length() > 0 )
@@ -51,7 +52,7 @@ public class ItemTreasureDisk extends Item
     }
 
     @Override
-    public boolean doesSneakBypassUse( ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player )
+    public boolean doesSneakBypassUse( @Nonnull ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player )
     {
         return true;
     }
@@ -138,7 +139,7 @@ public class ItemTreasureDisk extends Item
 
     // private stuff
     
-    public String getTitle( ItemStack stack )
+    public String getTitle( @Nonnull ItemStack stack )
     {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey( "title" ) )
@@ -148,7 +149,7 @@ public class ItemTreasureDisk extends Item
         return "'alongtimeago' by dan200";
     }
     
-    public String getSubPath( ItemStack stack )
+    public String getSubPath( @Nonnull ItemStack stack )
     {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey( "subPath" ) )
@@ -158,7 +159,7 @@ public class ItemTreasureDisk extends Item
         return "dan200/alongtimeago";
     }
     
-    public int getColour( ItemStack stack )
+    public int getColour( @Nonnull ItemStack stack )
     {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey( "colour" ) )

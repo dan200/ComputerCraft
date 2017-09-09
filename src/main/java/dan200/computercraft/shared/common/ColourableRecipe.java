@@ -6,11 +6,11 @@ import dan200.computercraft.shared.util.ColourUtils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class ColourableRecipe implements IRecipe
 {
@@ -22,7 +22,7 @@ public class ColourableRecipe implements IRecipe
         for( int i = 0; i < inv.getSizeInventory(); i++ )
         {
             ItemStack stack = inv.getStackInSlot( i );
-            if( stack == null ) continue;
+            if( stack.isEmpty() ) continue;
 
             if( stack.getItem() instanceof IColouredItem )
             {
@@ -42,11 +42,11 @@ public class ColourableRecipe implements IRecipe
         return hasColourable && hasDye;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public ItemStack getCraftingResult( @Nonnull InventoryCrafting inv )
     {
-        ItemStack colourable = null;
+        ItemStack colourable = ItemStack.EMPTY;
 
         ColourTracker tracker = new ColourTracker();
 
@@ -54,7 +54,7 @@ public class ColourableRecipe implements IRecipe
         {
             ItemStack stack = inv.getStackInSlot( i );
 
-            if( stack == null ) continue;
+            if( stack.isEmpty() ) continue;
 
             if( stack.getItem() instanceof IColouredItem )
             {
@@ -70,9 +70,9 @@ public class ColourableRecipe implements IRecipe
             }
         }
 
-        if( colourable == null )
+        if( colourable.isEmpty() )
         {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         return ((IColouredItem) colourable.getItem()).setColour( colourable, tracker.getColour() );
@@ -84,22 +84,22 @@ public class ColourableRecipe implements IRecipe
         return 2;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public ItemStack getRecipeOutput()
     {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Nonnull
     @Override
-    public ItemStack[] getRemainingItems( @Nonnull InventoryCrafting inv )
+    public NonNullList<ItemStack> getRemainingItems( @Nonnull InventoryCrafting inventoryCrafting )
     {
-        ItemStack[] results = new ItemStack[ inv.getSizeInventory() ];
-        for( int i = 0; i < results.length; ++i )
+        NonNullList<ItemStack> results = NonNullList.withSize( inventoryCrafting.getSizeInventory(), ItemStack.EMPTY );
+        for( int i = 0; i < results.size(); ++i )
         {
-            ItemStack stack = inv.getStackInSlot( i );
-            results[ i ] = ForgeHooks.getContainerItem( stack );
+            ItemStack stack = inventoryCrafting.getStackInSlot( i );
+            results.set( i, ForgeHooks.getContainerItem( stack ) );
         }
         return results;
     }

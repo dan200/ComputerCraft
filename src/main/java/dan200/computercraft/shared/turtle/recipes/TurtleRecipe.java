@@ -13,7 +13,9 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nonnull;
 
@@ -34,6 +36,7 @@ public class TurtleRecipe implements IRecipe
         return 9;
     }
     
+    @Nonnull
     @Override
     public ItemStack getRecipeOutput()
     {
@@ -43,9 +46,10 @@ public class TurtleRecipe implements IRecipe
     @Override
     public boolean matches( @Nonnull InventoryCrafting _inventory, @Nonnull World world )
     {
-        return (getCraftingResult( _inventory ) != null);
+        return !getCraftingResult( _inventory ).isEmpty();
     }
 
+    @Nonnull
     @Override
     public ItemStack getCraftingResult( @Nonnull InventoryCrafting inventory )
     {
@@ -57,7 +61,7 @@ public class TurtleRecipe implements IRecipe
             for( int x=0; x<3; ++x )
             {
                 ItemStack item = inventory.getStackInRowAndColumn(x, y);
-                if( item != null && item.getItem() == m_recipe[ x + y*3 ] )
+                if( !item.isEmpty() && item.getItem() == m_recipe[ x + y*3 ] )
                 {
                     if( item.getItem() instanceof IComputerItem )
                     {
@@ -69,13 +73,13 @@ public class TurtleRecipe implements IRecipe
                         }
                         else
                         {
-                            return null;
+                            return ItemStack.EMPTY;
                         }
                     }
                 }
                 else
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
         }
@@ -94,13 +98,13 @@ public class TurtleRecipe implements IRecipe
 
     @Nonnull
     @Override
-    public ItemStack[] getRemainingItems( @Nonnull InventoryCrafting inventoryCrafting )
+    public NonNullList<ItemStack> getRemainingItems( @Nonnull InventoryCrafting inventoryCrafting )
     {
-        ItemStack[] results = new ItemStack[ inventoryCrafting.getSizeInventory() ];
-        for (int i = 0; i < results.length; ++i)
+        NonNullList<ItemStack> results = NonNullList.withSize( inventoryCrafting.getSizeInventory(), ItemStack.EMPTY );
+        for( int i = 0; i < results.size(); ++i )
         {
-            ItemStack stack = inventoryCrafting.getStackInSlot(i);
-            results[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(stack);
+            ItemStack stack = inventoryCrafting.getStackInSlot( i );
+            results.set( i, ForgeHooks.getContainerItem( stack ) );
         }
         return results;
     }
