@@ -177,13 +177,18 @@ if string.find( _HOST, "ComputerCraft" ) == 1 then
     end
 end
 
+local nativeyield = coroutine.yield
+function coroutine.yield( sFilter )
+    return nativeyield( sFilter )
+end
+
 -- Install lua parts of the os api
 function os.version()
     return "CraftOS 1.8"
 end
 
 function os.pullEventRaw( sFilter )
-    return coroutine.yield( sFilter )
+    return nativeyield( sFilter )
 end
 
 function os.pullEvent( sFilter )
@@ -683,7 +688,7 @@ local nativeShutdown = os.shutdown
 function os.shutdown()
     nativeShutdown()
     while true do
-        coroutine.yield()
+        nativeyield()
     end
 end
 
@@ -691,7 +696,7 @@ local nativeReboot = os.reboot
 function os.reboot()
     nativeReboot()
     while true do
-        coroutine.yield()
+        nativeyield()
     end
 end
 
