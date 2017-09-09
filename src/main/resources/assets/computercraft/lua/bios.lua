@@ -931,14 +931,28 @@ end
 settings.set( "shell.allow_startup", true )
 settings.set( "shell.allow_disk_startup", (commands == nil) )
 settings.set( "shell.autocomplete", true )
+settings.set( "shell.prompt_color", "yellow" )
+settings.set( "shell.text_color", "white" )
+settings.set( "shell.background_color", "black" )
 settings.set( "edit.autocomplete", true ) 
 settings.set( "edit.default_extension", "lua" )
+settings.set( "edit.background_color", "black" )
+settings.set( "edit.text_color", "white" )
+settings.set( "edit.highlight_color", "yellow" )
+settings.set( "edit.keyword_color", "yellow" )
+settings.set( "edit.comment_color", "green" )
+settings.set( "edit.string_color", "red" )
 settings.set( "paint.default_extension", "nfp" )
 settings.set( "lua.autocomplete", true )
+settings.set( "lua.prompt_color", "yellow" )
+settings.set( "lua.text_color", "white" )
 settings.set( "list.show_hidden", false )
+settings.set( "list.file_color", "white" )
+settings.set( "list.directory_color", "green" )
 if term.isColour() then
     settings.set( "bios.use_multishell", true )
 end
+
 if _CC_DEFAULT_SETTINGS then
     for sPair in string.gmatch( _CC_DEFAULT_SETTINGS, "[^,]+" ) do
         local sName, sValue = string.match( sPair, "([^=]*)=(.*)" )
