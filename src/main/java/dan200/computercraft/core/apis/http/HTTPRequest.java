@@ -141,7 +141,6 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             if( m_postText != null )
             {
                 connection.setRequestProperty( "content-type", "application/x-www-form-urlencoded; charset=utf-8" );
-                connection.setRequestProperty( "content-encoding", "UTF-8" );
             }
             if( m_headers != null )
             {
