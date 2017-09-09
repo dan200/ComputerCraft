@@ -311,8 +311,12 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     window.setPaletteColor = window.setPaletteColour
 
     function window.getPaletteColour( colour )
-        local tCol = tPalette[ colour ]
-        return tCol[1], tCol[2], tCol[3]
+        if type( colour ) ~= "number" then
+            error( "bad argument #1 (expected number, got " .. type( colour ) .. ")", 2 )
+        elseif tHex[colour] == nil then
+            error( "Invalid color (got " .. colour .. ")", 2 )
+        end
+        return parent.getPaletteColor( colour )
     end
 
     window.getPaletteColor = window.getPaletteColour
