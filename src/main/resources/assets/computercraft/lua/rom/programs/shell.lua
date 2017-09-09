@@ -493,9 +493,13 @@ else
         term.setTextColour( textColour )
 
 
-        local sLine
+        local ok, sLine
         if settings.get( "shell.autocomplete" ) then
-            sLine = read( nil, tCommandHistory, shell.complete )
+            ok, sLine = pcall( function() return read( nil, tCommandHistory, shell.complete ) end )
+            if not ok then
+                printError( sLine )
+                sLine = ""
+            end
         else
             sLine = read( nil, tCommandHistory )
         end
