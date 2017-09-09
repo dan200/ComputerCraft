@@ -7,6 +7,11 @@ if tArgs[1] ~= nil then
     sDir = shell.resolve( tArgs[1] )
 end
 
+if not fs.isDir( sDir ) then
+    printError( "Not a directory" )
+    return
+end
+
 -- Sort into dirs/files, and calculate column count
 local tAll = fs.list( sDir )
 local tFiles = {}
