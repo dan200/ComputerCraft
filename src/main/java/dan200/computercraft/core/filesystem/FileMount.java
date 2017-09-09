@@ -11,6 +11,7 @@ import dan200.computercraft.api.filesystem.IWritableMount;
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 
 public class FileMount implements IWritableMount
 {
@@ -170,7 +171,7 @@ public class FileMount implements IWritableMount
             {
                 if( file.isDirectory() )
                 {
-                    return 0;
+                    return FileUtils.sizeOfDirectory( file );
                 }
                 else
                 {
