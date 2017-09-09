@@ -65,7 +65,8 @@ public class MonitorPeripheral implements IPeripheral
             "setPaletteColour",
             "setPaletteColor",
             "getPaletteColour",
-            "getPaletteColor"
+            "getPaletteColor",
+            "setPixel"
         };
     }
 
@@ -246,6 +247,29 @@ public class MonitorPeripheral implements IPeripheral
                 if( palette != null )
                 {
                     return ArrayUtils.toObject( palette.getColour( colour ) );
+                }
+                return null;
+            }
+            case 24:
+            {
+                // setPixel
+                Terminal terminal = m_monitor.getTerminal().getTerminal();
+                int x = getInt( args, 0 ) - 1;
+                int y = getInt( args, 1 ) - 1;
+                String text = optString( args, 2, null );
+                String textColour = optString( args, 3, null );
+                String backgroundColour = optString( args, 4, null );
+                if ( x <= 0 || x >= terminal.getWidth() || y <= 0 || y >= terminal.getHeight() ) {
+                    throw new LuaException( "Position out of range" );
+                }
+                if ( text != null ) {
+                    terminal.setPixelChar( x, y, text.substring( 0, 1) );
+                }
+                if ( textColour != null ) {
+                    terminal.setPixelTextColour( x, y, textColour.substring( 0, 1) );
+                }
+                if ( backgroundColour != null ) {
+                    terminal.setPixelBackgroundColour( x, y, backgroundColour.substring( 0, 1) );
                 }
                 return null;
             }
