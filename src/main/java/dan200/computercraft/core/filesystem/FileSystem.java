@@ -740,6 +740,7 @@ public class FileSystem
         return sanitizePath( path, false );
     }
 
+    private static final Pattern threeDotsPattern = Pattern.compile( "^\\.{3,}$" );
     private static String sanitizePath( String path, boolean allowWildcards )
     {
         // Allow windowsy slashes
@@ -765,7 +766,7 @@ public class FileSystem
         Stack<String> outputParts = new Stack<String>();
         for( String part : parts )
         {
-            if( part.length() == 0 || part.equals( "." ) || part.matches( "^\\.{3,}$" ) )
+            if( part.length() == 0 || part.equals( "." ) || threeDotsPattern.matcher( part ).matches() ) 
             {
                 // . is redundant
                 // ... and more are treated as .
