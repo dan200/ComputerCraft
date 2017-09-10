@@ -4,37 +4,20 @@ import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandTrigger;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-
 public class ComputerCommand extends CommandBase {
-    private final ArrayList<String> aliases;
-
-    ComputerCommand() {
-        aliases = new ArrayList<String>();
-        aliases.add( "computer" );
-    }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "computer";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender iCommandSender) {
         return "computer <id> <value1> [value2]...";
-    }
-
-    @Override
-    public List<String> getCommandAliases() {
-        return this.aliases;
     }
 
     @Override
