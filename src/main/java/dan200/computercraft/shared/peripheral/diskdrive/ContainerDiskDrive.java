@@ -40,46 +40,47 @@ public class ContainerDiskDrive extends Container
     @Override
     public boolean canInteractWith( @Nonnull EntityPlayer player )
     {
-        return m_diskDrive.isUseableByPlayer( player );
+        return m_diskDrive.isUsableByPlayer( player );
     }
 
+    @Nonnull
     @Override
     public ItemStack transferStackInSlot( EntityPlayer player, int i )
     {
-        ItemStack itemstack = null;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(i);
         if(slot != null && slot.getHasStack())
         {
-            ItemStack itemstack1 = slot.getStack();
+            ItemStack itemstack1 = slot.getStack().copy();
             itemstack = itemstack1.copy();
             if(i == 0 )
             {
                 if(!mergeItemStack(itemstack1, 1, 37, true))
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else if( !mergeItemStack(itemstack1, 0, 1, false) )
             {
-                return null;
+                return ItemStack.EMPTY;
             }
             
-            if(itemstack1.stackSize == 0)
+            if(itemstack1.isEmpty())
             {
-                slot.putStack(null);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {
                 slot.onSlotChanged();
             }
             
-            if(itemstack1.stackSize != itemstack.stackSize)
+            if(itemstack1.getCount() != itemstack.getCount())
             {
-                slot.onPickupFromSlot(player, itemstack1);
+                slot.onTake(player, itemstack1);
             }
             else
             {
-                return null;
+                return ItemStack.EMPTY;
             }
         }
         return itemstack;

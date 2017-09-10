@@ -22,27 +22,26 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
+
 public class InventoryUtil
 {
     // Methods for comparing things:
 
-    public static boolean areItemsEqual( ItemStack a, ItemStack b )
+    public static boolean areItemsEqual( @Nonnull ItemStack a, @Nonnull ItemStack b )
     {
         return a == b || ItemStack.areItemStacksEqual( a, b );
     }
 
-    public static boolean areItemsStackable( ItemStack a, ItemStack b )
+    public static boolean areItemsStackable( @Nonnull ItemStack a, @Nonnull ItemStack b )
     {
         return a == b || ItemHandlerHelper.canItemStacksStack( a, b );
     }
 
-    public static ItemStack copyItem( ItemStack a )
+    @Nonnull
+    public static ItemStack copyItem( @Nonnull ItemStack a )
     {
-        if( a != null )
-        {
-            return a.copy();
-        }
-        return null;
+        return a.copy();
     }
 
     // Methods for finding inventories:
@@ -96,19 +95,22 @@ public class InventoryUtil
 
     // Methods for placing into inventories:
 
-    public static ItemStack storeItems( ItemStack itemstack, IItemHandler inventory, int start, int range, int begin )
+    @Nonnull
+    public static ItemStack storeItems( @Nonnull ItemStack itemstack, IItemHandler inventory, int start, int range, int begin )
     {
         int[] slots = makeSlotList( start, range, begin );
         return storeItems( itemstack, inventory, slots );
     }
 
-    public static ItemStack storeItems( ItemStack itemstack, IItemHandler inventory, int begin )
+    @Nonnull
+    public static ItemStack storeItems( @Nonnull ItemStack itemstack, IItemHandler inventory, int begin )
     {
         int[] slots = makeSlotList( 0, inventory.getSlots(), begin );
         return storeItems( itemstack, inventory, slots );
     }
 
-    public static ItemStack storeItems( ItemStack itemstack, IItemHandler inventory )
+    @Nonnull
+    public static ItemStack storeItems( @Nonnull ItemStack itemstack, IItemHandler inventory )
     {
         int[] slots = makeSlotList( 0, inventory.getSlots(), 0 ); // TODO: optimise this out?
         return storeItems( itemstack, inventory, slots );
@@ -116,18 +118,21 @@ public class InventoryUtil
 
     // Methods for taking out of inventories
 
+    @Nonnull
     public static ItemStack takeItems( int count, IItemHandler inventory, int start, int range, int begin )
     {
         int[] slots = makeSlotList( start, range, begin );
         return takeItems( count, inventory, slots );
     }
 
+    @Nonnull
     public static ItemStack takeItems( int count, IItemHandler inventory, int begin )
     {
         int[] slots = makeSlotList( 0, inventory.getSlots(), begin );
         return takeItems( count, inventory, slots );
     }
 
+    @Nonnull
     public static ItemStack takeItems( int count, IItemHandler inventory )
     {
         int[] slots = makeSlotList( 0, inventory.getSlots(), 0 );
@@ -151,57 +156,59 @@ public class InventoryUtil
         return slots;
     }
 
-    private static ItemStack storeItems( ItemStack stack, IItemHandler inventory, int[] slots )
+    @Nonnull
+    private static ItemStack storeItems( @Nonnull ItemStack stack, IItemHandler inventory, int[] slots )
     {
         if( slots == null || slots.length == 0 )
         {
             return stack;
         }
-        if( stack == null || stack.stackSize == 0 )
+        if( stack.isEmpty() )
         {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         // Inspect the slots in order and try to find empty or stackable slots
         ItemStack remainder = stack.copy();
         for( int slot : slots )
         {
-            if( remainder == null ) break;
+            if( remainder.isEmpty() ) break;
             remainder = inventory.insertItem( slot, remainder, false );
         }
         return areItemsEqual( stack, remainder ) ? stack : remainder;
     }
 
+    @Nonnull
     private static ItemStack takeItems( int count, IItemHandler inventory, int[] slots )
     {
         if( slots == null )
         {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         // Combine multiple stacks from inventory into one if necessary
-        ItemStack partialStack = null;
+        ItemStack partialStack = ItemStack.EMPTY;
         int countRemaining = count;
         for( int slot : slots )
         {
             if( countRemaining <= 0 ) break;
 
             ItemStack stack = inventory.getStackInSlot( slot );
-            if( stack != null )
+            if( !stack.isEmpty() )
             {
-                if( partialStack == null || areItemsStackable( stack, partialStack ) )
+                if( partialStack.isEmpty() || areItemsStackable( stack, partialStack ) )
                 {
                     ItemStack extracted = inventory.extractItem( slot, countRemaining, false );
-                    if( extracted != null )
+                    if( !extracted.isEmpty() )
                     {
-                        countRemaining -= extracted.stackSize;
-                        if( partialStack == null )
+                        countRemaining -= extracted.getCount();
+                        if( partialStack.isEmpty() )
                         {
                             partialStack = extracted;
                         }
                         else
                         {
-                            partialStack.stackSize += extracted.stackSize;
+                            partialStack.grow( extracted.getCount() );
                         }
                     }
                 }

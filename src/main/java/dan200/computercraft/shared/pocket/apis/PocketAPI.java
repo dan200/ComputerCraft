@@ -18,6 +18,7 @@ import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import javax.annotation.Nonnull;
@@ -99,12 +100,12 @@ public class PocketAPI implements ILuaAPI
                         if( previousUpgrade != null )
                         {
                             ItemStack stack = previousUpgrade.getCraftingItem();
-                            if( stack != null )
+                            if( !stack.isEmpty() )
                             {
                                 stack = InventoryUtil.storeItems( stack, new PlayerMainInvWrapper( inventory ), inventory.currentItem );
-                                if( stack != null )
+                                if( !stack.isEmpty() )
                                 {
-                                    WorldUtil.dropItemStack( stack, player.worldObj, player.posX, player.posY, player.posZ );
+                                    WorldUtil.dropItemStack( stack, player.getEntityWorld(), player.posX, player.posY, player.posZ );
                                 }
                             }
                         }
@@ -138,12 +139,12 @@ public class PocketAPI implements ILuaAPI
                         m_computer.setUpgrade( null );
 
                         ItemStack stack = previousUpgrade.getCraftingItem();
-                        if( stack != null )
+                        if( !stack.isEmpty() )
                         {
                             stack = InventoryUtil.storeItems( stack, new PlayerMainInvWrapper( inventory ), inventory.currentItem );
-                            if( stack != null )
+                            if( stack.isEmpty() )
                             {
-                                WorldUtil.dropItemStack( stack, player.worldObj, player.posX, player.posY, player.posZ );
+                                WorldUtil.dropItemStack( stack, player.getEntityWorld(), player.posX, player.posY, player.posZ );
                             }
                         }
 
@@ -155,12 +156,12 @@ public class PocketAPI implements ILuaAPI
         }
     }
 
-    private static IPocketUpgrade findUpgrade( ItemStack[] inv, int start, IPocketUpgrade previous )
+    private static IPocketUpgrade findUpgrade( NonNullList<ItemStack> inv, int start, IPocketUpgrade previous )
     {
-        for (int i = 0; i < inv.length; i++)
+        for( int i = 0; i < inv.size(); i++ )
         {
-            ItemStack invStack = inv[ (i + start) % inv.length ];
-            if( invStack != null )
+            ItemStack invStack = inv.get( (i + start) % inv.size() );
+            if( !invStack.isEmpty() )
             {
                 IPocketUpgrade newUpgrade = ComputerCraft.getPocketUpgrade( invStack );
 
@@ -168,8 +169,8 @@ public class PocketAPI implements ILuaAPI
                 {
                     // Consume an item from this stack and exit the loop
                     invStack = invStack.copy();
-                    invStack.stackSize--;
-                    inv[ (i + start) % inv.length ] = invStack.stackSize <= 0 ? null : invStack;
+                    invStack.shrink( 1 );
+                    inv.set( (i + start) % inv.size(), invStack.isEmpty() ? ItemStack.EMPTY : invStack );
 
                     return newUpgrade;
                 }

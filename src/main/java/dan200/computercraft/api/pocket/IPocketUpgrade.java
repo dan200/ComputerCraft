@@ -48,9 +48,9 @@ public interface IPocketUpgrade
      * pocket computer which holds this upgrade. This item stack is also used to determine the upgrade given by
      * {@code pocket.equip()}/{@code pocket.unequip()}.
      *
-     * @return The item stack used for crafting. This can be {@code null} if crafting is disabled.
+     * @return The item stack used for crafting. This can be {@link ItemStack#EMPTY} if crafting is disabled.
      */
-    @Nullable
+    @Nonnull
     ItemStack getCraftingItem();
 
     /**

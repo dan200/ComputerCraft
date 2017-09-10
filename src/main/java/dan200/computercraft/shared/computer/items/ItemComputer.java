@@ -17,13 +17,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class ItemComputer extends ItemComputerBase
 {
@@ -73,7 +73,7 @@ public class ItemComputer extends ItemComputerBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
+    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Normal ) );
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Advanced ) );
@@ -95,7 +95,7 @@ public class ItemComputer extends ItemComputerBase
         return false;
     }
 
-    private void setupComputerAfterPlacement( ItemStack stack, IComputerTile computer )
+    private void setupComputerAfterPlacement( @Nonnull ItemStack stack, IComputerTile computer )
     {
         // Set ID
         int id = getComputerID( stack );
@@ -114,7 +114,7 @@ public class ItemComputer extends ItemComputerBase
 
     @Nonnull
     @Override
-    public String getUnlocalizedName( ItemStack stack )
+    public String getUnlocalizedName( @Nonnull ItemStack stack )
     {
         switch( getFamily( stack ) )
         {
@@ -137,7 +137,7 @@ public class ItemComputer extends ItemComputerBase
     // IComputerItem implementation
 
     @Override
-    public int getComputerID( ItemStack stack )
+    public int getComputerID( @Nonnull ItemStack stack )
     {
         if( stack.hasTagCompound() && stack.getTagCompound().hasKey( "computerID" ) )
         {

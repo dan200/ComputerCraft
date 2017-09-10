@@ -84,11 +84,11 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
             parent.setCursorPos( 0, 0 )
         end
     end
-    
+
     local function updateCursorBlink()
         parent.setCursorBlink( bCursorBlink )
     end
-    
+
     local function updateCursorColor()
         parent.setTextColor( nTextColor )
     end
@@ -271,7 +271,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function setTextColor( color )
-        if type( color ) ~= "number" then 
+        if type( color ) ~= "number" then
             error( "bad argument #1 (expected number, got " .. type( color ) .. ")", 2 )
         elseif tHex[color] == nil then
             error( "Invalid color (got " .. color .. ")" , 2 )
@@ -287,7 +287,11 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
     function window.setPaletteColour( colour, r, g, b )
         if type( colour ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( colour ) .. ")", 2 ) end
-        
+
+        if tHex[colour] == nil then
+            error( "Invalid color (got " .. colour .. ")" , 2 )
+        end
+
         local tCol
         if type( r ) == "number" and g == nil and b == nil then
             tCol = { colours.unpackRGB( r ) }
@@ -296,7 +300,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
             if type( r ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( r ) .. ")", 2 ) end
             if type( g ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( g ) .. ")", 2 ) end
             if type( b ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( b ) .. ")", 2 ) end
-            
+
             tCol = tPalette[ colour ]
             tCol[1] = r
             tCol[2] = g
@@ -311,6 +315,10 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     window.setPaletteColor = window.setPaletteColour
 
     function window.getPaletteColour( colour )
+        if type( colour ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( colour ) .. ")", 2 ) end
+        if tHex[colour] == nil then
+            error( "Invalid color (got " .. colour .. ")" , 2 )
+        end
         return table.unpack( tPalette[ colour ] )
     end
 

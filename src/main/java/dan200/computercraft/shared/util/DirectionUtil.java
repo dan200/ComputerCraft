@@ -88,7 +88,7 @@ public class DirectionUtil
 
     public static EnumFacing fromEntityRot( EntityLivingBase player )
     {
-        int rot = MathHelper.floor_float( ( player.rotationYaw / 90.0f ) + 0.5f ) & 0x3;
+        int rot = MathHelper.floor( ( player.rotationYaw / 90.0f ) + 0.5f ) & 0x3;
         switch( rot ) {
             case 0: return EnumFacing.NORTH;
             case 1: return EnumFacing.EAST;

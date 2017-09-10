@@ -18,6 +18,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
+
 public class ItemTurtleNormal extends ItemTurtleBase implements IColouredItem
 {
     public ItemTurtleNormal( Block block )
@@ -87,7 +89,7 @@ public class ItemTurtleNormal extends ItemTurtleBase implements IColouredItem
     // IComputerItem implementation
 
     @Override
-    public int getComputerID( ItemStack stack )
+    public int getComputerID( @Nonnull ItemStack stack )
     {
         if( stack.hasTagCompound() )
         {
@@ -109,7 +111,7 @@ public class ItemTurtleNormal extends ItemTurtleBase implements IColouredItem
     // ITurtleItem implementation
 
     @Override
-    public ITurtleUpgrade getUpgrade( ItemStack stack, TurtleSide side )
+    public ITurtleUpgrade getUpgrade( @Nonnull ItemStack stack, TurtleSide side )
     {
         if( stack.hasTagCompound() )
         {
@@ -152,14 +154,14 @@ public class ItemTurtleNormal extends ItemTurtleBase implements IColouredItem
     }
 
     @Override
-    public int getColour( ItemStack stack )
+    public int getColour( @Nonnull ItemStack stack )
     {
         NBTTagCompound tag = stack.getTagCompound();
         return tag == null ? -1 : ColourUtils.getHexColour( tag );
     }
 
     @Override
-    public ResourceLocation getOverlay( ItemStack stack )
+    public ResourceLocation getOverlay( @Nonnull ItemStack stack )
     {
         if( stack.hasTagCompound() )
         {
@@ -175,7 +177,7 @@ public class ItemTurtleNormal extends ItemTurtleBase implements IColouredItem
     }
 
     @Override
-    public int getFuelLevel( ItemStack stack )
+    public int getFuelLevel( @Nonnull ItemStack stack )
     {
         if( stack.hasTagCompound() )
         {

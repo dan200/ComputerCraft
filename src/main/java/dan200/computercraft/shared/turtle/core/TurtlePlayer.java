@@ -13,8 +13,9 @@ import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -28,12 +29,18 @@ public class TurtlePlayer extends FakePlayer
         "ComputerCraft"
     );
 
+    @Deprecated
+    public TurtlePlayer( World world )
+    {
+        this( (WorldServer) world );
+    }
+
     public TurtlePlayer( WorldServer world )
     {
         super( world, s_profile );
     }
 
-    public void loadInventory( ItemStack currentStack )
+    public void loadInventory( @Nonnull ItemStack currentStack )
     {
         // Load up the fake inventory
         inventory.currentItem = 0;
@@ -44,7 +51,7 @@ public class TurtlePlayer extends FakePlayer
     {
         // Get the item we placed with
         ItemStack results = inventory.getStackInSlot( 0 );
-        inventory.setInventorySlotContents( 0, null );
+        inventory.setInventorySlotContents( 0, ItemStack.EMPTY );
 
         // Store (or drop) anything else we found
         BlockPos dropPosition = turtle.getPosition();
@@ -52,14 +59,14 @@ public class TurtlePlayer extends FakePlayer
         for( int i=0; i<inventory.getSizeInventory(); ++i )
         {
             ItemStack stack = inventory.getStackInSlot( i );
-            if( stack != null )
+            if( !stack.isEmpty() )
             {
                 ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getItemHandler(), turtle.getSelectedSlot() );
-                if( remainder != null )
+                if( !remainder.isEmpty() )
                 {
                     WorldUtil.dropItemStack( remainder, turtle.getWorld(), dropPosition, dropDirection );
                 }
-                inventory.setInventorySlotContents( i, null );
+                inventory.setInventorySlotContents( i, ItemStack.EMPTY );
             }
         }
         inventory.markDirty();

@@ -76,9 +76,9 @@ public interface ITurtleUpgrade
      * with to create a turtle which holds this upgrade. This item stack is also used
      * to determine the upgrade given by {@code turtle.equip()}
      *
-     * @return The item stack to craft with, or {@code null} if it cannot be crafted.
+     * @return The item stack to craft with, or {@link ItemStack#EMPTY} if it cannot be crafted.
      */
-    @Nullable
+    @Nonnull
     ItemStack getCraftingItem();
 
     /**

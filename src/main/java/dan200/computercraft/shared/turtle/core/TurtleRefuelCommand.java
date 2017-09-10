@@ -33,7 +33,7 @@ public class TurtleRefuelCommand implements ITurtleCommand
         {
             // If limit is zero, just check the item is combustible
             ItemStack dummyStack = turtle.getInventory().getStackInSlot( turtle.getSelectedSlot() );
-            if( dummyStack != null )
+            if( !dummyStack.isEmpty() )
             {
                 return refuel( turtle, dummyStack, true );
             }
@@ -43,7 +43,7 @@ public class TurtleRefuelCommand implements ITurtleCommand
             // Otherwise, refuel for real
             // Remove items from inventory
             ItemStack stack = InventoryUtil.takeItems( m_limit, turtle.getItemHandler(), turtle.getSelectedSlot(), 1, turtle.getSelectedSlot() );
-            if( stack != null )
+            if( !stack.isEmpty() )
             {
                 TurtleCommandResult result = refuel( turtle, stack, false );
                 if( !result.isSuccess() )
@@ -57,12 +57,12 @@ public class TurtleRefuelCommand implements ITurtleCommand
         return TurtleCommandResult.failure( "No items to combust" );
     }
 
-    private int getFuelPerItem( ItemStack stack )
+    private int getFuelPerItem( @Nonnull ItemStack stack )
     {
         return (TileEntityFurnace.getItemBurnTime( stack ) * 5) / 100;
     }
 
-    private TurtleCommandResult refuel( ITurtleAccess turtle, ItemStack stack, boolean testOnly )
+    private TurtleCommandResult refuel( ITurtleAccess turtle, @Nonnull ItemStack stack, boolean testOnly )
     {
         // Check if item is fuel
         int fuelPerItem = getFuelPerItem( stack );
@@ -74,14 +74,14 @@ public class TurtleRefuelCommand implements ITurtleCommand
         if( !testOnly )
         {
             // Determine fuel to give and replacement item to leave behind
-            int fuelToGive = fuelPerItem * stack.stackSize;
+            int fuelToGive = fuelPerItem * stack.getCount();
             ItemStack replacementStack = stack.getItem().getContainerItem( stack );
 
             // Update fuel level
             turtle.addFuel( fuelToGive );
 
             // Store the replacement item in the inventory
-            if( replacementStack != null )
+            if( !replacementStack.isEmpty() )
             {
                 InventoryUtil.storeItems( replacementStack, turtle.getItemHandler(), turtle.getSelectedSlot() );
             }

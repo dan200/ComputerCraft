@@ -8,7 +8,9 @@ package dan200.computercraft.shared.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public interface IEntityDropConsumer
 {
-    void consumeDrop( Entity dropper, ItemStack drop );
+    void consumeDrop( Entity dropper, @Nonnull ItemStack drop );
 }
