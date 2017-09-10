@@ -9,7 +9,6 @@ package dan200.computercraft.shared.computer.apis;
 import com.google.common.collect.ImmutableMap;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.ILuaAPI;
 import dan200.computercraft.shared.computer.blocks.TileCommandComputer;
@@ -81,7 +80,7 @@ public class CommandAPI implements ILuaAPI
 
     private Map<Object, Object> createOutput( String output )
     {
-        Map<Object, Object> result = new HashMap<Object, Object>( 1 );
+        Map<Object, Object> result = new HashMap<>( 1 );
         result.put( 1, output );
         return result;
     }
@@ -123,11 +122,11 @@ public class CommandAPI implements ILuaAPI
         String name = Block.REGISTRY.getNameForObject( block ).toString();
         int metadata = block.getMetaFromState( state );
 
-        Map<Object, Object> table = new HashMap<Object, Object>();
+        Map<Object, Object> table = new HashMap<>();
         table.put( "name", name );
         table.put( "metadata", metadata );
 
-        Map<Object, Object> stateTable = new HashMap<Object, Object>();
+        Map<Object, Object> stateTable = new HashMap<>();
         for( ImmutableMap.Entry<IProperty<?>, Comparable<?>> entry : state.getActualState( world, pos ).getProperties().entrySet() )
         {
             String propertyName = entry.getKey().getName();
@@ -155,68 +154,50 @@ public class CommandAPI implements ILuaAPI
             {
                 // exec
                 final String command = getString( arguments, 0 );
-                return context.executeMainThreadTask( new ILuaTask()
-                {
-                    @Override
-                    public Object[] execute() throws LuaException
-                    {
-                        return doCommand( command );
-                    }
-                } );
+                return context.executeMainThreadTask( () -> doCommand( command ) );
             }
             case 1:
             {
                 // execAsync
                 final String command = getString( arguments, 0 );
-                long taskID = context.issueMainThreadTask( new ILuaTask()
-                {
-                    @Override
-                    public Object[] execute() throws LuaException
-                    {
-                        return doCommand( command );
-                    }
-                } );
+                long taskID = context.issueMainThreadTask( () -> doCommand( command ) );
                 return new Object[] { taskID };
             }
             case 2:
             {
                 // list
-                return context.executeMainThreadTask( new ILuaTask()
+                return context.executeMainThreadTask( () ->
                 {
-                    @Override
-                    public Object[] execute() throws LuaException
+                    int i = 1;
+                    Map<Object, Object> result = new HashMap<>();
+                    MinecraftServer server = m_computer.getWorld().getMinecraftServer();
+                    if( server != null )
                     {
-                        int i = 1;
-                        Map<Object, Object> result = new HashMap<Object, Object>();
-                        MinecraftServer server = m_computer.getWorld().getMinecraftServer();
-                        if( server != null )
+                        ICommandManager commandManager = server.getCommandManager();
+                        ICommandSender commmandSender = m_computer.getCommandSender();
+                        Map<String, ICommand> commands = commandManager.getCommands();
+                        for( Map.Entry<String, ICommand> entry : commands.entrySet() )
                         {
-                            ICommandManager commandManager = server.getCommandManager();
-                            ICommandSender commmandSender = m_computer.getCommandSender();
-                            Map<String, ICommand> commands = commandManager.getCommands();
-                            for( Map.Entry<String, ICommand> entry : commands.entrySet() )
+                            String name = entry.getKey();
+                            ICommand command = entry.getValue();
+                            try
                             {
-                                String name = entry.getKey();
-                                ICommand command = entry.getValue();
-                                try
+                                if( command.checkPermission( server, commmandSender ) )
                                 {
-                                    if( command.checkPermission( server, commmandSender ) )
-                                    {
-                                        result.put( i++, name );
-                                    }
+                                    result.put( i++, name );
                                 }
-                                catch( Throwable t )
+                            }
+                            catch( Throwable t )
+                            {
+                                // Ignore buggy command
+                                if( ComputerCraft.logPeripheralErrors )
                                 {
-                                    // Ignore buggy command
-                                    if( ComputerCraft.logPeripheralErrors )
-                                    {
-                                        ComputerCraft.log.error( "Error checking permissions of command.", t );
-                                    }
+                                    ComputerCraft.log.error( "Error checking permissions of command.", t );
                                 }
                             }
                         }
-                        return new Object[]{ result };
                     }
+                    return new Object[]{ result };
                 } );
             }
             case 3:
@@ -235,46 +216,42 @@ public class CommandAPI implements ILuaAPI
                 final int maxx = getInt( arguments, 3 );
                 final int maxy = getInt( arguments, 4 );
                 final int maxz = getInt( arguments, 5 );
-                return context.executeMainThreadTask( new ILuaTask()
+                return context.executeMainThreadTask( () ->
                 {
-                    @Override
-                    public Object[] execute() throws LuaException
+                    // Get the details of the block
+                    World world = m_computer.getWorld();
+                    BlockPos min = new BlockPos(
+                            Math.min( minx, maxx ),
+                            Math.min( miny, maxy ),
+                            Math.min( minz, maxz )
+                    );
+                    BlockPos max = new BlockPos(
+                            Math.max( minx, maxx ),
+                            Math.max( miny, maxy ),
+                            Math.max( minz, maxz )
+                    );
+                    if( !WorldUtil.isBlockInWorld( world, min ) || !WorldUtil.isBlockInWorld( world, max ) )
                     {
-                        // Get the details of the block
-                        World world = m_computer.getWorld();
-                        BlockPos min = new BlockPos(
-                                Math.min( minx, maxx ),
-                                Math.min( miny, maxy ),
-                                Math.min( minz, maxz )
-                        );
-                        BlockPos max = new BlockPos(
-                                Math.max( minx, maxx ),
-                                Math.max( miny, maxy ),
-                                Math.max( minz, maxz )
-                        );
-                        if( !WorldUtil.isBlockInWorld( world, min ) || !WorldUtil.isBlockInWorld( world, max ) )
+                        throw new LuaException( "Co-ordinates out or range" );
+                    }
+                    if( ( max.getX() - min.getX() + 1 ) * ( max.getY() - min.getY() + 1 ) * ( max.getZ() - min.getZ() + 1 ) > 4096 )
+                    {
+                        throw new LuaException( "Too many blocks" );
+                    }
+                    int i=1;
+                    Map<Object, Object> results = new HashMap<>();
+                    for( int y=min.getY(); y<= max.getY(); ++y )
+                    {
+                        for( int z = min.getZ(); z <= max.getZ(); ++z )
                         {
-                            throw new LuaException( "Co-ordinates out or range" );
-                        }
-                        if( ( max.getX() - min.getX() + 1 ) * ( max.getY() - min.getY() + 1 ) * ( max.getZ() - min.getZ() + 1 ) > 4096 )
-                        {
-                            throw new LuaException( "Too many blocks" );
-                        }
-                        int i=1;
-                        Map<Object, Object> results = new HashMap<Object, Object>();
-                        for( int y=min.getY(); y<= max.getY(); ++y )
-                        {
-                            for( int z = min.getZ(); z <= max.getZ(); ++z )
+                            for( int x = min.getX(); x <= max.getX(); ++x )
                             {
-                                for( int x = min.getX(); x <= max.getX(); ++x )
-                                {
-                                    BlockPos pos = new BlockPos( x, y, z );
-                                    results.put( i++, getBlockInfo( world, pos ) );
-                                }
+                                BlockPos pos = new BlockPos( x, y, z );
+                                results.put( i++, getBlockInfo( world, pos ) );
                             }
                         }
-                        return new Object[]{ results };
                     }
+                    return new Object[]{ results };
                 } );
             }
             case 5:
@@ -283,22 +260,18 @@ public class CommandAPI implements ILuaAPI
                 final int x = getInt( arguments, 0 );
                 final int y = getInt( arguments, 1 );
                 final int z = getInt( arguments, 2 );
-                return context.executeMainThreadTask( new ILuaTask()
+                return context.executeMainThreadTask( () ->
                 {
-                    @Override
-                    public Object[] execute() throws LuaException
+                    // Get the details of the block
+                    World world = m_computer.getWorld();
+                    BlockPos position = new BlockPos( x, y, z );
+                    if( WorldUtil.isBlockInWorld( world, position ) )
                     {
-                        // Get the details of the block
-                        World world = m_computer.getWorld();
-                        BlockPos position = new BlockPos( x, y, z );
-                        if( WorldUtil.isBlockInWorld( world, position ) )
-                        {
-                            return new Object[]{ getBlockInfo( world, position ) };
-                        }
-                        else
-                        {
-                            throw new LuaException( "co-ordinates out or range" );
-                        }
+                        return new Object[]{ getBlockInfo( world, position ) };
+                    }
+                    else
+                    {
+                        throw new LuaException( "co-ordinates out or range" );
                     }
                 } );
             }

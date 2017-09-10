@@ -1,0 +1,13 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "#G#",
+        "###"
+    ],
+    "key": {
+        "#": { "item": "minecraft:stone", "data": 0 },
+        "G": { "item": "minecraft:glass_pane" }
+    },
+    "result": { "item": "computercraft:peripheral", "data": 2 }
+}

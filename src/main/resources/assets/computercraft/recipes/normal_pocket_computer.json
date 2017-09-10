@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "#A#",
+        "#G#"
+    ],
+    "key": {
+        "#": { "item": "minecraft:stone", "data": 0 },
+        "G": { "item": "minecraft:glass_pane" },
+        "A": { "item": "minecraft:golden_apple", "data": 0 }
+    },
+    "result": { "item": "computercraft:pocket_computer", "data": 0 }
+}

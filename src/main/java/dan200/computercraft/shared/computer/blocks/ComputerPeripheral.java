@@ -95,16 +95,6 @@ public class ComputerPeripheral
     }
 
     @Override
-    public void attach( @Nonnull IComputerAccess computer )
-    {
-    }
-
-    @Override
-    public void detach( @Nonnull IComputerAccess computer )
-    {
-    }
-
-    @Override
     public boolean equals( IPeripheral other )
     {
         return (other != null && other.getClass() == this.getClass());

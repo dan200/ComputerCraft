@@ -18,7 +18,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -27,7 +26,6 @@ public interface IComputerCraftProxy
 {
     void preInit();
     void init();
-    void remap( FMLMissingMappingsEvent mappings);
     boolean isClient();
 
     boolean getGlobalCursorBlink();

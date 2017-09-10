@@ -12,7 +12,6 @@ import dan200.computercraft.api.turtle.ITurtleCommand;
 import dan200.computercraft.api.turtle.TurtleAnimation;
 import dan200.computercraft.api.turtle.TurtleCommandResult;
 import dan200.computercraft.shared.util.DirectionUtil;
-import dan200.computercraft.shared.util.IEntityDropConsumer;
 import dan200.computercraft.shared.util.InventoryUtil;
 import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
@@ -225,22 +224,18 @@ public class TurtlePlaceCommand implements ITurtleCommand
         // Start claiming entity drops
         Entity hitEntity = hit.getKey();
         Vec3d hitPos = hit.getValue();
-        ComputerCraft.setEntityDropConsumer( hitEntity, new IEntityDropConsumer()
+        ComputerCraft.setEntityDropConsumer( hitEntity, ( entity, drop ) ->
         {
-            @Override
-            public void consumeDrop( Entity entity, @Nonnull ItemStack drop )
+            ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
+            if( !remainder.isEmpty() )
             {
-                ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
-                if( !remainder.isEmpty() )
-                {
-                    WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );
-                }
+                WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );
             }
         } );
 
         // Place on the entity
         boolean placed = false;
-        EnumActionResult cancelResult = ForgeHooks.onInteractEntityAtAction( turtlePlayer, hitEntity, hitPos, EnumHand.MAIN_HAND );
+        EnumActionResult cancelResult = ForgeHooks.onInteractEntityAt( turtlePlayer, hitEntity, hitPos, EnumHand.MAIN_HAND );
         if( cancelResult == null )
         {
             cancelResult = hitEntity.applyPlayerInteraction( turtlePlayer, hitPos, EnumHand.MAIN_HAND );
@@ -253,7 +248,7 @@ public class TurtlePlaceCommand implements ITurtleCommand
         else
         {
             // See EntityPlayer.interactOn
-            cancelResult = ForgeHooks.onInteractEntityAction( turtlePlayer, hitEntity, EnumHand.MAIN_HAND );
+            cancelResult = ForgeHooks.onInteractEntity( turtlePlayer, hitEntity, EnumHand.MAIN_HAND );
             if( cancelResult == EnumActionResult.SUCCESS )
             {
                 placed = true;
@@ -391,7 +386,7 @@ public class TurtlePlaceCommand implements ITurtleCommand
 
         if( !placed && (item instanceof ItemBucket || item instanceof ItemBoat || item instanceof ItemLilyPad || item instanceof ItemGlassBottle) )
         {
-            EnumActionResult actionResult = ForgeHooks.onItemRightClickAction( turtlePlayer, EnumHand.MAIN_HAND );
+            EnumActionResult actionResult = ForgeHooks.onItemRightClick( turtlePlayer, EnumHand.MAIN_HAND );
             if( actionResult == EnumActionResult.SUCCESS )
             {
                 placed = true;

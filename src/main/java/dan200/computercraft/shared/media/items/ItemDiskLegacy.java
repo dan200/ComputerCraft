@@ -12,6 +12,7 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.common.IColouredItem;
 import dan200.computercraft.shared.util.Colour;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -37,8 +38,9 @@ public class ItemDiskLegacy extends Item
     }
     
     @Override
-    public void getSubItems( @Nonnull Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list )
+    public void getSubItems( @Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
+        if( !isInCreativeTab( tabs ) ) return;
         for( int colour=0; colour<16; ++colour )
         {
             ItemStack stack = createFromIDAndColour( -1, null, Colour.values()[ colour ].getHex() );
@@ -83,9 +85,9 @@ public class ItemDiskLegacy extends Item
     }
 
     @Override
-    public void addInformation( @Nonnull ItemStack stack, EntityPlayer player, List<String> list, boolean debug )
+    public void addInformation( @Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag flag )
     {
-        if( debug )
+        if( flag.isAdvanced() )
         {
             int id = getDiskID( stack );
             if( id >= 0 )

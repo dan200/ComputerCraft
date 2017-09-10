@@ -9,7 +9,6 @@ package dan200.computercraft.core.filesystem;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
-import net.minecraftforge.fml.common.FMLLog;
 
 import java.io.*;
 import java.util.*;
@@ -291,7 +290,7 @@ public class FileSystem
         }
     }
 
-    private final Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
+    private final Map<String, MountWrapper> m_mounts = new HashMap<>();
     private final Set<Closeable> m_openFiles = Collections.newSetFromMap( new WeakHashMap<Closeable, Boolean>() );
     
     public FileSystem( String rootLabel, IMount rootMount ) throws FileSystemException
@@ -424,7 +423,7 @@ public class FileSystem
         MountWrapper mount = getMount( path );
         
         // Gets a list of the files in the mount
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         mount.list( path, list );
         
         // Add any mounts that are mounted at this location
@@ -481,7 +480,7 @@ public class FileSystem
 
         // Scan as normal, starting from this directory
         Pattern wildPattern = Pattern.compile( "^\\Q" + wildPath.replaceAll( "\\*", "\\\\E[^\\\\/]*\\\\Q" ) + "\\E$" );
-        List<String> matches = new ArrayList<String>();
+        List<String> matches = new ArrayList<>();
         findIn( startDir, matches, wildPattern );
 
         // Return matches
@@ -585,7 +584,7 @@ public class FileSystem
             destinationMount.makeDirectory( destinationPath );
             
             // Copy the source contents into it
-            List<String> sourceChildren = new ArrayList<String>();
+            List<String> sourceChildren = new ArrayList<>();
             sourceMount.list( sourcePath, sourceChildren );
             for( String child : sourceChildren )
             {
@@ -762,7 +761,7 @@ public class FileSystem
         
         // Collapse the string into its component parts, removing ..'s
         String[] parts = path.split("/");
-        Stack<String> outputParts = new Stack<String>();
+        Stack<String> outputParts = new Stack<>();
         for( String part : parts )
         {
             if( part.length() == 0 || part.equals( "." ) )

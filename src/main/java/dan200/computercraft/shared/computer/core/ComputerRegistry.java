@@ -19,7 +19,7 @@ public class ComputerRegistry<TComputer extends IComputer>
 
     protected ComputerRegistry()
     {
-        m_computers = new HashMap<Integer, TComputer>();
+        m_computers = new HashMap<>();
         reset();
     }
 

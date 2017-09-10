@@ -1,0 +1,14 @@
+{
+    "type": "computercraft:turtle",
+    "pattern": [
+        "###",
+        "#C#",
+        "#I#"
+    ],
+    "key": {
+        "#": { "item": "minecraft:gold_ingot" },
+        "C": { "item": "computercraft:computer", "data": 16384 },
+        "I": { "item": "minecraft:chest" }
+    },
+    "family": "Advanced"
+}

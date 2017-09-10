@@ -14,7 +14,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -62,8 +61,9 @@ public class ItemCable extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
+    public void getSubItems( @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
+        if( !isInCreativeTab( tabs ) ) return;
         list.add( PeripheralItemFactory.create( PeripheralType.WiredModem, null, 1 ) );
         list.add( PeripheralItemFactory.create( PeripheralType.Cable, null, 1 ) );
     }
@@ -108,7 +108,7 @@ public class ItemCable extends ItemPeripheralBase
         }
 
         // Try to add on the side of something
-        if( !existing.isAir( existingState, world, pos ) && (type == PeripheralType.Cable || existing.isSideSolid( existingState, world, pos, side )) )
+        if( !existing.isAir( existingState, world, pos ) && (type == PeripheralType.Cable || existingState.isSideSolid( world, pos, side )) )
         {
             BlockPos offset = pos.offset( side );
             Block offsetExisting = world.getBlockState( offset ).getBlock();

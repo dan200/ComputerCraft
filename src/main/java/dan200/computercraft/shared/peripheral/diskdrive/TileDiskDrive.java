@@ -72,7 +72,7 @@ public class TileDiskDrive extends TilePeripheralBase
 
     public TileDiskDrive()
     {
-        m_computers = new HashMap<IComputerAccess, MountInfo>();
+        m_computers = new HashMap<>();
 
         m_diskStack = ItemStack.EMPTY;
         m_diskMount = null;

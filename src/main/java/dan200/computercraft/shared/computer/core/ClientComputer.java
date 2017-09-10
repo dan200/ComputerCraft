@@ -153,6 +153,7 @@ public class ClientComputer extends ClientTerminal
         ComputerCraft.sendToServer( packet );
     }
 
+    @Override
     public void readDescription( NBTTagCompound nbttagcompound )
     {
         super.readDescription( nbttagcompound );

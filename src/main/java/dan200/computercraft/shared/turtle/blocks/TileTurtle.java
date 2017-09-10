@@ -156,7 +156,7 @@ public class TileTurtle extends TileComputerBase
     }
 
     @Override
-    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull NonNullList<ItemStack> drops, boolean creative )
     {
         IComputer computer = getComputer();
         if( !creative || (computer != null && computer.getLabel() != null) )
@@ -258,8 +258,8 @@ public class TileTurtle extends TileComputerBase
     {
         Vec3d offset = getRenderOffset( 1.0f );
         return new AxisAlignedBB(
-            offset.xCoord + 0.125, offset.yCoord + 0.125, offset.zCoord + 0.125,
-            offset.xCoord + 0.875, offset.yCoord + 0.875, offset.zCoord + 0.875
+            offset.x + 0.125, offset.y + 0.125, offset.z + 0.125,
+            offset.x + 0.875, offset.y + 0.875, offset.z + 0.875
         );
     }
 

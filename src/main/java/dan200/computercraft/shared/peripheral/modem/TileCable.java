@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -130,7 +131,7 @@ public class TileCable extends TileModemBase
                     synchronized( m_entity.m_peripheralsByName )
                     {
                         int idx = 1;
-                        Map<Object,Object> table = new HashMap<Object,Object>();
+                        Map<Object,Object> table = new HashMap<>();
                         for( String name : m_entity.m_peripheralWrappersByName.keySet() )
                         {
                             table.put( idx++, name );
@@ -160,7 +161,7 @@ public class TileCable extends TileModemBase
                     String[] methodNames = m_entity.getMethodNamesRemote( getString( arguments, 0 ) );
                     if( methodNames != null )
                     {
-                        Map<Object,Object> table = new HashMap<Object,Object>();
+                        Map<Object,Object> table = new HashMap<>();
                         for(int i=0; i<methodNames.length; ++i ) {
                             table.put( i+1, methodNames[i] );
                         }
@@ -246,14 +247,14 @@ public class TileCable extends TileModemBase
     
     public TileCable()
     {
-        m_receivers = new HashSet<IPacketReceiver>();
-        m_transmitQueue = new LinkedList<PacketWrapper>();
+        m_receivers = new HashSet<>();
+        m_transmitQueue = new LinkedList<>();
         
         m_peripheralAccessAllowed = false;
         m_attachedPeripheralID = -1;
         
-        m_peripheralsByName = new HashMap<String, IPeripheral>();
-        m_peripheralWrappersByName = new HashMap<String, RemotePeripheralWrapper>();
+        m_peripheralsByName = new HashMap<>();
+        m_peripheralWrappersByName = new HashMap<>();
         m_peripheralsKnown = false;
         m_destroyed = false;
         
@@ -298,7 +299,7 @@ public class TileCable extends TileModemBase
     }
 
     @Override
-    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull NonNullList<ItemStack> drops, boolean creative )
     {
         if( !creative )
         {
@@ -684,13 +685,11 @@ public class TileCable extends TileModemBase
             if( !m_destroyed )
             {
                 // If this modem is alive, rebuild the network
-                searchNetwork( new ICableVisitor() {
-                    public void visit( TileCable modem, int distance )
+                searchNetwork( ( modem, distance ) ->
+                {
+                    synchronized( modem.m_peripheralsByName )
                     {
-                        synchronized( modem.m_peripheralsByName )
-                        {
-                            modem.m_peripheralsKnown = false;
-                        }
+                        modem.m_peripheralsKnown = false;
                     }
                 } );
             }
@@ -732,13 +731,11 @@ public class TileCable extends TileModemBase
         
     private void dispatchPacket( final PacketWrapper packet )
     {
-        searchNetwork( new ICableVisitor() {
-            public void visit( TileCable modem, int distance )
+        searchNetwork( ( modem, distance ) ->
+        {
+            if( distance <= packet.m_range)
             {
-                if( distance <= packet.m_range)
-                {
-                    modem.receivePacket( packet.m_packet, distance );
-                }
+                modem.receivePacket( packet.m_packet, distance );
             }
         } );
     }
@@ -777,7 +774,7 @@ public class TileCable extends TileModemBase
             assert( m_type != null );
             assert( m_methods != null );
             
-            m_methodMap = new HashMap<String, Integer>();
+            m_methodMap = new HashMap<>();
             for( int i=0; i<m_methods.length; ++i ) {
                 if( m_methods[i] != null ) {
                     m_methodMap.put( m_methods[i], i );
@@ -875,22 +872,20 @@ public class TileCable extends TileModemBase
         synchronized( m_peripheralsByName )
         {
             // Collect the peripherals
-            final Map<String, IPeripheral> newPeripheralsByName = new HashMap<String, IPeripheral>();
+            final Map<String, IPeripheral> newPeripheralsByName = new HashMap<>();
             if( getPeripheralType() == PeripheralType.WiredModemWithCable )
             {
-                searchNetwork( new ICableVisitor() {
-                    public void visit( TileCable modem, int distance )
+                searchNetwork( ( modem, distance ) ->
+                {
+                if( modem != origin )
+                {
+                    IPeripheral peripheral = modem.getConnectedPeripheral();
+                    String periphName = modem.getConnectedPeripheralName();
+                    if( peripheral != null && periphName != null )
                     {
-                    if( modem != origin )
-                    {
-                        IPeripheral peripheral = modem.getConnectedPeripheral();
-                        String periphName = modem.getConnectedPeripheralName();
-                        if( peripheral != null && periphName != null )
-                        {
-                            newPeripheralsByName.put( periphName, peripheral );
-                        }
+                        newPeripheralsByName.put( periphName, peripheral );
                     }
-                    }
+                }
                 } );
             }
             //System.out.println( newPeripheralsByName.size()+" peripherals discovered" );
@@ -1034,7 +1029,7 @@ public class TileCable extends TileModemBase
     private void searchNetwork( ICableVisitor visitor )
     {
         int searchID = ++s_nextUniqueSearchID;
-        Queue<SearchLoc> queue = new LinkedList<SearchLoc>();
+        Queue<SearchLoc> queue = new LinkedList<>();
         enqueue( queue, getWorld(), getPos(), 1 );
         
         int visited = 0;

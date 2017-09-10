@@ -8,7 +8,6 @@ package dan200.computercraft.shared.pocket.apis;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.core.apis.ILuaAPI;
@@ -72,84 +71,76 @@ public class PocketAPI implements ILuaAPI
         {
             case 0:
                 // equipBack
-                return context.executeMainThreadTask( new ILuaTask()
+                return context.executeMainThreadTask( () ->
                 {
-                    @Override
-                    public Object[] execute() throws LuaException
+                    if( !(m_computer.getEntity() instanceof EntityPlayer) )
                     {
-                        if( !(m_computer.getEntity() instanceof EntityPlayer) )
-                        {
-                            throw new LuaException( "Cannot find player" );
-                        }
-
-                        EntityPlayer player = (EntityPlayer) m_computer.getEntity();
-                        InventoryPlayer inventory = player.inventory;
-
-                        IPocketUpgrade previousUpgrade = m_computer.getUpgrade();
-
-                        // Attempt to find the upgrade, starting in the main segment, and then looking in the opposite
-                        // one. We start from the position the item is currently in and loop round to the start.
-                        IPocketUpgrade newUpgrade = findUpgrade( inventory.mainInventory, inventory.currentItem, previousUpgrade );
-                        if( newUpgrade == null )
-                        {
-                            newUpgrade = findUpgrade( inventory.offHandInventory, 0, previousUpgrade );
-                        }
-                        if( newUpgrade == null ) throw new LuaException( "Cannot find a valid upgrade" );
-
-                        // Remove the current upgrade
-                        if( previousUpgrade != null )
-                        {
-                            ItemStack stack = previousUpgrade.getCraftingItem();
-                            if( !stack.isEmpty() )
-                            {
-                                stack = InventoryUtil.storeItems( stack, new PlayerMainInvWrapper( inventory ), inventory.currentItem );
-                                if( !stack.isEmpty() )
-                                {
-                                    WorldUtil.dropItemStack( stack, player.getEntityWorld(), player.posX, player.posY, player.posZ );
-                                }
-                            }
-                        }
-
-                        // Set the new upgrade
-                        m_computer.setUpgrade( newUpgrade );
-
-                        return null;
+                        throw new LuaException( "Cannot find player" );
                     }
-                } );
 
-            case 1:
-                // unequipBack
-                return context.executeMainThreadTask( new ILuaTask()
-                {
-                    @Override
-                    public Object[] execute() throws LuaException
+                    EntityPlayer player = (EntityPlayer) m_computer.getEntity();
+                    InventoryPlayer inventory = player.inventory;
+
+                    IPocketUpgrade previousUpgrade = m_computer.getUpgrade();
+
+                    // Attempt to find the upgrade, starting in the main segment, and then looking in the opposite
+                    // one. We start from the position the item is currently in and loop round to the start.
+                    IPocketUpgrade newUpgrade = findUpgrade( inventory.mainInventory, inventory.currentItem, previousUpgrade );
+                    if( newUpgrade == null )
                     {
-                        if( !(m_computer.getEntity() instanceof EntityPlayer) )
-                        {
-                            throw new LuaException( "Cannot find player" );
-                        }
+                        newUpgrade = findUpgrade( inventory.offHandInventory, 0, previousUpgrade );
+                    }
+                    if( newUpgrade == null ) throw new LuaException( "Cannot find a valid upgrade" );
 
-                        EntityPlayer player = (EntityPlayer) m_computer.getEntity();
-                        InventoryPlayer inventory = player.inventory;
-
-                        IPocketUpgrade previousUpgrade = m_computer.getUpgrade();
-
-                        if( previousUpgrade == null ) throw new LuaException( "Nothing to unequip" );
-
-                        m_computer.setUpgrade( null );
-
+                    // Remove the current upgrade
+                    if( previousUpgrade != null )
+                    {
                         ItemStack stack = previousUpgrade.getCraftingItem();
                         if( !stack.isEmpty() )
                         {
                             stack = InventoryUtil.storeItems( stack, new PlayerMainInvWrapper( inventory ), inventory.currentItem );
-                            if( stack.isEmpty() )
+                            if( !stack.isEmpty() )
                             {
                                 WorldUtil.dropItemStack( stack, player.getEntityWorld(), player.posX, player.posY, player.posZ );
                             }
                         }
-
-                        return null;
                     }
+
+                    // Set the new upgrade
+                    m_computer.setUpgrade( newUpgrade );
+
+                    return null;
+                } );
+
+            case 1:
+                // unequipBack
+                return context.executeMainThreadTask( () ->
+                {
+                    if( !(m_computer.getEntity() instanceof EntityPlayer) )
+                    {
+                        throw new LuaException( "Cannot find player" );
+                    }
+
+                    EntityPlayer player = (EntityPlayer) m_computer.getEntity();
+                    InventoryPlayer inventory = player.inventory;
+
+                    IPocketUpgrade previousUpgrade = m_computer.getUpgrade();
+
+                    if( previousUpgrade == null ) throw new LuaException( "Nothing to unequip" );
+
+                    m_computer.setUpgrade( null );
+
+                    ItemStack stack = previousUpgrade.getCraftingItem();
+                    if( !stack.isEmpty() )
+                    {
+                        stack = InventoryUtil.storeItems( stack, new PlayerMainInvWrapper( inventory ), inventory.currentItem );
+                        if( stack.isEmpty() )
+                        {
+                            WorldUtil.dropItemStack( stack, player.getEntityWorld(), player.posX, player.posY, player.posZ );
+                        }
+                    }
+
+                    return null;
                 } );
             default:
                 return null;

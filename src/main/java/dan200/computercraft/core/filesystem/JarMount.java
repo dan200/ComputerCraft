@@ -34,7 +34,7 @@ public class JarMount implements IMount
             m_path = path;
             m_directory = directory;
             m_size = m_directory ? 0 : size;
-            m_children = new LinkedHashMap<String, FileInZip>();
+            m_children = new LinkedHashMap<>();
         }
         
         public String getPath()

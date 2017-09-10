@@ -11,7 +11,6 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.client.gui.widgets.WidgetTerminal;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.IComputer;
-import dan200.computercraft.shared.computer.core.IComputerContainer;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.inventory.ContainerTurtle;
 import net.minecraft.client.Minecraft;
@@ -67,14 +66,7 @@ public class GuiTurtle extends GuiContainer
             ( height - ySize ) / 2 + 8,
             ComputerCraft.terminalWidth_turtle,
             ComputerCraft.terminalHeight_turtle,
-            new IComputerContainer()
-            {
-                @Override
-                public IComputer getComputer()
-                {
-                    return m_computer;
-                }
-            },
+            () -> m_computer,
             2, 2, 2, 2
         );
         m_terminalGui.setAllowFocusLoss( false );

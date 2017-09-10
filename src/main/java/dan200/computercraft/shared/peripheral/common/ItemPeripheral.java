@@ -10,12 +10,10 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class ItemPeripheral extends ItemPeripheralBase
 {
@@ -77,8 +75,9 @@ public class ItemPeripheral extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
+    public void getSubItems( @Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
+        if( !isInCreativeTab( tabs ) ) return;
         list.add( PeripheralItemFactory.create( PeripheralType.DiskDrive, null, 1 ) );
         list.add( PeripheralItemFactory.create( PeripheralType.Printer, null, 1 ) );
         list.add( PeripheralItemFactory.create( PeripheralType.Monitor, null, 1 ) );

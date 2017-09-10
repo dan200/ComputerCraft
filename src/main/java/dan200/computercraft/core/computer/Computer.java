@@ -224,7 +224,7 @@ public class Computer
         m_fileSystem = null;
 
         m_machine = null;
-        m_apis = new ArrayList<ILuaAPI>();
+        m_apis = new ArrayList<>();
         m_apiEnvironment = new APIEnvironment( this );
 
         m_internalOutput = new int[6];

@@ -11,13 +11,14 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class ItemComputerBase extends ItemBlock implements IComputerItem, IMedia
@@ -36,9 +37,9 @@ public abstract class ItemComputerBase extends ItemBlock implements IComputerIte
     }
 
     @Override
-    public void addInformation( @Nonnull ItemStack stack, @Nonnull EntityPlayer player, @Nonnull List<String> list, boolean debug )
+    public void addInformation( @Nonnull ItemStack stack, @Nullable World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag )
     {
-        if( debug )
+        if( flag.isAdvanced() )
         {
             int id = getComputerID( stack );
             if( id >= 0 )

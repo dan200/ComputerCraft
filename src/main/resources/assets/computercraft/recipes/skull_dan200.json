@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        { "item": "minecraft:skull", "data": 1 },
+        { "item": "computercraft:computer", "data": 0 }
+    ],
+    "result": { 
+        "item": "minecraft:skull", 
+        "data": 3,
+        "nbt": { "SkullOwner": "dan200" }
+    }
+}
