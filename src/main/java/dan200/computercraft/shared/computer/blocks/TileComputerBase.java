@@ -76,7 +76,7 @@ public abstract class TileComputerBase extends TileGeneric
         unload();
         for( EnumFacing dir : EnumFacing.VALUES )
         {
-            RedstoneUtil.propogateRedstoneOutput( getWorld(), getPos(), dir );
+            RedstoneUtil.propagateRedstoneOutput( getWorld(), getPos(), dir );
         }
     }
 
@@ -380,7 +380,7 @@ public abstract class TileComputerBase extends TileGeneric
         updateBlock();
         for( EnumFacing dir : EnumFacing.VALUES )
         {
-            RedstoneUtil.propogateRedstoneOutput( getWorld(), getPos(), dir );
+            RedstoneUtil.propagateRedstoneOutput( getWorld(), getPos(), dir );
         }
     }
 
