@@ -8,7 +8,7 @@ local nCurrentProcess = nil
 local nRunningProcess = nil
 local bShowMenu = false
 local bWindowsResized = false
-local nScrollpos = 1
+local nScrollPos = 1
 local bScrollRight = false
 
 local function selectProcess( n )
@@ -117,15 +117,15 @@ local function redrawMenu()
         parentTerm.setCursorPos( 1, 1 )
         parentTerm.setBackgroundColor( menuOtherBgColor )
         parentTerm.clearLine()
-        local nCharcou = 0
+        local nCharCount = 0
         local nSize = parentTerm.getSize()
-        if nScrollpos ~= 1 then
+        if nScrollPos ~= 1 then
             parentTerm.setTextColor( menuOtherTextColor )
             parentTerm.setBackgroundColor( menuOtherBgColor )
             parentTerm.write( "<" )
-            nCharcou = 1
+            nCharCount = 1
         end
-        for n=nScrollpos,#tProcesses do
+        for n=nScrollPos,#tProcesses do
             if n == nCurrentProcess then
                 parentTerm.setTextColor( menuMainTextColor )
                 parentTerm.setBackgroundColor( menuMainBgColor )
@@ -134,9 +134,9 @@ local function redrawMenu()
                 parentTerm.setBackgroundColor( menuOtherBgColor )
             end
             parentTerm.write( " " .. tProcesses[n].sTitle .. " " )
-            nCharcou = nCharcou + #tProcesses[n].sTitle + 2
+            nCharCount = nCharCount + #tProcesses[n].sTitle + 2
         end
-        if nCharcou > nSize then
+        if nCharCount > nSize then
             parentTerm.setTextColor( menuOtherTextColor )
             parentTerm.setBackgroundColor( menuOtherBgColor )
             parentTerm.setCursorPos( nSize, 1 )
@@ -282,18 +282,18 @@ while #tProcesses > 0 do
         local button, x, y = tEventData[2], tEventData[3], tEventData[4]
         if bShowMenu and y == 1 then
             -- Switch process
-            if x == 1 and nScrollpos ~= 1 then
-                nScrollpos = nScrollpos - 1
+            if x == 1 and nScrollPos ~= 1 then
+                nScrollPos = nScrollPos - 1
                 redrawMenu()
-            elseif x == term.getSize() and bScrollRight == true then
-                nScrollpos = nScrollpos + 1
+            elseif bScrollRight and x == term.getSize() then
+                nScrollPos = nScrollPos + 1
                 redrawMenu()
             else
                 local tabStart = 1
-                if nScrollpos ~= 1 then
+                if nScrollPos ~= 1 then
                     tabStart = 2
                 end
-                for n=nScrollpos,#tProcesses do
+                for n=nScrollPos,#tProcesses do
                     local tabEnd = tabStart + string.len( tProcesses[n].sTitle ) + 1
                     if x >= tabStart and x <= tabEnd then
                         selectProcess( n )
