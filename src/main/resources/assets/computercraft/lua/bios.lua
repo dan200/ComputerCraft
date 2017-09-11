@@ -355,33 +355,65 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
         local cx,cy = term.getCursorPos()
         term.setCursorPos( sx, cy )
         local sReplace = (_bClear and " ") or _sReplaceChar
-        if sReplace then
-            term.write( string.rep( sReplace, math.max( string.len(sLine) - nScroll, 0 ) ) )
-        else
-            term.write( string.sub( sLine, nScroll + 1 ) )
-        end
-
-        if nCompletion then
-            local sCompletion = tCompletions[ nCompletion ]
-            local oldText, oldBg
-            if not _bClear then
-                oldText = term.getTextColor()
-                oldBg = term.getBackgroundColor()
-                term.setTextColor( colors.white )
-                term.setBackgroundColor( colors.gray )
-            end
+        if nCompletion and type(tCompletions[ nCompletion ]) == "table" then --Advanced mode
+            local tString = tCompletions[ nCompletion ]
             if sReplace then
-                term.write( string.rep( sReplace, string.len( sCompletion ) ) )
+                local nLength = 0
+                for _,sCurrent in ipairs( tString ) do
+                    nLength = nLength + #sCurrent
+                end
+                term.write( string.rep( sReplace, math.max( nLength - nScroll, 0 ) ) )
             else
-                term.write( sCompletion )
-            end
-            if not _bClear then
+                local bSuggest = false
+                local oldText = term.getTextColor()
+                local oldBg = term.getBackgroundColor()
+                for _,sCurrent in ipairs( tString ) do
+                    if bSuggest then
+                        term.setTextColor( colors.white )
+                        term.setBackgroundColor( colors.gray )
+                    else
+                        term.setTextColor( oldText )
+                        term.setBackgroundColor( oldBg )
+                    end
+                    term.write(sCurrent)
+                    bSuggest = not bSuggest
+                end
                 term.setTextColor( oldText )
                 term.setBackgroundColor( oldBg )
+                if not bSuggest then
+                    term.setCursorPos( term.getCursorPos() - #tString[ #tString ], cy )
+                end
             end
-        end
+        else --Basic mode
+            if sReplace then
+                term.write( string.rep( sReplace, math.max( string.len(sLine) - nScroll, 0 ) ) )
+            else
+                term.write( string.sub( sLine, nScroll + 1 ) )
+            end
 
-        term.setCursorPos( sx + nPos - nScroll, cy )
+            if nCompletion then
+                local sCompletion = tCompletions[ nCompletion ]
+                local oldText, oldBg
+                if not _bClear then
+                    oldText = term.getTextColor()
+                    oldBg = term.getBackgroundColor()
+                    term.setTextColor( colors.white )
+                    term.setBackgroundColor( colors.gray )
+                end
+                if sReplace then
+                    term.write( string.rep( sReplace, string.len( sCompletion ) ) )
+                else
+                    term.write( sCompletion )
+                end
+                if not _bClear then
+                    term.setTextColor( oldText )
+                    term.setBackgroundColor( oldBg )
+                end
+            end
+            
+            term.setCursorPos( sx + nPos - nScroll, cy )
+        end
+        
     end
     
     local function clear()
@@ -398,7 +430,11 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
 
             -- Find the common prefix of all the other suggestions which start with the same letter as the current one
             local sCompletion = tCompletions[ nCompletion ]
-            sLine = sLine .. sCompletion
+            if type(sCompletion) == "table" then
+                sLine = table.concat(sCompletion)
+            else
+                sLine = sLine .. sCompletion
+            end
             nPos = string.len( sLine )
 
             -- Redraw
