@@ -315,7 +315,7 @@ while #tProcesses > 0 do
     elseif sEvent == "mouse_drag" or sEvent == "mouse_up" or sEvent == "mouse_scroll" then
         -- Other mouse event
         local p1, x, y = tEventData[2], tEventData[3], tEventData[4]
-        if sEvent == "mouse_scroll" and y == 1 then
+        if bShowMenu and sEvent == "mouse_scroll" and y == 1 then
             if p1 == -1 and nScrollPos ~= 1 then
                 nScrollPos = nScrollPos - 1
                 redrawMenu()
