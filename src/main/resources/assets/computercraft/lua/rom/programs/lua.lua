@@ -19,15 +19,25 @@ local tEnv = {
 setmetatable( tEnv, { __index = _ENV } )
 
 local function displayTable( tDisplay )
+    local tSeen = {}
     local sShow = "{\n"
-    for k, v in pairs( tDisplay ) do
+    for k, v in ipairs( tDisplay ) do
         sShow = sShow .. "  "
-        if type( v ) == "number" or type( v ) == "boolean" then
-            sShow = sShow .. k .. " = " .. tostring( v ) .. ",\n"
-        elseif type( v ) == "string" then
-            sShow = sShow ..k .. ' = "' .. v .. '",\n'
+        if type( v ) == "string" then
+            sShow = sShow .. '"' .. v .. '",\n'
         else
-            sShow = sShow .. k .. " = ".. type( v ) .. ",\n"
+            sShow = sShow .. tostring( v ) .. ",\n"
+        end
+        tSeen[k] = true
+    end
+    for k, v in pairs( tDisplay ) do
+        if not tSeen[k] then
+            sShow = sShow .. "  "
+            if type( v ) == "string" then
+                sShow = sShow ..k .. ' = "' .. v .. '",\n'
+            else
+                sShow = sShow .. k .. " = ".. tostring( v ) .. ",\n"
+            end
         end
     end
     sShow = sShow .. "}"
