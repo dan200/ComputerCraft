@@ -9,25 +9,35 @@ for n=1,16 do
     tColourLookup[ string.byte( "0123456789abcdef",n,n ) ] = 2^(n-1)
 end
 
+local function parseLine( tImageArg, sLine )
+    local tLine = {}
+    for x=1,sLine:len() do
+        tLine[x] = tColourLookup[ string.byte(sLine,x,x) ] or 0
+    end
+    table.insert( tImageArg, tLine )
+end
+
+function parseImage( sRawData )
+    if type( sRawData ) ~= "string" then
+        error( "bad argument #1 (expected string, got " .. type( sRawData ) .. ")" )
+    end
+    local tImage = {}
+    for sLine in ( sRawData .. "\n" ):gmatch( "(.-)\n" ) do -- read each line like original file handling did
+        parseLine( tImage, sLine )
+    end
+    return tImage
+end
+
 function loadImage( sPath )
     if type( sPath ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 )
     end
 
-    local tImage = {}
     if fs.exists( sPath ) then
-        local file = io.open(sPath, "r" )
-        local sLine = file:read()
-        while sLine do
-            local tLine = {}
-            for x=1,sLine:len() do
-                tLine[x] = tColourLookup[ string.byte(sLine,x,x) ] or 0
-            end
-            table.insert( tImage, tLine )
-            sLine = file:read()
-        end
+        local file = io.open( sPath, "r" )
+        local sContent = file:readAll()
         file:close()
-        return tImage
+        return parseImage( sContent ) -- delegate image parse to parseImage
     end
     return nil
 end
