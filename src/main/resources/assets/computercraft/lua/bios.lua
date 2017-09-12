@@ -357,17 +357,11 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
         local sReplace = (_bClear and " ") or _sReplaceChar
         if nCompletion and type(tCompletions[ nCompletion ]) == "table" then --Advanced mode
             local tString = tCompletions[ nCompletion ]
-            if sReplace then
-                local nLength = 0
-                for _,sCurrent in ipairs( tString ) do
-                    nLength = nLength + #sCurrent
-                end
-                term.write( string.rep( sReplace, math.max( nLength - nScroll, 0 ) ) )
-            else
-                local bSuggest = false
-                local oldText = term.getTextColor()
-                local oldBg = term.getBackgroundColor()
-                for _,sCurrent in ipairs( tString ) do
+            local bSuggest = false
+            local oldText = term.getTextColor()
+            local oldBg = term.getBackgroundColor()
+            for _,sCurrent in ipairs( tString ) do
+                if not _bClear then
                     if bSuggest then
                         term.setTextColor( colors.white )
                         term.setBackgroundColor( colors.gray )
@@ -375,14 +369,20 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
                         term.setTextColor( oldText )
                         term.setBackgroundColor( oldBg )
                     end
-                    term.write(sCurrent)
-                    bSuggest = not bSuggest
                 end
+                if (not bSuggest and sReplace) or (bSuggest and _bClear) then
+                    term.write( string.rep( sReplace, #sCurrent ) )
+                else
+                    term.write(sCurrent)
+                end
+                bSuggest = not bSuggest
+            end
+            if not _bClear then
                 term.setTextColor( oldText )
                 term.setBackgroundColor( oldBg )
-                if not bSuggest then
-                    term.setCursorPos( term.getCursorPos() - #tString[ #tString ], cy )
-                end
+            end
+            if not bSuggest then
+                term.setCursorPos( term.getCursorPos() - #tString[ #tString ], cy )
             end
         else --Basic mode
             if sReplace then
@@ -400,7 +400,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
                     term.setTextColor( colors.white )
                     term.setBackgroundColor( colors.gray )
                 end
-                if sReplace then
+                if _bClear then
                     term.write( string.rep( sReplace, string.len( sCompletion ) ) )
                 else
                     term.write( sCompletion )
