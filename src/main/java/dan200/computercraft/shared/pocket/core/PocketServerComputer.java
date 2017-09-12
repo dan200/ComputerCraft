@@ -148,7 +148,7 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
         }
     }
 
-    public synchronized void updateValues( Entity entity, ItemStack stack, IPocketUpgrade upgrade )
+    public synchronized void updateValues( Entity entity, @Nonnull ItemStack stack, IPocketUpgrade upgrade )
     {
         if( entity != null )
         {

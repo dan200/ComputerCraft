@@ -13,7 +13,7 @@ public class MainThread
     private static final int MAX_TASKS_PER_TICK = 1000;
     private static final int MAX_TASKS_TOTAL = 50000;
 
-    private static final LinkedList<ITask> m_outstandingTasks = new LinkedList<ITask>();
+    private static final LinkedList<ITask> m_outstandingTasks = new LinkedList<>();
     private static final Object m_nextUnusedTaskIDLock = new Object();
     private static long m_nextUnusedTaskID = 0;
 

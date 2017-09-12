@@ -21,7 +21,7 @@ public class WidgetContainer extends Widget
 	public WidgetContainer( int x, int y, int w, int h )
 	{
 		super( x, y, w, h );
-		m_widgets = new ArrayList<Widget>();
+		m_widgets = new ArrayList<>();
 		m_modalWidget = null;
 	}
 
@@ -203,7 +203,8 @@ public class WidgetContainer extends Widget
 		return false;
 	}
 
-	public boolean suppressKeyPress( char c, int k )
+	@Override
+    public boolean suppressKeyPress( char c, int k )
 	{
 		if( m_modalWidget == null )
 		{

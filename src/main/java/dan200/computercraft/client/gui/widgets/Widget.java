@@ -16,6 +16,8 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
+
 public abstract class Widget extends Gui
 {
     private WidgetContainer m_parent;
@@ -263,7 +265,7 @@ public abstract class Widget extends Gui
     protected void drawTooltip( String[] lines, int x, int y )
     {
         Minecraft mc = Minecraft.getMinecraft();
-        FontRenderer fontRenderer = mc.fontRendererObj;
+        FontRenderer fontRenderer = mc.fontRenderer;
 
         int width = 0;
         for( String line : lines )
@@ -322,9 +324,9 @@ public abstract class Widget extends Gui
         }
     }
 
-    protected void drawItemStack( int x, int y, ItemStack stack )
+    protected void drawItemStack( int x, int y, @Nonnull ItemStack stack )
     {
-        if( stack != null )
+        if( !stack.isEmpty() )
         {
             GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
             GlStateManager.enableLighting();
@@ -338,7 +340,7 @@ public abstract class Widget extends Gui
                 if( renderItem != null )
                 {
                     renderItem.renderItemAndEffectIntoGUI( stack, x, y );
-                    renderItem.renderItemOverlayIntoGUI( mc.fontRendererObj, stack, x, y, null );
+                    renderItem.renderItemOverlayIntoGUI( mc.fontRenderer, stack, x, y, null );
                 }
             }
             finally
@@ -358,7 +360,7 @@ public abstract class Widget extends Gui
         Minecraft mc = Minecraft.getMinecraft();
         try
         {
-            mc.fontRendererObj.drawString( s, x, y, color );
+            mc.fontRenderer.drawString( s, x, y, color );
         }
         finally
         {
@@ -369,7 +371,7 @@ public abstract class Widget extends Gui
     protected int getStringWidth( String s )
     {
         Minecraft mc = Minecraft.getMinecraft();
-        return mc.fontRendererObj.getStringWidth( s );
+        return mc.fontRenderer.getStringWidth( s );
     }
 
     protected void playClickSound()

@@ -20,6 +20,7 @@ import dan200.computercraft.shared.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -40,7 +41,7 @@ import java.util.*;
 public class TurtleBrain implements ITurtleAccess
 {
     private static int s_nextInstanceID = 0;
-    private static Map<Integer, WeakReference<TurtleBrain>> s_allClientBrains = new HashMap<Integer, WeakReference<TurtleBrain>>();
+    private static Map<Integer, WeakReference<TurtleBrain>> s_allClientBrains = new HashMap<>();
 
     public static int assignInstanceID()
     {
@@ -74,7 +75,7 @@ public class TurtleBrain implements ITurtleAccess
         {
             if( getClientBrain( instanceID ) != brain )
             {
-                s_allClientBrains.put( instanceID, new WeakReference<TurtleBrain>( brain ) );
+                s_allClientBrains.put( instanceID, new WeakReference<>( brain ) );
             }
         }
     }
@@ -126,12 +127,12 @@ public class TurtleBrain implements ITurtleAccess
     {
         m_owner = turtle;
 
-        m_commandQueue = new LinkedList<TurtleCommandQueueEntry>();
+        m_commandQueue = new LinkedList<>();
         m_commandsIssued = 0;
 
-        m_upgrades = new HashMap<TurtleSide, ITurtleUpgrade>();
-        m_peripherals = new HashMap<TurtleSide, IPeripheral>();
-        m_upgradeNBTData = new HashMap<TurtleSide, NBTTagCompound>();
+        m_upgrades = new HashMap<>();
+        m_peripherals = new HashMap<>();
+        m_upgradeNBTData = new HashMap<>();
 
         m_selectedSlot = 0;
         m_fuelLevel = 0;
@@ -286,11 +287,11 @@ public class TurtleBrain implements ITurtleAccess
         m_upgradeNBTData.clear();
         if( nbttagcompound.hasKey( "leftUpgradeNBT" ) )
         {
-            m_upgradeNBTData.put( TurtleSide.Left, (NBTTagCompound) nbttagcompound.getCompoundTag( "leftUpgradeNBT" ).copy() );
+            m_upgradeNBTData.put( TurtleSide.Left, nbttagcompound.getCompoundTag( "leftUpgradeNBT" ).copy() );
         }
         if( nbttagcompound.hasKey( "rightUpgradeNBT" ) )
         {
-            m_upgradeNBTData.put( TurtleSide.Right, (NBTTagCompound) nbttagcompound.getCompoundTag( "rightUpgradeNBT" ).copy() );
+            m_upgradeNBTData.put( TurtleSide.Right, nbttagcompound.getCompoundTag( "rightUpgradeNBT" ).copy() );
         }
     }
 
@@ -420,11 +421,11 @@ public class TurtleBrain implements ITurtleAccess
         m_upgradeNBTData.clear();
         if( nbttagcompound.hasKey( "leftUpgradeNBT" ) )
         {
-            m_upgradeNBTData.put( TurtleSide.Left, (NBTTagCompound) nbttagcompound.getCompoundTag( "leftUpgradeNBT" ).copy() );
+            m_upgradeNBTData.put( TurtleSide.Left, nbttagcompound.getCompoundTag( "leftUpgradeNBT" ).copy() );
         }
         if( nbttagcompound.hasKey( "rightUpgradeNBT" ) )
         {
-            m_upgradeNBTData.put( TurtleSide.Right, (NBTTagCompound)nbttagcompound.getCompoundTag( "rightUpgradeNBT" ).copy() );
+            m_upgradeNBTData.put( TurtleSide.Right, nbttagcompound.getCompoundTag( "rightUpgradeNBT" ).copy() );
         }
 
         // Colour
@@ -515,7 +516,7 @@ public class TurtleBrain implements ITurtleAccess
                     {
                         // Copy the old turtle state into the new turtle
                         TileTurtle newTurtle = (TileTurtle)newTile;
-                        newTurtle.setWorldObj( world );
+                        newTurtle.setWorld( world );
                         newTurtle.setPos( pos );
                         newTurtle.transferStateFrom( oldOwner );
                         newTurtle.createServerComputer().setWorld( world );
@@ -552,9 +553,9 @@ public class TurtleBrain implements ITurtleAccess
         Vec3d offset = getRenderOffset( f );
         BlockPos pos = m_owner.getPos();
         return new Vec3d(
-            pos.getX() + 0.5 + offset.xCoord,
-            pos.getY() + 0.5 + offset.yCoord,
-            pos.getZ() + 0.5 + offset.zCoord
+            pos.getX() + 0.5 + offset.x,
+            pos.getY() + 0.5 + offset.y,
+            pos.getZ() + 0.5 + offset.z
         );
     }
 
@@ -1160,7 +1161,7 @@ public class TurtleBrain implements ITurtleAccess
                         double pushStepZ = (double) moveDir.getFrontOffsetZ() * pushStep;
                         for (Entity entity : list)
                         {
-                            entity.moveEntity( pushStepX, pushStepY, pushStepZ );
+                            entity.move( MoverType.PISTON, pushStepX, pushStepY, pushStepZ );
                         }
                     }
                 }
@@ -1176,9 +1177,9 @@ public class TurtleBrain implements ITurtleAccess
                     Vec3d position = getVisualPosition( 1.0f );
                     if( position != null )
                     {
-                        double x = position.xCoord + world.rand.nextGaussian() * 0.1;
-                        double y = position.yCoord + 0.5 + world.rand.nextGaussian() * 0.1;
-                        double z = position.zCoord + world.rand.nextGaussian() * 0.1;
+                        double x = position.x + world.rand.nextGaussian() * 0.1;
+                        double y = position.y + 0.5 + world.rand.nextGaussian() * 0.1;
+                        double z = position.z + world.rand.nextGaussian() * 0.1;
                         world.spawnParticle(
                                 EnumParticleTypes.HEART, x, y, z,
                                 world.rand.nextGaussian() * 0.02,

@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
  * @see ILuaContext#executeMainThreadTask(ILuaTask)
  * @see ILuaContext#issueMainThreadTask(ILuaTask)
  */
+@FunctionalInterface
 public interface ILuaTask
 {
     /**

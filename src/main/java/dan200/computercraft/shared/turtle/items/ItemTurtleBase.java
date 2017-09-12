@@ -18,18 +18,16 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtleItem
 {
@@ -43,9 +41,10 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
     public abstract ItemStack create( int id, String label, int colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay );
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
+    public void getSubItems( @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
-        List<ItemStack> all = new ArrayList<ItemStack>();
+        if( !isInCreativeTab( tabs ) ) return;
+        NonNullList<ItemStack> all = NonNullList.create();
         ComputerCraft.addAllUpgradedTurtles( all );
         for( ItemStack stack : all )
         {
@@ -72,7 +71,7 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
         return false;
     }
 
-    public void setupTurtleAfterPlacement( ItemStack stack, ITurtleTile turtle )
+    public void setupTurtleAfterPlacement( @Nonnull ItemStack stack, ITurtleTile turtle )
     {
         // Set ID
         int id = getComputerID( stack );
@@ -115,7 +114,7 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
 
     @Nonnull
     @Override
-    public String getUnlocalizedName( ItemStack stack )
+    public String getUnlocalizedName( @Nonnull ItemStack stack )
     {
         ComputerFamily family = getFamily( stack );
         switch( family )

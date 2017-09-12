@@ -6,6 +6,18 @@ if _VERSION == "Lua 5.1" then
     local nativeloadstring = loadstring
     local nativesetfenv = setfenv
     function load( x, name, mode, env )
+        if type( x ) ~= "string" and type( x ) ~= "function" then
+            error( "bad argument #1 (expected string or function, got " .. type( x ) .. ")", 2 ) 
+        end
+        if name ~= nil and type( name ) ~= "string" then
+            error( "bad argument #2 (expected string, got " .. type( name ) .. ")", 2 ) 
+        end
+        if mode ~= nil and type( mode ) ~= "string" then
+            error( "bad argument #3 (expected string, got " .. type( mode ) .. ")", 2 ) 
+        end
+        if env ~= nil and type( env) ~= "table" then
+            error( "bad argument #4 (expected table, got " .. type( env ) .. ")", 2 ) 
+        end
         if mode ~= nil and mode ~= "t" then
             error( "Binary chunk loading prohibited", 2 )
         end
@@ -709,6 +721,9 @@ if http then
         if _headers ~= nil and type( _headers ) ~= "table" then
             error( "bad argument #2 (expected table, got " .. type( _headers ) .. ")", 2 ) 
         end
+        if _binary ~= nil and type( _binary ) ~= "boolean" then
+            error( "bad argument #3 (expected boolean, got " .. type( _binary ) .. ")", 2 ) 
+        end
         return wrapRequest( _url, nil, _headers, _binary)
     end
 
@@ -722,6 +737,9 @@ if http then
         if _headers ~= nil and type( _headers ) ~= "table" then
             error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 ) 
         end
+        if _binary ~= nil and type( _binary ) ~= "boolean" then
+            error( "bad argument #4 (expected boolean, got " .. type( _binary ) .. ")", 2 ) 
+        end
         return wrapRequest( _url, _post or "", _headers, _binary)
     end
 
@@ -734,6 +752,9 @@ if http then
         end
         if _headers ~= nil and type( _headers ) ~= "table" then
             error( "bad argument #3 (expected table, got " .. type( _headers ) .. ")", 2 ) 
+        end
+        if _binary ~= nil and type( _binary ) ~= "boolean" then
+            error( "bad argument #4 (expected boolean, got " .. type( _binary ) .. ")", 2 ) 
         end
         local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary )
         if not ok then

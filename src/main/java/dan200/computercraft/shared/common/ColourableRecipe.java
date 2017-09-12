@@ -6,13 +6,14 @@ import dan200.computercraft.shared.util.ColourUtils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-public class ColourableRecipe implements IRecipe
+public class ColourableRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
     @Override
     public boolean matches( @Nonnull InventoryCrafting inv, @Nonnull World worldIn )
@@ -22,7 +23,7 @@ public class ColourableRecipe implements IRecipe
         for( int i = 0; i < inv.getSizeInventory(); i++ )
         {
             ItemStack stack = inv.getStackInSlot( i );
-            if( stack == null ) continue;
+            if( stack.isEmpty() ) continue;
 
             if( stack.getItem() instanceof IColouredItem )
             {
@@ -42,11 +43,11 @@ public class ColourableRecipe implements IRecipe
         return hasColourable && hasDye;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public ItemStack getCraftingResult( @Nonnull InventoryCrafting inv )
     {
-        ItemStack colourable = null;
+        ItemStack colourable = ItemStack.EMPTY;
 
         ColourTracker tracker = new ColourTracker();
 
@@ -54,7 +55,7 @@ public class ColourableRecipe implements IRecipe
         {
             ItemStack stack = inv.getStackInSlot( i );
 
-            if( stack == null ) continue;
+            if( stack.isEmpty() ) continue;
 
             if( stack.getItem() instanceof IColouredItem )
             {
@@ -70,36 +71,42 @@ public class ColourableRecipe implements IRecipe
             }
         }
 
-        if( colourable == null )
+        if( colourable.isEmpty() )
         {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         return ((IColouredItem) colourable.getItem()).setColour( colourable, tracker.getColour() );
     }
 
     @Override
-    public int getRecipeSize()
+    public boolean canFit( int x, int y )
     {
-        return 2;
+        return x >= 2 && y >= 2;
     }
 
-    @Nullable
     @Override
-    public ItemStack getRecipeOutput()
+    public boolean isHidden()
     {
-        return null;
+        return true;
     }
 
     @Nonnull
     @Override
-    public ItemStack[] getRemainingItems( @Nonnull InventoryCrafting inv )
+    public ItemStack getRecipeOutput()
     {
-        ItemStack[] results = new ItemStack[ inv.getSizeInventory() ];
-        for( int i = 0; i < results.length; ++i )
+        return ItemStack.EMPTY;
+    }
+
+    @Nonnull
+    @Override
+    public NonNullList<ItemStack> getRemainingItems( @Nonnull InventoryCrafting inventoryCrafting )
+    {
+        NonNullList<ItemStack> results = NonNullList.withSize( inventoryCrafting.getSizeInventory(), ItemStack.EMPTY );
+        for( int i = 0; i < results.size(); ++i )
         {
-            ItemStack stack = inv.getStackInSlot( i );
-            results[ i ] = ForgeHooks.getContainerItem( stack );
+            ItemStack stack = inventoryCrafting.getStackInSlot( i );
+            results.set( i, ForgeHooks.getContainerItem( stack ) );
         }
         return results;
     }

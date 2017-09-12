@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "#R#",
+        "#D#"
+    ],
+    "key": {
+        "#": { "item": "minecraft:stone", "data": 0 },
+        "R": { "item": "minecraft:redstone" },
+        "D": { "item": "minecraft:dye", "data": 0 }
+    },
+    "result": { "item": "computercraft:peripheral", "data": 3 }
+}

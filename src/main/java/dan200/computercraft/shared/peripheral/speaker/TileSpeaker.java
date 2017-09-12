@@ -32,6 +32,7 @@ public class TileSpeaker extends TilePeripheralBase
 
     // IPeripheralTile implementation
 
+    @Override
     public IPeripheral getPeripheral( EnumFacing side )
     {
         return m_peripheral;

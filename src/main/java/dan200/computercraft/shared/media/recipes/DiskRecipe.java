@@ -14,11 +14,14 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-public class DiskRecipe implements IRecipe
+public class DiskRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
     @Override
     public boolean matches( @Nonnull InventoryCrafting inv, @Nonnull World world )
@@ -30,7 +33,7 @@ public class DiskRecipe implements IRecipe
         {
             ItemStack stack = inv.getStackInSlot( i );
 
-            if( stack != null )
+            if( !stack.isEmpty() )
             {
                 if( stack.getItem() == Items.PAPER )
                 {
@@ -52,6 +55,7 @@ public class DiskRecipe implements IRecipe
         return redstoneFound && paperFound;
     }
 
+    @Nonnull
     @Override
     public ItemStack getCraftingResult( @Nonnull InventoryCrafting inv )
     {
@@ -61,8 +65,8 @@ public class DiskRecipe implements IRecipe
         {
             ItemStack stack = inv.getStackInSlot( i );
 
-            if( stack == null ) continue;
-
+            if( stack.isEmpty() ) continue;
+            
             if( stack.getItem() != Items.PAPER && stack.getItem() != Items.REDSTONE )
             {
                 int index = ColourUtils.getStackColour( stack );
@@ -77,11 +81,18 @@ public class DiskRecipe implements IRecipe
     }
 
     @Override
-    public int getRecipeSize()
+    public boolean canFit( int x, int y )
     {
-        return 2;
+        return x >= 2 && y >= 2;
     }
 
+    @Override
+    public boolean isHidden()
+    {
+        return true;
+    }
+
+    @Nonnull
     @Override
     public ItemStack getRecipeOutput()
     {
@@ -90,13 +101,13 @@ public class DiskRecipe implements IRecipe
 
     @Nonnull
     @Override
-    public ItemStack[] getRemainingItems( @Nonnull InventoryCrafting inv )
+    public NonNullList<ItemStack> getRemainingItems( @Nonnull InventoryCrafting inventoryCrafting )
     {
-        ItemStack[] results = new ItemStack[ inv.getSizeInventory() ];
-        for( int i = 0; i < results.length; ++i )
+        NonNullList<ItemStack> results = NonNullList.withSize( inventoryCrafting.getSizeInventory(), ItemStack.EMPTY );
+        for( int i = 0; i < results.size(); ++i )
         {
-            ItemStack stack = inv.getStackInSlot( i );
-            results[ i ] = net.minecraftforge.common.ForgeHooks.getContainerItem( stack );
+            ItemStack stack = inventoryCrafting.getStackInSlot( i );
+            results.set( i, ForgeHooks.getContainerItem( stack ) );
         }
         return results;
     }

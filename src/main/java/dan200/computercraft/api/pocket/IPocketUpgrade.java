@@ -48,9 +48,9 @@ public interface IPocketUpgrade
      * pocket computer which holds this upgrade. This item stack is also used to determine the upgrade given by
      * {@code pocket.equip()}/{@code pocket.unequip()}.
      *
-     * @return The item stack used for crafting. This can be {@code null} if crafting is disabled.
+     * @return The item stack used for crafting. This can be {@link ItemStack#EMPTY} if crafting is disabled.
      */
-    @Nullable
+    @Nonnull
     ItemStack getCraftingItem();
 
     /**
@@ -74,7 +74,9 @@ public interface IPocketUpgrade
      * @param peripheral The peripheral for this upgrade.
      * @see #createPeripheral(IPocketAccess)
      */
-    void update( @Nonnull IPocketAccess access, @Nullable IPeripheral peripheral );
+    default void update( @Nonnull IPocketAccess access, @Nullable IPeripheral peripheral )
+    {
+    }
 
     /**
      * Called when the pocket computer is right clicked.
@@ -87,5 +89,8 @@ public interface IPocketUpgrade
      * access the GUI.
      * @see #createPeripheral(IPocketAccess)
      */
-    boolean onRightClick( @Nonnull World world, @Nonnull IPocketAccess access, @Nullable IPeripheral peripheral );
+    default boolean onRightClick( @Nonnull World world, @Nonnull IPocketAccess access, @Nullable IPeripheral peripheral )
+    {
+        return false;
+    }
 }

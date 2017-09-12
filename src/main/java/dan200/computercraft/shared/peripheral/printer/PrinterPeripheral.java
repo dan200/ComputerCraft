@@ -132,16 +132,6 @@ public class PrinterPeripheral implements IPeripheral
     }
 
     @Override
-    public void attach( @Nonnull IComputerAccess computer )
-    {
-    }
-
-    @Override
-    public void detach( @Nonnull IComputerAccess computer )
-    {
-    }
-
-    @Override
     public boolean equals( IPeripheral other )
     {
         if( other instanceof PrinterPeripheral )

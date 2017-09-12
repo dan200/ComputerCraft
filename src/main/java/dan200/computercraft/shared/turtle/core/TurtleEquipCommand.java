@@ -11,7 +11,6 @@ import dan200.computercraft.api.turtle.*;
 import dan200.computercraft.shared.proxy.CCTurtleProxyCommon;
 import dan200.computercraft.shared.util.InventoryUtil;
 import dan200.computercraft.shared.util.WorldUtil;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.IItemHandler;
@@ -36,7 +35,7 @@ public class TurtleEquipCommand implements ITurtleCommand
         ItemStack newUpgradeStack;
         IItemHandler inventory = turtle.getItemHandler();
         ItemStack selectedStack = inventory.getStackInSlot( turtle.getSelectedSlot() );
-        if( selectedStack != null )
+        if( !selectedStack.isEmpty() )
         {
             newUpgradeStack = selectedStack.copy();
             newUpgrade = ComputerCraft.getTurtleUpgrade( newUpgradeStack );
@@ -57,7 +56,7 @@ public class TurtleEquipCommand implements ITurtleCommand
         if( oldUpgrade != null )
         {
             ItemStack craftingItem = oldUpgrade.getCraftingItem();
-            oldUpgradeStack = (craftingItem != null) ? craftingItem.copy() : null;
+            oldUpgradeStack = !craftingItem.isEmpty() ? craftingItem.copy() : null;
         }
         else
         {
@@ -74,7 +73,7 @@ public class TurtleEquipCommand implements ITurtleCommand
         {
             // Store old upgrades item
             ItemStack remainder = InventoryUtil.storeItems( oldUpgradeStack, inventory, turtle.getSelectedSlot() );
-            if( remainder != null )
+            if( !remainder.isEmpty() )
             {
                 // If there's no room for the items, drop them
                 BlockPos position = turtle.getPosition();

@@ -1,0 +1,7 @@
+{
+    "recipes" : {
+        "impostor_shaped" : "dan200.computercraft.shared.util.ImpostorRecipe$Factory",
+        "impostor_shapeless" : "dan200.computercraft.shared.util.ImpostorShapelessRecipe$Factory",
+        "turtle" : "dan200.computercraft.shared.turtle.recipes.TurtleRecipe$Factory"
+    }
+}

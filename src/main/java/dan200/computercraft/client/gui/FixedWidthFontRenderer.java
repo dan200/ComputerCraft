@@ -8,9 +8,9 @@ package dan200.computercraft.client.gui;
 
 import dan200.computercraft.core.terminal.TextBuffer;
 import dan200.computercraft.shared.util.Palette;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -38,7 +38,7 @@ public class FixedWidthFontRenderer
         Arrays.fill( rgb, ( rgb[0] + rgb[1] + rgb[2] ) / 3.0f );
     }
 
-    private void drawChar( VertexBuffer renderer, double x, double y, int index, int color, Palette p, boolean greyscale )
+    private void drawChar( BufferBuilder renderer, double x, double y, int index, int color, Palette p, boolean greyscale )
     {
         int column = index % 16;
         int row = index / 16;
@@ -63,7 +63,7 @@ public class FixedWidthFontRenderer
         renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
     }
 
-    private void drawQuad( VertexBuffer renderer, double x, double y, int color, double width, Palette p, boolean greyscale )
+    private void drawQuad( BufferBuilder renderer, double x, double y, int color, double width, Palette p, boolean greyscale )
     {
         double[] colour = p.getColour( 15 - color );
         if(greyscale)
@@ -91,7 +91,7 @@ public class FixedWidthFontRenderer
     {
         // Draw the quads
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer renderer = tessellator.getBuffer();
+        BufferBuilder renderer = tessellator.getBuffer();
         renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR );
         if( leftMarginSize > 0.0 )
         {
@@ -129,7 +129,7 @@ public class FixedWidthFontRenderer
     {
         // Draw the quads
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer renderer = tessellator.getBuffer();
+        BufferBuilder renderer = tessellator.getBuffer();
         renderer.begin( GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR );
         for( int i = 0; i < s.length(); i++ )
         {

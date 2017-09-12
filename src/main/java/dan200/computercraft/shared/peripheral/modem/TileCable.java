@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -130,7 +131,7 @@ public class TileCable extends TileModemBase
                     synchronized( m_entity.m_peripheralsByName )
                     {
                         int idx = 1;
-                        Map<Object,Object> table = new HashMap<Object,Object>();
+                        Map<Object,Object> table = new HashMap<>();
                         for( String name : m_entity.m_peripheralWrappersByName.keySet() )
                         {
                             table.put( idx++, name );
@@ -160,7 +161,7 @@ public class TileCable extends TileModemBase
                     String[] methodNames = m_entity.getMethodNamesRemote( getString( arguments, 0 ) );
                     if( methodNames != null )
                     {
-                        Map<Object,Object> table = new HashMap<Object,Object>();
+                        Map<Object,Object> table = new HashMap<>();
                         for(int i=0; i<methodNames.length; ++i ) {
                             table.put( i+1, methodNames[i] );
                         }
@@ -246,14 +247,14 @@ public class TileCable extends TileModemBase
     
     public TileCable()
     {
-        m_receivers = new HashSet<IPacketReceiver>();
-        m_transmitQueue = new LinkedList<PacketWrapper>();
+        m_receivers = new HashSet<>();
+        m_transmitQueue = new LinkedList<>();
         
         m_peripheralAccessAllowed = false;
         m_attachedPeripheralID = -1;
         
-        m_peripheralsByName = new HashMap<String, IPeripheral>();
-        m_peripheralWrappersByName = new HashMap<String, RemotePeripheralWrapper>();
+        m_peripheralsByName = new HashMap<>();
+        m_peripheralWrappersByName = new HashMap<>();
         m_peripheralsKnown = false;
         m_destroyed = false;
         
@@ -298,7 +299,7 @@ public class TileCable extends TileModemBase
     }
 
     @Override
-    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull NonNullList<ItemStack> drops, boolean creative )
     {
         if( !creative )
         {
@@ -338,7 +339,7 @@ public class TileCable extends TileModemBase
     public void onNeighbourChange()
     {
         EnumFacing dir = getDirection();
-        if( !worldObj.isSideSolid(
+        if( !getWorld().isSideSolid(
             getPos().offset( dir ),
             dir.getOpposite()
         ) )
@@ -348,14 +349,14 @@ public class TileCable extends TileModemBase
                 case WiredModem:
                 {
                     // Drop everything and remove block
-                    ((BlockGeneric)getBlockType()).dropAllItems( worldObj, getPos(), false );
-                    worldObj.setBlockToAir( getPos() );
+                    ((BlockGeneric)getBlockType()).dropAllItems( getWorld(), getPos(), false );
+                    getWorld().setBlockToAir( getPos() );
                     break;
                 }
                 case WiredModemWithCable:
                 {
                     // Drop the modem and convert to cable
-                    ((BlockGeneric)getBlockType()).dropItem( worldObj, getPos(), PeripheralItemFactory.create( PeripheralType.WiredModem, getLabel(), 1 ) );
+                    ((BlockGeneric)getBlockType()).dropItem( getWorld(), getPos(), PeripheralItemFactory.create( PeripheralType.WiredModem, getLabel(), 1 ) );
                     setLabel( null );
                     setBlockState( getBlockState().withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.None ) );
                     break;
@@ -378,27 +379,28 @@ public class TileCable extends TileModemBase
         double yMax = 0.625;
         double zMax = 0.625;
         BlockPos pos = getPos();
-        if( BlockCable.isCable( worldObj, pos.west() ) )
+        World world = getWorld();
+        if( BlockCable.isCable( world, pos.west() ) )
         {
             xMin = 0.0;
         }
-        if( BlockCable.isCable( worldObj, pos.east() ) )
+        if( BlockCable.isCable( world, pos.east() ) )
         {
             xMax = 1.0;
         }
-        if( BlockCable.isCable( worldObj, pos.down() ) )
+        if( BlockCable.isCable( world, pos.down() ) )
         {
             yMin = 0.0;
         }
-        if( BlockCable.isCable( worldObj, pos.up() ) )
+        if( BlockCable.isCable( world, pos.up() ) )
         {
             yMax = 1.0;
         }
-        if( BlockCable.isCable( worldObj, pos.north() )  )
+        if( BlockCable.isCable( world, pos.north() )  )
         {
             zMin = 0.0;
         }
-        if( BlockCable.isCable( worldObj, pos.south() ) )
+        if( BlockCable.isCable( world, pos.south() ) )
         {
             zMax = 1.0;
         }
@@ -444,7 +446,7 @@ public class TileCable extends TileModemBase
             BlockPos pos = getPos();
             for (EnumFacing facing : EnumFacing.VALUES)
             {
-                if( BlockCable.isCable( worldObj, pos.offset( facing ) ) )
+                if( BlockCable.isCable( getWorld(), pos.offset( facing ) ) )
                 {
                     bounds.add( BOXES[ facing.ordinal() ] );
                 }
@@ -457,7 +459,7 @@ public class TileCable extends TileModemBase
     {
         if( getPeripheralType() == PeripheralType.WiredModemWithCable && !player.isSneaking() )
         {
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 // On server, we interacted if a peripheral was found
                 String oldPeriphName = getConnectedPeripheralName();
@@ -468,13 +470,13 @@ public class TileCable extends TileModemBase
                 {
                     if( oldPeriphName != null )
                     {
-                        player.addChatMessage(
+                        player.sendMessage(
                             new TextComponentTranslation( "gui.computercraft:wired_modem.peripheral_disconnected", oldPeriphName )
                         );
                     }
                     if( periphName != null )
                     {
-                        player.addChatMessage(
+                        player.sendMessage(
                             new TextComponentTranslation( "gui.computercraft:wired_modem.peripheral_connected", periphName )
                         );
                     }
@@ -548,7 +550,7 @@ public class TileCable extends TileModemBase
     public void update()
     {
         super.update();
-        if( !worldObj.isRemote )
+        if( !getWorld().isRemote )
         {        
             synchronized( m_peripheralsByName )
             {
@@ -678,18 +680,16 @@ public class TileCable extends TileModemBase
 
     public void networkChanged()
     {
-        if( !worldObj.isRemote )
+        if( !getWorld().isRemote )
         {
             if( !m_destroyed )
             {
                 // If this modem is alive, rebuild the network
-                searchNetwork( new ICableVisitor() {
-                    public void visit( TileCable modem, int distance )
+                searchNetwork( ( modem, distance ) ->
+                {
+                    synchronized( modem.m_peripheralsByName )
                     {
-                        synchronized( modem.m_peripheralsByName )
-                        {
-                            modem.m_peripheralsKnown = false;
-                        }
+                        modem.m_peripheralsKnown = false;
                     }
                 } );
             }
@@ -699,9 +699,9 @@ public class TileCable extends TileModemBase
                 for( EnumFacing dir : EnumFacing.values() )
                 {
                     BlockPos offset = getPos().offset( dir );
-                    if( offset.getY() >= 0 && offset.getY() < worldObj.getHeight() && BlockCable.isCable( worldObj, offset ) )
+                    if( offset.getY() >= 0 && offset.getY() < getWorld().getHeight() && BlockCable.isCable( getWorld(), offset ) )
                     {
-                        TileEntity tile = worldObj.getTileEntity( offset );
+                        TileEntity tile = getWorld().getTileEntity( offset );
                         if( tile != null && tile instanceof TileCable )
                         {
                             TileCable modem = (TileCable)tile;
@@ -731,13 +731,11 @@ public class TileCable extends TileModemBase
         
     private void dispatchPacket( final PacketWrapper packet )
     {
-        searchNetwork( new ICableVisitor() {
-            public void visit( TileCable modem, int distance )
+        searchNetwork( ( modem, distance ) ->
+        {
+            if( distance <= packet.m_range)
             {
-                if( distance <= packet.m_range)
-                {
-                    modem.receivePacket( packet.m_packet, distance );
-                }
+                modem.receivePacket( packet.m_packet, distance );
             }
         } );
     }
@@ -776,7 +774,7 @@ public class TileCable extends TileModemBase
             assert( m_type != null );
             assert( m_methods != null );
             
-            m_methodMap = new HashMap<String, Integer>();
+            m_methodMap = new HashMap<>();
             for( int i=0; i<m_methods.length; ++i ) {
                 if( m_methods[i] != null ) {
                     m_methodMap.put( m_methods[i], i );
@@ -874,22 +872,20 @@ public class TileCable extends TileModemBase
         synchronized( m_peripheralsByName )
         {
             // Collect the peripherals
-            final Map<String, IPeripheral> newPeripheralsByName = new HashMap<String, IPeripheral>();
+            final Map<String, IPeripheral> newPeripheralsByName = new HashMap<>();
             if( getPeripheralType() == PeripheralType.WiredModemWithCable )
             {
-                searchNetwork( new ICableVisitor() {
-                    public void visit( TileCable modem, int distance )
+                searchNetwork( ( modem, distance ) ->
+                {
+                if( modem != origin )
+                {
+                    IPeripheral peripheral = modem.getConnectedPeripheral();
+                    String periphName = modem.getConnectedPeripheralName();
+                    if( peripheral != null && periphName != null )
                     {
-                    if( modem != origin )
-                    {
-                        IPeripheral peripheral = modem.getConnectedPeripheral();
-                        String periphName = modem.getConnectedPeripheralName();
-                        if( peripheral != null && periphName != null )
-                        {
-                            newPeripheralsByName.put( periphName, peripheral );
-                        }
+                        newPeripheralsByName.put( periphName, peripheral );
                     }
-                    }
+                }
                 } );
             }
             //System.out.println( newPeripheralsByName.size()+" peripherals discovered" );
@@ -954,7 +950,7 @@ public class TileCable extends TileModemBase
             if( m_attachedPeripheralID < 0 )
             {
                 m_attachedPeripheralID = IDAssigner.getNextIDFromFile(new File(
-                    ComputerCraft.getWorldDir(worldObj),
+                    ComputerCraft.getWorldDir(getWorld()),
                     "computer/lastid_" + type + ".txt"
                 ));
             }
@@ -971,7 +967,7 @@ public class TileCable extends TileModemBase
             {
                 EnumFacing facing = getDirection();
                 BlockPos neighbour = getPos().offset( facing );
-                return PeripheralUtil.getPeripheral( worldObj, neighbour, facing.getOpposite() );
+                return PeripheralUtil.getPeripheral( getWorld(), neighbour, facing.getOpposite() );
             }
         }
         return null;
@@ -1033,8 +1029,8 @@ public class TileCable extends TileModemBase
     private void searchNetwork( ICableVisitor visitor )
     {
         int searchID = ++s_nextUniqueSearchID;
-        Queue<SearchLoc> queue = new LinkedList<SearchLoc>();
-        enqueue( queue, worldObj, getPos(), 1 );
+        Queue<SearchLoc> queue = new LinkedList<>();
+        enqueue( queue, getWorld(), getPos(), 1 );
         
         int visited = 0;
         while( queue.peek() != null )

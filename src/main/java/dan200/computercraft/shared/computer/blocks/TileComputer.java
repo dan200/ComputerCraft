@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -35,7 +36,7 @@ public class TileComputer extends TileComputerBase
     {
         ComputerFamily family = getFamily();
         ServerComputer computer = new ServerComputer(
-            worldObj,
+            getWorld(),
             id,
             m_label,
             instanceID,
@@ -48,7 +49,7 @@ public class TileComputer extends TileComputerBase
     }
 
     @Override
-    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull NonNullList<ItemStack> drops, boolean creative )
     {
         IComputer computer = getComputer();
         if( !creative || (computer != null && computer.getLabel() != null) )

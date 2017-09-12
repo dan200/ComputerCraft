@@ -68,7 +68,7 @@ public class ComboMount implements IMount
             {
                 if( foundFiles == null )
                 {
-                    foundFiles = new ArrayList<String>();
+                    foundFiles = new ArrayList<>();
                 }
                 part.list(  path, foundFiles );
                 foundDirs++;
@@ -83,7 +83,7 @@ public class ComboMount implements IMount
         else if( foundDirs > 1 )
         {
             // We found multiple directories, so filter for duplicates
-            Set<String> seen = new HashSet<String>();
+            Set<String> seen = new HashSet<>();
             for(String file : foundFiles)
             {
                 if( seen.add( file ) )
@@ -94,7 +94,7 @@ public class ComboMount implements IMount
         }
         else
         {
-            throw new IOException( "Not a directory" );
+            throw new IOException( "/" + path + ": Not a directory" );
         }
     }
     
@@ -109,7 +109,7 @@ public class ComboMount implements IMount
                 return part.getSize( path );
             }
         }
-        throw new IOException( "No such file" );
+        throw new IOException(  "/" + path + ": No such file" );
     }
 
     @Nonnull
@@ -124,6 +124,6 @@ public class ComboMount implements IMount
                 return part.openForRead( path );
             }
         }
-        throw new IOException( "No such file" );
+        throw new IOException( "/" + path + ": No such file" );
     }
 }

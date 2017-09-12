@@ -9,7 +9,6 @@ package dan200.computercraft.core.filesystem;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
-import net.minecraftforge.fml.common.FMLLog;
 
 import java.io.*;
 import java.util.*;
@@ -110,7 +109,7 @@ public class FileSystem
                 }
                 else
                 {
-                    throw new FileSystemException( "Not a directory" );
+                    throw new FileSystemException( "/" + path + ": Not a directory" );
                 }
             }
             catch( IOException e )
@@ -137,7 +136,7 @@ public class FileSystem
                 }
                 else
                 {
-                    throw new FileSystemException( "No such file" );
+                    throw new FileSystemException( "/" + path + ": No such file" );
                 }
             }
             catch( IOException e )
@@ -157,7 +156,7 @@ public class FileSystem
                 }
                 else
                 {
-                    throw new FileSystemException( "No such file" );
+                    throw new FileSystemException( "/" + path + ": No such file" );
                 }
             }
             catch( IOException e )
@@ -172,7 +171,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access denied" );
+                throw new FileSystemException( "/" + path + ": Access denied" );
             }
             try
             {
@@ -181,7 +180,7 @@ public class FileSystem
                 {
                     if( !m_mount.isDirectory( path ) )
                     {
-                        throw new FileSystemException( "File exists" );
+                        throw new FileSystemException( "/" + path + ": File exists" );
                     }
                 }
                 else
@@ -199,7 +198,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access denied" );
+                throw new FileSystemException( "/" + path + ": Access denied" );
             }
             try
             {
@@ -219,14 +218,14 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access denied" );
+                throw new FileSystemException( "/" + path + ": Access denied" );
             }
             try
             {
                 path = toLocal( path );
                 if( m_mount.exists( path ) && m_mount.isDirectory( path ) )
                 {
-                    throw new FileSystemException( "Cannot write to directory" );
+                    throw new FileSystemException( "/" + path + ": Cannot write to directory" );
                 }
                 else
                 {
@@ -251,7 +250,7 @@ public class FileSystem
         {
             if( m_writableMount == null )
             {
-                throw new FileSystemException( "Access denied" );
+                throw new FileSystemException( "/" + path + ": Access denied" );
             }
             try
             {
@@ -270,7 +269,7 @@ public class FileSystem
                 }
                 else if( m_mount.isDirectory( path ) )
                 {
-                    throw new FileSystemException( "Cannot write to directory" );
+                    throw new FileSystemException( "/" + path + ": Cannot write to directory" );
                 }
                 else
                 {
@@ -291,7 +290,7 @@ public class FileSystem
         }
     }
 
-    private final Map<String, MountWrapper> m_mounts = new HashMap<String, MountWrapper>();
+    private final Map<String, MountWrapper> m_mounts = new HashMap<>();
     private final Set<Closeable> m_openFiles = Collections.newSetFromMap( new WeakHashMap<Closeable, Boolean>() );
     
     public FileSystem( String rootLabel, IMount rootMount ) throws FileSystemException
@@ -424,7 +423,7 @@ public class FileSystem
         MountWrapper mount = getMount( path );
         
         // Gets a list of the files in the mount
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         mount.list( path, list );
         
         // Add any mounts that are mounted at this location
@@ -481,7 +480,7 @@ public class FileSystem
 
         // Scan as normal, starting from this directory
         Pattern wildPattern = Pattern.compile( "^\\Q" + wildPath.replaceAll( "\\*", "\\\\E[^\\\\/]*\\\\Q" ) + "\\E$" );
-        List<String> matches = new ArrayList<String>();
+        List<String> matches = new ArrayList<>();
         findIn( startDir, matches, wildPattern );
 
         // Return matches
@@ -557,16 +556,16 @@ public class FileSystem
         sourcePath = sanitizePath( sourcePath );
         destPath = sanitizePath( destPath );
         if( isReadOnly( destPath ) ) {
-            throw new FileSystemException( "Access denied" );
+            throw new FileSystemException( "/" + destPath + ": Access denied" );
         }
         if( !exists( sourcePath ) ) {
-            throw new FileSystemException( "No such file" );
+            throw new FileSystemException( "/" + sourcePath + ": No such file" );
         }
         if( exists( destPath ) ) {
-            throw new FileSystemException( "File exists" );
+            throw new FileSystemException( "/" + destPath + ": File exists" );
         }
         if( contains( sourcePath, destPath ) ) {
-            throw new FileSystemException( "Can't copy a directory inside itself" );
+            throw new FileSystemException( "/" + sourcePath + ": Can't copy a directory inside itself" );
         }
         copyRecursive( sourcePath, getMount( sourcePath ), destPath, getMount( destPath ) );
     }
@@ -585,7 +584,7 @@ public class FileSystem
             destinationMount.makeDirectory( destinationPath );
             
             // Copy the source contents into it
-            List<String> sourceChildren = new ArrayList<String>();
+            List<String> sourceChildren = new ArrayList<>();
             sourceMount.list( sourcePath, sourceChildren );
             for( String child : sourceChildren )
             {
@@ -730,7 +729,7 @@ public class FileSystem
         }
         if( match == null )
         {
-            throw new FileSystemException( "Invalid Path" );
+            throw new FileSystemException( "/" + path + ": Invalid Path" );
         }
         return match;
     }
@@ -740,6 +739,7 @@ public class FileSystem
         return sanitizePath( path, false );
     }
 
+    private static final Pattern threeDotsPattern = Pattern.compile( "^\\.{3,}$" );
     private static String sanitizePath( String path, boolean allowWildcards )
     {
         // Allow windowsy slashes
@@ -762,17 +762,18 @@ public class FileSystem
         
         // Collapse the string into its component parts, removing ..'s
         String[] parts = path.split("/");
-        Stack<String> outputParts = new Stack<String>();
+        Stack<String> outputParts = new Stack<>();
         for( String part : parts )
         {
-            if( part.length() == 0 || part.equals( "." ) )
+            if( part.length() == 0 || part.equals( "." ) || threeDotsPattern.matcher( part ).matches() ) 
             {
                 // . is redundant
+                // ... and more are treated as .
                 continue;
             }
-            else if( part.equals( ".." ) || part.equals( "..." ) )
+            else if( part.equals( ".." ) )
             {
-                // .. or ... can cancel out the last folder entered
+                // .. can cancel out the last folder entered
                 if( !outputParts.empty() )
                 {
                     String top = outputParts.peek();

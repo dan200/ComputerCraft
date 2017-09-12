@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
@@ -44,6 +45,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -76,6 +78,13 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         m_tick = 0;
         m_renderFrame = 0;
 
+        // Setup client forge handlers
+        registerForgeHandlers();
+    }
+
+    @SubscribeEvent
+    public void registerModels( ModelRegistryEvent event )
+    {
         // Register item models
         registerItemModel( ComputerCraft.Blocks.computer, new ItemMeshDefinition()
         {
@@ -174,9 +183,6 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             "advanced_pocket_computer", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking",
             "pocket_computer_colour", "pocket_computer_colour_on", "pocket_computer_colour_blinking",
         } );
-
-        // Setup client forge handlers
-        registerForgeHandlers();
     }
 
     @Override
@@ -192,28 +198,24 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
         mc.getItemColors().registerItemColorHandler( new DiskColorHandler( ComputerCraft.Items.disk ), ComputerCraft.Items.disk );
         mc.getItemColors().registerItemColorHandler( new DiskColorHandler( ComputerCraft.Items.diskExpanded ), ComputerCraft.Items.diskExpanded );
 
-        mc.getItemColors().registerItemColorHandler( new IItemColor()
+        mc.getItemColors().registerItemColorHandler( ( stack, layer ) ->
         {
-            @Override
-            public int getColorFromItemstack( @Nonnull ItemStack stack, int layer )
+            switch( layer )
             {
-                switch( layer )
+                case 0:
+                default:
+                    return 0xFFFFFF;
+                case 1:
                 {
-                    case 0:
-                    default:
-                        return 0xFFFFFF;
-                    case 1:
-                    {
-                        // Frame colour
-                        int colour = ComputerCraft.Items.pocketComputer.getColour( stack );
-                        return colour == -1 ? 0xFFFFFF : colour;
-                    }
-                    case 2:
-                    {
-                        // Light colour
-                        int colour = ComputerCraft.Items.pocketComputer.getLightState( stack );
-                        return colour == -1 ? Colour.Black.getHex() : colour;
-                    }
+                    // Frame colour
+                    int colour = ComputerCraft.Items.pocketComputer.getColour( stack );
+                    return colour == -1 ? 0xFFFFFF : colour;
+                }
+                case 2:
+                {
+                    // Light colour
+                    int colour = ComputerCraft.Items.pocketComputer.getLightState( stack );
+                    return colour == -1 ? Colour.Black.getHex() : colour;
                 }
             }
         }, ComputerCraft.Items.pocketComputer );
@@ -301,10 +303,10 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     }
 
     @Override
-    public String getRecordInfo( ItemStack recordStack )
+    public String getRecordInfo( @Nonnull ItemStack recordStack )
     {
-        List<String> info = new ArrayList<String>( 1 );
-        recordStack.getItem().addInformation( recordStack, null, info, false );
+        List<String> info = new ArrayList<>( 1 );
+        recordStack.getItem().addInformation( recordStack, null, info, ITooltipFlag.TooltipFlags.NORMAL );
         if( info.size() > 0 ) {
             return info.get( 0 );
         } else {
@@ -351,7 +353,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     public Object getPrintoutGUI( EntityPlayer player, EnumHand hand )
     {
         ContainerHeldItem container = new ContainerHeldItem( player, hand );
-        if( container.getStack() != null && container.getStack().getItem() instanceof ItemPrintout )
+        if( container.getStack().getItem() instanceof ItemPrintout )
         {
             return new GuiPrintout( container );
         }
@@ -362,7 +364,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     public Object getPocketComputerGUI( EntityPlayer player, EnumHand hand )
     {
         ContainerPocketComputer container = new ContainerPocketComputer( player, hand );
-        if( container.getStack() != null && container.getStack().getItem() instanceof ItemPocketComputer )
+        if( container.getStack().getItem() instanceof ItemPocketComputer )
         {
             return new GuiPocketComputer( container );
         }
@@ -393,14 +395,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
                     }
                     else
                     {
-                        listener.addScheduledTask( new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                processPacket( packet, player );
-                            }
-                        } );
+                        listener.addScheduledTask( () -> processPacket( packet, player ) );
                     }
                 }
                 break;

@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -34,7 +35,7 @@ public abstract class TileGeneric extends TileEntity
 
     public void requestTileEntityUpdate()
     {
-        if( worldObj.isRemote )
+        if( getWorld().isRemote )
         {
             ComputerCraftPacket packet = new ComputerCraftPacket();
             packet.m_packetType = ComputerCraftPacket.RequestTileEntityUpdate;
@@ -52,7 +53,7 @@ public abstract class TileGeneric extends TileEntity
     @Nullable
     public BlockGeneric getBlock()
     {
-        Block block = worldObj.getBlockState( getPos() ).getBlock();
+        Block block = getWorld().getBlockState( getPos() ).getBlock();
         if( block != null && block instanceof BlockGeneric )
         {
             return (BlockGeneric)block;
@@ -62,24 +63,24 @@ public abstract class TileGeneric extends TileEntity
 
     protected final IBlockState getBlockState()
     {
-        return worldObj.getBlockState( getPos() );
+        return getWorld().getBlockState( getPos() );
     }
 
     public final void updateBlock()
     {
         markDirty();
         BlockPos pos = getPos();
-        IBlockState state = worldObj.getBlockState( pos );
-        worldObj.markBlockRangeForRenderUpdate( pos, pos );
-        worldObj.notifyBlockUpdate( getPos(), state, state, 3 );
+        IBlockState state = getWorld().getBlockState( pos );
+        getWorld().markBlockRangeForRenderUpdate( pos, pos );
+        getWorld().notifyBlockUpdate( getPos(), state, state, 3 );
     }
 
     protected final void setBlockState( IBlockState newState )
     {
-        worldObj.setBlockState( getPos(), newState, 3 );
+        getWorld().setBlockState( getPos(), newState, 3 );
     }
 
-    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull NonNullList<ItemStack> drops, boolean creative )
     {
     }
 
@@ -151,13 +152,13 @@ public abstract class TileGeneric extends TileEntity
     {
         if( player != null && player.isEntityAlive() )
         {
-            if( worldObj.getTileEntity( getPos() ) == this )
+            if( getWorld().getTileEntity( getPos() ) == this )
             {
                 if( !ignoreRange )
                 {
                     double range = getInteractRange( player );
                     BlockPos pos = getPos();
-                    return player.getEntityWorld() == worldObj &&
+                    return player.getEntityWorld() == getWorld() &&
                            player.getDistanceSq( (double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5 ) <= ( range * range );
                 }
                 return true;
@@ -181,7 +182,7 @@ public abstract class TileGeneric extends TileEntity
 
     public final void sendBlockEvent( int eventID, int eventParameter )
     {
-        worldObj.addBlockEvent( getPos(), worldObj.getBlockState( getPos() ).getBlock(), eventID, eventParameter );
+        getWorld().addBlockEvent( getPos(), getWorld().getBlockState( getPos() ).getBlock(), eventID, eventParameter );
     }
 
     public void onBlockEvent( int eventID, int eventParameter )

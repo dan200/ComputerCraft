@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -46,7 +47,7 @@ public abstract class TilePeripheralBase extends TileGeneric
     }
 
     @Override
-    public void getDroppedItems( @Nonnull List<ItemStack> drops, boolean creative )
+    public void getDroppedItems( @Nonnull NonNullList<ItemStack> drops, boolean creative )
     {
         if( !creative )
         {

@@ -25,6 +25,7 @@ public class ContainerHeldItem extends Container
         m_stack = InventoryUtil.copyItem( player.getHeldItem( hand ) );
     }
 
+    @Nonnull
     public ItemStack getStack()
     {
         return m_stack;
@@ -36,7 +37,7 @@ public class ContainerHeldItem extends Container
         if( player != null && player.isEntityAlive() )
         {
             ItemStack stack = player.getHeldItem( m_hand );
-            if( (stack == m_stack) || (stack != null && m_stack != null && stack.getItem() == m_stack.getItem()) )
+            if( (stack == m_stack) || (!stack.isEmpty() && !m_stack.isEmpty() && stack.getItem() == m_stack.getItem()) )
             {
                 return true;
             }

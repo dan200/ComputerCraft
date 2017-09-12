@@ -59,7 +59,7 @@ public abstract class ItemPeripheralBase extends ItemBlock implements IPeriphera
 
     @Nonnull
     @Override
-    public String getUnlocalizedName( ItemStack stack )
+    public String getUnlocalizedName( @Nonnull ItemStack stack )
     {
         PeripheralType type = getPeripheralType( stack );
         switch( type )
@@ -108,7 +108,7 @@ public abstract class ItemPeripheralBase extends ItemBlock implements IPeriphera
     // IPeripheralItem implementation
 
     @Override
-    public final PeripheralType getPeripheralType( ItemStack stack )
+    public final PeripheralType getPeripheralType( @Nonnull ItemStack stack )
     {
         return getPeripheralType( stack.getItemDamage() );
     }

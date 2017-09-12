@@ -23,7 +23,7 @@ public class GuiConfigCC extends GuiConfig
 
     private static List<IConfigElement> getConfigElements()
     {
-        ArrayList<IConfigElement> elements = new ArrayList<IConfigElement>();
+        ArrayList<IConfigElement> elements = new ArrayList<>();
         for (Property property : ComputerCraft.Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
             elements.add( new ConfigElement( property ) );
@@ -41,19 +41,19 @@ public class GuiConfigCC extends GuiConfig
         }
 
         @Override
-        public Class<? extends GuiScreen> mainConfigGuiClass()
+        public boolean hasConfigGui()
         {
-            return GuiConfigCC.class;
+            return true;
+        }
+
+        @Override
+        public GuiScreen createConfigGui( GuiScreen parentScreen )
+        {
+            return new GuiConfigCC( parentScreen );
         }
 
         @Override
         public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
-        {
-            return null;
-        }
-
-        @Override
-        public RuntimeOptionGuiHandler getHandlerFor( RuntimeOptionCategoryElement runtimeOptionCategoryElement )
         {
             return null;
         }

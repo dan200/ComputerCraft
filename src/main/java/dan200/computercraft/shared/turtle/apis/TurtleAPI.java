@@ -6,7 +6,6 @@
 
 package dan200.computercraft.shared.turtle.apis;
 
-import com.google.common.base.Optional;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.turtle.ITurtleAccess;
@@ -21,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
@@ -149,7 +149,7 @@ public class TurtleAPI implements ILuaAPI
         String side = optString( arguments, index, null );
         if( side == null )
         {
-            return Optional.absent();
+            return Optional.empty();
         }
         else if( side.equalsIgnoreCase( "left" ) )
         {
@@ -250,9 +250,9 @@ public class TurtleAPI implements ILuaAPI
                 // getItemCount
                 int slot = parseOptionalSlotNumber( args, 0, m_turtle.getSelectedSlot() );
                 ItemStack stack = m_turtle.getInventory().getStackInSlot( slot );
-                if( stack != null )
+                if( !stack.isEmpty() )
                 {
-                    return new Object[] { stack.stackSize };
+                    return new Object[] { stack.getCount() };
                 }
                 else
                 {
@@ -264,10 +264,10 @@ public class TurtleAPI implements ILuaAPI
                 // getItemSpace
                 int slot = parseOptionalSlotNumber( args, 0, m_turtle.getSelectedSlot() );
                 ItemStack stack = m_turtle.getInventory().getStackInSlot( slot );
-                if( stack != null )
+                if( !stack.isEmpty() )
                 {
                     return new Object[] {
-                        Math.min( stack.getMaxStackSize(), 64 ) - stack.stackSize
+                        Math.min( stack.getMaxStackSize(), 64 ) - stack.getCount()
                     };
                 }
                 return new Object[] { 64 };
@@ -428,14 +428,14 @@ public class TurtleAPI implements ILuaAPI
                 // getItemDetail
                 int slot = parseOptionalSlotNumber( args, 0, m_turtle.getSelectedSlot() );
                 ItemStack stack = m_turtle.getInventory().getStackInSlot( slot );
-                if( stack != null && stack.stackSize > 0 )
+                if( !stack.isEmpty() )
                 {
                     Item item = stack.getItem();
                     String name = Item.REGISTRY.getNameForObject( item ).toString();
                     int damage = stack.getItemDamage();
-                    int count = stack.stackSize;
+                    int count = stack.getCount();
 
-                    Map<Object, Object> table = new HashMap<Object, Object>();
+                    Map<Object, Object> table = new HashMap<>();
                     table.put( "name", name );
                     table.put( "damage", damage );
                     table.put( "count", count );

@@ -10,13 +10,12 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class ItemCommandComputer extends ItemComputer
 {
@@ -29,6 +28,7 @@ public class ItemCommandComputer extends ItemComputer
         setCreativeTab( ComputerCraft.mainCreativeTab );
     }
 
+    @Override
     public ItemStack create( int id, String label, ComputerFamily family )
     {
         // Ignore types we can't handle
@@ -40,9 +40,12 @@ public class ItemCommandComputer extends ItemComputer
         // Build the stack
         ItemStack result = new ItemStack( this, 1, 0 );
 
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger( "computerID", id );
-        result.setTagCompound( nbt );
+        if( id >= 0 )
+        {
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setInteger( "computerID", id );
+            result.setTagCompound( nbt );
+        }
 
         if( label != null )
         {
@@ -53,15 +56,16 @@ public class ItemCommandComputer extends ItemComputer
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
+    public void getSubItems( @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
+        if( !isInCreativeTab( tabs ) ) return;
         list.add( ComputerItemFactory.create( -1, null, ComputerFamily.Command ) );
     }
 
     // IComputerItem implementation
 
     @Override
-    public int getComputerID( ItemStack stack )
+    public int getComputerID( @Nonnull ItemStack stack )
     {
         if( stack.hasTagCompound() && stack.getTagCompound().hasKey( "computerID" ) )
         {

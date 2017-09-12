@@ -34,7 +34,7 @@ public class JarMount implements IMount
             m_path = path;
             m_directory = directory;
             m_size = m_directory ? 0 : size;
-            m_children = new LinkedHashMap<String, FileInZip>();
+            m_children = new LinkedHashMap<>();
         }
         
         public String getPath()
@@ -203,7 +203,7 @@ public class JarMount implements IMount
         }
         else
         {
-            throw new IOException( "Not a directory" );
+            throw new IOException(  "/" + path + ": Not a directory" );
         }
     }
     
@@ -215,7 +215,7 @@ public class JarMount implements IMount
         {
             return file.getSize();
         }
-        throw new IOException( "No such file" );
+        throw new IOException(  "/" + path + ": No such file" );
     }
 
     @Nonnull
@@ -243,6 +243,6 @@ public class JarMount implements IMount
                 // treat errors as non-existance of file
             }
         }
-        throw new IOException( "No such file" );
+        throw new IOException(  "/" + path  + ": No such file" );
     }
 }

@@ -62,7 +62,7 @@ public abstract class TileComputerBase extends TileGeneric
     {
         if( m_instanceID >= 0 )
         {
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 ComputerCraft.serverComputerRegistry.remove( m_instanceID );
             }
@@ -76,7 +76,7 @@ public abstract class TileComputerBase extends TileGeneric
         unload();
         for( EnumFacing dir : EnumFacing.VALUES )
         {
-            RedstoneUtil.propogateRedstoneOutput( worldObj, getPos(), dir );
+            RedstoneUtil.propagateRedstoneOutput( getWorld(), getPos(), dir );
         }
     }
 
@@ -102,7 +102,7 @@ public abstract class TileComputerBase extends TileGeneric
 
     protected boolean onDefaultComputerInteract( EntityPlayer player )
     {
-        if( !worldObj.isRemote )
+        if( !getWorld().isRemote )
         {
             if( isUsable( player, false ) )
             {
@@ -117,10 +117,10 @@ public abstract class TileComputerBase extends TileGeneric
     public boolean onActivate( EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ )
     {
         ItemStack currentItem = player.getHeldItem( EnumHand.MAIN_HAND );
-        if( currentItem != null && currentItem.getItem() == Items.NAME_TAG && canNameWithTag( player ) )
+        if( !currentItem.isEmpty() && currentItem.getItem() == Items.NAME_TAG && canNameWithTag( player ) )
         {
             // Label to rename computer
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 if( currentItem.hasDisplayName() )
                 {
@@ -130,7 +130,7 @@ public abstract class TileComputerBase extends TileGeneric
                 {
                     setLabel( null );
                 }
-                currentItem.stackSize--;
+                currentItem.shrink( 1 );
             }
             return true;
         }
@@ -156,7 +156,7 @@ public abstract class TileComputerBase extends TileGeneric
         int localDir = remapLocalSide( DirectionUtil.toLocal( this, side ) );
         if( !isRedstoneBlockedOnSide( localDir ) )
         {
-            if( worldObj != null && !worldObj.isRemote )
+            if( getWorld() != null && !getWorld().isRemote )
             {
                 ServerComputer computer = getServerComputer();
                 if( computer != null )
@@ -181,7 +181,7 @@ public abstract class TileComputerBase extends TileGeneric
         int localDir = remapLocalSide( DirectionUtil.toLocal( this, side ) );
         if( !isRedstoneBlockedOnSide( localDir ) )
         {
-            if( !worldObj.isRemote )
+            if( !getWorld().isRemote )
             {
                 ServerComputer computer = getServerComputer();
                 if( computer != null )
@@ -208,7 +208,7 @@ public abstract class TileComputerBase extends TileGeneric
     @Override
     public void update()
     {
-        if( !worldObj.isRemote )
+        if( !getWorld().isRemote )
         {
             ServerComputer computer = createServerComputer();
             if( computer != null )
@@ -323,18 +323,18 @@ public abstract class TileComputerBase extends TileGeneric
         int localDir = remapLocalSide( DirectionUtil.toLocal( this, dir ) );
         if( !isRedstoneBlockedOnSide( localDir ) )
         {
-            computer.setRedstoneInput( localDir, RedstoneUtil.getRedstoneOutput( worldObj, offset, offsetSide ) );
-            computer.setBundledRedstoneInput( localDir, RedstoneUtil.getBundledRedstoneOutput( worldObj, offset, offsetSide ) );
+            computer.setRedstoneInput( localDir, RedstoneUtil.getRedstoneOutput( getWorld(), offset, offsetSide ) );
+            computer.setBundledRedstoneInput( localDir, RedstoneUtil.getBundledRedstoneOutput( getWorld(), offset, offsetSide ) );
         }
         if( !isPeripheralBlockedOnSide( localDir ) )
         {
-            computer.setPeripheral( localDir, PeripheralUtil.getPeripheral( worldObj, offset, offsetSide ) );
+            computer.setPeripheral( localDir, PeripheralUtil.getPeripheral( getWorld(), offset, offsetSide ) );
         }
     }
 
     public void updateInput()
     {
-        if( worldObj == null || worldObj.isRemote )
+        if( getWorld() == null || getWorld().isRemote )
         {
             return;
         }
@@ -353,7 +353,7 @@ public abstract class TileComputerBase extends TileGeneric
 
     public void updateInput( BlockPos neighbour )
     {
-        if( worldObj == null || worldObj.isRemote )
+        if( getWorld() == null || getWorld().isRemote )
         {
             return;
         }
@@ -380,7 +380,7 @@ public abstract class TileComputerBase extends TileGeneric
         updateBlock();
         for( EnumFacing dir : EnumFacing.VALUES )
         {
-            RedstoneUtil.propogateRedstoneOutput( worldObj, getPos(), dir );
+            RedstoneUtil.propagateRedstoneOutput( getWorld(), getPos(), dir );
         }
     }
 
@@ -399,7 +399,7 @@ public abstract class TileComputerBase extends TileGeneric
     @Override
     public void setComputerID( int id )
     {
-        if( !worldObj.isRemote && m_computerID != id )
+        if( !getWorld().isRemote && m_computerID != id )
         {
             m_computerID = id;
             ServerComputer computer = getServerComputer();
@@ -414,7 +414,7 @@ public abstract class TileComputerBase extends TileGeneric
     @Override
     public void setLabel( String label )
     {
-        if( !worldObj.isRemote )
+        if( !getWorld().isRemote )
         {
             createServerComputer().setLabel( label );
         }
@@ -423,7 +423,7 @@ public abstract class TileComputerBase extends TileGeneric
     @Override
     public IComputer createComputer()
     {
-        if( worldObj.isRemote )
+        if( getWorld().isRemote )
         {
             return createClientComputer();
         }
@@ -436,7 +436,7 @@ public abstract class TileComputerBase extends TileGeneric
     @Override
     public IComputer getComputer()
     {
-        if( worldObj.isRemote )
+        if( getWorld().isRemote )
         {
             return getClientComputer();
         }
@@ -452,14 +452,14 @@ public abstract class TileComputerBase extends TileGeneric
         BlockComputerBase block = getBlock();
         if( block != null )
         {
-            return block.getFamily( worldObj, getPos() );
+            return block.getFamily( getWorld(), getPos() );
         }
         return ComputerFamily.Normal;
     }
 
     public ServerComputer createServerComputer()
     {
-        if( !worldObj.isRemote )
+        if( !getWorld().isRemote )
         {
             boolean changed = false;
             if( m_instanceID < 0 )
@@ -485,7 +485,7 @@ public abstract class TileComputerBase extends TileGeneric
 
     public ServerComputer getServerComputer()
     {
-        if( !worldObj.isRemote )
+        if( !getWorld().isRemote )
         {
             return ComputerCraft.serverComputerRegistry.get( m_instanceID );
         }
@@ -494,7 +494,7 @@ public abstract class TileComputerBase extends TileGeneric
 
     public ClientComputer createClientComputer()
     {
-        if( worldObj.isRemote )
+        if( getWorld().isRemote )
         {
             if( m_instanceID >= 0 )
             {
@@ -510,7 +510,7 @@ public abstract class TileComputerBase extends TileGeneric
 
     public ClientComputer getClientComputer()
     {
-        if( worldObj.isRemote )
+        if( getWorld().isRemote )
         {
             return ComputerCraft.clientComputerRegistry.get( m_instanceID );
         }

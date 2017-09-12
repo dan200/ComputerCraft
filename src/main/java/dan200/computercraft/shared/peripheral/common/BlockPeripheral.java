@@ -51,6 +51,7 @@ public class BlockPeripheral extends BlockPeripheralBase
         );
     }
 
+    @Override
     @Nonnull
     @SideOnly( Side.CLIENT)
     public BlockRenderLayer getBlockLayer()
@@ -554,13 +555,13 @@ public class BlockPeripheral extends BlockPeripheralBase
     }
 
     @Override
-    public void onBlockPlacedBy( World world, BlockPos pos, IBlockState state, EntityLivingBase player, ItemStack stack )
+    public void onBlockPlacedBy( World world, BlockPos pos, IBlockState state, EntityLivingBase player, @Nonnull ItemStack stack )
     {
         // Not sure why this is necessary
         TileEntity tile = world.getTileEntity( pos );
         if( tile != null && tile instanceof TilePeripheralBase )
         {
-            tile.setWorldObj( world ); // Not sure why this is necessary
+            tile.setWorld( world ); // Not sure why this is necessary
             tile.setPos( pos ); // Not sure why this is necessary
         }
 

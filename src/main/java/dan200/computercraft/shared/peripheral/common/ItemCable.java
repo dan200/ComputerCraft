@@ -10,22 +10,18 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.modem.TileCable;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class ItemCable extends ItemPeripheralBase
 {
@@ -36,6 +32,7 @@ public class ItemCable extends ItemPeripheralBase
         setCreativeTab( ComputerCraft.mainCreativeTab );
     }
 
+    @Nonnull
     public ItemStack create( PeripheralType type, String label, int quantity )
     {
         ItemStack stack;
@@ -53,7 +50,7 @@ public class ItemCable extends ItemPeripheralBase
             }
             default:
             {
-                return null;
+                return ItemStack.EMPTY;
             }
         }
         if( label != null )
@@ -64,16 +61,18 @@ public class ItemCable extends ItemPeripheralBase
     }
 
     @Override
-    public void getSubItems( @Nonnull Item itemID, @Nullable CreativeTabs tabs, @Nonnull List<ItemStack> list )
+    public void getSubItems( @Nullable CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list )
     {
+        if( !isInCreativeTab( tabs ) ) return;
         list.add( PeripheralItemFactory.create( PeripheralType.WiredModem, null, 1 ) );
         list.add( PeripheralItemFactory.create( PeripheralType.Cable, null, 1 ) );
     }
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUse( ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumHand hand, @Nonnull EnumFacing side, float fx, float fy, float fz )
+    public EnumActionResult onItemUse( @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, @Nonnull EnumHand hand, @Nonnull EnumFacing side, float fx, float fy, float fz )
     {
+        ItemStack stack = player.getHeldItem( hand );
         if( !canPlaceBlockOnSide( world, pos, side, player, stack ) )
         {
             return EnumActionResult.FAIL;
@@ -88,11 +87,13 @@ public class ItemCable extends ItemPeripheralBase
             PeripheralType existingType = ComputerCraft.Blocks.cable.getPeripheralType( world, pos );
             if( existingType == PeripheralType.WiredModem && type == PeripheralType.Cable )
             {
-                if( stack.stackSize > 0 )
+                if( !stack.isEmpty() )
                 {
-                    world.setBlockState( pos, existingState.withProperty( BlockCable.Properties.CABLE, true ), 3 );
-                    world.playSound( null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, ComputerCraft.Blocks.cable.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (ComputerCraft.Blocks.cable.getSoundType().getVolume() + 1.0F ) / 2.0F, ComputerCraft.Blocks.cable.getSoundType().getPitch() * 0.8F);
-                    stack.stackSize--;
+                    IBlockState newState = existingState.withProperty( BlockCable.Properties.CABLE, true );
+                    world.setBlockState( pos, newState, 3 );
+                    SoundType soundType = newState.getBlock().getSoundType( newState, world, pos, player );
+                    world.playSound( null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F );
+                    stack.shrink( 1 );
                     
                     TileEntity tile = world.getTileEntity( pos );
                     if( tile != null && tile instanceof TileCable )
@@ -107,7 +108,7 @@ public class ItemCable extends ItemPeripheralBase
         }
 
         // Try to add on the side of something
-        if( !existing.isAir( existingState, world, pos ) && (type == PeripheralType.Cable || existing.isSideSolid( existingState, world, pos, side )) )
+        if( !existing.isAir( existingState, world, pos ) && (type == PeripheralType.Cable || existingState.isSideSolid( world, pos, side )) )
         {
             BlockPos offset = pos.offset( side );
             Block offsetExisting = world.getBlockState( offset ).getBlock();
@@ -118,11 +119,13 @@ public class ItemCable extends ItemPeripheralBase
                 PeripheralType offsetExistingType = ComputerCraft.Blocks.cable.getPeripheralType( world, offset );
                 if( offsetExistingType == PeripheralType.Cable && type == PeripheralType.WiredModem )
                 {
-                    if( stack.stackSize > 0 )
+                    if( !stack.isEmpty() )
                     {
-                        world.setBlockState( offset, offsetExistingState.withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.fromFacing( side.getOpposite() ) ), 3 );
-                        world.playSound( null, offset.getX() + 0.5, offset.getY() + 0.5, offset.getZ() + 0.5, ComputerCraft.Blocks.cable.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (ComputerCraft.Blocks.cable.getSoundType().getVolume() + 1.0F ) / 2.0F, ComputerCraft.Blocks.cable.getSoundType().getPitch() * 0.8F);
-                        stack.stackSize--;
+                        IBlockState newState = offsetExistingState.withProperty( BlockCable.Properties.MODEM, BlockCableModemVariant.fromFacing( side.getOpposite() ) );
+                        world.setBlockState( offset, newState, 3 );
+                        SoundType soundType = newState.getBlock().getSoundType( newState, world, offset, player );
+                        world.playSound( null, offset.getX() + 0.5, offset.getY() + 0.5, offset.getZ() + 0.5, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F );
+                        stack.shrink( 1 );
 
                         TileEntity tile = world.getTileEntity( offset );
                         if( tile != null && tile instanceof TileCable )
@@ -138,11 +141,13 @@ public class ItemCable extends ItemPeripheralBase
                 // Try to add a cable to a modem
                 if( offsetExistingType == PeripheralType.WiredModem && type == PeripheralType.Cable )
                 {
-                    if( stack.stackSize > 0 )
+                    if( !stack.isEmpty() )
                     {
-                        world.setBlockState( offset, offsetExistingState.withProperty( BlockCable.Properties.CABLE, true ), 3 );
-                        world.playSound( null, offset.getX() + 0.5, offset.getY() + 0.5, offset.getZ() + 0.5, ComputerCraft.Blocks.cable.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (ComputerCraft.Blocks.cable.getSoundType().getVolume() + 1.0F ) / 2.0F, ComputerCraft.Blocks.cable.getSoundType().getPitch() * 0.8F);
-                        stack.stackSize--;
+                        IBlockState newState = offsetExistingState.withProperty( BlockCable.Properties.CABLE, true );
+                        world.setBlockState( offset, newState, 3 );
+                        SoundType soundType = newState.getBlock().getSoundType( newState, world, offset, player );
+                        world.playSound( null, offset.getX() + 0.5, offset.getY() + 0.5, offset.getZ() + 0.5, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F );
+                        stack.shrink( 1 );
 
                         TileEntity tile = world.getTileEntity( offset );
                         if( tile != null && tile instanceof TileCable )
@@ -157,7 +162,7 @@ public class ItemCable extends ItemPeripheralBase
             }
         }
         
-        return super.onItemUse( stack, player, world, pos, hand, side, fx, fy, fz );
+        return super.onItemUse( player, world, pos, hand, side, fx, fy, fz );
     }
 
     @Override

@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "#C#",
+        "#G#"
+    ],
+    "key": {
+        "#": { "item": "minecraft:stone", "data": 0 },
+        "C": { "item": "minecraft:command_block" },
+        "G": { "item": "minecraft:glass_pane" }
+    },
+    "result": { "item": "computercraft:command_computer", "data": 0 }
+}

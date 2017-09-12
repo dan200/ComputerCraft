@@ -58,6 +58,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -75,6 +76,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -96,7 +98,7 @@ import java.util.zip.ZipFile;
 )
 public class ComputerCraft
 {
-    public static final String MOD_ID = "ComputerCraft";
+    public static final String MOD_ID = "computercraft";
     public static final String LOWER_ID = "computercraft";
 
     // GUI IDs
@@ -237,11 +239,11 @@ public class ComputerCraft
     public static Logger log;
 
     // API users
-    private static List<IPeripheralProvider> peripheralProviders = new ArrayList<IPeripheralProvider>();
-    private static List<IBundledRedstoneProvider> bundledRedstoneProviders = new ArrayList<IBundledRedstoneProvider>();
-    private static List<IMediaProvider> mediaProviders = new ArrayList<IMediaProvider>();
-    private static List<ITurtlePermissionProvider> permissionProviders = new ArrayList<ITurtlePermissionProvider>();
-    private static final Map<String, IPocketUpgrade> pocketUpgrades = new HashMap<String, IPocketUpgrade>();
+    private static List<IPeripheralProvider> peripheralProviders = new ArrayList<>();
+    private static List<IBundledRedstoneProvider> bundledRedstoneProviders = new ArrayList<>();
+    private static List<IMediaProvider> mediaProviders = new ArrayList<>();
+    private static List<ITurtlePermissionProvider> permissionProviders = new ArrayList<>();
+    private static final Map<String, IPocketUpgrade> pocketUpgrades = new HashMap<>();
 
     // Implementation
     @Mod.Instance( value = ComputerCraft.MOD_ID )
@@ -364,6 +366,7 @@ public class ComputerCraft
         http_blacklist = new AddressPredicate( Config.http_blacklist.getStringList() );
         disable_lua51_features = Config.disable_lua51_features.getBoolean();
         default_computer_settings = Config.default_computer_settings.getString();
+        logPeripheralErrors = Config.logPeripheralErrors.getBoolean();
 
         enableCommandBlock = Config.enableCommandBlock.getBoolean();
 
@@ -392,14 +395,6 @@ public class ComputerCraft
     {
         proxy.init();
         turtleProxy.init();
-    }
-
-
-    @Mod.EventHandler
-    public void onMissingMappings( FMLMissingMappingsEvent event )
-    {
-        proxy.remap( event );
-        turtleProxy.remap( event );
     }
 
     @Mod.EventHandler
@@ -462,7 +457,7 @@ public class ComputerCraft
         proxy.playRecord( record, recordInfo, world, pos );
     }
 
-    public static String getRecordInfo( ItemStack recordStack )
+    public static String getRecordInfo( @Nonnull ItemStack recordStack )
     {
         return proxy.getRecordInfo( recordStack );
     }
@@ -714,9 +709,9 @@ public class ComputerCraft
         return combinedSignal;
     }
 
-    public static IMedia getMedia( ItemStack stack )
+    public static IMedia getMedia( @Nonnull ItemStack stack )
     {
-        if( stack != null )
+        if( !stack.isEmpty() )
         {
             // Try the handlers in order:
             for( IMediaProvider mediaProvider : mediaProviders )
@@ -744,14 +739,14 @@ public class ComputerCraft
         return pocketUpgrades.get( id );
     }
 
-    public static IPocketUpgrade getPocketUpgrade( ItemStack stack )
+    public static IPocketUpgrade getPocketUpgrade( @Nonnull ItemStack stack )
     {
-        if( stack == null ) return null;
+        if( stack.isEmpty() ) return null;
 
         for (IPocketUpgrade upgrade : pocketUpgrades.values())
         {
             ItemStack craftingStack = upgrade.getCraftingItem();
-            if( craftingStack != null && InventoryUtil.areItemsStackable( stack, craftingStack ) )
+            if( !craftingStack.isEmpty() && InventoryUtil.areItemsStackable( stack, craftingStack ) )
             {
                 return upgrade;
             }
@@ -761,7 +756,7 @@ public class ComputerCraft
     }
 
     public static Iterable<IPocketUpgrade> getVanillaPocketUpgrades() {
-        List<IPocketUpgrade> upgrades = new ArrayList<IPocketUpgrade>();
+        List<IPocketUpgrade> upgrades = new ArrayList<>();
         for(IPocketUpgrade upgrade : pocketUpgrades.values()) {
             if(upgrade instanceof PocketModem || upgrade instanceof PocketSpeaker) {
                 upgrades.add( upgrade );
@@ -796,7 +791,7 @@ public class ComputerCraft
     public static IMount createResourceMount( Class<?> modClass, String domain, String subPath )
     {
         // Start building list of mounts
-        List<IMount> mounts = new ArrayList<IMount>();
+        List<IMount> mounts = new ArrayList<>();
         subPath = "assets/" + domain + "/" + subPath;
 
         // Mount from debug dir
@@ -1010,12 +1005,12 @@ public class ComputerCraft
         return turtleProxy.getTurtleUpgrade( legacyID );
     }
 
-    public static ITurtleUpgrade getTurtleUpgrade( ItemStack item )
+    public static ITurtleUpgrade getTurtleUpgrade( @Nonnull ItemStack item )
     {
         return turtleProxy.getTurtleUpgrade( item );
     }
 
-    public static void addAllUpgradedTurtles( List<ItemStack> list )
+    public static void addAllUpgradedTurtles( NonNullList<ItemStack> list )
     {
         turtleProxy.addAllUpgradedTurtles( list );
     }

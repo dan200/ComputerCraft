@@ -12,7 +12,6 @@ import dan200.computercraft.api.turtle.*;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import dan200.computercraft.shared.turtle.core.TurtlePlaceCommand;
 import dan200.computercraft.shared.turtle.core.TurtlePlayer;
-import dan200.computercraft.shared.util.IEntityDropConsumer;
 import dan200.computercraft.shared.util.InventoryUtil;
 import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
@@ -28,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -88,6 +88,7 @@ public class TurtleTool implements ITurtleUpgrade
         return TurtleUpgradeType.Tool;
     }
 
+    @Nonnull
     @Override
     public ItemStack getCraftingItem()
     {
@@ -117,11 +118,6 @@ public class TurtleTool implements ITurtleUpgrade
             mc.getRenderItem().getItemModelMesher().getItemModel( m_item ),
             transform
         );
-    }
-
-    @Override
-    public void update( @Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side )
-    {
     }
 
     @Nonnull
@@ -184,16 +180,12 @@ public class TurtleTool implements ITurtleUpgrade
 
             // Start claiming entity drops
             Entity hitEntity = hit.getKey();
-            ComputerCraft.setEntityDropConsumer( hitEntity, new IEntityDropConsumer()
+            ComputerCraft.setEntityDropConsumer( hitEntity, ( entity, drop ) ->
             {
-                @Override
-                public void consumeDrop( Entity entity, ItemStack drop )
+                ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
+                if( !remainder.isEmpty() )
                 {
-                    ItemStack remainder = InventoryUtil.storeItems( drop, turtle.getItemHandler(), turtle.getSelectedSlot() );
-                    if( remainder != null )
-                    {
-                        WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );
-                    }
+                    WorldUtil.dropItemStack( remainder, world, position, turtle.getDirection().getOpposite() );
                 }
             } );
 
@@ -283,7 +275,7 @@ public class TurtleTool implements ITurtleUpgrade
                     for( ItemStack stack : items )
                     {
                         ItemStack remainder = InventoryUtil.storeItems( stack, turtle.getItemHandler(), turtle.getSelectedSlot() );
-                        if( remainder != null )
+                        if( !remainder.isEmpty() )
                         {
                             // If there's no room for the items, drop them
                             WorldUtil.dropItemStack( remainder, world, position, direction );
@@ -314,7 +306,8 @@ public class TurtleTool implements ITurtleUpgrade
     {
         IBlockState state = world.getBlockState( pos );
         Block block = state.getBlock();
-        List<ItemStack> drops = block.getDrops( world, pos, world.getBlockState( pos ), 0 );
+        NonNullList<ItemStack> drops = NonNullList.create();
+        block.getDrops( drops, world, pos, world.getBlockState( pos ), 0 );
         double chance = ForgeEventFactory.fireBlockHarvesting( drops, world, pos, state, 0, 1, false, player );
 
         for( int i = drops.size() - 1; i >= 0; i-- )
