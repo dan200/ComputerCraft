@@ -113,7 +113,7 @@ function receive( sProtocolFilter, nTimeout )
     if sProtocolFilter ~= nil and type( sProtocolFilter ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sProtocolFilter ) .. ")", 2 )
     end
-    if nTimeout ~= nil and type( nTimeoutl ) ~= "number" then
+    if nTimeout ~= nil and type( nTimeout ) ~= "number" then
         error( "bad argument #2 (expected number, got " .. type( nTimeout ) .. ")", 2 )
     end
 
