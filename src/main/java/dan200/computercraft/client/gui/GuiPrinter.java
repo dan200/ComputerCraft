@@ -51,4 +51,12 @@ public class GuiPrinter extends GuiContainer
             drawTexturedModalRect(startX + 34, startY + 21, 176, 0, 25, 45);
         }
     }
+
+    @Override
+    public void drawScreen( int mouseX, int mouseY, float partialTicks)
+    {
+        drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderHoveredToolTip(mouseX, mouseY);
+    }
 }
