@@ -17,9 +17,9 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.ajoberstar.grgit'
 
-// Compile for Java 6
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+// Compile for Java 8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 // Make Eclipse recognize project as Gradle project
 eclipse.project {

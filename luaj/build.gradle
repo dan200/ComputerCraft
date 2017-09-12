@@ -4,8 +4,8 @@ apply plugin: 'eclipse'
 
 version = "2.0.3"
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 eclipse.project {
     natures 'org.eclipse.buildship.core.gradleprojectnature'
