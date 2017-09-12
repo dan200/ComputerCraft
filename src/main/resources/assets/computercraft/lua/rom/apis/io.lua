@@ -24,8 +24,9 @@ local g_defaultOutput = {
 	close = function( self )
 	end,
 	write = function( self, ... )
-        for k, v in ipairs( { ... } ) do
-		    _G.write( v )
+        local nLimit = select("#", ... )
+        for n = 1, nLimit do
+            _G.write( select( n, ... ) )
         end
 	end,
 	flush = function( self )
@@ -118,8 +119,9 @@ function open( _sPath, _sMode )
 				self.bClosed = true
 			end,
 			write = function( self, ... )
-                for k, v in ipairs( { ... } ) do
-				    file.write( v )
+                local nLimit = select("#", ... )
+                for n = 1, nLimit do
+				    file.write( select( n, ... ) )
                 end
 			end,
 			flush = function( self )
@@ -149,8 +151,9 @@ function open( _sPath, _sMode )
 				self.bClosed = true
 			end,
 			write = function( self, ... )
-                for k, v in ipairs( { ... } ) do
-				    file.write( v )
+                local nLimit = select("#", ... )
+                for n = 1, nLimit do
+				    file.write( select( n, ... ) )
                 end
 			end,
 			flush = function( self )
