@@ -43,4 +43,12 @@ public class GuiDiskDrive extends GuiContainer
         int i1 = (height - ySize) / 2;
         drawTexturedModalRect(l, i1, 0, 0, xSize, ySize);
     }
+
+    @Override
+    public void drawScreen( int mouseX, int mouseY, float partialTicks)
+    {
+        drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderHoveredToolTip(mouseX, mouseY);
+    }
 }
