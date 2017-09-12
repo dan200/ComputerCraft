@@ -61,70 +61,77 @@ local tRedstoneSides = redstone.getSides()
 local function completeSide( sText, bAddSpaces )
     return completeMultipleChoice( sText, tRedstoneSides, bAddSpaces )
 end
-local function completeFile( shell, nIndex, sText, tPreviousText )
+local function completeFile( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
-        return fs.complete( sText, shell.dir(), true, false )
+        return fs.complete( sText, shell.dir(), true, false, sLine )
     end
 end
-local function completeDir( shell, nIndex, sText, tPreviousText )
+local function completeDir( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
-        return fs.complete( sText, shell.dir(), false, true )
+        return fs.complete( sText, shell.dir(), false, true, sLine )
     end
 end
-local function completeEither( shell, nIndex, sText, tPreviousText )
+local function completeEither( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
-        return fs.complete( sText, shell.dir(), true, true )
+        return fs.complete( sText, shell.dir(), true, true, sLine )
     end
 end
-local function completeEitherEither( shell, nIndex, sText, tPreviousText )
+local function completeEitherEither( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
-        local tResults = fs.complete( sText, shell.dir(), true, true )
+        local tResults = fs.complete( sText, shell.dir(), true, true, sLine )
         for n=1,#tResults do
             local sResult = tResults[n]
-            if string.sub( sResult, #sResult, #sResult ) ~= "/" then
-                tResults[n] = sResult .. " "
+            if type(sResult) == "table" then
+                local sLast = sResult[#sResult]
+                if string.sub( sLast, #sLast, #sLast ) ~= "/" then
+                    sResult[#sResult] = sLast .. " "
+                end
+            else
+                if string.sub( sResult, #sResult, #sResult ) ~= "/" then
+                    tResults[n] = sResult .. " "
+                end
             end
         end
         return tResults
     elseif nIndex == 2 then
-        return fs.complete( sText, shell.dir(), true, true )
+        return fs.complete( sText, shell.dir(), true, true, sLine )
     end
 end
-local function completeProgram( shell, nIndex, sText, tPreviousText )
+local function completeProgram( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return shell.completeProgram( sText )
     end
 end
-local function completeHelp( shell, nIndex, sText, tPreviousText )
+local function completeHelp( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return help.completeTopic( sText )
     end
 end
-local function completeAlias( shell, nIndex, sText, tPreviousText )
+local function completeAlias( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 2 then
         return shell.completeProgram( sText )
     end
 end
-local function completePeripheral( shell, nIndex, sText, tPreviousText )
+local function completePeripheral( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return completePeripheralName( sText )
     end
 end
 local tGPSOptions = { "host", "host ", "locate" }
-local function completeGPS( shell, nIndex, sText, tPreviousText )
+local function completeGPS( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return completeMultipleChoice( sText, tGPSOptions )
     end
 end
 local tLabelOptions = { "get", "get ", "set ", "clear", "clear " }
-local function completeLabel( shell, nIndex, sText, tPreviousText )
+local function completeLabel( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return completeMultipleChoice( sText, tLabelOptions )
     elseif nIndex == 2 then
         return completePeripheralName( sText )
     end
 end
-local function completeMonitor( shell, nIndex, sText, tPreviousText )
+local function completeMonitor( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return completePeripheralName( sText, true )
     elseif nIndex == 2 then
@@ -132,7 +139,7 @@ local function completeMonitor( shell, nIndex, sText, tPreviousText )
     end
 end
 local tRedstoneOptions = { "probe", "set ", "pulse " }
-local function completeRedstone( shell, nIndex, sText, tPreviousText )
+local function completeRedstone( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return completeMultipleChoice( sText, tRedstoneOptions )
     elseif nIndex == 2 then
@@ -140,7 +147,7 @@ local function completeRedstone( shell, nIndex, sText, tPreviousText )
     end
 end
 local tDJOptions = { "play", "play ", "stop " }
-local function completeDJ( shell, nIndex, sText, tPreviousText )
+local function completeDJ( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return completeMultipleChoice( sText, tDJOptions )
     elseif nIndex == 2 then
@@ -148,22 +155,22 @@ local function completeDJ( shell, nIndex, sText, tPreviousText )
     end
 end
 local tPastebinOptions = { "put ", "get ", "run " }
-local function completePastebin( shell, nIndex, sText, tPreviousText )
+local function completePastebin( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return completeMultipleChoice( sText, tPastebinOptions )
     elseif nIndex == 2 then
         if tPreviousText[2] == "put" then
-            return fs.complete( sText, shell.dir(), true, false )
+            return fs.complete( sText, shell.dir(), true, false, sLine )
         end
     end
 end
 local tChatOptions = { "host ", "join " }
-local function completeChat( shell, nIndex, sText, tPreviousText )
+local function completeChat( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return completeMultipleChoice( sText, tChatOptions )
     end
 end
-local function completeSet( shell, nIndex, sText, tPreviousText )
+local function completeSet( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 then
         return completeMultipleChoice( sText, settings.getNames(), true )
     end
@@ -172,7 +179,7 @@ local tCommands
 if commands then
     tCommands = commands.list()
 end
-local function completeExec( shell, nIndex, sText, tPreviousText )
+local function completeExec( shell, nIndex, sText, tPreviousText, sLine )
     if nIndex == 1 and commands then
         return completeMultipleChoice( sText, tCommands, true )
     end

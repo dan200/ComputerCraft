@@ -337,10 +337,10 @@ local function completeProgram( sLine )
     end
 end
 
-local function completeProgramArgument( sProgram, nArgument, sPart, tPreviousParts )
+local function completeProgramArgument( sProgram, nArgument, sPart, tPreviousParts, sLine )
     local tInfo = tCompletionInfo[ sProgram ]
     if tInfo then
-        return tInfo.fnComplete( shell, nArgument, sPart, tPreviousParts )
+        return tInfo.fnComplete( shell, nArgument, sPart, tPreviousParts, sLine )
     end
     return nil
 end
@@ -352,6 +352,9 @@ function shell.complete( sLine )
     if #sLine > 0 then
         local tWords = tokenise( sLine )
         local nIndex = #tWords
+        if tWords[nIndex] ~= "" and string.sub(sLine,-1,-1) == '"' then
+            return nil --If at end of non empty word and that word is in closed quotes then stop.
+        end
         if string.sub( sLine, #sLine, #sLine ) == " " then
             nIndex = nIndex + 1
         end
@@ -377,7 +380,7 @@ function shell.complete( sLine )
             local sPart = tWords[nIndex] or ""
             local tPreviousParts = tWords
             tPreviousParts[nIndex] = nil
-            return completeProgramArgument( sPath , nIndex - 1, sPart, tPreviousParts )
+            return completeProgramArgument( sPath , nIndex - 1, sPart, tPreviousParts, sLine )
 
         end
     end
