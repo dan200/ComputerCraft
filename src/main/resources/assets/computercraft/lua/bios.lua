@@ -676,7 +676,7 @@ function os.unloadAPI( _sName )
 end
 
 function os.sleep( nTime )
-    sleep( nTime )
+    return sleep( nTime )
 end
 
 local nativeShutdown = os.shutdown
