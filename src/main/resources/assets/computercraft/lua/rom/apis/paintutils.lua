@@ -35,7 +35,7 @@ function loadImage( sPath )
 
     if fs.exists( sPath ) then
         local file = io.open( sPath, "r" )
-        local sContent = file:readAll()
+        local sContent = file:read("*a")
         file:close()
         return parseImage( sContent ) -- delegate image parse to parseImage
     end
