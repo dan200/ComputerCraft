@@ -92,7 +92,7 @@ function open( _sPath, _sMode )
 				elseif sFormat == "*a" then
 					return file.readAll()
 				else
-					error( "Unsupported format" )
+					error( "Unsupported format", 2 )
 				end
 				return nil
 			end,
@@ -154,7 +154,7 @@ function open( _sPath, _sMode )
 	
 	else
 		file.close()
-		error( "Unsupported mode" )
+		error( "Unsupported mode", 2 )
 		
 	end
 end
