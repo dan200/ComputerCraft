@@ -5,6 +5,7 @@ import dan200.computercraft.api.lua.LuaException;
 
 import javax.annotation.Nonnull;
 import java.io.*;
+import java.util.Arrays;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
@@ -110,22 +111,16 @@ public class EncodedInputHandle extends HandleGeneric
                 checkOpen();
                 try
                 {
-                    double count = optNumber( args, 0, 1 );
-                    StringBuilder result = new StringBuilder( "" );
-                    for ( int i = 1; i < count+1; i++ ) {
-                        int character = m_reader.read();
-                        if ( character == -1 ) {
-                            if ( result.length() == 0 ) {
-                                return null;
-                            }
-                            else {
-                                return new Object[] { result.toString() };
-                            }
-                        }
-                        char c = (char) character;
-                        result.append( c );
+                    int count = optInt( args, 0, 1 );
+                    if( count <= 0 || count >= 1024 * 16 )
+                    {
+                        throw new LuaException( "Count out of range" );
                     }
-                    return new Object[] { result.toString() };
+                    char[] bytes = new char[ count ];
+                    count = m_reader.read( bytes );
+                    if( count < 0 ) return null;
+                    String str = new String( bytes );
+                    return new Object[] { str };
                 }
                 catch( IOException e )
                 {
