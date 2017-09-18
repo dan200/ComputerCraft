@@ -146,7 +146,7 @@ public final class ArgumentHelper
         }
         else
         {
-            throw badArgument( index, "number", value );
+            throw badArgument( index, "number or nil", value );
         }
     }
 
@@ -163,7 +163,7 @@ public final class ArgumentHelper
         }
         else
         {
-            throw badArgument( index, "number", value );
+            throw badArgument( index, "number or nil", value );
         }
     }
 
@@ -185,7 +185,7 @@ public final class ArgumentHelper
         }
         else
         {
-            throw badArgument( index, "boolean", value );
+            throw badArgument( index, "boolean or nil", value );
         }
     }
 
@@ -202,7 +202,7 @@ public final class ArgumentHelper
         }
         else
         {
-            throw badArgument( index, "string", value );
+            throw badArgument( index, "string or nil", value );
         }
     }
 
@@ -220,7 +220,7 @@ public final class ArgumentHelper
         }
         else
         {
-            throw badArgument( index, "table", value );
+            throw badArgument( index, "table or nil", value );
         }
     }
 
