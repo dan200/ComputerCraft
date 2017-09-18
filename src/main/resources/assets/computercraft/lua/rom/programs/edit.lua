@@ -656,6 +656,13 @@ while bRunning do
                     table.remove( tLines, y )
                     setCursor( sPrevLen + 1, y - 1 )
                     redrawText()
+                elseif y == 1 and type( tLines[2] ) == "string" then
+                    -- Remove first line
+                    local sPrevLen = string.len( tLines[2] )
+                    tLines[2] = tLines[2] .. tLines[1]
+                    table.remove( tLines, 1 )
+                    setCursor( sPrevLen + 1, 1 )
+                    redrawText()
                 end
             end
 
