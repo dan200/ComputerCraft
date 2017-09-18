@@ -16,6 +16,7 @@ import dan200.computercraft.shared.peripheral.speaker.TileSpeaker;
 import dan200.computercraft.shared.util.DirectionUtil;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -611,5 +612,30 @@ public class BlockPeripheral extends BlockPeripheralBase
                 break;
             }
         }
+    }
+
+    @Override
+    @Deprecated
+    public final boolean isOpaqueCube( IBlockState state )
+    {
+        PeripheralType type = getPeripheralType( state );
+        return type == PeripheralType.DiskDrive || type == PeripheralType.Printer
+            || type == PeripheralType.Monitor || type == PeripheralType.AdvancedMonitor
+            || type == PeripheralType.Speaker;
+    }
+
+    @Override
+    @Deprecated
+    public final boolean isFullCube( IBlockState state )
+    {
+        return isOpaqueCube( state );
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public BlockFaceShape getBlockFaceShape( IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side )
+    {
+        return isOpaqueCube( state ) ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
 }
