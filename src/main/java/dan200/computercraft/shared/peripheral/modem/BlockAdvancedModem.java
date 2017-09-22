@@ -12,11 +12,12 @@ import dan200.computercraft.shared.peripheral.common.BlockPeripheralBase;
 import dan200.computercraft.shared.peripheral.common.TilePeripheralBase;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 import javax.annotation.Nonnull;
@@ -113,5 +114,27 @@ public class BlockAdvancedModem extends BlockPeripheralBase
     public TilePeripheralBase createTile( PeripheralType type )
     {
         return new TileAdvancedModem();
+    }
+
+    @Override
+    @Deprecated
+    public final boolean isOpaqueCube( IBlockState state )
+    {
+        return false;
+    }
+
+    @Override
+    @Deprecated
+    public final boolean isFullCube( IBlockState state )
+    {
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public BlockFaceShape getBlockFaceShape( IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side )
+    {
+        return BlockFaceShape.UNDEFINED;
     }
 }

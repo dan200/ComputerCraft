@@ -32,20 +32,6 @@ public abstract class BlockPeripheralBase extends BlockDirectional
     protected abstract TilePeripheralBase createTile( PeripheralType type );
 
     @Override
-    @Deprecated
-    public final boolean isOpaqueCube( IBlockState state )
-    {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public final boolean isFullCube( IBlockState state )
-    {
-        return false;
-    }
-
-    @Override
     public final boolean canPlaceBlockOnSide( @Nonnull World world, @Nonnull BlockPos pos, EnumFacing side )
     {
         return true; // ItemPeripheralBase handles this
