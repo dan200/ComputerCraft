@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.LuaException;
 
 import javax.annotation.Nonnull;
 import java.io.*;
-import java.util.Arrays;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
@@ -119,7 +118,7 @@ public class EncodedInputHandle extends HandleGeneric
                     char[] bytes = new char[ count ];
                     count = m_reader.read( bytes );
                     if( count < 0 ) return null;
-                    String str = new String( bytes );
+                    String str = new String( bytes, 0, count );
                     return new Object[] { str };
                 }
                 catch( IOException e )
