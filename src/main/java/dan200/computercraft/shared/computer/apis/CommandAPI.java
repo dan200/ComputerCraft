@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
@@ -74,7 +75,8 @@ public class CommandAPI implements ILuaAPI
             "list",
             "getBlockPosition",
             "getBlockInfos",
-            "getBlockInfo"
+            "getBlockInfo",
+            "complete"
         };
     }
 
@@ -143,6 +145,24 @@ public class CommandAPI implements ILuaAPI
         table.put( "state", stateTable );
         // TODO: NBT data?
         return table;
+    }
+
+    private Map<Object, Object> complete( String command )
+    {
+        MinecraftServer server = m_computer.getWorld().getMinecraftServer();
+        if( server != null && server.isCommandBlockEnabled() )
+        {
+            ICommandManager commandManager = server.getCommandManager();
+            ICommandSender sender = m_computer.getCommandSender();
+            BlockPos pos = m_computer.getPos();
+            List<String> result = commandManager.getTabCompletions( sender, command, pos );
+            Map<Object, Object> table = new HashMap<>();
+            for (int i = 0; i < result.size(); i++) {
+			    table.put( i + 1, result.get(i) );
+		    }
+            return table;
+        }
+        return null;
     }
 
     @Override
@@ -274,6 +294,13 @@ public class CommandAPI implements ILuaAPI
                         throw new LuaException( "co-ordinates out or range" );
                     }
                 } );
+            }
+            case 6:
+            {
+                // complete
+                String command = getString( arguments, 0 );
+                Map<Object, Object> table = complete( command );
+                return new Object[] { table };
             }
             default:
             {
