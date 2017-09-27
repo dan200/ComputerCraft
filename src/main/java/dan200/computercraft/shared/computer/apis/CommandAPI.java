@@ -76,7 +76,8 @@ public class CommandAPI implements ILuaAPI
             "getBlockPosition",
             "getBlockInfos",
             "getBlockInfo",
-            "complete"
+            "complete",
+            "completeAsync"
         };
     }
 
@@ -147,7 +148,7 @@ public class CommandAPI implements ILuaAPI
         return table;
     }
 
-    private Map<Object, Object> complete( String command )
+    private Object[] complete( String command )
     {
         MinecraftServer server = m_computer.getWorld().getMinecraftServer();
         if( server != null && server.isCommandBlockEnabled() )
@@ -160,7 +161,7 @@ public class CommandAPI implements ILuaAPI
             for (int i = 0; i < result.size(); i++) {
 			    table.put( i + 1, result.get(i) );
 		    }
-            return table;
+            return new Object[]{ table };
         }
         return null;
     }
@@ -299,8 +300,14 @@ public class CommandAPI implements ILuaAPI
             {
                 // complete
                 String command = getString( arguments, 0 );
-                Map<Object, Object> table = complete( command );
-                return new Object[] { table };
+                return context.executeMainThreadTask( () -> complete( command ) );
+            }
+            case 7:
+            {
+                // completeAsync
+                final String command = getString( arguments, 0 );
+                long taskID = context.issueMainThreadTask( () -> complete( command ) );
+                return new Object[] { taskID };
             }
             default:
             {
