@@ -1,5 +1,5 @@
 function prompt( _tOptions )
-    local tVerify = {replaceChar = "string", history = "table", complete = "function", prefix = "string", limit = "number", newline = "boolean", completeBGColor = "number", completeTextColor = "number"}
+    local tVerify = {replaceChar = "string", history = "table", complete = "function", prefix = "string", limit = "number", newline = "boolean", completeBGColor = "number", completeTextColor = "number", filter = "function", customkeys = "table"}
     if not _tOptions then
         _tOptions = {}
     end
@@ -123,6 +123,19 @@ function prompt( _tOptions )
     end
     while true do
         local sEvent, param = os.pullEvent()
+        
+        if ( sEvent == "char" or sEvent == "paste" ) and _tOptions.filter then
+            -- Filter out all unwanted keys using a filter function defined by the user
+            param = _tOptions.filter( param )
+            if param == "" then
+                param = nil
+            end
+            if not param then
+                param = ""
+                nPos = nPos - 1
+            end
+        end
+
         if sEvent == "char" then
             -- Typed key
             clear()
@@ -140,7 +153,7 @@ function prompt( _tOptions )
             redraw()
 
         elseif sEvent == "key" then
-            if param == keys.enter then
+            if ( not _tOptions.customkeys.enter and param == keys.enter ) or ( _tOptions.customkeys.enter and param == _tOptions.customkeys.enter ) then
                 -- Enter
                 if nCompletion then
                     clear()
@@ -149,7 +162,7 @@ function prompt( _tOptions )
                 end
                 break
                 
-            elseif param == keys.left then
+            elseif ( not _tOptions.customkeys.left and param == keys.left ) or ( _tOptions.customkeys.left and param == _tOptions.customkeys.left ) then
                 -- Left
                 if nPos > 0 then
                     clear()
@@ -158,7 +171,7 @@ function prompt( _tOptions )
                     redraw()
                 end
                 
-            elseif param == keys.right then
+            elseif ( not _tOptions.customkeys.right and param == keys.right ) or ( _tOptions.customkeys.right and param == _tOptions.customkeys.right ) then
                 -- Right                
                 if nPos < string.len(sLine) then
                     -- Move right
@@ -171,17 +184,17 @@ function prompt( _tOptions )
                     acceptCompletion()
                 end
 
-            elseif param == keys.up or param == keys.down then
+            elseif ( ( not _tOptions.customkeys.down and param == keys.up ) or ( _tOptions.customkeys.up and param == _tOptions.customkeys.up ) ) or ( ( not _tOptions.customkeys.up and param == keys.down ) or ( _tOptions.customkeys.down and param == _tOptions.customkeys.down ) ) then
                 -- Up or down
                 if nCompletion then
                     -- Cycle completions
                     clear()
-                    if param == keys.up then
+                    if ( not _tOptions.customkeys.up and param == keys.up ) or ( _tOptions.customkeys.up and param == _tOptions.customkeys.up ) then
                         nCompletion = nCompletion - 1
                         if nCompletion < 1 then
                             nCompletion = #tCompletions
                         end
-                    elseif param == keys.down then
+                    elseif ( not _tOptions.customkeys.down and param == keys.down ) or ( _tOptions.customkeys.down and param == _tOptions.customkeys.down ) then
                         nCompletion = nCompletion + 1
                         if nCompletion > #tCompletions then
                             nCompletion = 1
@@ -192,7 +205,7 @@ function prompt( _tOptions )
                 elseif _tOptions.history then
                     -- Cycle history
                     clear()
-                    if param == keys.up then
+                    if ( not _tOptions.customkeys.up and param == keys.up ) or ( _tOptions.customkeys.up and param == _tOptions.customkeys.up ) then
                         -- Up
                         if nhistoryPos == nil then
                             if #_tOptions.history > 0 then
@@ -201,7 +214,7 @@ function prompt( _tOptions )
                         elseif nhistoryPos > 1 then
                             nhistoryPos = nhistoryPos - 1
                         end
-                    else
+                    elseif ( not _tOptions.customkeys.down and param == keys.down ) or ( _tOptions.customkeys.down and param == _tOptions.customkeys.down ) then
                         -- Down
                         if nhistoryPos == #_tOptions.history then
                             nhistoryPos = nil
@@ -221,7 +234,7 @@ function prompt( _tOptions )
 
                 end
 
-            elseif param == keys.backspace then
+            elseif ( not _tOptions.customkeys.backspace and param == keys.backspace ) or ( _tOptions.customkeys.backspace and param == _tOptions.customkeys.backspace ) then
                 -- Backspace
                 if nPos > 0 then
                     clear()
@@ -231,7 +244,7 @@ function prompt( _tOptions )
                     redraw()
                 end
 
-            elseif param == keys.home then
+            elseif ( not _tOptions.customkeys.home and param == keys.home ) or ( _tOptions.customkeys.home and param == _tOptions.customkeys.home ) then
                 -- Home
                 if nPos > 0 then
                     clear()
@@ -240,7 +253,7 @@ function prompt( _tOptions )
                     redraw()
                 end
 
-            elseif param == keys.delete then
+            elseif ( not _tOptions.customkeys.delete and param == keys.delete ) or ( _tOptions.customkeys.delete and param == _tOptions.customkeys.delete ) then
                 -- Delete
                 if nPos < string.len(sLine) then
                     clear()
@@ -249,7 +262,7 @@ function prompt( _tOptions )
                     redraw()
                 end
 
-            elseif param == keys["end"] then
+            elseif ( not _tOptions.customkeys["end"] and param == keys["end"] ) or ( _tOptions.customkeys["end"] and param == _tOptions.customkeys["end"] ) then
                 -- End
                 if nPos < string.len(sLine ) then
                     clear()
@@ -258,7 +271,7 @@ function prompt( _tOptions )
                     redraw()
                 end
 
-            elseif param == keys.tab then
+            elseif ( not _tOptions.customkeys.tab and param == keys.tab ) or ( _tOptions.customkeys.tab and param == _tOptions.customkeys.tab ) then
                 -- Tab (accept autocomplete)
                 acceptCompletion()
 
@@ -284,29 +297,6 @@ function prompt( _tOptions )
     end
     
     return sLine
-end
-
-function slowWrite( sText, nRate )
-    if nRate ~= nil and type( nRate ) ~= "number" then
-        error( "bad argument #2 (expected number, got " .. type( nRate ) .. ")", 2 )
-    end
-    nRate = nRate or 20
-    if nRate < 0 then
-        error( "Rate must be positive", 2 )
-    end
-    local nSleep = 1 / nRate
-        
-    sText = tostring( sText )
-    local x,y = term.getCursorPos()
-    local len = string.len( sText )
-    
-    for n=1,len do
-        term.setCursorPos( x, y )
-        sleep( nSleep )
-        local nLines = write( string.sub( sText, 1, n ) )
-        local newX, newY = term.getCursorPos()
-        y = newY - nLines
-    end
 end
 
 function slowPrint( sText, nRate )
