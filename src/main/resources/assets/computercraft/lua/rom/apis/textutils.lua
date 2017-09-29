@@ -299,6 +299,29 @@ function prompt( _tOptions )
     return sLine
 end
 
+function slowWrite( sText, nRate )
+    if nRate ~= nil and type( nRate ) ~= "number" then
+        error( "bad argument #2 (expected number, got " .. type( nRate ) .. ")", 2 )
+    end
+    nRate = nRate or 20
+    if nRate < 0 then
+        error( "Rate must be positive", 2 )
+    end
+    local nSleep = 1 / nRate
+        
+    sText = tostring( sText )
+    local x,y = term.getCursorPos()
+    local len = string.len( sText )
+    
+    for n=1,len do
+        term.setCursorPos( x, y )
+        sleep( nSleep )
+        local nLines = write( string.sub( sText, 1, n ) )
+        local newX, newY = term.getCursorPos()
+        y = newY - nLines
+    end
+end
+
 function slowPrint( sText, nRate )
     slowWrite( sText, nRate )
     print()
