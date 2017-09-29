@@ -132,7 +132,9 @@ function prompt( _tOptions )
             end
             if not param then
                 param = ""
-                nPos = nPos - 1
+                if nPos > 0 then
+                    nPos = nPos - 1
+                end
             end
         end
 
