@@ -22,6 +22,15 @@ function prompt( _tOptions )
     if _tOptions.replaceChar then
         _tOptions.replaceChar = string.sub( _tOptions.replaceChar, 1, 1 )
     end
+    if not _tOptions.customkeys then
+        _tOptions.customkeys = {}
+    end
+    local tCustomKeyNames = {enter = keys.enter, up = keys.up, down = keys.down, left = keys.left, right = keys.right, backspace = keys.backspace, home = keys.home, delete = keys.delete, tab = keys.tab, ["end"] = keys["end"]}
+    for k, v in pairs(tCustomKeyNames) do
+        if not _tOptions.customkeys[k] then
+            _tOptions.customkeys[k] = v
+        end
+    end
 
     local tCompletions
     local nCompletion
@@ -123,20 +132,6 @@ function prompt( _tOptions )
     end
     while true do
         local sEvent, param = os.pullEvent()
-        
-        if ( sEvent == "char" or sEvent == "paste" ) and _tOptions.filter then
-            -- Filter out all unwanted keys using a filter function defined by the user
-            param = _tOptions.filter( param )
-            if param == "" then
-                param = nil
-            end
-            if not param then
-                param = ""
-                if nPos > 0 then
-                    nPos = nPos - 1
-                end
-            end
-        end
 
         if sEvent == "char" then
             -- Typed key
@@ -155,7 +150,7 @@ function prompt( _tOptions )
             redraw()
 
         elseif sEvent == "key" then
-            if ( not _tOptions.customkeys.enter and param == keys.enter ) or ( _tOptions.customkeys.enter and param == _tOptions.customkeys.enter ) then
+            if _tOptions.customkeys.enter == param then
                 -- Enter
                 if nCompletion then
                     clear()
@@ -164,7 +159,7 @@ function prompt( _tOptions )
                 end
                 break
                 
-            elseif ( not _tOptions.customkeys.left and param == keys.left ) or ( _tOptions.customkeys.left and param == _tOptions.customkeys.left ) then
+            elseif _tOptions.customkeys.left == param then
                 -- Left
                 if nPos > 0 then
                     clear()
@@ -173,7 +168,7 @@ function prompt( _tOptions )
                     redraw()
                 end
                 
-            elseif ( not _tOptions.customkeys.right and param == keys.right ) or ( _tOptions.customkeys.right and param == _tOptions.customkeys.right ) then
+            elseif _tOptions.customkeys.right == param then
                 -- Right                
                 if nPos < string.len(sLine) then
                     -- Move right
@@ -186,17 +181,17 @@ function prompt( _tOptions )
                     acceptCompletion()
                 end
 
-            elseif ( ( not _tOptions.customkeys.down and param == keys.up ) or ( _tOptions.customkeys.up and param == _tOptions.customkeys.up ) ) or ( ( not _tOptions.customkeys.up and param == keys.down ) or ( _tOptions.customkeys.down and param == _tOptions.customkeys.down ) ) then
+            elseif  _tOptions.customkeys.up == param or _tOptions.customkeys.down == param then
                 -- Up or down
                 if nCompletion then
                     -- Cycle completions
                     clear()
-                    if ( not _tOptions.customkeys.up and param == keys.up ) or ( _tOptions.customkeys.up and param == _tOptions.customkeys.up ) then
+                    if _tOptions.customkeys.up == param then
                         nCompletion = nCompletion - 1
                         if nCompletion < 1 then
                             nCompletion = #tCompletions
                         end
-                    elseif ( not _tOptions.customkeys.down and param == keys.down ) or ( _tOptions.customkeys.down and param == _tOptions.customkeys.down ) then
+                    elseif _tOptions.customkeys.down == param then
                         nCompletion = nCompletion + 1
                         if nCompletion > #tCompletions then
                             nCompletion = 1
@@ -207,7 +202,7 @@ function prompt( _tOptions )
                 elseif _tOptions.history then
                     -- Cycle history
                     clear()
-                    if ( not _tOptions.customkeys.up and param == keys.up ) or ( _tOptions.customkeys.up and param == _tOptions.customkeys.up ) then
+                    if _tOptions.customkeys.up == param then
                         -- Up
                         if nhistoryPos == nil then
                             if #_tOptions.history > 0 then
@@ -216,7 +211,7 @@ function prompt( _tOptions )
                         elseif nhistoryPos > 1 then
                             nhistoryPos = nhistoryPos - 1
                         end
-                    elseif ( not _tOptions.customkeys.down and param == keys.down ) or ( _tOptions.customkeys.down and param == _tOptions.customkeys.down ) then
+                    elseif _tOptions.customkeys.down == param then
                         -- Down
                         if nhistoryPos == #_tOptions.history then
                             nhistoryPos = nil
@@ -236,7 +231,7 @@ function prompt( _tOptions )
 
                 end
 
-            elseif ( not _tOptions.customkeys.backspace and param == keys.backspace ) or ( _tOptions.customkeys.backspace and param == _tOptions.customkeys.backspace ) then
+            elseif _tOptions.customkeys.backspace == param then
                 -- Backspace
                 if nPos > 0 then
                     clear()
@@ -246,7 +241,7 @@ function prompt( _tOptions )
                     redraw()
                 end
 
-            elseif ( not _tOptions.customkeys.home and param == keys.home ) or ( _tOptions.customkeys.home and param == _tOptions.customkeys.home ) then
+            elseif _tOptions.customkeys.home == param then
                 -- Home
                 if nPos > 0 then
                     clear()
@@ -255,16 +250,16 @@ function prompt( _tOptions )
                     redraw()
                 end
 
-            elseif ( not _tOptions.customkeys.delete and param == keys.delete ) or ( _tOptions.customkeys.delete and param == _tOptions.customkeys.delete ) then
+            elseif _tOptions.customkeys.delete == param then
                 -- Delete
                 if nPos < string.len(sLine) then
                     clear()
-                    sLine = string.sub( sLine, 1, nPos ) .. string.sub( sLine, nPos + 2 )                
+                    sLine = string.sub( sLine, 1, nPos ) .. string.sub( sLine, nPos + 2 )
                     recomplete()
                     redraw()
                 end
 
-            elseif ( not _tOptions.customkeys["end"] and param == keys["end"] ) or ( _tOptions.customkeys["end"] and param == _tOptions.customkeys["end"] ) then
+            elseif _tOptions.customkeys["end"] == param then
                 -- End
                 if nPos < string.len(sLine ) then
                     clear()
@@ -273,12 +268,12 @@ function prompt( _tOptions )
                     redraw()
                 end
 
-            elseif ( not _tOptions.customkeys.tab and param == keys.tab ) or ( _tOptions.customkeys.tab and param == _tOptions.customkeys.tab ) then
+            elseif _tOptions.customkeys.tab == param then
                 -- Tab (accept autocomplete)
                 acceptCompletion()
 
             end
-
+        
         elseif sEvent == "term_resize" then
             -- Terminal resized
             if not _tOptions.limit then
@@ -288,6 +283,28 @@ function prompt( _tOptions )
             end
             redraw()
 
+        end
+
+        if _tOptions.filter then
+            -- Filter out all unwanted characters/strings using a function defined by the user
+            local sPreFilterLine = sLine
+            sLine = _tOptions.filter( sLine )
+            if string.len( sPreFilterLine ) ~= string.len( sLine ) then
+                local sPreClearLine = sLine
+                sLine = sPreFilterLine
+                clear()
+                sLine = sPreClearLine
+            end
+            if not sLine then
+                sLine = sPreFilterLine
+            else
+                if nPos >= ( string.len( sPreFilterLine ) - string.len( sLine ) ) then
+                    nPos = nPos - ( string.len( sPreFilterLine ) - string.len( sLine ) )
+                else
+                    nPos = 0
+                end
+            end
+            redraw()
         end
     end
 
