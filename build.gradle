@@ -109,3 +109,55 @@ gradle.projectsEvaluated {
     }
 }
 
+task apiJar(type: Jar) {
+    classifier "api"
+    dependsOn "sourceMainJava"
+    include 'dan200/computercraft/api/**'
+    from sourceSets.main.java.srcDirs
+    from sourceSets.main.output
+}
+
+artifacts {
+    archives apiJar
+}
+
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+uploadArchives {
+    if(System.getenv("LOCAL_MAVEN") != null) {
+        repositories {
+            mavenDeployer {
+                repository(url: "file://"+System.getenv("LOCAL_MAVEN"))
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    if (System.getenv("MAVEN_ARTIFACT") != null) {
+                        artifactId = System.getenv("MAVEN_ARTIFACT")
+                    } else {
+                        artifactId = "ComputerCraft"
+                    }
+                    project {
+                        name "ComputerCraft"
+                        packaging 'jar'
+                        description 'Programmable Computers for Minecraft'
+                        url 'https://github.com/dan200/ComputerCraft'
+                        scm {
+                            url 'https://github.com/dan200/ComputerCraft.git'
+                        }
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/dan200/ComputerCraft/issues'
+                        }
+                        licenses {
+                            license {
+                                name 'ComputerCraft Public License'
+                                distribution 'repo'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
