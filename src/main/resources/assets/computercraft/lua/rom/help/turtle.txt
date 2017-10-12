@@ -43,6 +43,8 @@ turtle.getFuelLevel()
 turtle.getFuelLimit()
 turtle.refuel( [quantity] )
 turtle.craft( [quantity] ) (requires Crafty Turtle)
+turtle.getEquipLeft()
+turtle.getEquipRight()
 
 Events fired by the Turtle API:
 "turtle_inventory" when any of the items in the inventory are changed. Use comparison operations to inspect the changes.
