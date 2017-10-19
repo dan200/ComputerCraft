@@ -1,18 +1,24 @@
+local help
+if shell then
+    help = {}
+else
+    help = _ENV
+end
 
 local sPath = "/rom/help"
 
-function path()
+function help.path()
 	return sPath
 end
 
-function setPath( _sPath )
+function help.setPath( _sPath )
     if type( _sPath ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sPath ) .. ")", 2 ) 
     end
 	sPath = _sPath
 end
 
-function lookup( _sTopic )
+function help.lookup( _sTopic )
     if type( _sTopic ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sTopic ) .. ")", 2 ) 
     end
@@ -30,7 +36,7 @@ function lookup( _sTopic )
 	return nil
 end
 
-function topics()
+function help.topics()
     -- Add index
 	local tItems = {
 	    [ "index" ] = true
@@ -62,7 +68,7 @@ function topics()
 	return tItemList
 end
 
-function completeTopic( sText )
+function help.completeTopic( sText )
     if type( sText ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sText ) .. ")", 2 ) 
     end
@@ -77,4 +83,4 @@ function completeTopic( sText )
 	return tResults
 end
 
-
+return help

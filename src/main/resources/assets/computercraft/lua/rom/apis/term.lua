@@ -50,7 +50,11 @@ for k,v in pairs( native ) do
 	end
 end
 	
-local env = _ENV
-for k,v in pairs( term ) do
-	env[k] = v
+if not shell then
+    local env = _ENV
+    for k,v in pairs( term ) do
+	    env[k] = v
+    end
 end
+
+return term

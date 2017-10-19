@@ -1,5 +1,11 @@
+local textutils
+if shell then
+    textutils = {}
+else
+    textutils = _ENV
+end
 
-function slowWrite( sText, nRate )
+function textutils.slowWrite( sText, nRate )
     if nRate ~= nil and type( nRate ) ~= "number" then
         error( "bad argument #2 (expected number, got " .. type( nRate ) .. ")", 2 )
     end
@@ -22,12 +28,12 @@ function slowWrite( sText, nRate )
     end
 end
 
-function slowPrint( sText, nRate )
-    slowWrite( sText, nRate )
+function textutils.slowPrint( sText, nRate )
+    textutils.slowWrite( sText, nRate )
     print()
 end
 
-function formatTime( nTime, bTwentyFourHour )
+function textutils.formatTime( nTime, bTwentyFourHour )
     if type( nTime ) ~= "number" then
         error( "bad argument #1 (expected number, got " .. type( nTime ) .. ")", 2 )
     end
@@ -76,7 +82,7 @@ local function makePagedScroll( _term, _nFreeLines )
     end
 end
 
-function pagedPrint( _sText, _nFreeLines )
+function textutils.pagedPrint( _sText, _nFreeLines )
     if _nFreeLines ~= nil and type( _nFreeLines ) ~= "number" then
         error( "bad argument #2 (expected number, got " .. type( _nFreeLines ) .. ")", 2 ) 
     end
@@ -165,11 +171,11 @@ local function tabulateCommon( bPaged, ... )
     end    
 end
 
-function tabulate( ... )
+function textutils.tabulate( ... )
     tabulateCommon( false, ... )
 end
 
-function pagedTabulate( ... )
+function textutils.pagedTabulate( ... )
     tabulateCommon( true, ... )
 end
 
@@ -312,12 +318,12 @@ local function serializeJSONImpl( t, tTracking, bNBTStyle )
     end
 end
 
-function serialize( t )
+function textutils.serialize( t )
     local tTracking = {}
     return serializeImpl( t, tTracking, "" )
 end
 
-function unserialize( s )
+function textutils.unserialize( s )
     if type( s ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( s ) .. ")", 2 )
     end
@@ -331,7 +337,7 @@ function unserialize( s )
     return nil
 end
 
-function serializeJSON( t, bNBTStyle )
+function textutils.serializeJSON( t, bNBTStyle )
     if type( t ) ~= "table" and type( t ) ~= "string" and type( t ) ~= "number" and type( t ) ~= "boolean" then
         error( "bad argument #1 (expected table/string/number/boolean, got " .. type( t ) .. ")", 2 )
     end
@@ -342,7 +348,7 @@ function serializeJSON( t, bNBTStyle )
     return serializeJSONImpl( t, tTracking, bNBTStyle or false )
 end
 
-function urlEncode( str )
+function textutils.urlEncode( str )
     if type( str ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( str ) .. ")", 2 )
     end
@@ -366,7 +372,7 @@ function urlEncode( str )
 end
 
 local tEmpty = {}
-function complete( sSearchText, tSearchTable )
+function textutils.complete( sSearchText, tSearchTable )
     if type( sSearchText ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sSearchText ) .. ")", 2 )
     end
@@ -447,6 +453,8 @@ function complete( sSearchText, tSearchTable )
 end
 
 -- GB versions
-serialise = serialize
-unserialise = unserialize
-serialiseJSON = serializeJSON
+textutils.serialise = textutils.serialize
+textutils.unserialise = textutils.unserialize
+textutils.serialiseJSON = textutils.serializeJSON
+
+return textutils

@@ -19,7 +19,13 @@ local function addCraftMethod( object )
 end
 
 -- Put commands into environment table
-local env = _ENV
+local env
+if shell then
+    env = {}
+else
+    env = _ENV
+end
+
 for k,v in pairs( native ) do
     if k == "equipLeft" or k == "equipRight" then
         env[k] = function( ... )
@@ -32,3 +38,5 @@ for k,v in pairs( native ) do
     end
 end
 addCraftMethod( env )
+
+return env

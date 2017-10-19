@@ -1,6 +1,13 @@
 local native = peripheral
 
-function getNames()
+local peripheralapi
+if shell then
+    peripheralapi = {}
+else
+    peripheralapi = _ENV
+end
+
+function peripheralapi.getNames()
 	local tResults = {}
 	for n,sSide in ipairs( rs.getSides() ) do
 		if native.isPresent( sSide ) then
@@ -16,7 +23,7 @@ function getNames()
 	return tResults
 end
 
-function isPresent( _sSide )
+function peripheralapi.isPresent( _sSide )
     if type( _sSide ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sSide ) .. ")", 2 ) 
     end
@@ -33,7 +40,7 @@ function isPresent( _sSide )
 	return false
 end
 
-function getType( _sSide )
+function peripheralapi.getType( _sSide )
     if type( _sSide ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sSide ) .. ")", 2 )
     end
@@ -50,7 +57,7 @@ function getType( _sSide )
 	return nil
 end
 
-function getMethods( _sSide )
+function peripheralapi.getMethods( _sSide )
     if type( _sSide ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sSide ) .. ")", 2 )
     end
@@ -67,7 +74,7 @@ function getMethods( _sSide )
 	return nil
 end
 
-function call( _sSide, _sMethod, ... )
+function peripheralapi.call( _sSide, _sMethod, ... )
     if type( _sSide ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sSide ) .. ")", 2 )
     end
@@ -87,7 +94,7 @@ function call( _sSide, _sMethod, ... )
 	return nil
 end
 
-function wrap( _sSide )
+function peripheralapi.wrap( _sSide )
     if type( _sSide ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( _sSide ) .. ")", 2 )
     end
@@ -104,7 +111,7 @@ function wrap( _sSide )
 	return nil
 end
 
-function find( sType, fnFilter )
+function peripheralapi.find( sType, fnFilter )
     if type( sType ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sType ) .. ")", 2 )
     end
@@ -122,3 +129,5 @@ function find( sType, fnFilter )
 	end
 	return table.unpack( tResults )
 end
+
+return peripheralapi

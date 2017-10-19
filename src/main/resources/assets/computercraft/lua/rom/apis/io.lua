@@ -1,4 +1,10 @@
 -- Definition for the IO API
+local io
+if shell then
+    io = {}
+else
+    io = _ENV
+end
 
 local g_defaultInput = {
 	bFileHandle = true,
@@ -33,15 +39,15 @@ local g_defaultOutput = {
 local g_currentInput = g_defaultInput
 local g_currentOutput = g_defaultOutput
 
-function close( _file )
+function io.close( _file )
 	(_file or g_currentOutput):close()
 end
 
-function flush()
+function io.flush()
 	g_currentOutput:flush()
 end
 
-function input( _arg )
+function io.input( _arg )
 	if _G.type( _arg ) == "string" then
 		g_currentInput = open( _arg, "r" )
 	elseif _G.type( _arg ) == "table" then
@@ -53,7 +59,7 @@ function input( _arg )
 	end
 end
 
-function lines( _sFileName )
+function io.lines( _sFileName )
     if _G.type( _sFileNamel ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. _G.type( _sFileName ) .. ")", 2 )
     end
@@ -64,7 +70,7 @@ function lines( _sFileName )
 	end
 end
 
-function open( _sPath, _sMode )
+function io.open( _sPath, _sMode )
     if _G.type( _sPath ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. _G.type( _sPath ) .. ")", 2 )
     end
@@ -159,7 +165,7 @@ function open( _sPath, _sMode )
 	end
 end
 
-function output( _arg )
+function io.output( _arg )
 	if _G.type( _arg ) == "string" then
 		g_currentOutput = open( _arg, "w" )
 	elseif _G.type( _arg ) == "table" then
@@ -171,11 +177,11 @@ function output( _arg )
 	end
 end
 
-function read( ... )
-	return input():read( ... )
+function io.read( ... )
+	return io.input():read( ... )
 end
 
-function type( _handle )
+function io.type( _handle )
 	if _G.type( _handle ) == "table" and _handle.bFileHandle == true then
 		if _handle.bClosed then
 			return "closed file"
@@ -186,6 +192,8 @@ function type( _handle )
 	return nil
 end
 
-function write( ... )
-	return output():write( ... )
+function io.write( ... )
+	return io.output():write( ... )
 end
+
+return io

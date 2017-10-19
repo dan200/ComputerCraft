@@ -1,7 +1,13 @@
+local settings
+if shell then
+    settings = {}
+else
+    settings = _ENV
+end
 
 local tSettings = {}
 
-function set( sName, value )
+function settings.set( sName, value )
     if type( sName ) ~= "string" then error( "bad argument #1 (expected string, got " .. type( sName ) .. ")", 2 ) end
     
     local sValueTy = type(value)
@@ -28,7 +34,7 @@ function copy( value )
     end
 end
 
-function get( sName, default )
+function settings.get( sName, default )
     if type(sName) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sName ) .. ")", 2 ) 
     end
@@ -40,18 +46,18 @@ function get( sName, default )
     end
 end
 
-function unset( sName )
+function settings.unset( sName )
     if type(sName) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sName ) .. ")", 2 ) 
     end
     tSettings[ sName ] = nil
 end
 
-function clear()
+function settings.clear()
     tSettings = {}
 end
 
-function getNames()
+function settings.getNames()
     local result = {}
     for k,v in pairs( tSettings ) do
         result[ #result + 1 ] = k
@@ -60,7 +66,7 @@ function getNames()
     return result
 end
 
-function load( sPath )
+function settings.load( sPath )
     if type(sPath) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 ) 
     end
@@ -80,14 +86,14 @@ function load( sPath )
     for k,v in pairs(tFile) do
         if type(k) == "string" and
            (type(v) == "string" or type(v) == "number" or type(v) == "boolean" or type(v) == "table") then
-            set( k, v )
+            settings.set( k, v )
         end
     end
 
     return true
 end
 
-function save( sPath )
+function settings.save( sPath )
     if type(sPath) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 ) 
     end
@@ -101,3 +107,5 @@ function save( sPath )
 
     return true
 end
+
+return settings

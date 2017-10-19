@@ -1,3 +1,9 @@
+local disk
+if shell then
+    disk = {}
+else
+    disk = _ENV
+end
 
 local function isDrive( name )
     if type( name ) ~= "string" then
@@ -6,61 +12,61 @@ local function isDrive( name )
 	return peripheral.getType( name ) == "drive"
 end
 
-function isPresent( name )
+function disk.isPresent( name )
 	if isDrive( name ) then
 		return peripheral.call( name, "isDiskPresent" )
 	end
 	return false
 end
 
-function getLabel( name )
+function disk.getLabel( name )
 	if isDrive( name ) then
 		return peripheral.call( name, "getDiskLabel" )
 	end
 	return nil
 end
 
-function setLabel( name, label )
+function disk.setLabel( name, label )
 	if isDrive( name ) then
 		peripheral.call( name, "setDiskLabel", label )
 	end
 end
 
-function hasData( name )
+function disk.hasData( name )
 	if isDrive( name ) then
 		return peripheral.call( name, "hasData" )
 	end
 	return false
 end
 
-function getMountPath( name )
+function disk.getMountPath( name )
 	if isDrive( name ) then
 		return peripheral.call( name, "getMountPath" )
 	end
 	return nil
 end
 
-function hasAudio( name )
+function disk.hasAudio( name )
 	if isDrive( name ) then
 		return peripheral.call( name, "hasAudio" )
 	end
 	return false
 end
 
-function getAudioTitle( name )
+function disk.getAudioTitle( name )
 	if isDrive( name ) then
 		return peripheral.call( name, "getAudioTitle" )
 	end
 	return nil
 end
 
-function playAudio( name )
+function disk.playAudio( name )
 	if isDrive( name ) then
 		peripheral.call( name, "playAudio" )
 	end
 end
 
-function stopAudio( name )
+function disk.stopAudio( name )
 	if not name then
 		for n,sName in ipairs( peripheral.getNames() ) do
 			stopAudio( sName )
@@ -72,16 +78,17 @@ function stopAudio( name )
 	end
 end
 
-function eject( name )
+function disk.eject( name )
 	if isDrive( name ) then
 		peripheral.call( name, "ejectDisk" )
 	end
 end
 
-function getID( name )
+function disk.getID( name )
 	if isDrive( name ) then
 		return peripheral.call( name, "getDiskID" )
 	end
 	return nil
 end
 
+return disk
