@@ -1,5 +1,11 @@
+local gps
+if shell then
+    gps = {}
+else
+    gps = _ENV
+end
 
-CHANNEL_GPS = 65534
+gps.CHANNEL_GPS = 65534
 
 local function trilaterate( A, B, C )
 	local a2b = B.vPosition - A.vPosition
@@ -55,7 +61,7 @@ local function narrow( p1, p2, fix )
 	end
 end
 
-function locate( _nTimeout, _bDebug )
+function gps.locate( _nTimeout, _bDebug )
     if _nTimeout ~= nil and type( _nTimeout ) ~= "number" then
         error( "bad argument #1 (expected number, got " .. type( _nTimeout ) .. ")", 2 ) 
     end
@@ -166,3 +172,5 @@ function locate( _nTimeout, _bDebug )
 		return nil
 	end
 end
+
+return gps

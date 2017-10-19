@@ -1,3 +1,9 @@
+local vectorapi
+if shell then
+    vectorapi = {}
+else
+    vectorapi = _ENV
+end
 
 local vector = {
 	add = function( self, o )
@@ -74,7 +80,7 @@ local vmetatable = {
 	__tostring = vector.tostring,
 }
 
-function new( x, y, z )
+function vectorapi.new( x, y, z )
 	local v = {
 		x = tonumber(x) or 0,
 		y = tonumber(y) or 0,
@@ -83,3 +89,5 @@ function new( x, y, z )
 	setmetatable( v, vmetatable )
 	return v
 end
+
+return vectorapi

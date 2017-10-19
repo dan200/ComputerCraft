@@ -1,5 +1,11 @@
 -- Colours (for lovers of british spelling)
-local colours = _ENV
+local colours
+if shell then
+    colours = {}
+else
+    colours = _ENV
+end
+
 for k,v in pairs(colors) do
 	colours[k] = v
 end
@@ -9,3 +15,5 @@ colours.gray = nil
 
 colours.lightGrey = colors.lightGray
 colours.lightGray = nil
+
+return colours

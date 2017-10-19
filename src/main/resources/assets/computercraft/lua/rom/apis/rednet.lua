@@ -1,12 +1,18 @@
+local rednet
+if shell then
+    rednet = {}
+else
+    rednet = _ENV
+end
 
-CHANNEL_BROADCAST = 65535
-CHANNEL_REPEAT = 65533
+rednet.CHANNEL_BROADCAST = 65535
+rednet.CHANNEL_REPEAT = 65533
 
 local tReceivedMessages = {}
 local tReceivedMessageTimeouts = {}
 local tHostnames = {}
 
-function open( sModem )
+function rednet.open( sModem )
     if type( sModem ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sModem ) .. ")", 2 )
     end
@@ -14,10 +20,10 @@ function open( sModem )
         error( "No such modem: "..sModem, 2 )
     end
     peripheral.call( sModem, "open", os.getComputerID() )
-    peripheral.call( sModem, "open", CHANNEL_BROADCAST )
+    peripheral.call( sModem, "open", rednet.CHANNEL_BROADCAST )
 end
 
-function close( sModem )
+function rednet.close( sModem )
     if sModem then
         -- Close a specific modem
         if type( sModem ) ~= "string" then
@@ -27,30 +33,30 @@ function close( sModem )
             error( "No such modem: "..sModem, 2 )
         end
         peripheral.call( sModem, "close", os.getComputerID() )
-        peripheral.call( sModem, "close", CHANNEL_BROADCAST )
+        peripheral.call( sModem, "close", rednet.CHANNEL_BROADCAST )
     else
         -- Close all modems
         for n,sModem in ipairs( peripheral.getNames() ) do
-            if isOpen( sModem ) then
-                close( sModem )
+            if rednet.isOpen( sModem ) then
+                rednet.close( sModem )
             end
         end
     end
 end
 
-function isOpen( sModem )
+function rednet.isOpen( sModem )
     if sModem then
         -- Check if a specific modem is open
         if type( sModem ) ~= "string" then
             error( "bad argument #1 (expected string, got " .. type( sModem ) .. ")", 2 )
         end
         if peripheral.getType( sModem ) == "modem" then
-            return peripheral.call( sModem, "isOpen", os.getComputerID() ) and peripheral.call( sModem, "isOpen", CHANNEL_BROADCAST )
+            return peripheral.call( sModem, "isOpen", os.getComputerID() ) and peripheral.call( sModem, "isOpen", rednet.CHANNEL_BROADCAST )
         end
     else
         -- Check if any modem is open
         for n,sModem in ipairs( peripheral.getNames() ) do
-            if isOpen( sModem ) then
+            if rednet.isOpen( sModem ) then
                 return true
             end
         end
@@ -58,7 +64,7 @@ function isOpen( sModem )
     return false
 end
 
-function send( nRecipient, message, sProtocol )
+function rednet.send( nRecipient, message, sProtocol )
     if type( nRecipient ) ~= "number" then
         error( "bad argument #1 (expected number, got " .. type( nRecipient ) .. ")", 2 )
     end
@@ -89,23 +95,23 @@ function send( nRecipient, message, sProtocol )
         -- Send on all open modems, to the target and to repeaters
         local sent = false
         for n,sModem in ipairs( peripheral.getNames() ) do
-            if isOpen( sModem ) then
+            if rednet.isOpen( sModem ) then
                 peripheral.call( sModem, "transmit", nRecipient, nReplyChannel, tMessage );
-                peripheral.call( sModem, "transmit", CHANNEL_REPEAT, nReplyChannel, tMessage );
+                peripheral.call( sModem, "transmit", rednet.CHANNEL_REPEAT, nReplyChannel, tMessage );
                 sent = true
             end
         end
     end
 end
 
-function broadcast( message, sProtocol )
+function rednet.broadcast( message, sProtocol )
     if sProtocol ~= nil and type( sProtocol ) ~= "string" then
         error( "bad argument #2 (expected string, got " .. type( sProtocol ) .. ")", 2 )
     end
-    send( CHANNEL_BROADCAST, message, sProtocol )
+    rednet.send( rednet.CHANNEL_BROADCAST, message, sProtocol )
 end
 
-function receive( sProtocolFilter, nTimeout )
+function rednet.receive( sProtocolFilter, nTimeout )
     -- The parameters used to be ( nTimeout ), detect this case for backwards compatibility
     if type(sProtocolFilter) == "number" and nTimeout == nil then
         sProtocolFilter, nTimeout = nil, sProtocolFilter
@@ -145,7 +151,7 @@ function receive( sProtocolFilter, nTimeout )
     end
 end
 
-function host( sProtocol, sHostname )
+function rednet.host( sProtocol, sHostname )
     if type( sProtocol ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sProtocol ) .. ")", 2 )
     end
@@ -156,7 +162,7 @@ function host( sProtocol, sHostname )
         error( "Reserved hostname", 2 )
     end
     if tHostnames[ sProtocol ] ~= sHostname then
-        if lookup( sProtocol, sHostname ) ~= nil then
+        if rednet.lookup( sProtocol, sHostname ) ~= nil then
             error( "Hostname in use", 2 )
         end
         tHostnames[ sProtocol ] = sHostname
@@ -170,7 +176,7 @@ function unhost( sProtocol )
     tHostnames[ sProtocol ] = nil
 end
 
-function lookup( sProtocol, sHostname )
+function rednet.lookup( sProtocol, sHostname )
     if type( sProtocol ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sProtocol ) .. ")", 2 )
     end
@@ -239,7 +245,7 @@ function lookup( sProtocol, sHostname )
 end
 
 local bRunning = false
-function run()
+function rednet.run()
     if bRunning then
         error( "rednet is already running", 2 )
     end
@@ -250,7 +256,7 @@ function run()
         if sEvent == "modem_message" then
             -- Got a modem message, process it and add it to the rednet event queue
             local sModem, nChannel, nReplyChannel, tMessage = p1, p2, p3, p4
-            if isOpen( sModem ) and ( nChannel == os.getComputerID() or nChannel == CHANNEL_BROADCAST ) then
+            if isOpen( sModem ) and ( nChannel == os.getComputerID() or nChannel == rednet.CHANNEL_BROADCAST ) then
                 if type( tMessage ) == "table" and tMessage.nMessageID then
                     if not tReceivedMessages[ tMessage.nMessageID ] then
                         tReceivedMessages[ tMessage.nMessageID ] = true
@@ -285,3 +291,5 @@ function run()
         end
     end
 end
+
+return rednet

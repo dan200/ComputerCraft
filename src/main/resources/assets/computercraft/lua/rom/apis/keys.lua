@@ -1,6 +1,12 @@
 
 -- Minecraft key code bindings
 -- See http://www.minecraftwiki.net/wiki/Key_codes for more info
+local keys
+if shell then
+    keys = {}
+else
+    keys = _ENV
+end
 
 local tKeys = {
 	nil,	 	"one", 		"two", 		"three", 	"four",			-- 1
@@ -48,15 +54,16 @@ local tKeys = {
 	"delete"														-- 211
 }
 
-local keys = _ENV
 for nKey, sKey in pairs( tKeys ) do
 	keys[sKey] = nKey
 end
 keys["return"] = keys.enter
 
-function getName( _nKey )
+function keys.getName( _nKey )
     if type( _nKey ) ~= "number" then
         error( "bad argument #1 (expected number, got " .. type( _nKey ) .. ")", 2 ) 
     end
 	return tKeys[ _nKey ]
 end
+
+return keys

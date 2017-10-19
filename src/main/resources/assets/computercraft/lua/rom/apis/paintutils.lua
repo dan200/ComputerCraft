@@ -1,3 +1,9 @@
+local paintutils
+if shell then
+    paintutils = {}
+else
+    paintutils = _ENV
+end
 
 local function drawPixelInternal( xPos, yPos )
     term.setCursorPos( xPos, yPos )
@@ -17,7 +23,7 @@ local function parseLine( tImageArg, sLine )
     table.insert( tImageArg, tLine )
 end
 
-function parseImage( sRawData )
+function paintutils.parseImage( sRawData )
     if type( sRawData ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sRawData ) .. ")" )
     end
@@ -28,7 +34,7 @@ function parseImage( sRawData )
     return tImage
 end
 
-function loadImage( sPath )
+function paintutils.loadImage( sPath )
     if type( sPath ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 )
     end
@@ -37,12 +43,12 @@ function loadImage( sPath )
         local file = io.open( sPath, "r" )
         local sContent = file:read("*a")
         file:close()
-        return parseImage( sContent ) -- delegate image parse to parseImage
+        return paintutils.parseImage( sContent ) -- delegate image parse to parseImage
     end
     return nil
 end
 
-function drawPixel( xPos, yPos, nColour )
+function paintutils.drawPixel( xPos, yPos, nColour )
     if type( xPos ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( xPos ) .. ")", 2 ) end
     if type( yPos ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( yPos ) .. ")", 2 ) end
     if nColour ~= nil and type( nColour ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( nColour ) .. ")", 2 ) end
@@ -52,7 +58,7 @@ function drawPixel( xPos, yPos, nColour )
     drawPixelInternal( xPos, yPos )
 end
 
-function drawLine( startX, startY, endX, endY, nColour )
+function paintutils.drawLine( startX, startY, endX, endY, nColour )
     if type( startX ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( startX ) .. ")", 2 ) end
     if type( startY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( startY ) .. ")", 2 ) end
     if type( endX ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( endX ) .. ")", 2 ) end
@@ -113,7 +119,7 @@ function drawLine( startX, startY, endX, endY, nColour )
     end
 end
 
-function drawBox( startX, startY, endX, endY, nColour )
+function paintutils.drawBox( startX, startY, endX, endY, nColour )
     if type( startX ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( startX ) .. ")", 2 ) end
     if type( startY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( startY ) .. ")", 2 ) end
     if type( endX ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( endX ) .. ")", 2 ) end
@@ -158,7 +164,7 @@ function drawBox( startX, startY, endX, endY, nColour )
     end
 end
 
-function drawFilledBox( startX, startY, endX, endY, nColour )
+function paintutils.drawFilledBox( startX, startY, endX, endY, nColour )
     if type( startX ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( startX ) .. ")", 2 ) end
     if type( startY ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( startY ) .. ")", 2 ) end
     if type( endX ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( endX ) .. ")", 2 ) end
@@ -197,7 +203,7 @@ function drawFilledBox( startX, startY, endX, endY, nColour )
     end
 end
 
-function drawImage( tImage, xPos, yPos )
+function paintutils.drawImage( tImage, xPos, yPos )
     if type( tImage ) ~= "table" then error( "bad argument #1 (expected table, got " .. type( tImage ) .. ")", 2 ) end
     if type( xPos ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( xPos ) .. ")", 2 ) end
     if type( yPos ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( yPos ) .. ")", 2 ) end
@@ -211,3 +217,5 @@ function drawImage( tImage, xPos, yPos )
         end
     end
 end
+
+return paintutils

@@ -18,7 +18,13 @@ local function collapseArgs( errorDepth, bJSONIsNBT, arg1, ... )
 end
 
 -- Put native functions into the environment
-local env = _ENV
+local env
+if shell then
+    env = {}
+else
+    env = _ENV
+end
+
 for k,v in pairs( native ) do
     env[k] = v
 end
@@ -44,3 +50,5 @@ for n,sCommandName in ipairs(tCommands) do
     end
 end
 env.async = tAsync
+
+return env

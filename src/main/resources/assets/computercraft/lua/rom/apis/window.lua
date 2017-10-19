@@ -1,3 +1,10 @@
+local windowapi
+if shell then
+    windowapi = {}
+else
+    windowapi = _ENV
+end
+
 
 local tHex = {
     [ colors.white ] = "0",
@@ -23,7 +30,7 @@ local string_rep = string.rep
 local string_sub = string.sub
 local table_unpack = table.unpack
 
-function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
+function windowapi.create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     if type( parent ) ~= "table" then error( "bad argument #1 (expected table, got " .. type( parent ) .. ")", 2 ) end
     if type( nX ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( nX ) .. ")", 2 ) end
     if type( nY ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( nY ) .. ")", 2 ) end
@@ -472,3 +479,5 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
     return window
 end
+
+return windowapi

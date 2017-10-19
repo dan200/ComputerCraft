@@ -1,3 +1,9 @@
+local parallel
+if shell then
+    parallel = {}
+else
+    parallel = _ENV
+end
 
 local function create( ... )
     local tFns = table.pack(...)
@@ -55,12 +61,14 @@ local function runUntilLimit( _routines, _limit )
     end
 end
 
-function waitForAny( ... )
+function parallel.waitForAny( ... )
     local routines = create( ... )
     return runUntilLimit( routines, #routines - 1 )
 end
 
-function waitForAll( ... )
+function parallel.waitForAll( ... )
     local routines = create( ... )
 	runUntilLimit( routines, 0 )
 end
+
+return parallel
