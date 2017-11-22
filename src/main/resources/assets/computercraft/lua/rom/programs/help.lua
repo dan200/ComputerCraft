@@ -6,13 +6,17 @@ else
     sTopic = "intro"
 end
 
+if multishell and settings.get( "help.multishell_title" ) == true then
+    multishell.setTitle( multishell.getCurrent(), "help (" .. sTopic .. ")" )
+end
+
 if sTopic == "index" then
     print( "Help topics availiable:" )
     local tTopics = help.topics()
     textutils.pagedTabulate( tTopics )
     return
 end
-    
+
 local w,h = term.getSize()
 local sFile = help.lookup( sTopic )
 local file = ((sFile ~= nil) and io.open( sFile )) or nil
