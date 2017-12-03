@@ -25,9 +25,15 @@ public class ComputerCommand extends CommandBase {
         if( args.length < 2 ){
             throw new CommandException( "Usage: /computer <id> <value1> [value2]..." );
         }
+        int id;
+        try {
+            id = Integer.valueOf(args[0]);
+        }catch( NumberFormatException e ){
+            throw new CommandException( "Invalid ID" );
+        }
         boolean found_valid_computer = false;
         for( ServerComputer computer : ComputerCraft.serverComputerRegistry.getComputers() ){
-            if( computer.getID() == Integer.valueOf( args[0] ) && computer.getFamily() == ComputerFamily.Command ){
+            if( computer.getID() == id && computer.getFamily() == ComputerFamily.Command ){
                 computer.queueEvent("computer_command", ArrayUtils.remove(args, 0));
                 found_valid_computer = true;
             }
