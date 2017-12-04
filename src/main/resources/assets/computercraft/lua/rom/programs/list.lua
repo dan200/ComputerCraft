@@ -3,7 +3,14 @@ local tArgs = { ... }
 
 -- Get all the files in the directory
 local sDir = shell.dir()
-if tArgs[1] ~= nil then
+local bShowHiddenOption
+
+if tArgs[1] == "-a" then
+    bShowHiddenOption = true
+    if tArgs[2] ~= nil then
+        sDir = shell.resolve( tArgs[2] )
+    end
+elseif tArgs[1] ~= nil then
     sDir = shell.resolve( tArgs[1] )
 end
 
@@ -17,9 +24,9 @@ local tAll = fs.list( sDir )
 local tFiles = {}
 local tDirs = {}
 
-local bShowHidden = settings.get( "list.show_hidden" )
+local bShowHiddenSetting = settings.get( "list.show_hidden" )
 for n, sItem in pairs( tAll ) do
-    if bShowHidden or string.sub( sItem, 1, 1 ) ~= "." then
+    if bShowHiddenSetting or string.sub( sItem, 1, 1 ) ~= "." or bShowHiddenOption then
         local sPath = fs.combine( sDir, sItem )
         if fs.isDir( sPath ) then
             table.insert( tDirs, sItem )
