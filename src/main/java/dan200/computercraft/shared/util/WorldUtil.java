@@ -125,9 +125,9 @@ public class WorldUtil
         double zDir;
         if( direction != null )
         {
-            xDir = (double)direction.getFrontOffsetX();
-            yDir = (double)direction.getFrontOffsetY();
-            zDir = (double)direction.getFrontOffsetZ();
+            xDir = direction.getFrontOffsetX();
+            yDir = direction.getFrontOffsetY();
+            zDir = direction.getFrontOffsetZ();
         }
         else
         {
