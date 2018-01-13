@@ -242,7 +242,41 @@ function write( sText )
             sText = string.sub( sText, 2 )
         end
         
-        local text = string.match( sText, "^[^ \t\n]+" )
+        local verticaltab = string.match( sText, "^\v" ) or string.match( sText, "^\f" )
+        if verticaltab then
+            -- Print Vertical Tab or Formfeed
+            local oldx = term.getCursorPos()
+            newLine()
+            term.setCursorPos( oldx, y )
+            sText = string.sub( sText, 2 )
+            x,y = term.getCursorPos()
+        end
+
+        local backspace = string.match( sText, "^\b" )
+        if backspace then
+            -- Print Backspace
+            if x ~= 1 then
+                term.setCursorPos( x-1, y )
+                x,y = term.getCursorPos()
+            end
+            sText = string.sub( sText, 2 )
+        end
+        
+        local carriagereturn = string.match( sText, "^\r" )
+        if carriagereturn then
+            -- Print Carriage return
+            term.setCursorPos( 1, y )
+            x = 1
+            sText = string.sub( sText, 2 )
+        end
+        
+        local bell = string.match( sText, "^\a" )
+        if bell then
+            --\a is in the list of escape but do nothing
+            sText = string.sub( sText, 2 )
+        end
+
+        local text = string.match( sText, "^[^ \t\n\v\f\b\r\a]+" )
         if text then
             sText = string.sub( sText, string.len(text) + 1 )
             if string.len(text) > w then
