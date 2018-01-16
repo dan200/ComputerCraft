@@ -43,7 +43,6 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
@@ -71,14 +70,21 @@ public class TileTurtle extends TileComputerBase
     private boolean m_inventoryChanged;
     private TurtleBrain m_brain;
     private MoveState m_moveState;
+    private ComputerFamily m_family;
 
     public TileTurtle()
+    {
+        this( ComputerFamily.Normal );
+    }
+
+    public TileTurtle(ComputerFamily family)
     {
         m_inventory = NonNullList.withSize( INVENTORY_SIZE, ItemStack.EMPTY );
         m_previousInventory = NonNullList.withSize( INVENTORY_SIZE, ItemStack.EMPTY );
         m_inventoryChanged = false;
         m_brain = createBrain();
         m_moveState = MoveState.NOT_MOVED;
+        m_family = family;
     }
 
     public boolean hasMoved()
@@ -446,6 +452,13 @@ public class TileTurtle extends TileComputerBase
     public float getToolRenderAngle( TurtleSide side, float f )
     {
         return m_brain.getToolRenderAngle( side, f );
+    }
+
+    // IComputerTile
+    @Override
+    public ComputerFamily getFamily()
+    {
+        return m_family;
     }
 
     // IInventory
