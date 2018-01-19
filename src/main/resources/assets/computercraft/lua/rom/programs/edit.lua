@@ -171,8 +171,16 @@ end
 
 local tCompletions
 local nCompletion
+local tCompleteEnv = {}
 
-local tCompleteEnv = _ENV
+for k, v in pairs( _ENV ) do
+    tCompleteEnv[k] = v
+end
+
+for k, v in pairs( _G ) do
+    tCompleteEnv[k] = v
+end
+
 local function complete( sLine )
     if settings.get( "edit.autocomplete" ) then
         local nStartPos = string.find( sLine, "[a-zA-Z0-9_%.:]+$" )
@@ -448,8 +456,33 @@ local function setCursor( newX, newY )
     redrawMenu()
 end
 
+local function addAutocompletion( sSearch )
+    for sResult in sSearch:gmatch( "function .-%(.-%)" ) do
+        local tObject = tCompleteEnv
+        sResult = sResult:sub( 10, sResult:find( "(",1 , true ) - 1 )
+        while true do
+            local nPoint = sResult:find( ".", 1, true )
+            if nPoint == nil then
+                break
+            else
+                local sIndex = sResult:sub( 1, -(#sResult - nPoint) - 2 )
+                if type(tObject[sIndex]) ~= "table" then
+                    tObject[sIndex] = {}
+                end
+                tObject = tObject[sIndex]
+                sResult = sResult:sub( nPoint + 1 )  
+            end     
+        end
+        tObject[sResult] = function() end
+    end
+end
+
 -- Actual program functionality begins
 load(sPath)
+
+for k, v in ipairs( tLines ) do
+    addAutocompletion( v )
+end
 
 term.setBackgroundColour( bgColour )
 term.clear()
