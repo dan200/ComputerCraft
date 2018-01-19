@@ -143,6 +143,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon
         public void onTextureStitchEvent( TextureStitchEvent.Pre event )
         {
             event.getMap().registerSprite( new ResourceLocation( "computercraft", "blocks/crafty_upgrade" ) );
+            event.getMap().registerSprite( new ResourceLocation( "computercraft", "blocks/turtle_speaker_face" ) );
         }
 
         @SubscribeEvent
