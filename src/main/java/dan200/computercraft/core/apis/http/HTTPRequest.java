@@ -1,3 +1,22 @@
+/*
+ * This file is part of ComputerCraft - http://www.computercraft.info
+ * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
+ * Send enquiries to dratcliffe@gmail.com
+ */
+
+package dan200.computercraft.core.apis.http;
+
+import com.google.common.base.Joiner;
+import com.google.common.io.ByteStreams;
+import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.ILuaObject;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.core.apis.HTTPRequestException;
+import dan200.computercraft.core.apis.IAPIEnvironment;
+import dan200.computercraft.core.apis.handles.BinaryInputHandle;
+import dan200.computercraft.core.apis.handles.EncodedInputHandle;
+
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.*;
@@ -66,11 +85,11 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
     private byte[] m_result;
     private boolean m_binary;
     private int m_responseCode = -1;
-    private String m_responseCodeText = "";
+    private String m_responseCodeText;
     private Map<String, String> m_responseHeaders;
     private String m_errorMessage;
 
-    public HTTPRequest( String urlString, URL url, final String postText, final Map<String, String> headers, final boolean binary, final String mode, final boolean followRedirects) throws HTTPRequestException
+    public HTTPRequest( String urlString, URL url, final String postText, final Map<String, String> headers, boolean binary, String mode, boolean followRedirects ) throws HTTPRequestException
     {
         // Parse the URL
         m_urlString = urlString;
@@ -79,7 +98,7 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
         m_postText = postText;
         m_headers = headers;
         m_mode = mode;
-        m_followRedirects = (followRedirects != false);
+        m_followRedirects = followRedirects;
     }
 
     public InputStream getContents()
@@ -112,8 +131,13 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             // Connect to the URL
             HttpURLConnection connection = (HttpURLConnection) m_url.openConnection();
 
+            if( m_postText != null )
+            {
+                connection.setDoOutput( true );
+            }
             connection.setRequestMethod( m_mode );
-            connection.setInstanceFollowRedirects( m_followRedirects );
+
+
 
             // Set headers
             connection.setRequestProperty( "accept-charset", "UTF-8" );
@@ -128,6 +152,9 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
                     connection.setRequestProperty( header.getKey(), header.getValue() );
                 }
             }
+
+            //Set follow redirects
+            connection.setInstanceFollowRedirects(m_followRedirects);
 
             // Send POST text
             if( m_postText != null )
@@ -173,7 +200,7 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             m_encoding = connection.getContentEncoding();
 
             Joiner joiner = Joiner.on( ',' );
-            Map<String, String> headers = m_responseHeaders = new HashMap<>();
+            Map<String, String> headers = m_responseHeaders = new HashMap<String, String>();
             for( Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet() )
             {
                 headers.put( header.getKey(), joiner.join( header.getValue() ) );
@@ -197,8 +224,8 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             // Queue the "http_success" event
             InputStream contents = getContents();
             Object result = wrapStream(
-                m_binary ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, m_encoding ),
-                m_responseCode, m_responseHeaders, m_responseCodeText
+                    m_binary ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, m_encoding ),
+                    m_responseCode, m_responseHeaders, m_responseCodeText
             );
             environment.queueEvent( "http_success", new Object[] { url, result } );
         }
@@ -213,8 +240,8 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             if( contents != null )
             {
                 result = wrapStream(
-                    m_binary ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, m_encoding ),
-                    m_responseCode, m_responseHeaders, m_responseCodeText
+                        m_binary ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, m_encoding ),
+                        m_responseCode, m_responseHeaders, m_responseCodeText
                 );
             }
             environment.queueEvent( "http_failure", new Object[] { url, error, result } );
@@ -227,7 +254,7 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
         final int methodOffset = oldMethods.length;
 
         final String[] newMethods = Arrays.copyOf( oldMethods, oldMethods.length + 3 );
-        newMethods[ methodOffset     ] = "getResponseCode"; //Removed annoying IntelliJ warning
+        newMethods[ methodOffset + 0 ] = "getResponseCode";
         newMethods[ methodOffset + 1 ] = "getResponseHeaders";
         newMethods[ methodOffset + 2 ] = "getResponseCodeText";
 
@@ -261,7 +288,7 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
                     }
                     case 2:
                     {
-                        //getResponseCodeText
+                        // getResponseCodeText
                         return new Object[] { responseCodeText };
                     }
                     default:
