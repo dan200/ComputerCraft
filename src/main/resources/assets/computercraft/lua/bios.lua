@@ -85,56 +85,48 @@ if _VERSION == "Lua 5.3" then
     -- (Loaded from a string so this file will still parse on <5.3 lua)
     load( [[
         bit32 = {}
-
         function bit32.arshift( n, bits )
             if type(n) ~= "number" or type(bits) ~= "number" then
                 error( "Expected number, number", 2 )
             end
             return n >> bits
         end
-
         function bit32.band( m, n )
             if type(m) ~= "number" or type(n) ~= "number" then
                 error( "Expected number, number", 2 )
             end
             return m & n
         end
-
         function bit32.bnot( n )
             if type(n) ~= "number" then
                 error( "Expected number", 2 )
             end
             return ~n
         end
-
         function bit32.bor( m, n )
             if type(m) ~= "number" or type(n) ~= "number" then
                 error( "Expected number, number", 2 )
             end
             return m | n
         end
-
         function bit32.btest( m, n )
             if type(m) ~= "number" or type(n) ~= "number" then
                 error( "Expected number, number", 2 )
             end
             return (m & n) ~= 0
         end
-
         function bit32.bxor( m, n )
             if type(m) ~= "number" or type(n) ~= "number" then
                 error( "Expected number, number", 2 )
             end
             return m ~ n
         end
-
         function bit32.lshift( n, bits )
             if type(n) ~= "number" or type(bits) ~= "number" then
                 error( "Expected number, number", 2 )
             end
             return n << bits
         end
-
         function bit32.rshift( n, bits )
             if type(n) ~= "number" or type(bits) ~= "number" then
                 error( "Expected number, number", 2 )
@@ -699,8 +691,8 @@ end
 if http then
     local nativeHTTPRequest = http.request
 
-    local function wrapRequest( _url, _post, _headers, _binary, _mode, _followRedirects )
-        local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary, _mode, _followRedirects )
+    local function wrapRequest( _url, _post, _headers, _binary )
+        local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary )
         if ok then
             while true do
                 local event, param1, param2, param3 = os.pullEvent()
@@ -743,7 +735,7 @@ if http then
         return wrapRequest( _url, _post or "", _headers, _binary)
     end
 
-    http.request = function( _url, _post, _headers, _binary, _mode, _followRedirects )
+    http.request = function( _url, _post, _headers, _binary )
         if type( _url ) ~= "string" then
             error( "bad argument #1 (expected string, got " .. type( _url ) .. ")", 2 ) 
         end
@@ -756,24 +748,7 @@ if http then
         if _binary ~= nil and type( _binary ) ~= "boolean" then
             error( "bad argument #4 (expected boolean, got " .. type( _binary ) .. ")", 2 ) 
         end
-        if _mode ~= nil and type( _mode ) ~= "string" then
-            error( "bad argument #5 (expected string, got " .. type( _mode ) .. ")", 2 ) 
-        end
-        if _followRedirects ~= nil and type( _followRedirects ) ~= "boolean" then
-            error( "bad argument #6 (expected boolean, got " .. type( _followRedirects ) .. ")", 2 ) 
-        end
-        local md = (_mode and _mode) or ""
-        local wl = {
-          ["GET"] = true,
-          ["PUT"] = true,
-          ["POST"] = true,
-          ["DELETE"] = true,
-          ["HEAD"] = true,
-          ["OPTIONS"] = true,
-          ["TRACE"] = true
-        }
-        if not wl[md:upper()] then error("bad argument #5 (unsupported operation ".._mode..")", 2) end
-        local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary, _mode, _followRedirects )
+        local ok, err = nativeHTTPRequest( _url, _post, _headers, _binary )
         if not ok then
             os.queueEvent( "http_failure", _url, err )
         end
