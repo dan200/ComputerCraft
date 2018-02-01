@@ -48,12 +48,14 @@ public class HTTPRequest
         return url;
     }
 
-    public HTTPRequest( String url, final String postText, final Map<String, String> headers, boolean binary ) throws HTTPRequestException
+    public HTTPRequest( String url, final String postText, final Map<String, String> headers, boolean binary, String mode, boolean followRedirects ) throws HTTPRequestException
     {
         // Parse the URL
         m_urlString = url;
         m_url = checkURL( m_urlString );
         m_binary = binary;
+        m_mode = mode;
+        m_followRedirects = followRedirects;
 
         // Start the thread
         m_cancelled = false;
@@ -61,22 +63,30 @@ public class HTTPRequest
         m_success = false;
         m_result = null;
         m_responseCode = -1;
+        m_responseCodeText = "";
 
         Thread thread = new Thread( () ->
         {
             try
             {
                 // Connect to the URL
-                HttpURLConnection connection = (HttpURLConnection)m_url.openConnection();
+                HttpURLConnection connection = (HttpURLConnection) m_url.openConnection();
 
+                //Set default, also set if we are writing data
                 if( postText != null )
                 {
                     connection.setRequestMethod( "POST" );
-                    connection.setDoOutput( true );
+                    connection.setDoOutput( m_followRedirects );
                 }
                 else
                 {
                     connection.setRequestMethod( "GET" );
+                }
+
+                //Change method, we don't care if we are writing data, that ia already set
+                if( mode != null)
+                {
+                    connection.setRequestMethod( mode );
                 }
 
                 // Set headers
@@ -143,6 +153,7 @@ public class HTTPRequest
                         m_success = responseSuccess;
                         m_result = result;
                         m_responseCode = connection.getResponseCode();
+                        m_responseCodeText = connection.getResponseMessage();
                         m_encoding = connection.getContentEncoding();
 
                         Joiner joiner = Joiner.on( ',' );
@@ -201,6 +212,12 @@ public class HTTPRequest
         }
     }
 
+    public String getRepsonseCodeText() {
+        synchronized(m_lock) {
+            return m_responseCodeText;
+        }
+    }
+
     public boolean wasSuccessful()
     {
         synchronized(m_lock) {
@@ -233,6 +250,8 @@ public class HTTPRequest
     private final Object m_lock = new Object();
     private final URL m_url;
     private final String m_urlString;
+    private final String m_mode;
+    private final boolean m_followRedirects;
     
     private boolean m_complete;
     private boolean m_cancelled;
@@ -241,5 +260,6 @@ public class HTTPRequest
     private byte[] m_result;
     private boolean m_binary;
     private int m_responseCode;
+    private String m_responseCodeText;
     private Map<String, String> m_responseHeaders;
 }
