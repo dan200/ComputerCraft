@@ -1,22 +1,3 @@
-/*
- * This file is part of ComputerCraft - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2017. Do not distribute without permission.
- * Send enquiries to dratcliffe@gmail.com
- */
-
-package dan200.computercraft.core.apis.http;
-
-import com.google.common.base.Joiner;
-import com.google.common.io.ByteStreams;
-import dan200.computercraft.ComputerCraft;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.core.apis.HTTPRequestException;
-import dan200.computercraft.core.apis.IAPIEnvironment;
-import dan200.computercraft.core.apis.handles.BinaryInputHandle;
-import dan200.computercraft.core.apis.handles.EncodedInputHandle;
-
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.*;
@@ -77,16 +58,19 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
     private final String m_urlString;
     private final String m_postText;
     private final Map<String, String> m_headers;
+    private final String m_mode;
+    private final boolean m_followRedirects;
 
     private boolean m_success = false;
     private String m_encoding;
     private byte[] m_result;
     private boolean m_binary;
     private int m_responseCode = -1;
+    private String m_responseCodeText = "";
     private Map<String, String> m_responseHeaders;
     private String m_errorMessage;
 
-    public HTTPRequest( String urlString, URL url, final String postText, final Map<String, String> headers, boolean binary ) throws HTTPRequestException
+    public HTTPRequest( String urlString, URL url, final String postText, final Map<String, String> headers, final boolean binary, final String mode, final boolean followRedirects) throws HTTPRequestException
     {
         // Parse the URL
         m_urlString = urlString;
@@ -94,6 +78,8 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
         m_binary = binary;
         m_postText = postText;
         m_headers = headers;
+        m_mode = mode;
+        m_followRedirects = (followRedirects != false);
     }
 
     public InputStream getContents()
@@ -126,15 +112,8 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             // Connect to the URL
             HttpURLConnection connection = (HttpURLConnection) m_url.openConnection();
 
-            if( m_postText != null )
-            {
-                connection.setRequestMethod( "POST" );
-                connection.setDoOutput( true );
-            }
-            else
-            {
-                connection.setRequestMethod( "GET" );
-            }
+            connection.setRequestMethod( m_mode );
+            connection.setInstanceFollowRedirects( m_followRedirects );
 
             // Set headers
             connection.setRequestProperty( "accept-charset", "UTF-8" );
@@ -190,10 +169,11 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             m_success = responseSuccess;
             m_result = result;
             m_responseCode = connection.getResponseCode();
+            m_responseCodeText = connection.getResponseMessage();
             m_encoding = connection.getContentEncoding();
 
             Joiner joiner = Joiner.on( ',' );
-            Map<String, String> headers = m_responseHeaders = new HashMap<String, String>();
+            Map<String, String> headers = m_responseHeaders = new HashMap<>();
             for( Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet() )
             {
                 headers.put( header.getKey(), joiner.join( header.getValue() ) );
@@ -218,7 +198,7 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             InputStream contents = getContents();
             Object result = wrapStream(
                 m_binary ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, m_encoding ),
-                m_responseCode, m_responseHeaders
+                m_responseCode, m_responseHeaders, m_responseCodeText
             );
             environment.queueEvent( "http_success", new Object[] { url, result } );
         }
@@ -234,21 +214,22 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             {
                 result = wrapStream(
                     m_binary ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, m_encoding ),
-                    m_responseCode, m_responseHeaders
+                    m_responseCode, m_responseHeaders, m_responseCodeText
                 );
             }
             environment.queueEvent( "http_failure", new Object[] { url, error, result } );
         }
     }
 
-    private static ILuaObject wrapStream( final ILuaObject reader, final int responseCode, final Map<String, String> responseHeaders )
+    private static ILuaObject wrapStream( final ILuaObject reader, final int responseCode, final Map<String, String> responseHeaders, final String responseCodeText )
     {
         String[] oldMethods = reader.getMethodNames();
         final int methodOffset = oldMethods.length;
 
-        final String[] newMethods = Arrays.copyOf( oldMethods, oldMethods.length + 2 );
-        newMethods[ methodOffset + 0 ] = "getResponseCode";
+        final String[] newMethods = Arrays.copyOf( oldMethods, oldMethods.length + 3 );
+        newMethods[ methodOffset     ] = "getResponseCode"; //Removed annoying IntelliJ warning
         newMethods[ methodOffset + 1 ] = "getResponseHeaders";
+        newMethods[ methodOffset + 2 ] = "getResponseCodeText";
 
         return new ILuaObject()
         {
@@ -277,6 +258,11 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
                     {
                         // getResponseHeaders
                         return new Object[] { responseHeaders };
+                    }
+                    case 2:
+                    {
+                        //getResponseCodeText
+                        return new Object[] { responseCodeText };
                     }
                     default:
                     {
