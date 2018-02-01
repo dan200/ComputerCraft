@@ -33,6 +33,8 @@ New Features in ComputerCraft 1.80:
 * Added speaker block, turtle upgrade, pocket upgrade, and peripheral api
 * Startup can now be a directory containing multiple startup files
 * Added .getLabel to the computer peripheral
+* Added .getResponseCodeText() to HTTP responses
+* Added method and followRedirects arguments to HTTP.request()
 
 New Features in ComputerCraft 1.79:
 
