@@ -11,17 +11,17 @@ tile.computercraft:command_computer.name=Befehlscomputer
 tile.computercraft:advanced_modem.name=Ender-Modem
 tile.computercraft:speaker.name=Lautsprecher
 
-tile.computercraft:turtle.name=Roboter
-tile.computercraft:turtle.upgraded.name=%s-Bot
-tile.computercraft:turtle.upgraded_twice.name=%s & %s-Bot
-tile.computercraft:advanced_turtle.name=Erweiterter Bot
-tile.computercraft:advanced_turtle.upgraded.name=Erweiterter %s-Bot
-tile.computercraft:advanced_turtle.upgraded_twice.name=Erweiterter %s & %s-Bot
+tile.computercraft:turtle.name=Turtle
+tile.computercraft:turtle.upgraded.name=%s Turle
+tile.computercraft:turtle.upgraded_twice.name=%s & %s Turtle
+tile.computercraft:advanced_turtle.name=Erweitertes Turtle
+tile.computercraft:advanced_turtle.upgraded.name=Erweiterter %s Turtle
+tile.computercraft:advanced_turtle.upgraded_twice.name=Erweiterter %s & %s Turtle
 
 item.computercraft:disk.name=Diskette
-item.computercraft:treasure_disk.name=Rostige Diskette
-item.computercraft:page.name=Ausdruck
-item.computercraft:pages.name=Asdrücke
+item.computercraft:treasure_disk.name=Diskette
+item.computercraft:page.name=Gedruckte Seite
+item.computercraft:pages.name=Gedruckte Seiten
 item.computercraft:book.name=Gedrucktes Buch
 
 item.computercraft:pocket_computer.name=Taschencomputer
@@ -35,7 +35,7 @@ upgrade.minecraft:diamond_pickaxe.adjective=Bergbau
 upgrade.minecraft:diamond_axe.adjective=Holzfäller
 upgrade.minecraft:diamond_hoe.adjective=Ackerbau
 upgrade.computercraft:wireless_modem.adjective=WLAN
-upgrade.minecraft:crafting_table.adjective=Fabrik
+upgrade.minecraft:crafting_table.adjective=Fabrizierendes
 upgrade.computercraft:advanced_modem.adjective=Ender
 upgrade.computercraft:speaker.adjective=Unruhiger
 
@@ -61,4 +61,4 @@ gui.computercraft:config.advanced_turtle_fuel_limit=Treibstofflimit von Erweiter
 gui.computercraft:config.turtles_obey_block_protection=Bots beachten Blockschutz
 gui.computercraft:config.turtles_can_push=Bots können Entities bewegen
 gui.computercraft:config.maximum_files_open=Anzahl von Dateien die parallel offen sein können
-gui.computercraft:config.max_notes_per_tick=Anzal von Noten die parrallel abgespielt werden können
+gui.computercraft:config.max_notes_per_tick=Anzah+l von Noten die parrallel abgespielt werden können
