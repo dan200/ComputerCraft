@@ -72,6 +72,12 @@ public class MonitorPeripheral implements IPeripheral
     @Override
     public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object args[] ) throws LuaException
     {
+        ServerMonitor monitor = m_monitor.getCachedServerMonitor();
+        if( monitor == null ) throw new LuaException( "Monitor has been detatched" );
+
+        Terminal terminal = monitor.getTerminal();
+        if( terminal == null ) throw new LuaException( "Monitor has been detatched" );
+
         switch( method )
         {
             case 0:
@@ -83,7 +89,6 @@ public class MonitorPeripheral implements IPeripheral
                 } else {
                     text = "";
                 }
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.write( text );
                 terminal.setCursorPos( terminal.getCursorX() + text.length(), terminal.getCursorY() );
                 return null;
@@ -92,7 +97,6 @@ public class MonitorPeripheral implements IPeripheral
             {
                 // scroll
                 int value = getInt( args, 0 );
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.scroll( value );
                 return null;
             }
@@ -101,7 +105,6 @@ public class MonitorPeripheral implements IPeripheral
                 // setCursorPos
                 int x = getInt( args, 0 ) - 1;
                 int y = getInt( args, 1 ) - 1;
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setCursorPos( x, y );
                 return null;
             }
@@ -109,14 +112,12 @@ public class MonitorPeripheral implements IPeripheral
             {
                 // setCursorBlink
                 boolean blink = getBoolean( args, 0 );
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setCursorBlink( blink );
                 return null;
             }
             case 4:
             {
                 // getCursorPos
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 return new Object[] {
                     terminal.getCursorX() + 1,
                     terminal.getCursorY() + 1
@@ -125,7 +126,6 @@ public class MonitorPeripheral implements IPeripheral
             case 5:
             {
                 // getSize
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 return new Object[] {
                     terminal.getWidth(),
                     terminal.getHeight()
@@ -134,14 +134,12 @@ public class MonitorPeripheral implements IPeripheral
             case 6:
             {
                 // clear
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.clear();
                 return null;
             }
             case 7:
             {
                 // clearLine
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.clearLine();
                 return null;
             }
@@ -153,7 +151,7 @@ public class MonitorPeripheral implements IPeripheral
                 {
                     throw new LuaException( "Expected number in range 0.5-5" );
                 }
-                m_monitor.setTextScale( scale );
+                monitor.setTextScale( scale );
                 return null;
             }
             case 9:
@@ -161,7 +159,6 @@ public class MonitorPeripheral implements IPeripheral
             {
                 // setTextColour/setTextColor
                 int colour = TermAPI.parseColour( args );
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setTextColour( colour );
                 return null;
             }
@@ -170,7 +167,6 @@ public class MonitorPeripheral implements IPeripheral
             {
                 // setBackgroundColour/setBackgroundColor
                 int colour = TermAPI.parseColour( args );
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setBackgroundColour( colour );
                 return null;
             }
@@ -179,21 +175,19 @@ public class MonitorPeripheral implements IPeripheral
             {
                 // isColour/isColor
                 return new Object[] {
-                    m_monitor.getTerminal().isColour()
+                    monitor.isColour()
                 };
             }
             case 15:
             case 16:
             {
                 // getTextColour/getTextColor
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 return TermAPI.encodeColour( terminal.getTextColour() );
             }
             case 17:
             case 18:
             {
                 // getBackgroundColour/getBackgroundColor
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 return TermAPI.encodeColour( terminal.getBackgroundColour() );
             }
             case 19:
@@ -207,7 +201,6 @@ public class MonitorPeripheral implements IPeripheral
                     throw new LuaException( "Arguments must be the same length" );
                 }
 
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.blit( text, textColour, backgroundColour );
                 terminal.setCursorPos( terminal.getCursorX() + text.length(), terminal.getCursorY() );
                 return null;
@@ -216,8 +209,6 @@ public class MonitorPeripheral implements IPeripheral
             case 21:
             {
                 // setPaletteColour/setPaletteColor
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
-
                 int colour = 15 - TermAPI.parseColour( args );
                 if( args.length == 2 )
                 {
@@ -238,7 +229,6 @@ public class MonitorPeripheral implements IPeripheral
             case 23:
             {
                 // getPaletteColour/getPaletteColor
-                Terminal terminal = m_monitor.getTerminal().getTerminal();
                 Palette palette = terminal.getPalette();
 
                 int colour = 15 - TermAPI.parseColour( args );

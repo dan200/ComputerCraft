@@ -10,7 +10,7 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.client.gui.FixedWidthFontRenderer;
 import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.core.terminal.TextBuffer;
-import dan200.computercraft.shared.common.ClientTerminal;
+import dan200.computercraft.shared.peripheral.monitor.ClientMonitor;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.DirectionUtil;
@@ -43,24 +43,22 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
     private void renderMonitorAt( TileMonitor monitor, double posX, double posY, double posZ, float f, int i )
     {
         // Render from the origin monitor
-        TileMonitor origin = monitor.getOrigin();
-        if( origin == null )
-        {
-            return;
-        }
+        ClientMonitor originTerminal = monitor.getClientMonitor();
+
+        if( originTerminal == null ) return;
+        TileMonitor origin = originTerminal.getOrigin();
 
         // Ensure each monitor is rendered only once
         long renderFrame = ComputerCraft.getRenderFrame();
-        if( origin.m_lastRenderFrame == renderFrame )
+        if( originTerminal.lastRenderFrame == renderFrame )
         {
             return;
         }
         else
         {
-            origin.m_lastRenderFrame = renderFrame;
+            originTerminal.lastRenderFrame = renderFrame;
         }
 
-        boolean redraw = origin.pollChanged();
         BlockPos monitorPos = monitor.getPos();
         BlockPos originPos = origin.getPos();
         posX += originPos.getX() - monitorPos.getX();
@@ -82,11 +80,11 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             GlStateManager.rotate( pitch, 1.0f, 0.0f, 0.0f );
             GlStateManager.translate(
                 -0.5 + TileMonitor.RENDER_BORDER + TileMonitor.RENDER_MARGIN,
-                ((double)origin.getHeight() - 0.5) - (TileMonitor.RENDER_BORDER + TileMonitor.RENDER_MARGIN),
+                (origin.getHeight() - 0.5) - (TileMonitor.RENDER_BORDER + TileMonitor.RENDER_MARGIN),
                 0.5
             );
-            double xSize = (double)origin.getWidth() - 2.0 * ( TileMonitor.RENDER_MARGIN + TileMonitor.RENDER_BORDER );
-            double ySize = (double)origin.getHeight() - 2.0 * ( TileMonitor.RENDER_MARGIN + TileMonitor.RENDER_BORDER );
+            double xSize = origin.getWidth() - 2.0 * ( TileMonitor.RENDER_MARGIN + TileMonitor.RENDER_BORDER );
+            double ySize = origin.getHeight() - 2.0 * ( TileMonitor.RENDER_MARGIN + TileMonitor.RENDER_BORDER );
 
             // Get renderers
             Minecraft mc = Minecraft.getMinecraft();
@@ -94,9 +92,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             BufferBuilder renderer = tessellator.getBuffer();
 
             // Get terminal
-            ClientTerminal clientTerminal = (ClientTerminal)origin.getTerminal();
-            Terminal terminal = (clientTerminal != null) ? clientTerminal.getTerminal() : null;
-            redraw = redraw || (clientTerminal != null && clientTerminal.hasTerminalChanged());
+            boolean redraw = originTerminal.pollTerminalChanged();
 
             // Draw the contents
             GlStateManager.depthMask( false );
@@ -104,30 +100,31 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             mc.entityRenderer.disableLightmap();
             try
             {
+                Terminal terminal = originTerminal.getTerminal();
                 if( terminal != null )
                 {
                     Palette palette = terminal.getPalette();
 
                     // Allocate display lists
-                    if( origin.m_renderDisplayList < 0 )
+                    if( originTerminal.renderDisplayList < 0 )
                     {
-                        origin.m_renderDisplayList = GlStateManager.glGenLists( 3 );
+                        originTerminal.renderDisplayList = GlStateManager.glGenLists( 3 );
                         redraw = true;
                     }
 
                     // Draw a terminal
-                    boolean greyscale = !clientTerminal.isColour();
+                    boolean greyscale = !originTerminal.isColour();
                     int width = terminal.getWidth();
                     int height = terminal.getHeight();
                     int cursorX = terminal.getCursorX();
                     int cursorY = terminal.getCursorY();
-                    FixedWidthFontRenderer fontRenderer = (FixedWidthFontRenderer)ComputerCraft.getFixedWidthFontRenderer();
+                    FixedWidthFontRenderer fontRenderer = (FixedWidthFontRenderer) ComputerCraft.getFixedWidthFontRenderer();
 
                     GlStateManager.pushMatrix();
                     try
                     {
-                        double xScale = xSize / (double) ( width * FixedWidthFontRenderer.FONT_WIDTH );
-                        double yScale = ySize / (double) ( height * FixedWidthFontRenderer.FONT_HEIGHT );
+                        double xScale = xSize / ( width * FixedWidthFontRenderer.FONT_WIDTH );
+                        double yScale = ySize / ( height * FixedWidthFontRenderer.FONT_HEIGHT );
                         GlStateManager.scale( xScale, -yScale, 1.0 );
 
                         // Draw background
@@ -135,12 +132,12 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         if( redraw )
                         {
                             // Build background display list
-                            GlStateManager.glNewList( origin.m_renderDisplayList, GL11.GL_COMPILE );
+                            GlStateManager.glNewList( originTerminal.renderDisplayList, GL11.GL_COMPILE );
                             try
                             {
                                 double marginXSize = TileMonitor.RENDER_MARGIN / xScale;
                                 double marginYSize = TileMonitor.RENDER_MARGIN / yScale;
-                                double marginSquash = marginYSize / (double) FixedWidthFontRenderer.FONT_HEIGHT;
+                                double marginSquash = marginYSize / FixedWidthFontRenderer.FONT_HEIGHT;
 
                                 // Top and bottom margins
                                 GlStateManager.pushMatrix();
@@ -149,7 +146,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                     GlStateManager.scale( 1.0, marginSquash, 1.0 );
                                     GlStateManager.translate( 0.0, -marginYSize / marginSquash, 0.0 );
                                     fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( 0 ), marginXSize, marginXSize, greyscale, palette );
-                                    GlStateManager.translate( 0.0, ( marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT ) / marginSquash, 0.0 );
+                                    GlStateManager.translate( 0.0, (marginYSize + height * FixedWidthFontRenderer.FONT_HEIGHT) / marginSquash, 0.0 );
                                     fontRenderer.drawStringBackgroundPart( 0, 0, terminal.getBackgroundColourLine( height - 1 ), marginXSize, marginXSize, greyscale, palette );
                                 }
                                 finally
@@ -174,7 +171,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                 GlStateManager.glEndList();
                             }
                         }
-                        GlStateManager.callList( origin.m_renderDisplayList );
+                        GlStateManager.callList( originTerminal.renderDisplayList );
                         GlStateManager.resetColor();
 
                         // Draw text
@@ -182,7 +179,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         if( redraw )
                         {
                             // Build text display list
-                            GlStateManager.glNewList( origin.m_renderDisplayList + 1, GL11.GL_COMPILE );
+                            GlStateManager.glNewList( originTerminal.renderDisplayList + 1, GL11.GL_COMPILE );
                             try
                             {
                                 // Lines
@@ -202,7 +199,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                 GlStateManager.glEndList();
                             }
                         }
-                        GlStateManager.callList( origin.m_renderDisplayList + 1 );
+                        GlStateManager.callList( originTerminal.renderDisplayList + 1 );
                         GlStateManager.resetColor();
 
                         // Draw cursor
@@ -210,7 +207,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         if( redraw )
                         {
                             // Build cursor display list
-                            GlStateManager.glNewList( origin.m_renderDisplayList + 2, GL11.GL_COMPILE );
+                            GlStateManager.glNewList( originTerminal.renderDisplayList + 2, GL11.GL_COMPILE );
                             try
                             {
                                 // Cursor
@@ -236,7 +233,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         }
                         if( ComputerCraft.getGlobalCursorBlink() )
                         {
-                            GlStateManager.callList( origin.m_renderDisplayList + 2 );
+                            GlStateManager.callList( originTerminal.renderDisplayList + 2 );
                             GlStateManager.resetColor();
                         }
                     }
