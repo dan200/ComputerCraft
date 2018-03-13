@@ -7,7 +7,6 @@
 package dan200.computercraft.shared.turtle.recipes;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
@@ -91,18 +90,7 @@ public class TurtleRecipe extends ShapedRecipes
         public IRecipe parse( JsonContext context, JsonObject json )
         {
             String group = JsonUtils.getString( json, "group", "" );
-
-            String familyName = JsonUtils.getString( json, "family" );
-            ComputerFamily family;
-            try
-            {
-                family = ComputerFamily.valueOf( familyName );
-            }
-            catch( IllegalArgumentException e )
-            {
-                throw new JsonSyntaxException( "Unknown computer family '" + familyName + "'" );
-            }
-
+            ComputerFamily family = RecipeUtil.getFamily( json, "family" );
             CraftingHelper.ShapedPrimer primer = RecipeUtil.getPrimer( context, json );
             return new TurtleRecipe( group, primer.width, primer.height, primer.input, family );
         }
