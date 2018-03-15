@@ -6,8 +6,8 @@
         " B "
     ],
     "key": {
-        "#": { "item": "minecraft:gold_ingot" },
-        "B": { "item": "minecraft:gold_block" },
+        "#": { "type": "forge:ore_dict", "ore": "ingotGold" },
+        "B": { "type": "forge:ore_dict", "ore": "blockGold" },
         "C": [
             { "type": "computercraft:computer", "item": "computercraft:turtle", "family": "Normal" },
             { "item": "computercraft:turtle_expanded", "data": 0 }

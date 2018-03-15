@@ -6,7 +6,7 @@
         "# #"
     ],
     "key": {
-        "#": { "item": "minecraft:gold_ingot" },
+        "#": { "type": "forge:ore_dict", "ore": "ingotGold" },
         "C": { "item": "computercraft:pocket_computer", "data": 0 }
     },
     "family": "Advanced",
