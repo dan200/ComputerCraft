@@ -631,11 +631,34 @@ public class BlockPeripheral extends BlockPeripheralBase
         return isOpaqueCube( state );
     }
 
+    @Override
+    @Deprecated
+    public boolean isFullBlock( IBlockState state )
+    {
+        return isOpaqueCube( state );
+    }
+
     @Nonnull
     @Override
     @Deprecated
     public BlockFaceShape getBlockFaceShape( IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side )
     {
         return isOpaqueCube( state ) ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+    }
+
+    @Override
+    @Deprecated
+    public boolean causesSuffocation(IBlockState state)
+    {
+        // This normally uses the default state 
+        return blockMaterial.blocksMovement() && state.isOpaqueCube();
+    }
+
+    @Override
+    @Deprecated
+    public int getLightOpacity( IBlockState state )
+    {
+        // This normally uses the default state
+        return isOpaqueCube( state ) ? 255 : 0;
     }
 }
