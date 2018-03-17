@@ -20,11 +20,85 @@ import java.util.Arrays;
 
 public class FixedWidthFontRenderer
 {
-    private static ResourceLocation font = new ResourceLocation( "computercraft", "textures/gui/term_font.png" );
+	
+	private enum FontDefinition
+	{
+		ASCII(new ResourceLocation( "computercraft", "textures/gui/term_font.png" ), 9, 6, 256, 16, 256.0, 256.0),
+		UNIFONT_PLAIN(new ResourceLocation( "computercraft", "textures/gui/term_font_unifont_plain.png" ), 23, 20, 65536, 256, 5654.0, 6425.0),
+		UNIFONT_BOLD(new ResourceLocation( "computercraft", "textures/gui/term_font_unifont_plain.png" ), 23, 22, 65536, 256, 6168.0, 6425.0),
+		UNIFONT_ITALIC(new ResourceLocation( "computercraft", "textures/gui/term_font_unifont_plain.png" ), 23, 20, 65536, 256, 5654.0, 6425.0);
+		
+		private final ResourceLocation font;
+	    private final int fontHeight;
+	    private final int fontWidth;
+	    private final double texHeight;
+	    private final double texWidth;
+	    private final int maxChars;
+	    private final int charsPerLine;
+	    
+	    private FontDefinition(ResourceLocation font, int fontHeight, int fontWidth, int maxChars, int charsPerLine, double texWidth, double texHeight) {
+			this.font = font;
+			this.fontHeight = fontHeight;
+			this.fontWidth = fontWidth;
+			this.maxChars = maxChars;
+			this.charsPerLine = charsPerLine;
+			this.texWidth = texWidth;
+			this.texHeight = texHeight;
+		}
+
+		ResourceLocation font()
+	    {
+	    	return this.font;
+	    }
+	    
+	    int fontHeight()
+	    {
+	    	return this.fontHeight;
+	    }
+	    
+	    int fontWidth()
+	    {
+	    	return this.fontWidth;
+	    }
+	    
+	    int maxChars()
+	    {
+	    	return this.maxChars;
+	    }
+	    
+	    int charsPerLine()
+	    {
+	    	return this.charsPerLine;
+	    }
+	    
+	    double texWidth()
+	    {
+	    	return texWidth;
+	    }
+	    
+	    double texHeight()
+	    {
+	    	return texHeight;
+	    }
+
+	}
+	
+	private static final FontDefinition FONT = FontDefinition.UNIFONT_PLAIN;
+	
+	private static ResourceLocation font = FONT.font();
     public static ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/term_background.png" );
 
-    public static int FONT_HEIGHT = 9;
-    public static int FONT_WIDTH = 6;
+    private static final int REAL_FONT_HEIGHT = FONT.fontHeight();
+    private static final int REAL_FONT_WIDTH = FONT.fontWidth();
+
+    public static final int FONT_HEIGHT = FontDefinition.ASCII.fontHeight(); // original values
+    public static final int FONT_WIDTH = FontDefinition.ASCII.fontWidth(); // original values
+    
+    private static final int MAX_CHAR = FONT.maxChars();
+    private static final int CHARS_PER_LINE = FONT.charsPerLine();
+
+    private static final double TEX_WIDTH = FONT.texWidth();
+    private static final double TEX_HEIGHT = FONT.texHeight();
 
     private TextureManager m_textureManager;
 
@@ -40,8 +114,8 @@ public class FixedWidthFontRenderer
 
     private void drawChar( BufferBuilder renderer, double x, double y, int index, int color, Palette p, boolean greyscale )
     {
-        int column = index % 16;
-        int row = index / 16;
+        int column = index % CHARS_PER_LINE;
+        int row = index / CHARS_PER_LINE;
 
         double[] colour = p.getColour( 15 - color );
         if(greyscale)
@@ -52,15 +126,15 @@ public class FixedWidthFontRenderer
         float g = (float)colour[1];
         float b = (float)colour[2];
 
-        int xStart = 1 + column * (FONT_WIDTH + 2);
-        int yStart = 1 + row * (FONT_HEIGHT + 2);
-
-        renderer.pos( x, y, 0.0 ).tex( xStart / 256.0, yStart / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, yStart / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, yStart / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
+        int xStart = 1 + column * (REAL_FONT_WIDTH + 2);
+        int yStart = 1 + row * (REAL_FONT_HEIGHT + 2);
+        
+        renderer.pos( x, y, 0.0 ).tex( xStart / TEX_WIDTH, yStart / TEX_HEIGHT ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / TEX_WIDTH, (yStart + REAL_FONT_HEIGHT) / TEX_HEIGHT ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + REAL_FONT_WIDTH) / TEX_WIDTH, yStart / TEX_HEIGHT ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + REAL_FONT_WIDTH) / TEX_WIDTH, yStart / TEX_HEIGHT ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / TEX_WIDTH, (yStart + REAL_FONT_HEIGHT) / TEX_HEIGHT ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (xStart + REAL_FONT_WIDTH) / TEX_WIDTH, (yStart + REAL_FONT_HEIGHT) / TEX_HEIGHT ).color( r, g, b, 1.0f ).endVertex();
     }
 
     private void drawQuad( BufferBuilder renderer, double x, double y, int color, double width, Palette p, boolean greyscale )
@@ -142,7 +216,7 @@ public class FixedWidthFontRenderer
 
             // Draw char
             int index = (int)s.charAt( i );
-            if( index < 0 || index > 255 )
+            if( index < 0 || index > MAX_CHAR )
             {
                 index = (int)'?';
             }

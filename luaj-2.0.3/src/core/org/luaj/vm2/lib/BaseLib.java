@@ -272,8 +272,21 @@ public class BaseLib extends OneArgFunction implements ResourceFinder {
 				for ( int i=1, n=args.narg(); i<=n; i++ ) {
 					if ( i>1 ) baselib.STDOUT.write( '\t' );
 					LuaString s = tostring.call( args.arg(i) ).strvalue();
-					int z = s.indexOf((byte)0, 0);
-					baselib.STDOUT.write( s.m_bytes, s.m_offset, z>=0? z: s.m_length );
+					/* UTF8 BEGIN */
+//					int z = s.indexOf((byte)0, 0);
+//					baselib.STDOUT.write( s.m_bytes, s.m_offset, z>=0? z: s.m_length );
+					int z = s.indexOf('\0', 0);
+					if (z > 0)
+					{
+						final byte[] bytes = s.tojstring().substring(0, z).getBytes(LuaString.UTF8);
+						baselib.STDOUT.write(bytes, 0, bytes.length);
+					}
+					else if (z == -1)
+					{
+						final byte[] bytes = s.tojstring().getBytes(LuaString.UTF8);
+						baselib.STDOUT.write(bytes, 0, bytes.length);
+					}
+					/* UTF8 END */
 				}
 				baselib.STDOUT.println();
 				return NONE;
@@ -417,7 +430,10 @@ public class BaseLib extends OneArgFunction implements ResourceFinder {
 				if ( s.isnil() )
 					return -1;
 				LuaString ls = s.strvalue();
-				bytes = ls.m_bytes;
+				/* UTF8 BEGIN */
+//				bytes = ls.m_bytes;
+				bytes = ls.tojstring().getBytes(LuaString.UTF8);
+				/* UTF8 END */
 				offset = ls.m_offset;
 				remaining = ls.m_length;
 				if (remaining <= 0)

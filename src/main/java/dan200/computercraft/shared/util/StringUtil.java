@@ -1,5 +1,8 @@
 package dan200.computercraft.shared.util;
 
+import org.luaj.vm2.LuaString;
+import org.luaj.vm2.LuaThread;
+
 public class StringUtil
 {
     public static String normaliseLabel( String label )
@@ -44,6 +47,11 @@ public class StringUtil
 
     public static byte[] encodeString( String string )
     {
+    	if (LuaThread.getRunning().isUtf())
+    	{
+    		return string.getBytes(LuaString.UTF8);
+    	}
+    	
         byte[] chars = new byte[ string.length() ];
 
         for( int i = 0; i < chars.length; ++i )

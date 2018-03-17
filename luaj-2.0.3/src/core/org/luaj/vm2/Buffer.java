@@ -41,10 +41,15 @@ public final class Buffer {
 	private static final int DEFAULT_CAPACITY = 64;
 	
 	/** Shared static array with no bytes */
-	private static final byte[] NOBYTES = {};
+	/* UTF8 START */
+	private static final char[] NOBYTES = {};
+	/* UTF8 END */
 
 	/** Bytes in this buffer */
-	private byte[] bytes;
+	/* UTF8 START */
+	//private char[] bytes;
+	private char[] bytes;
+	/* UTF8 END */
 	
 	/** Length of this buffer */
 	private int length;
@@ -68,7 +73,10 @@ public final class Buffer {
 	 * @param initialCapacity the initial capacity
 	 */
 	public Buffer( int initialCapacity ) {
-		bytes = new byte[ initialCapacity ];
+		/* UTF8 START */
+		// bytes = new byte[ initialCapacity ];
+		bytes = new char[ initialCapacity ];
+		/* UTF8 END */
 		length = 0;
 		offset = 0;
 		value = null;
@@ -132,7 +140,10 @@ public final class Buffer {
 	 * Append a single byte to the buffer.
 	 * @return {@code this} to allow call chaining
 	 */
-	public final Buffer append( byte b ) {
+	/* UTF8 START */
+	public final Buffer append( char b ) {
+	// public final Buffer append( byte b ) {
+	/* UTF8 END */
 		makeroom( 0, 1 );
 		bytes[ offset + length++ ] = b;
 		return this;
@@ -174,13 +185,17 @@ public final class Buffer {
 		LuaString.encodeToUtf8( chars, bytes, offset + length );
 		length += n;
 		*/
-		makeroom( 0, chars.length );
-		for( int i=0; i<chars.length; ++i )
-		{
-			char ch = chars[i];
-			bytes[ offset + length + i ] = (ch < 256) ? (byte)ch : (byte)'?';
-		}
+		/* UTF8 START */
+//		makeroom( 0, chars.length );
+//		for( int i=0; i<chars.length; ++i )
+//		{
+//			char ch = chars[i];
+//			bytes[ offset + length + i ] = (ch < 256) ? (byte)ch : (byte)'?';
+//		}
+		makeroom(0, chars.length);
+		System.arraycopy(chars, 0, bytes, offset + length, chars.length);
 		length += chars.length;
+		/* UTF8 END */
 		/* DAN200 END */
 		return this;
 	}
@@ -235,7 +250,10 @@ public final class Buffer {
 			value = null;
 			length = s.m_length;
 			offset = nbefore;
-			bytes = new byte[nbefore+length+nafter];
+			/* UTF8 START */
+			bytes = new char[nbefore+length+nafter];
+			// bytes = new byte[nbefore+length+nafter];
+			/* UTF8 END */
 			System.arraycopy(s.m_bytes, s.m_offset, bytes, offset, length);
 		} else if ( offset+length+nafter > bytes.length || offset<nbefore ) {
 			int n = nbefore+length+nafter;
@@ -250,7 +268,10 @@ public final class Buffer {
 	 */
 	private final void realloc( int newSize, int newOffset ) {
 		if ( newSize != bytes.length ) {
-			byte[] newBytes = new byte[ newSize ];
+			/* DAN200 START */
+			// byte[] newBytes = new byte[ newSize ];
+			char[] newBytes = new char[ newSize ];
+			/* DAN200 END */
 			System.arraycopy( bytes, offset, newBytes, newOffset, length );
 			bytes = newBytes;
 			offset = newOffset;

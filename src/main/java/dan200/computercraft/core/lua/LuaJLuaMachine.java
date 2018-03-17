@@ -115,6 +115,9 @@ public class LuaJLuaMachine implements ILuaMachine
         {
             m_globals.set( "_CC_DISABLE_LUA51_FEATURES", toValue( true ) );
         }
+        /* UTF8 START */
+        m_globals.set( "_CC_UNICODE_AVAIL", toValue( true ) );
+        /* UTF8 END */
 
         // Our main function will go here
         m_mainRoutine = null;
@@ -521,11 +524,18 @@ public class LuaJLuaMachine implements ILuaMachine
             String s = object.toString();
             return LuaValue.valueOf( s );
         }
+        /* UTF8 BEGIN */
         else if( object instanceof byte[] )
         {
             byte[] b = (byte[]) object;
+            return LuaValue.valueOf( new String(b, LuaString.UTF8) );
+        }
+        else if( object instanceof char[] )
+        {
+            char[] b = (char[]) object;
             return LuaValue.valueOf( Arrays.copyOf( b, b.length ) );
         }
+        /* UTF8 END */
         else if( object instanceof Map )
         {
             // Table:

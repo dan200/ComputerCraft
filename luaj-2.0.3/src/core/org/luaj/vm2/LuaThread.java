@@ -112,6 +112,10 @@ public class LuaThread extends LuaValue {
     private Vector children = new Vector();
     /* DAN200 END */
 
+    /* UTF8 START */
+    private boolean isUtf;
+    /* UTF8 END */
+
 	/** Private constructor for main thread only */
 	private LuaThread() {
 		state = new State(this, null);
@@ -255,7 +259,17 @@ public class LuaThread extends LuaValue {
 		return state.lua_resume(this, args);
 	}
 
-	/* DAN200 START */
+	/* UTF8 START */
+	public boolean isUtf() {
+		return this.isUtf;
+	}
+	
+	public void setUtf(boolean newValue) {
+		this.isUtf = newValue;
+	}
+    /* UTF8 END */
+
+    /* DAN200 START */
     public void addChild( LuaThread thread ) {
         this.children.addElement( new WeakReference( thread ) );
     }

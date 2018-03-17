@@ -88,6 +88,9 @@ public class CoroutineLib extends VarArgFunction {
                 /* DAN200 START */
 				//return new LuaThread(func, LuaThread.getGlobals() );
                 final LuaThread thread = new LuaThread( func, LuaThread.getGlobals() );
+                /* UTF8 START */
+                thread.setUtf(LuaThread.getRunning().isUtf());
+                /* UTF8 END */
                 LuaThread.getRunning().addChild( thread );
                 return thread;
                 /* DAN200 END */
@@ -111,6 +114,9 @@ public class CoroutineLib extends VarArgFunction {
 				final LuaThread thread = new LuaThread(func, func.getfenv());
                 /* DAN200 START */
                 LuaThread.getRunning().addChild( thread );
+                /* UTF8 START */
+                thread.setUtf(LuaThread.getRunning().isUtf());
+                /* UTF8 END */
                 /* DAN200 END */
 				CoroutineLib cl = new CoroutineLib();
 				cl.setfenv(thread);

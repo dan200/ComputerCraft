@@ -28,6 +28,7 @@ import org.luaj.vm2.LuaClosure;
 import org.luaj.vm2.Buffer;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaThread;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.compiler.DumpState;
@@ -154,13 +155,18 @@ public class StringLib extends OneArgFunction {
 	 */
 	public static Varargs char_( Varargs args) {
 		int n = args.narg();
-		byte[] bytes = new byte[n];
+		/* UTF8 BEGIN */
+		//byte[] bytes = new byte[n];
+		char[] bytes = new char[n];
 		for ( int i=0, a=1; i<n; i++, a++ ) {
 			int c = args.checkint(a);
-			if (c<0 || c>=256) argerror(a, "invalid value");
-			bytes[i] = (byte) c;
+			// if (c<0 || c>=256) argerror(a, "invalid value");
+			if (!LuaThread.getRunning().isUtf() && (c<0 || c>=256)) argerror(a, "invalid value");
+			// bytes[i] = (byte) c;
+			bytes[i] = (char) c;
 		}
 		return LuaString.valueOf( bytes );
+		/* UTF8 END */
 	}
 		
 	/** 
@@ -239,20 +245,29 @@ public class StringLib extends OneArgFunction {
 				result.append( "\n" );
 				break;
 			default:
-				result.append( (byte) c );
+				/* UTF8 BEGIN */
+				//result.append( (byte) c );
+				result.append( (char) c );
+				/* UTF8 END */
 				break;
 			case L_ESC:
 				if ( i < n ) {
 					if ( ( c = fmt.luaByte( i ) ) == L_ESC ) {
 						++i;
-						result.append( (byte)L_ESC );
+						/* UTF8 BEGIN */
+						//result.append( (byte)L_ESC );
+						result.append( (char)L_ESC );
+						/* UTF8 END */
 					} else {
 						arg++;
 						FormatDesc fdsc = new FormatDesc(args, fmt, i );
 						i += fdsc.length;
 						switch ( fdsc.conversion ) {
 						case 'c':
-							fdsc.format( result, (byte)args.checkint( arg ) );
+							/* UTF8 BEGIN */
+							// fdsc.format( result, (byte)args.checkint( arg ) );
+							fdsc.format( result, (char)args.checkint( arg ) );
+							/* UTF8 END */
 							break;
 						case 'i':
 						case 'd':
@@ -296,12 +311,19 @@ public class StringLib extends OneArgFunction {
 	
 	private static void addquoted(Buffer buf, LuaString s) {
 		int c;
-		buf.append( (byte) '"' );
+		/* UTF8 BEGIN */
+//		buf.append( (byte) '"' );
+		buf.append( '"' );
+		/* UTF8 END */
 		for ( int i = 0, n = s.length(); i < n; i++ ) {
 			switch ( c = s.luaByte( i ) ) {
 			case '"': case '\\':  case '\n':
-				buf.append( (byte)'\\' );
-				buf.append( (byte)c );
+				/* UTF8 BEGIN */
+//				buf.append( (byte)'\\' );
+//				buf.append( (byte)c );
+				buf.append( '\\' );
+				buf.append( (char)c );
+				/* UTF8 END */
 				break;
 			case '\r':
 				buf.append( "\\r" );
@@ -313,7 +335,11 @@ public class StringLib extends OneArgFunction {
 				/* DAN200 START */
 				//buf.append( (byte) c );
 				if( (c >= 32 && c <= 126) || (c >= 160 && c <= 255) ) {
-					buf.append( (byte)c );
+					/* UTF8 BEGIN */
+					// buf.append( (byte)c );
+					// TODO UTF: Think about this line a while, see if before
+					buf.append( (char)c );
+					/* UTF8 END */
 				} else {
 					String str = Integer.toString(c);
 					while( str.length() < 3 ) {
@@ -325,7 +351,10 @@ public class StringLib extends OneArgFunction {
 			break;
 			}
 		}
-		buf.append( (byte) '"' );
+		/* UTF8 BEGIN */
+//		buf.append( (byte) '"' );
+		buf.append( '"' );
+		/* UTF8 END */
 	}
 	
 	private static final String FLAGS = "-+ #0";
@@ -394,7 +423,10 @@ public class StringLib extends OneArgFunction {
 			length = p - start;
 		}
 		
-		public void format(Buffer buf, byte c) {
+		/* UTF8 BEGIN */
+		//public void format(Buffer buf, byte c) {
+		public void format(Buffer buf, char c) {
+		/* UTF8 END */
 			// TODO: not clear that any of width, precision, or flags apply here.
 			buf.append(c);
 		}
@@ -448,13 +480,22 @@ public class StringLib extends OneArgFunction {
 			
 			if ( number < 0 ) {
 				if ( nzeros > 0 ) {
-					buf.append( (byte)'-' );
+					/* UTF8 BEGIN */
+					//buf.append( (byte)'-' );
+					buf.append( '-' );
+					/* UTF8 END */
 					digits = digits.substring( 1 );
 				}
 			} else if ( explicitPlus ) {
-				buf.append( (byte)'+' );
+				/* UTF8 BEGIN */
+				//buf.append( (byte)'+' );
+				buf.append( '+' );
+				/* UTF8 END */
 			} else if ( space ) {
-				buf.append( (byte)' ' );
+				/* UTF8 BEGIN */
+				//buf.append( (byte)' ' );
+				buf.append( ' ' );
+				/* UTF8 END */
 			}
 			
 			if ( nzeros > 0 )
@@ -472,16 +513,23 @@ public class StringLib extends OneArgFunction {
 		}
 		
 		public void format(Buffer buf, LuaString s) {
-			int nullindex = s.indexOf( (byte)'\0', 0 );
+			/* UTF8 BEGIN */
+			// int nullindex = s.indexOf( (byte)'\0', 0 );
+			int nullindex = s.indexOf( '\0', 0 );
+			/* UTF8 END */
 			if ( nullindex != -1 )
 				s = s.substring( 0, nullindex );
 			buf.append(s);
 		}
 		
 		public static final void pad(Buffer buf, char c, int n) {
-			byte b = (byte)c;
+			/* UTF8 BEGIN */
+//			byte b = (byte)c;
+//			while ( n-- > 0 )
+//				buf.append(b);
 			while ( n-- > 0 )
-				buf.append(b);
+				buf.append(c);
+			/* UTF8 END */
 		}
 	}
 	
@@ -610,7 +658,10 @@ public class StringLib extends OneArgFunction {
 			if ( res != -1 && res > soffset )
 				soffset = res;
 			else if ( soffset < srclen )
-				lbuf.append( (byte) src.luaByte( soffset++ ) );
+				/* UTF8 BEGIN */
+				//lbuf.append( (byte) src.luaByte( soffset++ ) );
+				lbuf.append( (char) src.luaByte( soffset++ ) );
+				/* UTF8 END */
 			else
 				break;
 			if ( anchor )
@@ -662,7 +713,10 @@ public class StringLib extends OneArgFunction {
 	static Varargs rep( Varargs args ) {
 		LuaString s = args.checkstring( 1 );
 		int n = args.checkint( 2 );
-		final byte[] bytes = new byte[ s.length() * n ];
+		/* UTF8 BEGIN */
+		// final byte[] bytes = new byte[ s.length() * n ];
+		final char[] bytes = new char[ s.length() * n ];
+		/* UTF8 END */
 		int len = s.length();
 		for ( int offset = 0; offset < bytes.length; offset += len ) {
 			s.copyInto( 0, bytes, offset, len );
@@ -678,9 +732,14 @@ public class StringLib extends OneArgFunction {
 	static LuaValue reverse( LuaValue arg ) {		
 		LuaString s = arg.checkstring();
 		int n = s.length();
-		byte[] b = new byte[n];
+		/* UTF8 BEGIN */
+		// byte[] b = new byte[n];
+//		for ( int i=0, j=n-1; i<n; i++, j-- )
+//			b[j] = (byte) s.luaByte(i);
+		char[] b = new char[n];
 		for ( int i=0, j=n-1; i<n; i++, j-- )
-			b[j] = (byte) s.luaByte(i);
+			b[j] = (char) s.luaByte(i);
+		/* UTF8 END */
 		return LuaString.valueOf( b );
 	}
 
@@ -851,20 +910,36 @@ public class StringLib extends OneArgFunction {
 		private void add_s( Buffer lbuf, LuaString news, int soff, int e ) {
 			int l = news.length();
 			for ( int i = 0; i < l; ++i ) {
-				byte b = (byte) news.luaByte( i );
+				/* UTF8 BEGIN */
+//				byte b = (byte) news.luaByte( i );
+//				if ( b != L_ESC ) {
+//					lbuf.append( (byte) b );
+//				} else {
+//					++i; // skip ESC
+//					b = (byte) news.luaByte( i );
+//					if ( !Character.isDigit( (char) b ) ) {
+//						lbuf.append( b );
+//					} else if ( b == '0' ) {
+//						lbuf.append( s.substring( soff, e ) );
+//					} else {
+//						lbuf.append( push_onecapture( b - '1', soff, e ).strvalue() );
+//					}
+//				}
+				int b = news.luaByte( i );
 				if ( b != L_ESC ) {
-					lbuf.append( (byte) b );
+					lbuf.append( (char) b );
 				} else {
 					++i; // skip ESC
-					b = (byte) news.luaByte( i );
+					b = news.luaByte( i );
 					if ( !Character.isDigit( (char) b ) ) {
-						lbuf.append( b );
+						lbuf.append( (char) b );
 					} else if ( b == '0' ) {
 						lbuf.append( s.substring( soff, e ) );
 					} else {
 						lbuf.append( push_onecapture( b - '1', soff, e ).strvalue() );
 					}
 				}
+				/* UTF8 END */
 			}
 		}
 		
@@ -972,7 +1047,23 @@ public class StringLib extends OneArgFunction {
 		
 		static boolean match_class( int c, int cl ) {
 			final char lcl = Character.toLowerCase( (char) cl );
-			int cdata = CHAR_TABLE[c];
+			/* UTF8 START */
+			int cdata;
+			if (c >= CHAR_TABLE.length)
+			{
+				char c2 = (char) c;
+				cdata = 0;
+				if (Character.isDigit(c2)) cdata |= MASK_DIGIT;
+				if (Character.isLowerCase(c2)) cdata |= MASK_LOWERCASE | MASK_ALPHA;
+				if (Character.isUpperCase(c2)) cdata |= MASK_UPPERCASE | MASK_ALPHA;
+				if (Character.isISOControl(c2)) cdata |= MASK_CONTROL;
+				if (Character.isWhitespace(c2)) cdata |= MASK_SPACE;
+			}
+			else
+			{
+				cdata = CHAR_TABLE[c];
+			}
+			/* UTF8 END */
 			
 			boolean res;
 			switch ( lcl ) {

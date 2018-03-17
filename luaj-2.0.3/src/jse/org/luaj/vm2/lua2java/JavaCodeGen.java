@@ -1026,40 +1026,43 @@ public class JavaCodeGen {
 	}
 
 	private static String quotedStringInitializer(LuaString s) {
-		byte[] bytes = s.m_bytes;
+		/* UTF8 START */
+		//byte[] bytes = s.m_bytes;
+		char[] bytes = s.m_bytes;
 		int o = s.m_offset;
 		int n = s.m_length;
 		StringBuffer sb = new StringBuffer(n+2);		
 		
 		// check for bytes not encodable as utf8
-		if ( ! s.isValidUtf8() ) {
-			sb.append( "new byte[]{" );
-			for ( int j=0; j<n; j++ ) {
-				if ( j>0 ) sb.append(",");
-				byte b = bytes[o+j];
-				switch ( b ) {
-					case '\n': sb.append( "'\\n'" ); break; 
-					case '\r': sb.append( "'\\r'" ); break; 
-					case '\t': sb.append( "'\\t'" ); break; 
-					case '\\': sb.append( "'\\\\'" ); break;
-					default:
-						if ( b >= ' ' ) {
-							sb.append( '\'');
-							sb.append( (char) b );
-							sb.append( '\'');
-						} else {
-							sb.append( String.valueOf((int)b) );
-						}
-					break;
-				}					
-			}
-			sb.append( "}" );
-			return sb.toString();
-		}
+//		if ( ! s.isValidUtf8() ) {
+//			sb.append( "new byte[]{" );
+//			for ( int j=0; j<n; j++ ) {
+//				if ( j>0 ) sb.append(",");
+//				byte b = bytes[o+j];
+//				switch ( b ) {
+//					case '\n': sb.append( "'\\n'" ); break; 
+//					case '\r': sb.append( "'\\r'" ); break; 
+//					case '\t': sb.append( "'\\t'" ); break; 
+//					case '\\': sb.append( "'\\\\'" ); break;
+//					default:
+//						if ( b >= ' ' ) {
+//							sb.append( '\'');
+//							sb.append( (char) b );
+//							sb.append( '\'');
+//						} else {
+//							sb.append( String.valueOf((int)b) );
+//						}
+//					break;
+//				}					
+//			}
+//			sb.append( "}" );
+//			return sb.toString();
+//		}
 
 		sb.append('"');
 		for ( int i=0; i<n; i++ ) {
-			byte b = bytes[o+i];
+			// byte b = bytes[o+i];
+			char b = bytes[o+i];
 			switch ( b ) {
 				case '\b': sb.append( "\\b" ); break; 
 				case '\f': sb.append( "\\f" ); break; 
@@ -1072,21 +1075,23 @@ public class JavaCodeGen {
 					if ( b >= ' ' ) {
 						sb.append( (char) b ); break;
 					} else {
-						// convert from UTF-8
-						int u = 0xff & (int) b;
-						if ( u>=0xc0 && i+1<n ) {
-							if ( u>=0xe0 && i+2<n ) {
-								u = ((u & 0xf) << 12) | ((0x3f & bytes[i+1]) << 6) | (0x3f & bytes[i+2]);
-								i+= 2;
-							} else {
-								u = ((u & 0x1f) << 6) | (0x3f & bytes[++i]);
-							}
-						}
-						sb.append( "\\u" );
-						sb.append( Integer.toHexString(0x10000+u).substring(1) );
+//						// convert from UTF-8
+//						int u = 0xff & (int) b;
+//						if ( u>=0xc0 && i+1<n ) {
+//							if ( u>=0xe0 && i+2<n ) {
+//								u = ((u & 0xf) << 12) | ((0x3f & bytes[i+1]) << 6) | (0x3f & bytes[i+2]);
+//								i+= 2;
+//							} else {
+//								u = ((u & 0x1f) << 6) | (0x3f & bytes[++i]);
+//							}
+//						}
+//						sb.append( "\\u" );
+//						sb.append( Integer.toHexString(0x10000+u).substring(1) );
+						sb.append( "\\").append((int) b);
 					}
 			}
 		}
+		/* UTF8 END */
 		sb.append('"');
 		return sb.toString();
 	}
