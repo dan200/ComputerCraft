@@ -209,7 +209,10 @@ public class CoerceLuaToJava {
 			if ( targetType == TARGET_TYPE_STRING )
 				return value.tojstring();
 			LuaString s = value.checkstring();
-			byte[] b = new byte[s.m_length];
+			/* UTF8 BEGIN */
+			//byte[] b = new byte[s.m_length];
+			char[] b = new char[s.m_length];
+			/* UTF8 END */
 			s.copyInto(0, b, 0, b.length);
 			return b;
 		}

@@ -11,6 +11,9 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.shared.util.StringUtil;
 
 import javax.annotation.Nonnull;
+
+import org.luaj.vm2.LuaThread;
+
 import java.util.*;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
@@ -189,7 +192,9 @@ public class OSAPI implements ILuaAPI
             "day",
             "cancelTimer",
             "cancelAlarm",
-            "epoch"
+            "epoch",
+            "isUtf",
+            "setUtf",
         };
     }
 
@@ -410,6 +415,19 @@ public class OSAPI implements ILuaAPI
                     default:
                         throw new LuaException( "Unsupported operation" );
                 }
+            }
+            case 16:
+            {
+            	// isUtf
+            	return new Object[] { Boolean.valueOf(LuaThread.getRunning().isUtf()) };
+            }
+            case 17:
+            {
+            	// setUtf
+            	boolean newValue = optBoolean(args, 0, true);
+            	LuaThread.getRunning().setUtf(newValue);
+            	return null;
+            	
             }
             default:
             {

@@ -144,12 +144,16 @@ public class JseIoLib extends IoLib {
 				os.flush();
 		}
 		public void write(LuaString s) throws IOException {
+			/* UTF8 BEGIN */
 			if ( os != null )
-				os.write( s.m_bytes, s.m_offset, s.m_length );
+				// os.write( s.m_bytes, s.m_offset, s.m_length );
+				os.write( s.tojstring().getBytes(LuaString.UTF8) );
 			else if ( file != null )
-				file.write( s.m_bytes, s.m_offset, s.m_length );
+				// file.write( s.m_bytes, s.m_offset, s.m_length );
+				file.write( s.tojstring().getBytes(LuaString.UTF8) );
 			else
 				notimplemented();
+			/* UTF8 END */
 			if ( nobuffer )
 				flush();
 		}
