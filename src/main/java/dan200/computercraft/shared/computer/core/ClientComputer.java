@@ -26,6 +26,7 @@ public class ClientComputer extends ClientTerminal
     private boolean m_blinking;
     private boolean m_changed;
     private NBTTagCompound m_userData;
+    private String m_fontName;
 
     private boolean m_changedLastFrame;
 
@@ -41,6 +42,7 @@ public class ClientComputer extends ClientTerminal
         m_changed = true;
         m_userData = null;
         m_changedLastFrame = false;
+        m_fontName = "LEGACY";
     }
 
     @Override
@@ -181,6 +183,11 @@ public class ClientComputer extends ClientTerminal
         {
             m_changed = true;
         }
+        
+        if( nbttagcompound.hasKey( "fontName" ) )
+        {
+        	m_fontName = nbttagcompound.getString( "fontName" );
+        }
     }
 
     @Override
@@ -195,4 +202,9 @@ public class ClientComputer extends ClientTerminal
             }
         }
     }
+
+	@Override
+	public String getFontName() {
+		return m_fontName;
+	}
 }

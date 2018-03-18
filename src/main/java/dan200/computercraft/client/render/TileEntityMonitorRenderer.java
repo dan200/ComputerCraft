@@ -8,6 +8,7 @@ package dan200.computercraft.client.render;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.client.gui.FixedWidthFontRenderer;
+import dan200.computercraft.client.gui.FontDefinition;
 import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.core.terminal.TextBuffer;
 import dan200.computercraft.shared.common.ClientTerminal;
@@ -60,6 +61,8 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             origin.m_lastRenderFrame = renderFrame;
         }
 
+    	final FontDefinition font = (FontDefinition) ComputerCraft.getFont(origin.getFontName());
+		
         boolean redraw = origin.pollChanged();
         BlockPos monitorPos = monitor.getPos();
         BlockPos originPos = origin.getPos();
@@ -178,7 +181,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         GlStateManager.resetColor();
 
                         // Draw text
-                        fontRenderer.bindFont();
+                        fontRenderer.bindFont(font);
                         if( redraw )
                         {
                             // Build text display list
@@ -189,6 +192,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                 for( int y = 0; y < height; ++y )
                                 {
                                     fontRenderer.drawStringTextPart(
+                                    		font, 
                                             0, FixedWidthFontRenderer.FONT_HEIGHT * y,
                                             terminal.getLine( y ),
                                             terminal.getTextColourLine( y ),
@@ -206,7 +210,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                         GlStateManager.resetColor();
 
                         // Draw cursor
-                        fontRenderer.bindFont();
+                        fontRenderer.bindFont(font);
                         if( redraw )
                         {
                             // Build cursor display list
@@ -219,6 +223,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
                                     TextBuffer cursor = new TextBuffer( "_" );
                                     TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
                                     fontRenderer.drawString(
+                                    		font, 
                                             cursor,
                                             FixedWidthFontRenderer.FONT_WIDTH * cursorX,
                                             FixedWidthFontRenderer.FONT_HEIGHT * cursorY,

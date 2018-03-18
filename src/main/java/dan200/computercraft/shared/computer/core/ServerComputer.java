@@ -354,6 +354,11 @@ public class ServerComputer extends ServerTerminal
         {
             nbttagcompound.setTag( "userData", m_userData.copy() );
         }
+        String fontName = m_computer.getFontName();
+        if( fontName != null )
+        {
+            nbttagcompound.setString( "fontName", fontName );
+        }
     }
 
     // INetworkedThing
@@ -401,6 +406,22 @@ public class ServerComputer extends ServerTerminal
                 if( packet.m_dataNBT != null )
                 {
                     arguments = NBTUtil.decodeObjects( packet.m_dataNBT );
+                    if (!isUtf() && arguments != null)
+                    {
+                    	// wrap non supported utf characters in string
+                    	for (int i = 0, n = arguments.length; i < n; i++)
+                    	{
+                    		if (arguments[i] instanceof String)
+                    		{
+                    			final char[] chars = ((String)arguments[i]).toCharArray();
+                    			for (int j = 0, n1 = chars.length; j < n1; j++)
+                    			{
+                    				if (chars[j] >= 128) chars[j] = '?'; 
+                    			}
+                    			arguments[i] = new String(chars);
+                    		}
+                    	}
+                    }
                 }
                 queueEvent( event, arguments );
                 break;
@@ -420,4 +441,24 @@ public class ServerComputer extends ServerTerminal
             }
         }
     }
+
+	@Override
+	public void setUtf(boolean enabled) {
+		this.m_computer.setUtf(enabled);
+	}
+
+	@Override
+	public boolean isUtf() {
+		return this.m_computer.isUtf();
+	}
+
+	@Override
+	public String getFontName() {
+        return m_computer.getFontName();
+	}
+
+	@Override
+	public void setFontName(String fontName) {
+		m_computer.setFontName(fontName);
+	}
 }

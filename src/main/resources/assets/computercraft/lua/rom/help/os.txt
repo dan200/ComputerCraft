@@ -19,8 +19,14 @@ os.setAlarm( time )
 os.cancelAlarm( token )
 os.shutdown()
 os.reboot()
+os.isUtf()
+os.setUtf(enable)
 
 Events emitted by the os API:
 "timer" when a timeout started by os.startTimer() completes. Argument is the token returned by os.startTimer().
 "alarm" when a time passed to os.setAlarm() is reached. Argument is the token returned by os.setAlarm().
 Type "help events" to learn about the event system.
+
+Notice:
+Although possible you should not change utf8 support while using shells/windows. They may get broken and your
+computer might reboot. Instead switch utf8 support in startup scripts or via computer craft config. 

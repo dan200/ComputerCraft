@@ -172,12 +172,23 @@ public class Computer
                 }
             }
         }
+
+		@Override
+		public boolean isUtf() {
+			return m_computer.isUtf();
+		}
+
+		@Override
+		public void setUtf(boolean enabled) {
+			m_computer.setUtf(enabled);
+		}
     }
     
     private static IMount s_romMount = null;
 
     private int m_id;
     private String m_label;
+    private String m_fontName;
     private final IComputerEnvironment m_environment;
 
     private int m_ticksSinceStart;
@@ -206,10 +217,14 @@ public class Computer
     private boolean m_inputChanged;
         
     private final IPeripheral[] m_peripherals;
+    
+    private boolean m_isUtf = false;
 
     public Computer( IComputerEnvironment environment, Terminal terminal, int id )
     {
         ComputerThread.start();
+        
+        m_isUtf = ComputerCraft.utf8_enable;
 
         m_id = id;
         m_label = null;
@@ -246,10 +261,19 @@ public class Computer
         }
 
         m_rootMount = null;
+        m_fontName = "LEGACY";
         createAPIs();
     }
     
-    public IAPIEnvironment getAPIEnvironment()
+    public void setUtf(boolean enabled) {
+		this.m_isUtf = enabled;
+	}
+
+	public boolean isUtf() {
+		return this.m_isUtf;
+	}
+
+	public IAPIEnvironment getAPIEnvironment()
     {
         return m_apiEnvironment;
     }
@@ -335,6 +359,20 @@ public class Computer
         if( !Objects.equal( label, m_label ) )
         {
             m_label = label;
+            m_externalOutputChanged = true;
+        }
+    }
+
+    public String getFontName()
+    {
+        return m_fontName;
+    }
+
+    public void setFontName( String name )
+    {
+        if( !Objects.equal( name, m_fontName) )
+        {
+            m_fontName = name;
             m_externalOutputChanged = true;
         }
     }

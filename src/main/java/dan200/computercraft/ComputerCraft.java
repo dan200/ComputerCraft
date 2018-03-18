@@ -50,6 +50,7 @@ import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.upgrades.*;
 import dan200.computercraft.shared.util.*;
 import io.netty.buffer.Unpooled;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -153,6 +154,8 @@ public class ComputerCraft
     public static int maximumFilesOpen = 128;
 
     public static int maxNotesPerTick = 8;
+    
+    public static boolean utf8_enable = false;
 
     // Blocks and Items
     public static class Blocks
@@ -222,6 +225,8 @@ public class ComputerCraft
         public static Property floppySpaceLimit;
         public static Property maximumFilesOpen;
         public static Property maxNotesPerTick;
+
+        public static Property utf8_enable;
 
     }
 
@@ -343,6 +348,9 @@ public class ComputerCraft
 
         Config.maxNotesPerTick = Config.config.get( Configuration.CATEGORY_GENERAL, "maxNotesPerTick", maxNotesPerTick );
         Config.maxNotesPerTick.setComment( "Maximum amount of notes a speaker can play at once" );
+        
+        Config.utf8_enable = Config.config.get( Configuration.CATEGORY_GENERAL, "utf8_enable", utf8_enable );
+        Config.utf8_enable.setComment( "Enable the \"utf8 string handling\" API during Computer startup" );
 
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
@@ -386,6 +394,8 @@ public class ComputerCraft
         turtlesCanPush = Config.turtlesCanPush.getBoolean();
 
         maxNotesPerTick = Math.max(1, Config.maxNotesPerTick.getInt());
+        
+        utf8_enable = Config.utf8_enable.getBoolean();
 
         Config.config.save();
     }
@@ -395,6 +405,12 @@ public class ComputerCraft
     {
         proxy.init();
         turtleProxy.init();
+    }
+
+    @Mod.EventHandler
+    public void init( FMLPostInitializationEvent event )
+    {
+        proxy.postInit();
     }
 
     @Mod.EventHandler
@@ -445,6 +461,11 @@ public class ComputerCraft
     public static void deleteDisplayLists( int list, int range )
     {
         proxy.deleteDisplayLists( list, range );
+    }
+
+    public static Object getFont(final String fontName)
+    {
+        return proxy.getFont(fontName);
     }
 
     public static Object getFixedWidthFontRenderer()
@@ -954,7 +975,7 @@ public class ComputerCraft
         return modClass.getClassLoader().getResourceAsStream( subPath );
     }
 
-    private static File getContainingJar( Class<?> modClass )
+    public static File getContainingJar( Class<?> modClass )
     {
         String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
         int bangIndex = path.indexOf( "!" );
@@ -979,7 +1000,7 @@ public class ComputerCraft
         return file;
     }
 
-    private static File getDebugCodeDir( Class<?> modClass )
+    public static File getDebugCodeDir( Class<?> modClass )
     {
         String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
         int bangIndex = path.indexOf("!");

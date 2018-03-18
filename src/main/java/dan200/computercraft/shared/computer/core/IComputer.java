@@ -13,6 +13,7 @@ public interface IComputer extends ITerminal
     int getInstanceID();
     int getID();
     String getLabel();
+    String getFontName();
 
     boolean isOn();
     boolean isCursorDisplayed();

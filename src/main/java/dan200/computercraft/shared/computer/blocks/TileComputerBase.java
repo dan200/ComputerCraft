@@ -37,6 +37,8 @@ public abstract class TileComputerBase extends TileGeneric
     protected String m_label;
     protected boolean m_on;
     protected boolean m_startOn;
+    
+    private String m_fontName;
 
     protected TileComputerBase()
     {
@@ -45,6 +47,8 @@ public abstract class TileComputerBase extends TileGeneric
         m_label = null;
         m_on = false;
         m_startOn = false;
+        
+        m_fontName = "LEGACY";
     }
 
     @Override
@@ -225,6 +229,7 @@ public abstract class TileComputerBase extends TileGeneric
                 }
                 m_computerID = computer.getID();
                 m_label = computer.getLabel();
+                m_fontName = computer.getFontName();
                 m_on = computer.isOn();
             }
         }
@@ -257,6 +262,7 @@ public abstract class TileComputerBase extends TileGeneric
             nbttagcompound.setString( "label", m_label );
         }
         nbttagcompound.setBoolean( "on", m_on );
+        nbttagcompound.setString( "fontName", m_fontName );
         return nbttagcompound;
     }
 
@@ -300,6 +306,10 @@ public abstract class TileComputerBase extends TileGeneric
         // Load power state
         m_startOn = nbttagcompound.getBoolean( "on" );
         m_on = m_startOn;
+        if (nbttagcompound.hasKey("fontName"))
+        {
+        	m_fontName = nbttagcompound.getString( "fontName");
+        }
     }
 
     protected boolean isPeripheralBlockedOnSide( int localSide )
@@ -541,10 +551,23 @@ public abstract class TileComputerBase extends TileGeneric
             m_instanceID = copy.m_instanceID;
             m_computerID = copy.m_computerID;
             m_label = copy.m_label;
+            m_fontName = copy.m_fontName;
             m_on = copy.m_on;
             m_startOn = copy.m_startOn;
             updateBlock();
         }
         copy.m_instanceID = -1;
     }
+
+	public String getFontName() {
+		return this.m_fontName;
+	}
+	
+	public void setFontName(String fontName) {
+		if( !m_fontName.equals(fontName) )
+		{
+			m_fontName = fontName;
+			updateBlock();
+        }
+	}
 }

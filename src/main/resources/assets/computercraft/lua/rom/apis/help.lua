@@ -1,4 +1,4 @@
-
+local string_len = string.len
 local sPath = "/rom/help"
 
 function path()
@@ -43,7 +43,7 @@ function topics()
 			for n,sFile in pairs( tList ) do
 				if string.sub( sFile, 1, 1 ) ~= "." then
 					if not fs.isDir( fs.combine( sPath, sFile ) ) then
-                        if #sFile > 4 and sFile:sub(-4) == ".txt" then
+                        if string_len(sFile) > 4 and sFile:sub(-4) == ".txt" then
                             sFile = sFile:sub(1,-5)
                         end
 						tItems[ sFile ] = true
@@ -70,8 +70,8 @@ function completeTopic( sText )
     local tResults = {}
     for n=1,#tTopics do
         local sTopic = tTopics[n]
-        if #sTopic > #sText and string.sub( sTopic, 1, #sText ) == sText then
-            table.insert( tResults, string.sub( sTopic, #sText + 1 ) )
+        if string_len(sTopic) > string_len(sText) and string.sub( sTopic, 1, string_len(sText) ) == sText then
+            table.insert( tResults, string.sub( sTopic, string_len(sText) + 1 ) )
         end
     end
 	return tResults

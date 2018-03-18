@@ -30,6 +30,8 @@ public class GuiPrintout extends GuiContainer
     private final TextBuffer[] m_text;
     private final TextBuffer[] m_colours;
     private int m_page;
+    
+    private FontDefinition font; // TODO support setting font names in print outs...
 
     public GuiPrintout( ContainerHeldItem container )
     {
@@ -204,7 +206,7 @@ public class GuiPrintout extends GuiContainer
             int lineIdx = ItemPrintout.LINES_PER_PAGE * m_page + line;
             if( lineIdx >= 0 && lineIdx < m_text.length )
             {
-                fontRenderer.drawString( m_text[lineIdx], x, y, m_colours[lineIdx], null, 0, 0, false, Palette.DEFAULT );
+                fontRenderer.drawString( this.font == null ? FontManager.LEGACY : this.font, m_text[lineIdx], x, y, m_colours[lineIdx], null, 0, 0, false, Palette.DEFAULT );
             }
             y = y + FixedWidthFontRenderer.FONT_HEIGHT;
         }

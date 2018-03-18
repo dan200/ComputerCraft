@@ -317,7 +317,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
         sLine = ""
     end
     local nHistoryPos
-    local nPos = #sLine
+    local nPos = string.len(sLine)
     if _sReplaceChar then
         _sReplaceChar = string.sub( _sReplaceChar, 1, 1 )
     end
@@ -827,16 +827,16 @@ function fs.complete( sPath, sLocation, bIncludeFiles, bIncludeDirs )
         local tFiles = fs.list( sDir )
         for n=1,#tFiles do
             local sFile = tFiles[n]
-            if #sFile >= #sName and string.sub( sFile, 1, #sName ) == sName then
+            if string.len(sFile) >= string.len(sName) and string.sub( sFile, 1, string.len(sName) ) == sName then
                 local bIsDir = fs.isDir( fs.combine( sDir, sFile ) )
-                local sResult = string.sub( sFile, #sName + 1 )
+                local sResult = string.sub( sFile, string.len(sName) + 1 )
                 if bIsDir then
                     table.insert( tResults, sResult .. "/" )
-                    if bIncludeDirs and #sResult > 0 then
+                    if bIncludeDirs and string.len(sResult) > 0 then
                         table.insert( tResults, sResult )
                     end
                 else
-                    if bIncludeFiles and #sResult > 0 then
+                    if bIncludeFiles and string.len(sResult) > 0 then
                         table.insert( tResults, sResult )
                     end
                 end

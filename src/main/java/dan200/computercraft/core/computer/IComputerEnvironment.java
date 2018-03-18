@@ -22,4 +22,10 @@ public interface IComputerEnvironment
     IWritableMount createSaveDirMount( String subPath, long capacity );
     IMount createResourceMount( String domain, String subPath );
     InputStream createResourceFile( String domain, String subPath );
+        
+    void setUtf(boolean enabled);
+	boolean isUtf();
+	String getFontName();
+	void setFontName(String fontName);
+	
 }

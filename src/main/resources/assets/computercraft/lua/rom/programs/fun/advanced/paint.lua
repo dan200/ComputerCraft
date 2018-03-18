@@ -5,6 +5,8 @@
 -- Fields --
 ------------
 
+local string_len = string.len 
+
 -- The width and height of the terminal
 local w,h = term.getSize()
 
@@ -123,7 +125,7 @@ end
 ]]
 local function save(path)
     -- Open file
-    local sDir = string.sub(sPath, 1, #sPath - #fs.getName(sPath))
+    local sDir = string.sub(sPath, 1, string_len(sPath) - string_len(fs.getName(sPath)))
     if not fs.exists(sDir) then
         fs.makeDir(sDir)
     end
@@ -270,7 +272,7 @@ local function accessMenu()
             if selection==k then 
                 term.setTextColour(colours.yellow)
                 local ox,_ = term.getCursorPos()
-                term.write("["..string.rep(" ",#v).."]")
+                term.write("["..string.rep(" ",string_len(v)).."]")
                 term.setCursorPos(ox+1,h)
                 term.setTextColour(colours.white)
                 term.write(v)

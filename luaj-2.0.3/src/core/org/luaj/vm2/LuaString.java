@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.String;
 import java.lang.ref.WeakReference;
+import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 
 import org.luaj.vm2.lib.MathLib;
@@ -93,20 +94,15 @@ public class LuaString extends LuaValue {
 	public static LuaString valueOf(String string) {
 		LuaString s = index_get( index_java, string );
 		if ( s != null ) return s;
-		char[] c = string.toCharArray();
         /* DAN200 START */
         /*
+		char[] c = string.toCharArray();
 		byte[] b = new byte[lengthAsUtf8(c)];
 		encodeToUtf8(c, b, 0);
-		*/
-        byte[] b = new byte[c.length];
-        for( int i=0; i<b.length; ++i )
-        {
-            char ch = c[i];
-            b[i] = (ch < 256) ? (byte)ch : (byte)'?';
-        }
-        /* DAN200 END */
 		s = valueOf(b, 0, b.length);
+		*/
+		s = valueOf(string.getBytes(StandardCharsets.UTF_8));
+        /* DAN200 END */
 		index_set( index_java, string, s );
 		return s;
 	}
@@ -189,12 +185,7 @@ public class LuaString extends LuaValue {
 		/*
 		return decodeAsUtf8(m_bytes, m_offset, m_length);
 		*/
-        char[] chars = new char[ m_length ];
-        for( int i=0; i<chars.length; ++i )
-        {
-            chars[i] = (char)(m_bytes[ m_offset + i ] & 255);
-        }
-        return new String( chars );
+		return new String(m_bytes, m_offset, m_length, StandardCharsets.UTF_8);
         /* DAN200 END */
 	}
 
@@ -561,25 +552,24 @@ public class LuaString extends LuaValue {
 	 * @see #isValidUtf8()
 	 */
 	/* DAN200 START */
-	//public static String decodeAsUtf8(byte[] bytes, int offset, int length) {
-	private static String decodeAsUtf8(byte[] bytes, int offset, int length) {
+//	public static String decodeAsUtf8(byte[] bytes, int offset, int length) {
+//		int i,j,n,b;
+//		for ( i=offset,j=offset+length,n=0; i<j; ++n ) {
+//			switch ( 0xE0 & bytes[i++] ) {
+//			case 0xE0: ++i;
+//			case 0xC0: ++i;
+//			}
+//		}
+//		char[] chars=new char[n];
+//		for ( i=offset,j=offset+length,n=0; i<j; ) {
+//			chars[n++] = (char) (
+//				((b=bytes[i++])>=0||i>=j)? b:
+//				(b<-32||i+1>=j)? (((b&0x3f) << 6) | (bytes[i++]&0x3f)):
+//					(((b&0xf) << 12) | ((bytes[i++]&0x3f)<<6) | (bytes[i++]&0x3f)));
+//		}
+//		return new String(chars);
+//	}
 	/* DAN200 END */
-		int i,j,n,b;
-		for ( i=offset,j=offset+length,n=0; i<j; ++n ) {
-			switch ( 0xE0 & bytes[i++] ) {
-			case 0xE0: ++i;
-			case 0xC0: ++i;
-			}
-		}
-		char[] chars=new char[n];
-		for ( i=offset,j=offset+length,n=0; i<j; ) {
-			chars[n++] = (char) (
-				((b=bytes[i++])>=0||i>=j)? b:
-				(b<-32||i+1>=j)? (((b&0x3f) << 6) | (bytes[i++]&0x3f)):
-					(((b&0xf) << 12) | ((bytes[i++]&0x3f)<<6) | (bytes[i++]&0x3f)));
-		}
-		return new String(chars);
-	}
 	
 	/**
 	 * Count the number of bytes required to encode the string as UTF-8.
@@ -590,16 +580,15 @@ public class LuaString extends LuaValue {
 	 * @see #isValidUtf8()
 	 */
 	/* DAN200 START */
-	//public static int lengthAsUtf8(char[] chars) {		
-	private static int lengthAsUtf8(char[] chars) {		
+//	public static int lengthAsUtf8(char[] chars) {		
+//		int i,b;
+//		char c;
+//		for ( i=b=chars.length; --i>=0; )
+//			if ( (c=chars[i]) >=0x80 )
+//				b += (c>=0x800)? 2: 1;
+//		return b;
+//	}
 	/* DAN200 END */
-		int i,b;
-		char c;
-		for ( i=b=chars.length; --i>=0; )
-			if ( (c=chars[i]) >=0x80 )
-				b += (c>=0x800)? 2: 1;
-		return b;
-	}
 	
 	/**
 	 * Encode the given Java string as UTF-8 bytes, writing the result to bytes
@@ -615,24 +604,23 @@ public class LuaString extends LuaValue {
 	 * @see #isValidUtf8()
 	 */
 	/* DAN200 START */
-	//public static void encodeToUtf8(char[] chars, byte[] bytes, int off) {
-	private static void encodeToUtf8(char[] chars, byte[] bytes, int off) {
+//	public static void encodeToUtf8(char[] chars, byte[] bytes, int off) {
+//		final int n = chars.length;
+//		char c;
+//		for ( int i=0, j=off; i<n; i++ ) {
+//			if ( (c = chars[i]) < 0x80 ) {
+//				bytes[j++] = (byte) c;
+//			} else if ( c < 0x800 ) {
+//				bytes[j++] = (byte) (0xC0 | ((c>>6)  & 0x1f));
+//				bytes[j++] = (byte) (0x80 | ( c      & 0x3f));				
+//			} else {
+//				bytes[j++] = (byte) (0xE0 | ((c>>12) & 0x0f));
+//				bytes[j++] = (byte) (0x80 | ((c>>6)  & 0x3f));
+//				bytes[j++] = (byte) (0x80 | ( c      & 0x3f));				
+//			}
+//		}
+//	}
 	/* DAN200 END */
-		final int n = chars.length;
-		char c;
-		for ( int i=0, j=off; i<n; i++ ) {
-			if ( (c = chars[i]) < 0x80 ) {
-				bytes[j++] = (byte) c;
-			} else if ( c < 0x800 ) {
-				bytes[j++] = (byte) (0xC0 | ((c>>6)  & 0x1f));
-				bytes[j++] = (byte) (0x80 | ( c      & 0x3f));				
-			} else {
-				bytes[j++] = (byte) (0xE0 | ((c>>12) & 0x0f));
-				bytes[j++] = (byte) (0x80 | ((c>>6)  & 0x3f));
-				bytes[j++] = (byte) (0x80 | ( c      & 0x3f));				
-			}
-		}
-	}
 
 	/** Check that a byte sequence is valid UTF-8
 	 * @return true if it is valid UTF-8, otherwise false
