@@ -6,14 +6,25 @@
 
 package dan200.computercraft.core.apis;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+import static dan200.computercraft.core.apis.ArgumentHelper.optBoolean;
+import static dan200.computercraft.core.apis.ArgumentHelper.optString;
+
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TimeZone;
+
+import javax.annotation.Nonnull;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.shared.util.StringUtil;
-
-import javax.annotation.Nonnull;
-import java.util.*;
-
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
 public class OSAPI implements ILuaAPI
 {
@@ -189,7 +200,9 @@ public class OSAPI implements ILuaAPI
             "day",
             "cancelTimer",
             "cancelAlarm",
-            "epoch"
+            "epoch",
+            "isUtf",
+            "setUtf"
         };
     }
 
@@ -410,6 +423,19 @@ public class OSAPI implements ILuaAPI
                     default:
                         throw new LuaException( "Unsupported operation" );
                 }
+            }
+            case 16:
+            {
+            	// isUtf
+            	return new Object[] { Boolean.valueOf(m_apiEnvironment.isUtf()) };
+            }
+            case 17:
+            {
+            	// setUtf
+            	boolean newValue = optBoolean(args, 0, true);
+            	m_apiEnvironment.setUtf(newValue);
+            	return null;
+            	
             }
             default:
             {

@@ -172,6 +172,16 @@ public class Computer
                 }
             }
         }
+
+		@Override
+		public boolean isUtf() {
+			return m_computer.isUtf();
+		}
+
+		@Override
+		public void setUtf(boolean enabled) {
+			m_computer.setUtf(enabled);
+		}
     }
     
     private static IMount s_romMount = null;
@@ -206,10 +216,14 @@ public class Computer
     private boolean m_inputChanged;
         
     private final IPeripheral[] m_peripherals;
+    
+    private boolean m_isUtf = false;
 
     public Computer( IComputerEnvironment environment, Terminal terminal, int id )
     {
         ComputerThread.start();
+        
+        m_isUtf = ComputerCraft.utf8_enable;
 
         m_id = id;
         m_label = null;
@@ -249,7 +263,15 @@ public class Computer
         createAPIs();
     }
     
-    public IAPIEnvironment getAPIEnvironment()
+    public void setUtf(boolean enabled) {
+		this.m_isUtf = enabled;
+	}
+
+	public boolean isUtf() {
+		return this.m_isUtf;
+	}
+
+	public IAPIEnvironment getAPIEnvironment()
     {
         return m_apiEnvironment;
     }

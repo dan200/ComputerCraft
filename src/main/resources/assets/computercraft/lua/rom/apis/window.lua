@@ -21,6 +21,7 @@ local tHex = {
 local type = type
 local string_rep = string.rep
 local string_sub = string.sub
+local string_len = string.len
 local table_unpack = table.unpack
 
 function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
@@ -113,7 +114,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
     local function internalBlit( sText, sTextColor, sBackgroundColor )
         local nStart = nCursorX
-        local nEnd = nStart + #sText - 1
+        local nEnd = nStart + string_len(sText) - 1
         if nCursorY >= 1 and nCursorY <= nHeight then
             if nStart <= nWidth and nEnd >= 1 then
                 -- Modify line
@@ -187,14 +188,14 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
     function window.write( sText )
         sText = tostring( sText )
-        internalBlit( sText, string_rep( tHex[ nTextColor ], #sText ), string_rep( tHex[ nBackgroundColor ], #sText ) )
+        internalBlit( sText, string_rep( tHex[ nTextColor ], string_len(sText) ), string_rep( tHex[ nBackgroundColor ], string_len(sText) ) )
     end
 
     function window.blit( sText, sTextColor, sBackgroundColor )
         if type( sText ) ~= "string" then error( "bad argument #1 (expected string, got " .. type( sText ) .. ")", 2 ) end
         if type( sTextColor ) ~= "string" then error( "bad argument #2 (expected string, got " .. type( sTextColor ) .. ")", 2 ) end
         if type( sBackgroundColor ) ~= "string" then error( "bad argument #3 (expected string, got " .. type( sBackgroundColor ) .. ")", 2 ) end
-        if #sTextColor ~= #sText or #sBackgroundColor ~= #sText then
+        if string_len(sTextColor) ~= string_len(sText) or string_len(sBackgroundColor) ~= string_len(sText) then
             error( "Arguments must be the same length", 2 )
         end
         internalBlit( sText, sTextColor, sBackgroundColor )

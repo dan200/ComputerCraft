@@ -43,8 +43,8 @@ local function completeMultipleChoice( sText, tOptions, bAddSpaces )
     local tResults = {}
     for n=1,#tOptions do
         local sOption = tOptions[n]
-        if #sOption + (bAddSpaces and 1 or 0) > #sText and string.sub( sOption, 1, #sText ) == sText then
-            local sResult = string.sub( sOption, #sText + 1 )
+        if string.len(sOption) + (bAddSpaces and 1 or 0) > string.len(sText) and string.sub( sOption, 1, string.len(sText) ) == sText then
+            local sResult = string.sub( sOption, string.len(sText) + 1 )
             if bAddSpaces then
                 table.insert( tResults, sResult .. " " )
             else
@@ -81,7 +81,7 @@ local function completeEitherEither( shell, nIndex, sText, tPreviousText )
         local tResults = fs.complete( sText, shell.dir(), true, true )
         for n=1,#tResults do
             local sResult = tResults[n]
-            if string.sub( sResult, #sResult, #sResult ) ~= "/" then
+            if string.sub( sResult, string.len(sResult), string.len(sResult) ) ~= "/" then
                 tResults[n] = sResult .. " "
             end
         end

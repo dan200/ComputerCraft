@@ -154,7 +154,7 @@ public class WidgetTerminal extends Widget
                     } );
                 }
 
-                if( (ch >= 32 && ch <= 126) || (ch >= 160 && ch <= 255) ) // printable chars in byte range
+                if( !Character.isISOControl(ch)) // printable chars in byte range
                 {
                     // Queue the "char" event
                     queueEvent( "char", new Object[]{

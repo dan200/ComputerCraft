@@ -42,4 +42,7 @@ public interface IAPIEnvironment
 
     String getLabel();
     void setLabel( String label );
+    
+    boolean isUtf();
+    void setUtf(boolean enabled);
 }

@@ -153,6 +153,8 @@ public class ComputerCraft
     public static int maximumFilesOpen = 128;
 
     public static int maxNotesPerTick = 8;
+    
+    public static boolean utf8_enable = false;
 
     // Blocks and Items
     public static class Blocks
@@ -222,6 +224,8 @@ public class ComputerCraft
         public static Property floppySpaceLimit;
         public static Property maximumFilesOpen;
         public static Property maxNotesPerTick;
+
+        public static Property utf8_enable;
 
     }
 
@@ -343,6 +347,9 @@ public class ComputerCraft
 
         Config.maxNotesPerTick = Config.config.get( Configuration.CATEGORY_GENERAL, "maxNotesPerTick", maxNotesPerTick );
         Config.maxNotesPerTick.setComment( "Maximum amount of notes a speaker can play at once" );
+        
+        Config.utf8_enable = Config.config.get( Configuration.CATEGORY_GENERAL, "utf8_enable", utf8_enable );
+        Config.utf8_enable.setComment( "Enable the \"utf8 string handling\" API during Computer startup" );
 
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
@@ -386,6 +393,8 @@ public class ComputerCraft
         turtlesCanPush = Config.turtlesCanPush.getBoolean();
 
         maxNotesPerTick = Math.max(1, Config.maxNotesPerTick.getInt());
+        
+        utf8_enable = Config.utf8_enable.getBoolean();
 
         Config.config.save();
     }

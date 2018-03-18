@@ -202,6 +202,20 @@ public class MonitorPeripheral implements IPeripheral
                 String text = getString( args, 0 );
                 String textColour = getString( args, 1 );
                 String backgroundColour = getString( args, 2 );
+                
+                // TODO What to do with monitors. Should they have their own utf flag?
+//            	if (!m_environment.isUtf())
+//            	{
+//            		// backward compatibility for non utf terminals; we get valid utf strings but want to display them as ascii
+//            		final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+//            		final char[] chars = new char[bytes.length];
+//            		for (int i = 0, n = bytes.length; i < n; i++)
+//            		{
+//            			chars[i] = bytes[i] < 0 ? '?' : (char)bytes[i];
+//            		}
+//            		text = new String(chars);
+//            	}
+                
                 if( textColour.length() != text.length() || backgroundColour.length() != text.length() )
                 {
                     throw new LuaException( "Arguments must be the same length" );

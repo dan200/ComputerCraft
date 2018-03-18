@@ -223,7 +223,7 @@ function shell.resolve( _sPath )
 end
 
 local function pathWithExtension( _sPath, _sExt )
-    local nLen = #sPath
+    local nLen = string.len(sPath)
     local sEndChar = string.sub( _sPath, nLen, nLen )
     -- Remove any trailing slashes so we can add an extension to the path safely
     if sEndChar == "/" or sEndChar == "\\" then
@@ -285,7 +285,7 @@ function shell.programs( _bIncludeHidden )
                 local sFile = tList[n]
                 if not fs.isDir( fs.combine( sPath, sFile ) ) and
                    (_bIncludeHidden or string.sub( sFile, 1, 1 ) ~= ".") then
-                    if #sFile > 4 and sFile:sub(-4) == ".lua" then
+                    if string.len(sFile) > 4 and sFile:sub(-4) == ".lua" then
                         sFile = sFile:sub(1,-5)
                     end
                     tItems[ sFile ] = true
@@ -304,7 +304,7 @@ function shell.programs( _bIncludeHidden )
 end
 
 local function completeProgram( sLine )
-    if #sLine > 0 and string.sub( sLine, 1, 1 ) == "/" then
+    if string.len(sLine) > 0 and string.sub( sLine, 1, 1 ) == "/" then
         -- Add programs from the root
         return fs.complete( sLine, "", true, false )
 
@@ -314,8 +314,8 @@ local function completeProgram( sLine )
 
         -- Add aliases
         for sAlias, sCommand in pairs( tAliases ) do
-            if #sAlias > #sLine and string.sub( sAlias, 1, #sLine ) == sLine then
-                local sResult = string.sub( sAlias, #sLine + 1 )
+            if string.len(sAlias) > string.len(sLine) and string.sub( sAlias, 1, string.len(sLine) ) == sLine then
+                local sResult = string.sub( sAlias, string.len(sLine) + 1 )
                 if not tSeen[ sResult ] then
                     table.insert( tResults, sResult )
                     tSeen[ sResult ] = true
@@ -327,8 +327,8 @@ local function completeProgram( sLine )
         local tPrograms = shell.programs()
         for n=1,#tPrograms do
             local sProgram = tPrograms[n]
-            if #sProgram > #sLine and string.sub( sProgram, 1, #sLine ) == sLine then
-                local sResult = string.sub( sProgram, #sLine + 1 )
+            if string.len(sProgram) > string.len(sLine) and string.sub( sProgram, 1, string.len(sLine) ) == sLine then
+                local sResult = string.sub( sProgram, string.len(sLine) + 1 )
                 if not tSeen[ sResult ] then
                     table.insert( tResults, sResult )
                     tSeen[ sResult ] = true
@@ -354,10 +354,10 @@ function shell.complete( sLine )
     if type( sLine ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sLine ) .. ")", 2 )
     end
-    if #sLine > 0 then
+    if string.len(sLine) > 0 then
         local tWords = tokenise( sLine )
         local nIndex = #tWords
-        if string.sub( sLine, #sLine, #sLine ) == " " then
+        if string.sub( sLine, string.len(sLine), string.len(sLine) ) == " " then
             nIndex = nIndex + 1
         end
         if nIndex == 1 then

@@ -179,7 +179,7 @@ local function complete( sLine )
         if nStartPos then
             sLine = string.sub( sLine, nStartPos )
         end
-        if #sLine > 0 then
+        if string.len(sLine) > 0 then
             return textutils.complete( sLine, tCompleteEnv )
         end
     end
@@ -221,7 +221,7 @@ local function redrawText()
         local sLine = tLines[ y + scrollY ]
         if sLine ~= nil then
             writeHighlighted( sLine )
-            if cursorY == y and cursorX == #sLine + 1 then
+            if cursorY == y and cursorX == string.len(sLine) + 1 then
                 writeCompletion()
             end
         end
@@ -235,7 +235,7 @@ local function redrawLine(_nY)
         term.setCursorPos( 1 - scrollX, _nY - scrollY )
         term.clearLine()
         writeHighlighted( sLine )
-        if _nY == y and x == #sLine + 1 then
+        if _nY == y and x == string.len(sLine) + 1 then
             writeCompletion()
         end
         term.setCursorPos( x - scrollX, _nY - scrollY )

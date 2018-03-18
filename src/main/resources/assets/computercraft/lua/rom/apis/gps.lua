@@ -1,4 +1,6 @@
 
+local string_len = string.len
+
 CHANNEL_GPS = 65534
 
 local function trilaterate( A, B, C )

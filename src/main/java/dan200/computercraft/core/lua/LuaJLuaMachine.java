@@ -12,6 +12,7 @@ import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.ILuaAPI;
+import dan200.computercraft.core.apis.StringAPI;
 import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.core.computer.ITask;
 import dan200.computercraft.core.computer.MainThread;
@@ -115,6 +116,8 @@ public class LuaJLuaMachine implements ILuaMachine
         {
             m_globals.set( "_CC_DISABLE_LUA51_FEATURES", toValue( true ) );
         }
+        
+        m_globals.set( "_CC_UTF_SUPPORT", toValue( true ) );
 
         // Our main function will go here
         m_mainRoutine = null;
@@ -122,6 +125,14 @@ public class LuaJLuaMachine implements ILuaMachine
 
         m_softAbortMessage = null;
         m_hardAbortMessage = null;
+        
+        // wrap string api for utf support
+        final StringAPI string = new StringAPI(m_computer.getAPIEnvironment());
+        string.setfenv(m_globals);
+        m_globals.set( "string", string.call() );
+		// TODO Do we need a way to wrap lua string metatable?
+//		if ( LuaString.s_metatable == null )
+//			LuaString.s_metatable = tableOf( new LuaValue[] { INDEX, t } );
     }
     
     @Override

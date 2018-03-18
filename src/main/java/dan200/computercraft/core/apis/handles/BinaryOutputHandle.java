@@ -8,6 +8,7 @@ import dan200.computercraft.shared.util.StringUtil;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 public class BinaryOutputHandle extends HandleGeneric
 {
@@ -48,7 +49,7 @@ public class BinaryOutputHandle extends HandleGeneric
                     else if( args.length > 0 && args[ 0 ] instanceof String )
                     {
                         String value = (String) args[ 0 ];
-                        m_writer.write( StringUtil.encodeString( value ) );
+                        m_writer.write( value.getBytes(StandardCharsets.UTF_8) );
                     }
                     else
                     {

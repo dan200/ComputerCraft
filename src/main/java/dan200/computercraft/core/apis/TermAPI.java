@@ -17,6 +17,8 @@ import javax.annotation.Nonnull;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
+import java.nio.charset.StandardCharsets;
+
 public class TermAPI implements ILuaAPI
 {
     private final Terminal m_terminal;
@@ -252,6 +254,17 @@ public class TermAPI implements ILuaAPI
                 String text = getString( args, 0 );
                 String textColour = getString( args, 1 );
                 String backgroundColour = getString( args, 2 );
+            	if (!m_environment.isUtf())
+            	{
+            		// backward compatibility for non utf terminals; we get valid utf strings but want to display them as ascii
+            		final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+            		final char[] chars = new char[bytes.length];
+            		for (int i = 0, n = bytes.length; i < n; i++)
+            		{
+            			chars[i] = bytes[i] < 0 ? '?' : (char)bytes[i];
+            		}
+            		text = new String(chars);
+            	}
                 if( textColour.length() != text.length() || backgroundColour.length() != text.length() )
                 {
                     throw new LuaException( "Arguments must be the same length" );
