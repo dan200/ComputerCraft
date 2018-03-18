@@ -354,6 +354,11 @@ public class ServerComputer extends ServerTerminal
         {
             nbttagcompound.setTag( "userData", m_userData.copy() );
         }
+        String fontName = m_computer.getFontName();
+        if( fontName != null )
+        {
+            nbttagcompound.setString( "fontName", fontName );
+        }
     }
 
     // INetworkedThing
@@ -445,5 +450,15 @@ public class ServerComputer extends ServerTerminal
 	@Override
 	public boolean isUtf() {
 		return this.m_computer.isUtf();
+	}
+
+	@Override
+	public String getFontName() {
+        return m_computer.getFontName();
+	}
+
+	@Override
+	public void setFontName(String fontName) {
+		m_computer.setFontName(fontName);
 	}
 }

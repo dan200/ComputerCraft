@@ -20,11 +20,11 @@ import java.util.Arrays;
 
 public class FixedWidthFontRenderer
 {
-    private static ResourceLocation font = new ResourceLocation( "computercraft", "textures/gui/term_font.png" );
+	
     public static ResourceLocation background = new ResourceLocation( "computercraft", "textures/gui/term_background.png" );
 
-    public static int FONT_HEIGHT = 9;
-    public static int FONT_WIDTH = 6;
+    public static final int FONT_HEIGHT = FontManager.LEGACY.fontHeight(); // original values
+    public static final int FONT_WIDTH = FontManager.LEGACY.fontWidth(); // original values
 
     private TextureManager m_textureManager;
 
@@ -38,10 +38,10 @@ public class FixedWidthFontRenderer
         Arrays.fill( rgb, ( rgb[0] + rgb[1] + rgb[2] ) / 3.0f );
     }
 
-    private void drawChar( BufferBuilder renderer, double x, double y, int index, int color, Palette p, boolean greyscale )
+    private void drawChar( FontDefinition fd, BufferBuilder renderer, double x, double y, int index, int color, Palette p, boolean greyscale )
     {
-        int column = index % 16;
-        int row = index / 16;
+        int column = index % fd.charsPerLine();
+        int row = index / fd.charsPerLine();
 
         double[] colour = p.getColour( 15 - color );
         if(greyscale)
@@ -52,15 +52,15 @@ public class FixedWidthFontRenderer
         float g = (float)colour[1];
         float b = (float)colour[2];
 
-        int xStart = 1 + column * (FONT_WIDTH + 2);
-        int yStart = 1 + row * (FONT_HEIGHT + 2);
-
-        renderer.pos( x, y, 0.0 ).tex( xStart / 256.0, yStart / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, yStart / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, yStart / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
-        renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (xStart + FONT_WIDTH) / 256.0, (yStart + FONT_HEIGHT) / 256.0 ).color( r, g, b, 1.0f ).endVertex();
+        int xStart = 1 + column * (fd.fontWidth() + 2);
+        int yStart = 1 + row * (fd.fontHeight() + 2);
+        
+        renderer.pos( x, y, 0.0 ).tex( xStart / fd.texWidth(), yStart / fd.texHeight() ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / fd.texWidth(), (yStart + fd.fontHeight()) / fd.texHeight() ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + fd.fontWidth()) / fd.texWidth(), yStart / fd.texHeight() ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y, 0.0 ).tex( (xStart + fd.fontWidth()) / fd.texWidth(), yStart / fd.texHeight() ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x, y + FONT_HEIGHT, 0.0 ).tex( xStart / fd.texWidth(), (yStart + fd.fontHeight()) / fd.texHeight() ).color( r, g, b, 1.0f ).endVertex();
+        renderer.pos( x + FONT_WIDTH, y + FONT_HEIGHT, 0.0 ).tex( (xStart + fd.fontWidth()) / fd.texWidth(), (yStart + fd.fontHeight()) / fd.texHeight() ).color( r, g, b, 1.0f ).endVertex();
     }
 
     private void drawQuad( BufferBuilder renderer, double x, double y, int color, double width, Palette p, boolean greyscale )
@@ -125,7 +125,7 @@ public class FixedWidthFontRenderer
         GlStateManager.enableTexture2D();
     }
 
-    public void drawStringTextPart( int x, int y, TextBuffer s, TextBuffer textColour, boolean greyScale, Palette p )
+    public void drawStringTextPart( FontDefinition fd, int x, int y, TextBuffer s, TextBuffer textColour, boolean greyScale, Palette p )
     {
         // Draw the quads
         Tessellator tessellator = Tessellator.getInstance();
@@ -142,16 +142,16 @@ public class FixedWidthFontRenderer
 
             // Draw char
             int index = (int)s.charAt( i );
-            if( index < 0 || index > 255 )
+            if( index < 0 || index > fd.maxChars() )
             {
                 index = (int)'?';
             }
-            drawChar( renderer, x + i * FONT_WIDTH, y, index, colour, p, greyScale );
+            drawChar( fd, renderer, x + i * FONT_WIDTH, y, index, colour, p, greyScale );
         }
         tessellator.draw();
     }
 
-    public void drawString( TextBuffer s, int x, int y, TextBuffer textColour, TextBuffer backgroundColour, double leftMarginSize, double rightMarginSize, boolean greyScale, Palette p )
+    public void drawString( FontDefinition fd, TextBuffer s, int x, int y, TextBuffer textColour, TextBuffer backgroundColour, double leftMarginSize, double rightMarginSize, boolean greyScale, Palette p )
     {
         // Draw background
         if( backgroundColour != null )
@@ -167,10 +167,10 @@ public class FixedWidthFontRenderer
         if( s != null && textColour != null )
         {
             // Bind the font texture
-            bindFont();
+            bindFont(fd);
             
             // Draw the quads
-            drawStringTextPart( x, y, s, textColour, greyScale, p );
+            drawStringTextPart( fd, x, y, s, textColour, greyScale, p );
         }
     }
 
@@ -183,9 +183,9 @@ public class FixedWidthFontRenderer
         return s.length() * FONT_WIDTH;
     }
 
-    public void bindFont()
+    public void bindFont(FontDefinition fd)
     {
-        m_textureManager.bindTexture( font );
+        m_textureManager.bindTexture( fd.font() );
         GlStateManager.glTexParameteri( GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP );
     }
 }

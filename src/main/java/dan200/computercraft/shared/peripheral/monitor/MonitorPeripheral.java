@@ -65,7 +65,9 @@ public class MonitorPeripheral implements IPeripheral
             "setPaletteColour",
             "setPaletteColor",
             "getPaletteColour",
-            "getPaletteColor"
+            "getPaletteColor",
+            "getFontName",
+            "setFontName"
         };
     }
 
@@ -262,6 +264,18 @@ public class MonitorPeripheral implements IPeripheral
                     return ArrayUtils.toObject( palette.getColour( colour ) );
                 }
                 return null;
+            }
+            case 24:
+            {
+            	// getFontName
+            	return new Object[] {m_monitor.getFontName()};
+            }
+            case 25:
+            {
+            	// setFontName
+            	final String name = getString(args, 0);
+            	m_monitor.setFontName(name);
+            	return null;
             }
         }
         return null;

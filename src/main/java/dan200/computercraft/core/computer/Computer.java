@@ -188,6 +188,7 @@ public class Computer
 
     private int m_id;
     private String m_label;
+    private String m_fontName;
     private final IComputerEnvironment m_environment;
 
     private int m_ticksSinceStart;
@@ -260,6 +261,7 @@ public class Computer
         }
 
         m_rootMount = null;
+        m_fontName = "LEGACY";
         createAPIs();
     }
     
@@ -357,6 +359,20 @@ public class Computer
         if( !Objects.equal( label, m_label ) )
         {
             m_label = label;
+            m_externalOutputChanged = true;
+        }
+    }
+
+    public String getFontName()
+    {
+        return m_fontName;
+    }
+
+    public void setFontName( String name )
+    {
+        if( !Objects.equal( name, m_fontName) )
+        {
+            m_fontName = name;
             m_externalOutputChanged = true;
         }
     }

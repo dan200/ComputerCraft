@@ -25,5 +25,7 @@ public interface IComputerEnvironment
         
     void setUtf(boolean enabled);
 	boolean isUtf();
+	String getFontName();
+	void setFontName(String fontName);
 	
 }

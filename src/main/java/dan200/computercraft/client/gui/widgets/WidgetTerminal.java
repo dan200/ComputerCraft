@@ -8,6 +8,7 @@ package dan200.computercraft.client.gui.widgets;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.client.gui.FixedWidthFontRenderer;
+import dan200.computercraft.client.gui.FontDefinition;
 import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.core.terminal.TextBuffer;
 import dan200.computercraft.shared.computer.core.IComputer;
@@ -395,13 +396,14 @@ public class WidgetTerminal extends Widget
 
                 // Draw margins
                 TextBuffer emptyLine = new TextBuffer( ' ', tw );
+            	final FontDefinition font = (FontDefinition) ComputerCraft.getFont(m_computer.getComputer().getFontName());
                 if( m_topMargin > 0 )
                 {
-                    fontRenderer.drawString( emptyLine, x, startY, terminal.getTextColourLine( 0 ), terminal.getBackgroundColourLine( 0 ), m_leftMargin, m_rightMargin, greyscale, palette );
+                    fontRenderer.drawString(font, emptyLine, x, startY, terminal.getTextColourLine( 0 ), terminal.getBackgroundColourLine( 0 ), m_leftMargin, m_rightMargin, greyscale, palette );
                 }
                 if( m_bottomMargin > 0 )
                 {
-                    fontRenderer.drawString( emptyLine, x, startY + 2 * m_bottomMargin + ( th - 1 ) * FixedWidthFontRenderer.FONT_HEIGHT, terminal.getTextColourLine( th - 1 ), terminal.getBackgroundColourLine( th - 1 ), m_leftMargin, m_rightMargin, greyscale, palette );
+                    fontRenderer.drawString(font, emptyLine, x, startY + 2 * m_bottomMargin + ( th - 1 ) * FixedWidthFontRenderer.FONT_HEIGHT, terminal.getTextColourLine( th - 1 ), terminal.getBackgroundColourLine( th - 1 ), m_leftMargin, m_rightMargin, greyscale, palette );
                 }
 
                 // Draw lines
@@ -410,7 +412,7 @@ public class WidgetTerminal extends Widget
                     TextBuffer text = terminal.getLine( line );
                     TextBuffer colour = terminal.getTextColourLine( line );
                     TextBuffer backgroundColour = terminal.getBackgroundColourLine( line );
-                    fontRenderer.drawString( text, x, y, colour, backgroundColour, m_leftMargin, m_rightMargin, greyscale, palette );
+                    fontRenderer.drawString(font, text, x, y, colour, backgroundColour, m_leftMargin, m_rightMargin, greyscale, palette );
                     y += FixedWidthFontRenderer.FONT_HEIGHT;
                 }
 
@@ -420,6 +422,7 @@ public class WidgetTerminal extends Widget
                     TextBuffer cursorColour = new TextBuffer( "0123456789abcdef".charAt( terminal.getTextColour() ), 1 );
 
                     fontRenderer.drawString(
+                    		font,
                             cursor,
                             x + FixedWidthFontRenderer.FONT_WIDTH * tx,
                             startY + m_topMargin + FixedWidthFontRenderer.FONT_HEIGHT * ty,

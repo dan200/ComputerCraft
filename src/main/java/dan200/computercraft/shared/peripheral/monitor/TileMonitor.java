@@ -62,6 +62,9 @@ public class TileMonitor extends TilePeripheralBase
 
     private int m_dir;
     private boolean m_sizeChangedQueued;
+    
+    private String m_fontName;
+    private boolean m_fontChangedQueued;
 
     public TileMonitor()
     {
@@ -78,6 +81,8 @@ public class TileMonitor extends TilePeripheralBase
         m_changed = false;
         
         m_dir = 2;
+        
+        m_fontName = "LEGACY";
     }
 
     @Override
@@ -122,6 +127,7 @@ public class TileMonitor extends TilePeripheralBase
         nbttagcompound.setInteger( "width", m_width );
         nbttagcompound.setInteger( "height", m_height );
         nbttagcompound.setInteger( "dir", m_dir );
+        nbttagcompound.setString( "fontName", m_fontName );
         return nbttagcompound;
     }
 
@@ -134,6 +140,10 @@ public class TileMonitor extends TilePeripheralBase
         m_width = nbttagcompound.getInteger("width");
         m_height = nbttagcompound.getInteger("height");
         m_dir = nbttagcompound.getInteger("dir");
+        if (nbttagcompound.hasKey("fontName"))
+        {
+        	m_fontName = nbttagcompound.getString( "fontName");
+        }
     }
 
     @Override
@@ -152,6 +162,16 @@ public class TileMonitor extends TilePeripheralBase
                     } );
                 }
                 m_sizeChangedQueued = false;
+            }
+            if( m_fontChangedQueued )
+            {
+                for( IComputerAccess computer : m_computers )
+                {
+                    computer.queueEvent( "monitor_font", new Object[] {
+                        computer.getAttachmentName()
+                    } );
+                }
+                m_fontChangedQueued = false;
             }
 
             if( m_serverTerminal != null )
@@ -743,6 +763,11 @@ public class TileMonitor extends TilePeripheralBase
         m_sizeChangedQueued = true;
     }
     
+    private void queueFontChangedEvent()
+    {
+        m_fontChangedQueued = true;
+    }
+    
     private XYPair convertToXY( float xPos, float yPos, float zPos, int side )
     {
         switch (side)
@@ -866,5 +891,25 @@ public class TileMonitor extends TilePeripheralBase
             }
         }
     }
+
+	public String getFontName() {
+		return this.m_fontName;
+	}
+	
+	public void setFontName(String fontName) {
+        TileMonitor origin = getOrigin();
+        if( origin != null )
+        {
+            synchronized( origin )
+            {
+                if( !origin.m_fontName.equals(fontName) )
+                {
+                    origin.m_fontName = fontName;
+            		this.queueFontChangedEvent();
+                    origin.updateBlock();
+                }
+            }
+        }
+	}
 
 }

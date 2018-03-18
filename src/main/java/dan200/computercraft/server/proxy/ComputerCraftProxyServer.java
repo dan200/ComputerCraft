@@ -105,4 +105,13 @@ public class ComputerCraftProxyServer extends ComputerCraftProxyCommon
     {
         return DimensionManager.getWorld( 0 ).getSaveHandler().getWorldDirectory();
     }
+
+	@Override
+	public Object getFont(String fontName) {
+		return null;
+	}
+
+	@Override
+	public void postInit() {
+	}
 }

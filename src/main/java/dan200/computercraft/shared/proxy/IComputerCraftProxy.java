@@ -26,12 +26,14 @@ public interface IComputerCraftProxy
 {
     void preInit();
     void init();
+	void postInit();
     boolean isClient();
 
     boolean getGlobalCursorBlink();
     long getRenderFrame();
     void deleteDisplayLists( int list, int range );
     Object getFixedWidthFontRenderer();
+	Object getFont(String fontName);
 
     String getRecordInfo( @Nonnull ItemStack item );
     void playRecord( SoundEvent record, String recordInfo, World world, BlockPos pos );

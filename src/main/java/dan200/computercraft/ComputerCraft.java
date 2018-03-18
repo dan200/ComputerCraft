@@ -50,6 +50,7 @@ import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.upgrades.*;
 import dan200.computercraft.shared.util.*;
 import io.netty.buffer.Unpooled;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -407,6 +408,12 @@ public class ComputerCraft
     }
 
     @Mod.EventHandler
+    public void init( FMLPostInitializationEvent event )
+    {
+        proxy.postInit();
+    }
+
+    @Mod.EventHandler
     public void onServerStarting( FMLServerStartingEvent event )
     {
     }
@@ -454,6 +461,11 @@ public class ComputerCraft
     public static void deleteDisplayLists( int list, int range )
     {
         proxy.deleteDisplayLists( list, range );
+    }
+
+    public static Object getFont(final String fontName)
+    {
+        return proxy.getFont(fontName);
     }
 
     public static Object getFixedWidthFontRenderer()
@@ -963,7 +975,7 @@ public class ComputerCraft
         return modClass.getClassLoader().getResourceAsStream( subPath );
     }
 
-    private static File getContainingJar( Class<?> modClass )
+    public static File getContainingJar( Class<?> modClass )
     {
         String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
         int bangIndex = path.indexOf( "!" );
@@ -988,7 +1000,7 @@ public class ComputerCraft
         return file;
     }
 
-    private static File getDebugCodeDir( Class<?> modClass )
+    public static File getDebugCodeDir( Class<?> modClass )
     {
         String path = modClass.getProtectionDomain().getCodeSource().getLocation().getPath();
         int bangIndex = path.indexOf("!");

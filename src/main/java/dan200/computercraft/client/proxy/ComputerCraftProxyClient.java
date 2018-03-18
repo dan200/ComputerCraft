@@ -68,6 +68,8 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
     private long m_tick;
     private long m_renderFrame;
     private FixedWidthFontRenderer m_fixedWidthFontRenderer;
+    
+    private FontManager fontManager;
 
     // IComputerCraftProxy implementation
 
@@ -80,6 +82,11 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
 
         // Setup client forge handlers
         registerForgeHandlers();
+    }
+    
+    public FontManager getFontManager()
+    {
+    	return this.fontManager;
     }
 
     @SubscribeEvent
@@ -546,4 +553,16 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon
             return layer == 0 ? 0xFFFFFF : disk.getColour( stack );
         }
     }
+
+	@Override
+	public Object getFont(String fontName) {
+		if (fontName == null) return FontManager.LEGACY;
+		final FontDefinition res = this.fontManager.get(fontName);
+		return res == null ? FontManager.LEGACY : res;
+	}
+
+	@Override
+	public void postInit() {
+        this.fontManager = new FontManager();
+	}
 }

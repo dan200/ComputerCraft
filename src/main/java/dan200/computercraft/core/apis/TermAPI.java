@@ -80,7 +80,9 @@ public class TermAPI implements ILuaAPI
             "setPaletteColour",
             "setPaletteColor",
             "getPaletteColour",
-            "getPaletteColor"
+            "getPaletteColor",
+            "getFontName",
+            "setFontName"
         };
     }
     
@@ -310,6 +312,21 @@ public class TermAPI implements ILuaAPI
                     }
                 }
                 return null;
+            }
+            case 23:
+            {
+            	// getFontName
+            	return new Object[] {m_environment.getFontName()};
+            }
+            case 24:
+            {
+            	// setFontName
+            	final String name = getString(args, 0);
+            	synchronized( m_terminal )
+            	{
+            		m_environment.setFontName(name);
+            	}
+            	return null;
             }
             default:
             {
