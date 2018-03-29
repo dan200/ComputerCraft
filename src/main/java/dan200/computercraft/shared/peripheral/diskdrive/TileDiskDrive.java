@@ -423,6 +423,7 @@ public class TileDiskDrive extends TilePeripheralBase
         return new DiskDrivePeripheral( this );
     }
 
+    @Nonnull
     public ItemStack getDiskStack()
     {
         synchronized( this )
