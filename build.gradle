@@ -109,3 +109,24 @@ gradle.projectsEvaluated {
     }
 }
 
+idea {
+    project {
+        ipr {
+            withXml { provider -> addCodeStyle(provider) }
+        }
+    }
+}
+
+static def addCodeStyle(provider) {
+    def project = provider.node
+    def codeStyleNode = project.appendNode('component', [name: 'ProjectCodeStyleSettingsManager'])
+    codeStyleNode.appendNode('option', [name: 'USE_PER_PROJECT_SETTINGS', value: 'true'])
+
+    def projectSettingsNode = codeStyleNode.appendNode('option', [name: 'PER_PROJECT_SETTINGS']).appendNode('value')
+
+    def codeStyleFile = new File("codeStyleSettings.xml").text
+    def codeStyleXml = new XmlParser().parseText(codeStyleFile)
+    codeStyleXml.children().each { option ->
+        projectSettingsNode.append(option)
+    }
+}
