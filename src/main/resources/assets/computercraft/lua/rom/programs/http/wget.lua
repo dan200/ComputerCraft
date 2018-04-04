@@ -18,7 +18,7 @@ end
 
 local function getFilename( sUrl )
     sUrl = sUrl:gsub( "[#?].*" , "" ):gsub( "/+$" , "" )
-    return sUrl:match( "/([^/]+)$" )
+    return sUrl:match( "/([^/]+)$" ) or " "
 end
 
 local function get( sUrl )
