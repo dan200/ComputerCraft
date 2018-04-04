@@ -1,11 +1,11 @@
 
 local function printUsage()
     print( "Usage:" )
-    print( "wget <url> <filename>" )
+    print( "wget <url> [filename]" )
 end
  
 local tArgs = { ... }
-if #tArgs < 2 then
+if #tArgs < 1 then
     printUsage()
     return
 end
@@ -15,7 +15,18 @@ if not http then
     printError( "Set http_enable to true in ComputerCraft.cfg" )
     return
 end
- 
+
+local function getFilename( sUrl )
+    while sUrl:sub(#sUrl) == "/" do
+        sUrl = sUrl:sub(1,#sUrl-1) --Remove any trailing slashes
+    end
+    local pos = sUrl:find("/")
+    while sUrl:find("/", pos + 1) do
+        pos = sUrl:find("/", pos + 1) --Find the last /
+    end
+    return sUrl:sub(pos+1)
+end
+
 local function get( sUrl )
     write( "Connecting to " .. sUrl .. "... " )
 
@@ -43,7 +54,7 @@ end
  
 -- Determine file to download
 local sUrl = tArgs[1]
-local sFile = tArgs[2]
+local sFile = tArgs[2] or getFilename(sUrl)
 local sPath = shell.resolve( sFile )
 if fs.exists( sPath ) then
     print( "File already exists" )
