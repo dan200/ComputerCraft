@@ -17,14 +17,14 @@ if not http then
 end
 
 local function getFilename( sUrl )
-    while sUrl:sub(#sUrl) == "/" do
-        sUrl = sUrl:sub(1,#sUrl-1) --Remove any trailing slashes
+    while sUrl:sub( #sUrl ) == "/" do
+        sUrl = sUrl:sub( 1 , #sUrl - 1 ) -- Remove any trailing slashes
     end
-    local pos = sUrl:find("/")
-    while sUrl:find("/", pos + 1) do
-        pos = sUrl:find("/", pos + 1) --Find the last /
+    local pos = sUrl:find( "/" )
+    while sUrl:find( "/" , pos + 1 ) do
+        pos = sUrl:find( "/" , pos + 1 ) -- Find the last /
     end
-    return sUrl:sub(pos+1)
+    return sUrl:sub( pos + 1 )
 end
 
 local function get( sUrl )
@@ -54,7 +54,7 @@ end
  
 -- Determine file to download
 local sUrl = tArgs[1]
-local sFile = tArgs[2] or getFilename(sUrl)
+local sFile = tArgs[2] or getFilename( sUrl )
 local sPath = shell.resolve( sFile )
 if fs.exists( sPath ) then
     print( "File already exists" )
