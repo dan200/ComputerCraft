@@ -17,8 +17,8 @@ if not http then
 end
 
 local function getFilename( sUrl )
-    sUrl = sUrl:gsub("[#].*", ""):gsub("/+$", "")
-    return sUrl:match("/([^/]+)$")
+    sUrl = sUrl:gsub( "[#?].*" , "" ):gsub( "/+$" , "" )
+    return sUrl:match( "/([^/]+)$" )
 end
 
 local function get( sUrl )
