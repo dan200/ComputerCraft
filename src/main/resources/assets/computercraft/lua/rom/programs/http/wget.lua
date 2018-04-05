@@ -43,9 +43,7 @@ local sUrl = tArgs[1]
 --Check if the URL is valid
 local ok, err = http.checkURL( sUrl )
 if not ok then
-    if err then
-        printError( err )
-    end
+    printError( err or "Invalid URL." )
     return
 end
 
