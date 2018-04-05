@@ -46,7 +46,7 @@ if not ok then
     if err then
         printError( err )
     end
-    return nil
+    return
 end
 
 local sFile = tArgs[2] or getFilename( sUrl )
