@@ -303,7 +303,7 @@ public class OSAPI implements ILuaAPI
             {
                 // time
                 String param = optString( args, 0, "ingame" );
-                switch( param )
+                switch( param.toLowerCase( Locale.ENGLISH ) )
                 {
                     case "utc":
                     {
@@ -331,7 +331,7 @@ public class OSAPI implements ILuaAPI
             {
                 // day
                 String param = optString( args, 0, "ingame" );
-                switch( param )
+                switch( param.toLowerCase( Locale.ENGLISH ) )
                 {
                     case "utc":
                     {
@@ -385,7 +385,7 @@ public class OSAPI implements ILuaAPI
             {
                 // epoch
                 String param = optString( args, 0, "ingame" );
-                switch( param.toLowerCase() )
+                switch( param.toLowerCase( Locale.ENGLISH ) )
                 {
                     case "utc":
                     {
