@@ -14,9 +14,9 @@ tile.computercraft:speaker.name=Högtalare
 tile.computercraft:turtle.name=Turtle
 tile.computercraft:turtle.upgraded.name=%s Turtle
 tile.computercraft:turtle.upgraded_twice.name=%s %s Turtle
-tile.computercraft:advanced_turtle.name=Advanced Turtle
-tile.computercraft:advanced_turtle.upgraded.name=Advanced %s Turtle
-tile.computercraft:advanced_turtle.upgraded_twice.name=Advanced %s %s Turtle
+tile.computercraft:advanced_turtle.name=Avancerad Turtle
+tile.computercraft:advanced_turtle.upgraded.name=Avancerad %s Turtle
+tile.computercraft:advanced_turtle.upgraded_twice.name=Avancerad %s %s Turtle
 
 item.computercraft:disk.name=Diskett
 item.computercraft:treasure_disk.name=Diskett
