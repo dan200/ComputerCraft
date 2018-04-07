@@ -385,7 +385,7 @@ public class OSAPI implements ILuaAPI
             {
                 // epoch
                 String param = optString( args, 0, "ingame" );
-                switch( param )
+                switch( param.toLowerCase() )
                 {
                     case "utc":
                     {
