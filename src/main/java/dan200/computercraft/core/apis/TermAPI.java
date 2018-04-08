@@ -10,8 +10,8 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.computer.IComputerEnvironment;
 import dan200.computercraft.core.terminal.Terminal;
+import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.Palette;
-import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 
@@ -78,7 +78,9 @@ public class TermAPI implements ILuaAPI
             "setPaletteColour",
             "setPaletteColor",
             "getPaletteColour",
-            "getPaletteColor"
+            "getPaletteColor",
+            "nativePaletteColor",
+            "nativePaletteColour"
         };
     }
     
@@ -277,10 +279,10 @@ public class TermAPI implements ILuaAPI
                 }
                 else
                 {
-                    double r = getReal( args, 1 );
-                    double g = getReal( args, 2 );
-                    double b = getReal( args, 3 );
-                    setColour( m_terminal, colour, r, g, b );
+                    int r = getInt( args, 1 );
+                    int g = getInt( args, 2 );
+                    int b = getInt( args, 3 );
+                    setColour( m_terminal, colour, r / 255.0, g / 255.0, b / 255.0 );
                 }
                 return null;
             }
@@ -293,10 +295,42 @@ public class TermAPI implements ILuaAPI
                 {
                     if ( m_terminal.getPalette() != null )
                     {
-                        return ArrayUtils.toObject( m_terminal.getPalette().getColour( colour ) );
+                        Palette palette = m_terminal.getPalette();
+                        double[] colours = palette.getColour( colour );
+                        Object[] colours8 = new Object[ colours.length ];
+
+                        for ( int i = 0; i < colours8.length; ++i )
+                        {
+                            colours8[ i ] = (int) ( colours[ i ] * 255.0 );
+                        }
+
+                        return colours8;
                     }
                 }
                 return null;
+            }
+            case 23:
+            case 24:
+            {
+                // nativePaletteColour/nativePaletteColor
+                int colour = 15 - parseColour( args );
+                Colour c = Colour.fromInt( colour );
+                if ( c != null )
+                {
+                    float[] rgb = c.getRGB();
+                    Object[] rgb8 = new Object[ rgb.length ];
+
+                    for ( int i = 0; i < rgb8.length; ++i )
+                    {
+                        rgb8[i] = (int) ( rgb[i] * 255.0f );
+                    }
+
+                    return rgb8;
+                }
+                else
+                {
+                    return null;
+                }
             }
             default:
             {

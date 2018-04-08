@@ -84,11 +84,11 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
             parent.setCursorPos( 0, 0 )
         end
     end
-    
+
     local function updateCursorBlink()
         parent.setCursorBlink( bCursorBlink )
     end
-    
+
     local function updateCursorColor()
         parent.setTextColor( nTextColor )
     end
@@ -107,7 +107,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
     local function updatePalette()
         for k,v in pairs( tPalette ) do
-            parent.setPaletteColour( k, v[1], v[2], v[3] )
+            parent.setPaletteColour( k, math.floor( v[1] ), math.floor( v[2] ), math.floor( v[3] ) )
         end
     end
 
@@ -271,7 +271,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
     end
 
     local function setTextColor( color )
-        if type( color ) ~= "number" then 
+        if type( color ) ~= "number" then
             error( "bad argument #1 (expected number, got " .. type( color ) .. ")", 2 )
         elseif tHex[color] == nil then
             error( "Invalid color (got " .. color .. ")" , 2 )
@@ -287,20 +287,20 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
 
     function window.setPaletteColour( colour, r, g, b )
         if type( colour ) ~= "number" then error( "bad argument #1 (expected number, got " .. type( colour ) .. ")", 2 ) end
-        
+
         if tHex[colour] == nil then
             error( "Invalid color (got " .. colour .. ")" , 2 )
         end
 
         local tCol
-        if type(r) == "number" and g == nil and b == nil then
-            tCol = { colours.rgb8( r ) }
+        if type( r ) == "number" and g == nil and b == nil then
+            tCol = { colours.unpackRGB( r ) }
             tPalette[ colour ] = tCol
         else
             if type( r ) ~= "number" then error( "bad argument #2 (expected number, got " .. type( r ) .. ")", 2 ) end
             if type( g ) ~= "number" then error( "bad argument #3 (expected number, got " .. type( g ) .. ")", 2 ) end
             if type( b ) ~= "number" then error( "bad argument #4 (expected number, got " .. type( b ) .. ")", 2 ) end
-            
+
             tCol = tPalette[ colour ]
             tCol[1] = r
             tCol[2] = g
@@ -308,7 +308,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         end
 
         if bVisible then
-            return parent.setPaletteColour( colour, tCol[1], tCol[2], tCol[3] )
+            return parent.setPaletteColour( colour, math.floor( tCol[1] ), math.floor( tCol[2] ), math.floor( tCol[3] ) )
         end
     end
 
@@ -319,8 +319,7 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
         if tHex[colour] == nil then
             error( "Invalid color (got " .. colour .. ")" , 2 )
         end
-        local tCol = tPalette[ colour ]
-        return tCol[1], tCol[2], tCol[3]
+        return table.unpack( tPalette[ colour ] )
     end
 
     window.getPaletteColor = window.getPaletteColour
@@ -466,6 +465,9 @@ function create( parent, nX, nY, nWidth, nHeight, bStartVisible )
             window.redraw()
         end
     end
+
+    window.nativePaletteColor = parent.nativePaletteColor
+    window.nativePaletteColour = parent.nativePaletteColour
 
     if bVisible then
         window.redraw()

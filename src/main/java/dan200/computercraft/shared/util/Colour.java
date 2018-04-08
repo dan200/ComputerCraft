@@ -36,7 +36,8 @@ public enum Colour
         return null;
     }
     
-    public static Colour fromHex(int colour) {
+    public static Colour fromHex(int colour)
+    {
         for( Colour entry : VALUES )
         {
             if( entry.getHex() == colour ) return entry;
