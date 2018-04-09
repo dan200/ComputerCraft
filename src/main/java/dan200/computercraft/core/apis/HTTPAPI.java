@@ -103,9 +103,9 @@ public class HTTPAPI implements ILuaAPI {
                 }
 
                 //Get mode
-                String DMODE = "GET";
-                if (postString != null) DMODE = "POST";
-                String mode = optString(args, 4, DMODE);
+                String dmode = "GET";
+                if (postString != null) dmode = "POST";
+                String mode = optString(args, 4, dmode);
 
                 //Get if we should follow redirects
                 boolean followRedirects = optBoolean(args, 5, true);
