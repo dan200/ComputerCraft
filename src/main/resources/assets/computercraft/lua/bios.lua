@@ -355,33 +355,65 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
         local cx,cy = term.getCursorPos()
         term.setCursorPos( sx, cy )
         local sReplace = (_bClear and " ") or _sReplaceChar
-        if sReplace then
-            term.write( string.rep( sReplace, math.max( string.len(sLine) - nScroll, 0 ) ) )
-        else
-            term.write( string.sub( sLine, nScroll + 1 ) )
-        end
-
-        if nCompletion then
-            local sCompletion = tCompletions[ nCompletion ]
-            local oldText, oldBg
-            if not _bClear then
-                oldText = term.getTextColor()
-                oldBg = term.getBackgroundColor()
-                term.setTextColor( colors.white )
-                term.setBackgroundColor( colors.gray )
-            end
-            if sReplace then
-                term.write( string.rep( sReplace, string.len( sCompletion ) ) )
-            else
-                term.write( sCompletion )
+        if nCompletion and type(tCompletions[ nCompletion ]) == "table" then --Advanced mode
+            local tString = tCompletions[ nCompletion ]
+            local bSuggest = false
+            local oldText = term.getTextColor()
+            local oldBg = term.getBackgroundColor()
+            for _,sCurrent in ipairs( tString ) do
+                if not _bClear then
+                    if bSuggest then
+                        term.setTextColor( colors.white )
+                        term.setBackgroundColor( colors.gray )
+                    else
+                        term.setTextColor( oldText )
+                        term.setBackgroundColor( oldBg )
+                    end
+                end
+                if (not bSuggest and sReplace) or (bSuggest and _bClear) then
+                    term.write( string.rep( sReplace, #sCurrent ) )
+                else
+                    term.write(sCurrent)
+                end
+                bSuggest = not bSuggest
             end
             if not _bClear then
                 term.setTextColor( oldText )
                 term.setBackgroundColor( oldBg )
             end
-        end
+            if not bSuggest then
+                term.setCursorPos( term.getCursorPos() - #tString[ #tString ], cy )
+            end
+        else --Basic mode
+            if sReplace then
+                term.write( string.rep( sReplace, math.max( string.len(sLine) - nScroll, 0 ) ) )
+            else
+                term.write( string.sub( sLine, nScroll + 1 ) )
+            end
 
-        term.setCursorPos( sx + nPos - nScroll, cy )
+            if nCompletion then
+                local sCompletion = tCompletions[ nCompletion ]
+                local oldText, oldBg
+                if not _bClear then
+                    oldText = term.getTextColor()
+                    oldBg = term.getBackgroundColor()
+                    term.setTextColor( colors.white )
+                    term.setBackgroundColor( colors.gray )
+                end
+                if _bClear then
+                    term.write( string.rep( sReplace, string.len( sCompletion ) ) )
+                else
+                    term.write( sCompletion )
+                end
+                if not _bClear then
+                    term.setTextColor( oldText )
+                    term.setBackgroundColor( oldBg )
+                end
+            end
+            
+            term.setCursorPos( sx + nPos - nScroll, cy )
+        end
+        
     end
     
     local function clear()
@@ -398,7 +430,11 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
 
             -- Find the common prefix of all the other suggestions which start with the same letter as the current one
             local sCompletion = tCompletions[ nCompletion ]
-            sLine = sLine .. sCompletion
+            if type(sCompletion) == "table" then
+                sLine = table.concat(sCompletion)
+            else
+                sLine = sLine .. sCompletion
+            end
             nPos = string.len( sLine )
 
             -- Redraw
@@ -778,7 +814,7 @@ end
 
 -- Install the lua part of the FS api
 local tEmpty = {}
-function fs.complete( sPath, sLocation, bIncludeFiles, bIncludeDirs )
+function fs.complete( sPath, sLocation, bIncludeFiles, bIncludeDirs, sLine )
     if type( sPath ) ~= "string" then
         error( "bad argument #1 (expected string, got " .. type( sPath ) .. ")", 2 ) 
     end
@@ -793,6 +829,7 @@ function fs.complete( sPath, sLocation, bIncludeFiles, bIncludeDirs )
     end
     bIncludeFiles = (bIncludeFiles ~= false)
     bIncludeDirs = (bIncludeDirs ~= false)
+    local sQutedSuffix = select(2, string.gsub(sLine, '"', ""))%2 == 1 and '"' or "" --Detecting if the current word is already in quote. If true then suggest closing said quote.
     local sDir = sLocation
     local nStart = 1
     local nSlash = string.find( sPath, "[/\\]", nStart )
@@ -815,13 +852,13 @@ function fs.complete( sPath, sLocation, bIncludeFiles, bIncludeDirs )
     if fs.isDir( sDir ) then
         local tResults = {}
         if bIncludeDirs and sPath == "" then
-            table.insert( tResults, "." )
+            table.insert( tResults, "."..sQutedSuffix )
         end
         if sDir ~= "" then
             if sPath == "" then
-                table.insert( tResults, (bIncludeDirs and "..") or "../" )
+                table.insert( tResults, (bIncludeDirs and ".."..sQutedSuffix ) or "../" )
             elseif sPath == "." then
-                table.insert( tResults, (bIncludeDirs and ".") or "./" )
+                table.insert( tResults, (bIncludeDirs and "."..sQutedSuffix) or "./" )
             end
         end
         local tFiles = fs.list( sDir )
@@ -832,12 +869,26 @@ function fs.complete( sPath, sLocation, bIncludeFiles, bIncludeDirs )
                 local sResult = string.sub( sFile, #sName + 1 )
                 if bIsDir then
                     table.insert( tResults, sResult .. "/" )
-                    if bIncludeDirs and #sResult > 0 then
-                        table.insert( tResults, sResult )
+                    if bIncludeDirs and #sResult >= 0 then
+                        table.insert( tResults, sResult..sQutedSuffix )
                     end
                 else
-                    if bIncludeFiles and #sResult > 0 then
-                        table.insert( tResults, sResult )
+                    if bIncludeFiles and #sResult >= 0 then
+                        table.insert( tResults, sResult..sQutedSuffix )
+                    end
+                end
+            end
+        end
+        if sQutedSuffix == "" then --If current word is not quoted check if it should be.
+            for i,sResult in ipairs( tResults ) do
+                if string.match (sResult, " ") then
+                    if string.sub(sResult,-1) ~= "/" then
+                        sResult = sResult..'"'
+                    end
+                    if sPath == "" then
+                        tResults[i] = {sLine,'"'..sResult}
+                    else
+                        tResults[i] = {string.sub(sLine,1,-#sPath-1),'"',string.sub(sLine,-#sPath),sResult}
                     end
                 end
             end
