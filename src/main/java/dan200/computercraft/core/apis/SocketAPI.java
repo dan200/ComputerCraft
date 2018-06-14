@@ -113,7 +113,7 @@ public class SocketAPI implements ILuaAPI, IAsyncObject
 		}
 	}
 	
-	public Object[] realCallMeth( @Nonnull ILuaContext context, int method, @Nonnull Object[] args )
+	public Object[] callAsyncMeth( @Nonnull ILuaContext context, int method, @Nonnull Object[] args )
 	{
 		try {
 			switch (method)

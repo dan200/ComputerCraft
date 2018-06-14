@@ -57,7 +57,7 @@ class ArgRunnable implements Runnable
 	
 	public void run()
 	{		
-		Object[] rtn = m_callable.realCallMeth(m_context, m_method, m_args);
+		Object[] rtn = m_callable.callAsyncMeth(m_context, m_method, m_args);
 		Object[] finalRtn = new Object[rtn.length+1];
 		for (int i = 0; i < rtn.length; i++)
 		{

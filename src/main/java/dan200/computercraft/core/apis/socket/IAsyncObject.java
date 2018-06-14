@@ -11,5 +11,5 @@ import dan200.computercraft.api.lua.ILuaContext;
 
 public interface IAsyncObject
 {
-	Object[] realCallMeth( @Nonnull ILuaContext context, int method, @Nonnull Object[] args );
+	Object[] callAsyncMeth( @Nonnull ILuaContext context, int method, @Nonnull Object[] args );
 }
