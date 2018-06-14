@@ -891,6 +891,21 @@ if pocket and fs.isDir( "rom/apis/pocket" ) then
     end
 end
 
+if socket and fs.isDir( "rom/apis/socket" ) then
+    -- Load socket APIs
+    local tApis = fs.list( "rom/apis/socket" )
+    for n,sFile in ipairs( tApis ) do
+        if string.sub( sFile, 1, 1 ) ~= "." then
+            local sPath = fs.combine( "rom/apis/socket", sFile )
+            if not fs.isDir( sPath ) then
+                if not os.loadAPI( sPath ) then
+                    bAPIError = true
+                end
+            end
+        end
+    end
+end
+
 if commands and fs.isDir( "rom/apis/command" ) then
     -- Load command APIs
     if os.loadAPI( "rom/apis/command/commands.lua" ) then

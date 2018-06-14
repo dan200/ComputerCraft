@@ -1,0 +1,21 @@
+The functions included in the socket API are as follows:
+ok, host, port = socket.lookup(uri) --Returns the values required for socket.open
+ok, sock = socket.open(host, port, useSSL) --Returns a socket. Note that the host must be an IP address, which can be found with socket.lookup()
+ok, err = socket.checkHost(host) --Basically http.checkURL, but with URIs
+
+They are also available in an async form.
+Simply append "Async" to the command and wait for the "async" event
+The async variations will return an id, which can be compared to the id of the async event
+id = socket.someMethodAsync(...)
+"async", id, ... = os.pullEvent("async")
+
+Object "sock" is as follow:
+ok, length = sock.length() --Returns length of unread buffer
+ok, text = sock.read(n) --Reads and removes n bytes from buffer
+ok = sock.write(text) --Writes text to the server
+ok = sock.close() --Closes the socket
+true, isClosed = sock.isClosed() --Checks the state of the socket
+ok, certs = sock.getCertificate() --Get a table with the names of certificates. If the socket is not SSL, this will return false
+
+Openning a socket with openAsync will make all methods of the sock object async.
+The method names are not changed.

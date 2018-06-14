@@ -121,6 +121,7 @@ public class ComputerCraft
     };
     
     public static boolean http_enable = true;
+    public static boolean socket_enable = true;
     public static AddressPredicate http_whitelist = new AddressPredicate( DEFAULT_HTTP_WHITELIST );
     public static AddressPredicate http_blacklist = new AddressPredicate( DEFAULT_HTTP_BLACKLIST );
     public static boolean disable_lua51_features = false;
@@ -202,6 +203,7 @@ public class ComputerCraft
         public static Property http_enable;
         public static Property http_whitelist;
         public static Property http_blacklist;
+		public static Property socket_enable;
         public static Property disable_lua51_features;
         public static Property default_computer_settings;
         public static Property logPeripheralErrors;
@@ -283,6 +285,7 @@ public class ComputerCraft
                 Config.http_whitelist.setValues( currentProperty.getString().split( ";" ) );
             }
         }
+        
         Config.http_whitelist.setComment( "A list of wildcards for domains or IP ranges that can be accessed through the \"http\" API on Computers.\n" +
             "Set this to \"*\" to access to the entire internet. Example: \"*.pastebin.com\" will restrict access to just subdomains of pastebin.com.\n" +
             "You can use domain names (\"pastebin.com\"), wilcards (\"*.pastebin.com\") or CIDR notation (\"127.0.0.0/8\")." );
@@ -292,6 +295,11 @@ public class ComputerCraft
             "If this is empty then all whitelisted domains will be accessible. Example: \"*.github.com\" will block access to all subdomains of github.com.\n" +
             "You can use domain names (\"pastebin.com\"), wilcards (\"*.pastebin.com\") or CIDR notation (\"127.0.0.0/8\")." );
 
+        
+        Config.socket_enable = Config.config.get( Configuration.CATEGORY_GENERAL, "socket_enable", socket_enable );
+        Config.socket_enable.setComment( "Enable the \"socket\" API on Computers (HTTP must also be enabled)" );
+        
+        
         Config.disable_lua51_features = Config.config.get( Configuration.CATEGORY_GENERAL, "disable_lua51_features", disable_lua51_features );
         Config.disable_lua51_features.setComment( "Set this to true to disable Lua 5.1 functions that will be removed in a future update. Useful for ensuring forward compatibility of your programs now." );
 
@@ -364,6 +372,7 @@ public class ComputerCraft
         http_enable = Config.http_enable.getBoolean();
         http_whitelist = new AddressPredicate( Config.http_whitelist.getStringList() );
         http_blacklist = new AddressPredicate( Config.http_blacklist.getStringList() );
+        socket_enable = Config.socket_enable.getBoolean();
         disable_lua51_features = Config.disable_lua51_features.getBoolean();
         default_computer_settings = Config.default_computer_settings.getString();
         logPeripheralErrors = Config.logPeripheralErrors.getBoolean();
