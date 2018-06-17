@@ -30,13 +30,13 @@ public class SocketWrapper {
         "close",
         "isClosed",
         "getCertificates",
-		"readLine"
+		"readLine",
+		"readAll"
     };
 
     public static ILuaObject wrapSocket(final Socket sock, final CertWrapper certs, IAPIEnvironment m_apiEnvironment) {
         class WrappedSocket implements ILuaObject, IAsyncObject {
 
-			private boolean isEnd = false;
 			
             @Nonnull
             @Override
@@ -73,7 +73,7 @@ public class SocketWrapper {
                                 byte[] bytes = arg.getBytes("UTF-8");
                                 sock.getOutputStream().write(bytes);
 
-                                return new Object[] { true };
+                                return new Object[] { methods[method], true };
                             }
                         case 1:
                             {
@@ -84,55 +84,44 @@ public class SocketWrapper {
 								int lastbyte = 0;
 								try {
 									for (int i = 0; i < times; i++) {
-										if (lastbyte != -1){
-											lastbyte = sock.getInputStream().read();
-											if (lastbyte != -1) {
-												byte[] bytes = {(byte) lastbyte};
-												res = res + new String(bytes, "UTF-8");
-											}
-										} else {
-											isEnd = true;
-											break;
-										}
+										byte[] bytes = {(byte) sock.getInputStream().read()};
+										res = res + new String(bytes, "UTF-8");
 									}
-								} catch (SocketTimeoutException e) {}
-                                return new Object[] { true, res, isEnd };
+								} catch (SocketTimeoutException e) {
+									res = null;
+								}
+                                return new Object[] { methods[method], true, res };
                             }
                         case 2:
                             {
                                 // close
                                 sock.close();
 
-                                return new Object[] {
-                                    true
-                                };
+                                return new Object[] { methods[method], true };
                             }
                         case 3:
                             {
                                 // isClosed
 
-                                return new Object[] {
-                                    true,
-                                    sock.isClosed()
-                                };
+                                return new Object[] { methods[method], true, sock.isClosed() };
                             }
                         case 4:
                             {
                                 //getCertificates
                                 if (!certs.hasCertificates) {
                                     return new Object[] {
-                                        false,
-                                        "The socket is not secure"
+                                        methods[method], false, "The socket is not secure"
                                     };
                                 }
 
-                                Object[] rtn = new Object[1 + certs.certificates.length];
+                                Object[] rtn = new Object[2 + certs.certificates.length];
 
                                 System.out.println(certs.certificates.length);
                                 for (int i = 0; i < certs.certificates.length; i++) {
-                                    rtn[i + 1] = certs.certificates[i].getType();
+                                    rtn[i + 2] = certs.certificates[i].getType();
                                 }
-                                rtn[0] = true;
+								rtn[0] = methods[method];
+                                rtn[1] = true;
 
                                 return rtn;
                             }
@@ -140,28 +129,44 @@ public class SocketWrapper {
 						case 5:
 						{
 							//readLine
-							String res = "";
+							String res = null;
 							try {
 								res = new BufferedReader(new InputStreamReader(sock.getInputStream(), "UTF-8")).readLine();
-								if (res == null) {
-									isEnd = true;
-								}
 							} catch (SocketTimeoutException e) {}
-                            return new Object[] { true, res, isEnd };
+                            return new Object[] { methods[method], true, res };
+						}
+						
+						case 6:
+						{
+							//readAll
+							String res = "";
+							String resadd = "";
+							BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream(), "UTF-8"));
+							while (true) {
+								try {
+									resadd = br.readLine();
+								} catch (SocketTimeoutException e) {
+									resadd = null;
+								}
+								if (resadd == null) {
+									break;
+								}
+								res = res + resadd;
+							}
+							
+							return new Object[] { methods[method], true, res };
 						}
 
                         default:
                             {
                                 return new Object[] {
-                                    false,
-                                    "Unknown method of \"Sock\" class called"
+                                    "?", false, "Unknown method of \"Sock\" class called"
                                 };
                             }
                     }
                 } catch (Exception e) {
                     return new Object[] {
-                        false,
-                        e.getMessage()
+                        methods[method], false, e.getMessage()
                     };
                 }
             }

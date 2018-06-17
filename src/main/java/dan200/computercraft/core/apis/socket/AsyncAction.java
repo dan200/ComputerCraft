@@ -78,9 +78,9 @@ class AsyncMethod {
 				finalRtn[i + 1] = rtn[i];
 			};
 			finalRtn[0] = ID;
-			m_environment.queueEvent("async", finalRtn);
+			m_environment.queueEvent("async_socket", finalRtn);
 		} catch (Exception e) {
-			m_environment.queueEvent("async", new Object[] {ID, false, e.getMessage()});
+			m_environment.queueEvent("async_socket", new Object[] {ID, false, e.getMessage()});
 		}
     }
 

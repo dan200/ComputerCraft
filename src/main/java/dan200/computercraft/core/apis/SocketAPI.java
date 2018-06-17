@@ -21,6 +21,12 @@ import static dan200.computercraft.core.apis.ArgumentHelper.*;
 public class SocketAPI implements ILuaAPI, IAsyncObject {
     private final IAPIEnvironment m_apiEnvironment;
     private final List < Socket > m_socks;
+	
+	private String[] methods = {
+        "open",
+        "lookup",
+        "checkHost"
+    };
 
     public SocketAPI(IAPIEnvironment environment) {
 		new AsyncAction().startAsyncAction();
@@ -57,11 +63,7 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
     @Nonnull
     @Override
     public String[] getMethodNames() {
-        return new String[] {
-            "open",
-            "lookup",
-            "checkHost"
-        };
+        return methods;
     }
 
     @Override
@@ -93,8 +95,7 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
                             URIChecker.ezCheckHost(URL);
                         } catch (Exception e) {
                             return new Object[] {
-                                false,
-                                e.getMessage()
+                                methods[method], false, e.getMessage()
                             };
                         }
 
@@ -116,8 +117,7 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
                             m_socks.add(sock);
                         }
                         return new Object[] {
-                            true,
-                            SocketWrapper.wrapSocket(sock, certs, m_apiEnvironment)
+                            methods[method], true, SocketWrapper.wrapSocket(sock, certs, m_apiEnvironment)
                         };
                     }
 
@@ -130,8 +130,7 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
                             address = URIChecker.ezCheckHost(myURL);
                         } catch (Exception e) {
                             return new Object[] {
-                                false,
-                                e.getMessage()
+                                methods[method], false, e.getMessage()
                             };
                         }
                         String addr = address.getHostAddress();
@@ -141,14 +140,11 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
                         }
                         if (info == null) {
                             return new Object[] {
-                                true,
-                                addr
+                                methods[method], true, addr
                             };
                         }
                         return new Object[] {
-                            true,
-                            addr,
-                            info.getDefaultPort()
+                            methods[method], true, addr, info.getDefaultPort()
                         };
                     }
 
@@ -160,32 +156,28 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
                             URIChecker.ezCheckHost(myURL);
                         } catch (Exception e) {
                             return new Object[] {
-                                false,
-                                e.getMessage()
+                                methods[method], false, e.getMessage()
                             };
                         }
                         return new Object[] {
-                            true
+                            methods[method], true
                         };
                     }
 
                 default:
                     {
                         return new Object[] {
-                            false,
-                            "Unknown method of \"Socket\" called"
+                            "?", false, "Unknown method of \"Socket\" called"
                         };
                     }
             }
         } catch (UnknownHostException e) {
             return new Object[] {
-                false,
-                "Unknown host: " + e.getMessage()
+                methods[method], false, "Unknown host: " + e.getMessage()
             };
         } catch (Exception e) {
             return new Object[] {
-                false,
-                e.getMessage()
+                methods[method], false, e.getMessage()
             };
         }
     }

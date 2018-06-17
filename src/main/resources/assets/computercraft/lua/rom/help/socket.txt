@@ -4,17 +4,20 @@ sock = socket.open(host, port, useSSL) --Returns a socket. Note that the host mu
 socket.checkHost(host) --Basically http.checkURL, but with URIs
 
 They are also available in an async form.
-Simply append "Async" to the command and wait for the "async" event
-The async variations will return an id, which can be compared to the id of the async event
+Simply append "Async" to the command and wait for the "async_socket" event
+The async variations will return an id, which can be compared to the id of the async event'
+
 id = socket.someMethodAsync(...)
-"async", id, ok, ... = os.pullEvent("async")
+"async", id, type, ok, ... = os.pullEvent("async_socket")
 
 Object "sock" is as follow:
 text = sock.read(n) --Reads and removes n bytes from buffer
 sock.write(text) --Writes text to the server
 sock.close() --Closes the socket
 isClosed = sock.isClosed() --Checks the state of the socket
-certs = sock.getCertificate() --Get a table with the names of certificates. If the socket is not SSL, this will return false
+certs = sock.getCertificates() --Get a table with the names of certificates.
+text = sock.readLine() --Reads a line, if possible
+text = sock.readAll() --Reads whatever it can
 
 Openning a socket with openAsync will make all methods of the sock object async.
 The method names are not changed.

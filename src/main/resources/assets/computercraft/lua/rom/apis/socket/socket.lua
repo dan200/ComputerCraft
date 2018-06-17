@@ -6,12 +6,12 @@ local function invokeAsyncFunc(func, ...)
   end
   local e = {}
   while not (e[2] == id) do
-    e = {os.pullEvent("async")}
+    e = {os.pullEvent("async_socket")}
   end
-  if not e[3] then
-    error(e[4], 3)
+  if not e[4] then
+    error(e[5], 3)
   end
-  for i = 1, 3 do
+  for i = 1, 4 do
     table.remove(e, 1)
   end
   return table.unpack(e)
