@@ -10,7 +10,6 @@ id = socket.someMethodAsync(...)
 "async", id, ok, ... = os.pullEvent("async")
 
 Object "sock" is as follow:
-length = sock.length() --Returns length of unread buffer
 text = sock.read(n) --Reads and removes n bytes from buffer
 sock.write(text) --Writes text to the server
 sock.close() --Closes the socket

@@ -15,7 +15,6 @@ public class URIChecker {
     {
         try
         {
-			System.out.println(url);
             InetAddress resolved = InetAddress.getByName( url );
             if( !ComputerCraft.http_whitelist.matches( resolved ) || ComputerCraft.http_blacklist.matches( resolved ) )
             {

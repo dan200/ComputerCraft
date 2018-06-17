@@ -15,16 +15,16 @@ import java.util.*;
 public class CertWrapper {
     public boolean hasCertificates = false;
     public Certificate[] certificates;
-    
-    public CertWrapper(SSLSocket sock){
+
+    public CertWrapper(SSLSocket sock) {
         try {
-		    sock.startHandshake();
-		    SSLSession sslsock = sock.getSession();
-		    this.certificates = sslsock.getPeerCertificates();
-		    this.hasCertificates = true; 
-	    } catch (Exception e){
-			System.out.println("Failed to initialize SSL connection!\nException reached: " + e.getMessage());
-	    }
+            sock.startHandshake();
+            SSLSession sslsock = sock.getSession();
+            this.certificates = sslsock.getPeerCertificates();
+            this.hasCertificates = true;
+        } catch (Exception e) {
+            System.out.println("Failed to initialize SSL connection!\nException reached: " + e.getMessage());
+        }
     }
-    public CertWrapper(){}
+    public CertWrapper() {}
 }
