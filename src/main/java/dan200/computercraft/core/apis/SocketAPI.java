@@ -21,6 +21,7 @@ import static dan200.computercraft.core.apis.ArgumentHelper.*;
 public class SocketAPI implements ILuaAPI, IAsyncObject {
     private final IAPIEnvironment m_apiEnvironment;
     private final List < Socket > m_socks;
+	private AsyncAction m_queue;
 	
 	private String[] methods = {
         "open",
@@ -29,9 +30,8 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
     };
 
     public SocketAPI(IAPIEnvironment environment) {
-		new AsyncAction().startAsyncAction();
         m_apiEnvironment = environment;
-        m_socks = new ArrayList < Socket > ();
+        m_socks = new ArrayList<Socket>();
     }
 
     @Override
@@ -42,13 +42,16 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
     }
 
     @Override
-    public void startup() {}
+    public void startup() {
+		m_queue = new AsyncAction("async_socket");
+	}
 
     @Override
     public void advance(double _dt) {}
 
     @Override
     public void shutdown() {
+		m_queue.clear();
         synchronized(m_socks) {
             for (Socket sock: m_socks) {
                 try {
@@ -57,7 +60,6 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
             }
             m_socks.clear();
         }
-        AsyncAction.clear();
     }
 
     @Nonnull
@@ -71,7 +73,7 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
         switch (method) {
 
             default: {
-                int ID = AsyncAction.runAsyncAction(
+                int ID = m_queue.runAsyncAction(
                     this, m_apiEnvironment, context, method, args
                 );
 
@@ -117,7 +119,7 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
                             m_socks.add(sock);
                         }
                         return new Object[] {
-                            methods[method], true, SocketWrapper.wrapSocket(sock, certs, m_apiEnvironment)
+                            methods[method], true, SocketWrapper.wrapSocket(sock, certs, m_apiEnvironment, m_queue)
                         };
                     }
 
@@ -134,18 +136,19 @@ public class SocketAPI implements ILuaAPI, IAsyncObject {
                             };
                         }
                         String addr = address.getHostAddress();
-                        URL info = new URL(myURL);
-                        if (info == null) {
-                            info = new URL("http://" + myURL);
-                        }
-                        if (info == null) {
-                            return new Object[] {
-                                methods[method], true, addr
-                            };
-                        }
-                        return new Object[] {
-                            methods[method], true, addr, info.getDefaultPort()
-                        };
+						URI info = new URI(myURL);
+						int port = info.getPort();
+						if (port == -1) {
+							try {
+								URL inf = new URL(myURL);
+								port = inf.getDefaultPort();
+							} catch (Exception e) {}
+						}
+						
+						
+						return new Object[] {
+							methods[method], true, addr, port, info.getScheme()
+						};
                     }
 
                 case 2:

@@ -34,7 +34,7 @@ public class SocketWrapper {
 		"readAll"
     };
 
-    public static ILuaObject wrapSocket(final Socket sock, final CertWrapper certs, IAPIEnvironment m_apiEnvironment) {
+    public static ILuaObject wrapSocket(final Socket sock, final CertWrapper certs, IAPIEnvironment m_apiEnvironment, AsyncAction m_queue) {
         class WrappedSocket implements ILuaObject, IAsyncObject {
 
 			
@@ -49,7 +49,7 @@ public class SocketWrapper {
                 switch (method) {
 
                     default: {
-						int ID = AsyncAction.runAsyncAction(
+						int ID = m_queue.runAsyncAction(
 							this, m_apiEnvironment, context, method, args
 						);
 

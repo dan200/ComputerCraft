@@ -1,5 +1,5 @@
 The functions included in the socket API are as follows:
-host, port = socket.lookup(uri) --Returns the values required for socket.open
+host, port, scheme = socket.lookup(uri) --Returns the values required for socket.open. If scheme is not recognized, port will be -1
 sock = socket.open(host, port, useSSL) --Returns a socket. Note that the host must be an IP address, which can be found with socket.lookup()
 socket.checkHost(host) --Basically http.checkURL, but with URIs
 

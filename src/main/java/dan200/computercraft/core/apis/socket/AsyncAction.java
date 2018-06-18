@@ -6,66 +6,80 @@
 
 package dan200.computercraft.core.apis.socket;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.concurrent.*;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.core.apis.IAPIEnvironment;
 import dan200.computercraft.core.apis.socket.IAsyncObject;
 
-public class AsyncAction implements Runnable {
+public class AsyncAction {
 
-    private static final List<AsyncMethod> m_actions = new ArrayList<AsyncMethod>();
-
-    public void startAsyncAction() {
-        Thread m_thread = new Thread(this);
-        m_thread.setDaemon(true);
-        m_thread.start();
-    }
+    private List<Future<?>> m_futures;
+	private ExecutorService threadPool;
+	private String event_type = "async";
 	
-	public static int runAsyncAction (IAsyncObject callable, IAPIEnvironment environment, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) {
-		AsyncMethod meth = new AsyncMethod(callable, environment, context, method, args);
-		synchronized (m_actions) {
-			m_actions.add(meth);
-		}
+	public AsyncAction() {
+		init();
+	}
+	
+	public AsyncAction(String ev_t) {
+		event_type = ev_t;
+		init();
+	}
+	
+	public void init() {
+		threadPool = new ThreadPoolExecutor(
+			4, 2048,
+			60L, TimeUnit.SECONDS,
+			new SynchronousQueue<Runnable>(),
+			new ThreadFactoryBuilder()
+				.setDaemon( true )
+				.setPriority( Thread.MIN_PRIORITY + (Thread.NORM_PRIORITY - Thread.MIN_PRIORITY) / 2 )
+				.setNameFormat( "ComputerCraft-"+event_type+"-%d" )
+				.build()
+		);
+		m_futures = new ArrayList<Future<?>>();
+	}
+	
+	public int runAsyncAction (IAsyncObject callable, IAPIEnvironment environment, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) {
+		AsyncMethod meth = new AsyncMethod(callable, environment, context, method, args, event_type);
+		m_futures.add(threadPool.submit(meth));
+		
 		return meth.ID;
 	}
 	
-	public static void clear() {
-		synchronized (m_actions) {
-			m_actions.clear();
-		}
-	}
-	
-	public void run() {
-		while (true) {
-			synchronized (m_actions) {
-				Iterator<AsyncMethod> acts = m_actions.iterator();
-				while (acts.hasNext()) {
-					AsyncMethod action = acts.next();
-					action.run();
-					acts.remove();
-				}
+	public void clear() {
+		synchronized (m_futures) {
+			for (Future<?> k: m_futures) {
+				k.cancel( false );
 			}
+			m_futures.clear();
 		}
+		threadPool.shutdown();
 	}
 }      
 
-class AsyncMethod {
+class AsyncMethod implements Runnable {
 
     private IAsyncObject m_callable;
     private IAPIEnvironment m_environment;
     private ILuaContext m_context;
     private int m_method;
     private Object[] m_args;
+	private String m_event_type;
     public int ID;
 
-    public AsyncMethod(IAsyncObject callable, IAPIEnvironment environment, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) {
+    public AsyncMethod(IAsyncObject callable, IAPIEnvironment environment, @Nonnull ILuaContext context, int method, @Nonnull Object[] args, @Nonnull String event_type) {
         m_callable = callable;
         m_environment = environment;
         m_context = context;
         m_method = method;
         m_args = args;
+		m_event_type = event_type;
         ID = Counter.value;
         Counter.inc();
     }
@@ -78,9 +92,9 @@ class AsyncMethod {
 				finalRtn[i + 1] = rtn[i];
 			};
 			finalRtn[0] = ID;
-			m_environment.queueEvent("async_socket", finalRtn);
+			m_environment.queueEvent(m_event_type, finalRtn);
 		} catch (Exception e) {
-			m_environment.queueEvent("async_socket", new Object[] {ID, false, e.getMessage()});
+			m_environment.queueEvent(m_event_type, new Object[] {ID, false, e.getMessage()});
 		}
     }
 
@@ -91,7 +105,7 @@ class Counter {
     public static int value = 0;
 
     public static void inc() {
-        if (value == 2147483647) value = -1;
+        if (value == Integer.MAX_VALUE) value = -1;
         value++;
     }
 
