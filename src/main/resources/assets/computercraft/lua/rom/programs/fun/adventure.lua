@@ -984,6 +984,7 @@ function commands.cbreak( _sItem, _sTool )
             term.setTextColour( colours.red )
         end
         print( "You have died." )
+        print( "Score: &e0" )
         term.setTextColour( colours.white )
         bRunning = false
         return
@@ -1076,6 +1077,7 @@ function commands.craft( _sItem )
             term.setTextColour( colours.red )
         end
         print( "You have died." )
+        print( "Score: &e0" )
         term.setTextColour( colours.white )
         bRunning = false
         return
@@ -1302,6 +1304,7 @@ local function simulate()
                             term.setTextColour( colours.red )
                         end
                         print( "You have died." )
+                        print( "Score: &e0" )
                         term.setTextColour( colours.white )
                         bRunning = false
                         return
