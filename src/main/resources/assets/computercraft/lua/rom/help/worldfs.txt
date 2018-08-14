@@ -1,0 +1,6 @@
+worldfs is a program to quickly access the worldfs methods
+
+ex:
+worldfs list
+worldfs mount <channelname> <mount_path>
+worldfs unmount <channelname>

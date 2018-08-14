@@ -1,0 +1,5 @@
+worldfs api is an api to communicate with the worldfs.
+Functions in the worldfs API:
+worldfs.list()
+worldfs.mount( [channelname], [mountpath] )
+worldfs.unmount( [channelname] )
