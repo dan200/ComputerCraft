@@ -75,7 +75,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    shade 'org.squiddev:Cobalt:0.3.0'
+    shade 'org.squiddev:Cobalt:0.3.2'
 }
 
 jar {
