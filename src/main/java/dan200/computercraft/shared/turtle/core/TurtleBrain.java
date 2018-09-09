@@ -8,8 +8,7 @@ package dan200.computercraft.shared.turtle.core;
 
 import com.google.common.base.Objects;
 import dan200.computercraft.ComputerCraft;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.*;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
@@ -737,6 +736,38 @@ public class TurtleBrain implements ITurtleAccess
                 }
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    public MethodResult executeCommand( @Nonnull ITurtleCommand command )
+    {
+        if( getWorld().isRemote )
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        // Issue command
+        int commandID = issueCommand( command );
+
+        // Wait for response
+        return MethodResult.pullEvent( "turtle_response", new ILuaFunction()
+        {
+            @Nonnull
+            @Override
+            public MethodResult call( Object[] response )
+            {
+                if( response.length >= 3 && response[ 1 ] instanceof Number && ((Number) response[ 1 ]).intValue() == commandID
+                    && response[ 2 ] instanceof Boolean )
+                {
+                    Object[] returnValues = new Object[ response.length - 2 ];
+                    System.arraycopy( response, 2, returnValues, 0, returnValues.length );
+                    return MethodResult.of( returnValues );
+                }
+
+                return MethodResult.pullEvent( "turtle_response", this );
+            }
+        } );
     }
 
     @Override

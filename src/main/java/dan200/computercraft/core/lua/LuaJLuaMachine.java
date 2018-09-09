@@ -7,15 +7,11 @@
 package dan200.computercraft.core.lua;
 
 import dan200.computercraft.ComputerCraft;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
-import dan200.computercraft.api.lua.ILuaTask;
-import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.*;
 import dan200.computercraft.core.apis.ILuaAPI;
 import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.core.computer.ITask;
 import dan200.computercraft.core.computer.MainThread;
-
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
@@ -340,9 +336,10 @@ public class LuaJLuaMachine implements ILuaMachine
                         Object[] results;
                         try
                         {
-                            results = apiObject.callMethod( new ILuaContext() {
+                            ILuaContext context = new ILuaContext() {
                                 @Nonnull
                                 @Override
+                                @Deprecated
                                 public Object[] pullEvent( String filter ) throws LuaException, InterruptedException
                                 {
                                     Object[] results = pullEventRaw( filter );
@@ -352,16 +349,18 @@ public class LuaJLuaMachine implements ILuaMachine
                                     }
                                     return results;
                                 }
-                                
+
                                 @Nonnull
                                 @Override
+                                @Deprecated
                                 public Object[] pullEventRaw( String filter ) throws InterruptedException
                                 {
                                     return yield( new Object[] { filter } );
                                 }
-                                
+
                                 @Nonnull
                                 @Override
+                                @Deprecated
                                 public Object[] yield( Object[] yieldArgs ) throws InterruptedException
                                 {
                                     try
@@ -437,6 +436,7 @@ public class LuaJLuaMachine implements ILuaMachine
                                 }
 
                                 @Override
+                                @Deprecated
                                 public Object[] executeMainThreadTask( @Nonnull final ILuaTask task ) throws LuaException, InterruptedException
                                 {
                                     // Issue task
@@ -474,7 +474,10 @@ public class LuaJLuaMachine implements ILuaMachine
                                     }
 
                                 }
-                            }, method, arguments );
+                            };
+
+                            // TODO: Replace with custom interpreter
+                            results = apiObject.callMethod( (ICallContext) context, method, arguments ).evaluate( context );
                         }
                         catch( InterruptedException e )
                         {
