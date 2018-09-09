@@ -6,12 +6,11 @@
 
 package dan200.computercraft.core.apis;
 
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
-import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.*;
 import dan200.computercraft.core.terminal.TextBuffer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
@@ -40,27 +39,28 @@ public class BufferAPI implements ILuaAPI
             };
         }
 
+        @Nonnull
         @Override
-        public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+        public MethodResult callMethod( @Nonnull ICallContext context, int method, @Nonnull Object[] arguments ) throws LuaException
         {
             switch( method )
             {
                 case 0:
                 {
                     // len
-                    return new Object[] { m_buffer.length() };
+                    return MethodResult.of( m_buffer.length() );
                 }
                 case 1:
                 {
                     // tostring
-                    return new Object[] { m_buffer.toString() };
+                    return MethodResult.of( m_buffer.toString() );
                 }
                 case 2:
                 {
                     // read
                     int start = optInt( arguments, 0, 0 );
                     int end = optInt( arguments, 1, m_buffer.length() );
-                    return new Object[] { m_buffer.read( start, end ) };
+                    return MethodResult.of( m_buffer.read( start, end ) );
                 }
                 case 3:
                 {
@@ -69,7 +69,7 @@ public class BufferAPI implements ILuaAPI
                     int start = optInt( arguments, 1, 0 );
                     int end = optInt( arguments, 2, start + text.length() );
                     m_buffer.write( text, start, end );
-                    return null;
+                    return MethodResult.empty();
                 }
                 case 4:
                 {
@@ -78,13 +78,21 @@ public class BufferAPI implements ILuaAPI
                     int start = optInt( arguments, 1, 0 );
                     int end = optInt( arguments, 2, m_buffer.length() );
                     m_buffer.fill( text, start, end );
-                    return null;
+                    return MethodResult.empty();
                 }
                 default:
                 {
-                    return null;
+                    return MethodResult.empty();
                 }
             }
+        }
+
+        @Nullable
+        @Override
+        @Deprecated
+        public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+        {
+            return callMethod( (ICallContext) context, method, arguments ).evaluate( context );
         }
     }
 
@@ -124,8 +132,9 @@ public class BufferAPI implements ILuaAPI
         };
     }
 
+    @Nonnull
     @Override
-    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+    public MethodResult callMethod( @Nonnull ICallContext context, int method, @Nonnull Object[] arguments ) throws LuaException
     {
         switch( method )
         {
@@ -138,12 +147,20 @@ public class BufferAPI implements ILuaAPI
                     throw ArgumentHelper.badArgument( 1, "positive number", Integer.toString( repetitions ) );
                 }
                 TextBuffer buffer = new TextBuffer( text, repetitions );
-                return new Object[] { new BufferLuaObject( buffer ) };
+                return MethodResult.of( new BufferLuaObject( buffer ) );
             }
             default:
             {
-                return null;
+                return MethodResult.empty();
             }
         }
+    }
+
+    @Nullable
+    @Override
+    @Deprecated
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+    {
+        return callMethod( (ICallContext) context, method, arguments ).evaluate( context );
     }
 }

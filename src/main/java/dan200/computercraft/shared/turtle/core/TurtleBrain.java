@@ -712,6 +712,7 @@ public class TurtleBrain implements ITurtleAccess
 
     @Nonnull
     @Override
+    @Deprecated
     public Object[] executeCommand( @Nonnull ILuaContext context, @Nonnull ITurtleCommand command ) throws LuaException, InterruptedException
     {
         if( getWorld().isRemote )

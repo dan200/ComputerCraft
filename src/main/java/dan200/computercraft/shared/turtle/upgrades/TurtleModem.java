@@ -31,8 +31,7 @@ import javax.vecmath.Matrix4f;
 
 public class TurtleModem implements ITurtleUpgrade
 {
-    private static class Peripheral extends WirelessModemPeripheral
-        implements IPeripheral
+    private static class Peripheral extends WirelessModemPeripheral implements IPeripheral
     {
         private final ITurtleAccess m_turtle;
 

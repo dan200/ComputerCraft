@@ -10,8 +10,9 @@ import com.google.common.base.Objects;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
-import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.ICallContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.network.IPacketNetwork;
 import dan200.computercraft.api.network.IPacketReceiver;
 import dan200.computercraft.api.network.Packet;
@@ -119,8 +120,9 @@ public class TileCable extends TileModemBase
             return newMethods;
         }
 
+        @Nonnull
         @Override
-        public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+        public MethodResult callMethod( @Nonnull IComputerAccess computer, @Nonnull ICallContext context, int method, @Nonnull Object[] arguments ) throws LuaException
         {
             String[] methods = super.getMethodNames();
             switch( method - methods.length )
@@ -136,14 +138,14 @@ public class TileCable extends TileModemBase
                         {
                             table.put( idx++, name );
                         }
-                        return new Object[] { table };
+                        return MethodResult.of( table );
                     }
                 }
                 case 1:
                 {
                     // isPresentRemote
                     String type = m_entity.getTypeRemote( getString( arguments, 0 ) );
-                    return new Object[] { type != null };
+                    return MethodResult.of( type != null );
                 }
                 case 2:
                 {
@@ -151,9 +153,9 @@ public class TileCable extends TileModemBase
                     String type = m_entity.getTypeRemote( getString( arguments, 0 ) );
                     if( type != null )
                     {
-                        return new Object[] { type };
+                        return MethodResult.of( type );
                     }
-                    return null;
+                    return MethodResult.empty();
                 }
                 case 3:
                 {
@@ -165,9 +167,9 @@ public class TileCable extends TileModemBase
                         for(int i=0; i<methodNames.length; ++i ) {
                             table.put( i+1, methodNames[i] );
                         }
-                        return new Object[] { table };
+                        return MethodResult.of( table );
                     }
-                    return null;
+                    return MethodResult.empty();
                 }
                 case 4:
                 {
@@ -664,7 +666,7 @@ public class TileCable extends TileModemBase
         return null;
     }
     
-    private Object[] callMethodRemote( String remoteName, ILuaContext context, String method, Object[] arguments ) throws LuaException, InterruptedException
+    private MethodResult callMethodRemote( String remoteName, ICallContext context, String method, Object[] arguments ) throws LuaException
     {
         RemotePeripheralWrapper wrapper;
         synchronized( m_peripheralsByName )
@@ -804,7 +806,7 @@ public class TileCable extends TileModemBase
             return m_methods;
         }
 
-        public Object[] callMethod( ILuaContext context, String methodName, Object[] arguments ) throws LuaException, InterruptedException
+        public MethodResult callMethod( ICallContext context, String methodName, Object[] arguments ) throws LuaException
         {
             if( m_methodMap.containsKey( methodName ) )
             {

@@ -6,11 +6,14 @@
 
 package dan200.computercraft.core.apis;
 
+import dan200.computercraft.api.lua.ICallContext;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.shared.util.StringUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
@@ -220,7 +223,8 @@ public class OSAPI implements ILuaAPI
     }
 
     @Override
-    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
+    @Nonnull
+    public MethodResult callMethod( @Nonnull ICallContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {
@@ -228,7 +232,7 @@ public class OSAPI implements ILuaAPI
             {
                 // queueEvent
                 queueLuaEvent( getString( args, 0 ), trimArray( args, 1 ) );
-                return null;
+                return MethodResult.empty();
             }
             case 1:
             {
@@ -237,7 +241,7 @@ public class OSAPI implements ILuaAPI
                 synchronized( m_timers )
                 {
                     m_timers.put( m_nextTimerToken, new Timer( (int)Math.round( timer / 0.05 ) ) );
-                    return new Object[] { m_nextTimerToken++ };
+                    return MethodResult.of( m_nextTimerToken++ );
                 }
             }
             case 2:
@@ -252,33 +256,33 @@ public class OSAPI implements ILuaAPI
                 {
                     int day = (time > m_time) ? m_day : (m_day + 1);
                     m_alarms.put( m_nextAlarmToken, new Alarm( time, day ) );
-                    return new Object[] { m_nextAlarmToken++ };
+                    return MethodResult.of( m_nextAlarmToken++ );
                 }
             }
             case 3:
             {
                 // shutdown
                 m_apiEnvironment.shutdown();
-                return null;
+                return MethodResult.empty();
             }
             case 4:
             {
                 // reboot
                 m_apiEnvironment.reboot();
-                return null;
+                return MethodResult.empty();
             }
             case 5:
             case 6:
             {
                 // computerID/getComputerID
-                return new Object[] { getComputerID() };
+                return MethodResult.of( getComputerID() );
             }
             case 7:
             {
                 // setComputerLabel
                 String label = optString( args, 0, null );
                 m_apiEnvironment.setLabel( StringUtil.normaliseLabel( label ) );
-                return null;
+                return MethodResult.empty();
             }
             case 8:
             case 9:
@@ -287,16 +291,16 @@ public class OSAPI implements ILuaAPI
                 String label = m_apiEnvironment.getLabel();
                 if( label != null )
                 {
-                    return new Object[] { label };
+                    return MethodResult.of( label );
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 10:
             {
                 // clock
                 synchronized( m_timers )
                 {
-                    return new Object[] { (double)m_clock * 0.05 };
+                    return MethodResult.of( (double)m_clock * 0.05 );
                 }
             }
             case 11:
@@ -309,19 +313,19 @@ public class OSAPI implements ILuaAPI
                     {
                         // Get Hour of day (UTC)
                         Calendar c = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
-                        return new Object[] { getTimeForCalendar( c ) };
+                        return MethodResult.of( getTimeForCalendar( c ) );
                     }
                     case "local":
                     {
                         // Get Hour of day (local time)
                         Calendar c = Calendar.getInstance();
-                        return new Object[] { getTimeForCalendar( c ) };
+                        return MethodResult.of( getTimeForCalendar( c ) );
                     }
                     case "ingame":
                         // Get ingame hour
                         synchronized( m_alarms )
                         {
-                            return new Object[] { m_time };
+                            return MethodResult.of( m_time );
                         }
                     default:
                         throw new LuaException( "Unsupported operation" );
@@ -337,19 +341,19 @@ public class OSAPI implements ILuaAPI
                     {
                         // Get numbers of days since 1970-01-01 (utc)
                         Calendar c = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
-                        return new Object[] { getDayForCalendar( c ) };
+                        return MethodResult.of( getDayForCalendar( c ) );
                     }
                     case "local":
                     {
                         // Get numbers of days since 1970-01-01 (local time)
                         Calendar c = Calendar.getInstance();
-                        return new Object[] { getDayForCalendar( c ) };
+                        return MethodResult.of( getDayForCalendar( c ) );
                     }
                     case "ingame":
                         // Get game day
                         synchronized( m_alarms )
                         {
-                            return new Object[] { m_day };
+                            return MethodResult.of( m_day );
                         }
                     default:
                         throw new LuaException( "Unsupported operation" );
@@ -366,7 +370,7 @@ public class OSAPI implements ILuaAPI
                         m_timers.remove( token );
                     }
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 14:
             {
@@ -379,7 +383,7 @@ public class OSAPI implements ILuaAPI
                         m_alarms.remove( token );
                     }
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 15:
             {
@@ -391,21 +395,21 @@ public class OSAPI implements ILuaAPI
                     {
                         // Get utc epoch
                         Calendar c = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
-                        return new Object[] { getEpochForCalendar( c ) };
+                        return MethodResult.of( getEpochForCalendar( c ) );
                     }
                     case "local":
                     {
                         // Get local epoch
                         Calendar c = Calendar.getInstance();
-                        return new Object[] { getEpochForCalendar( c ) };
+                        return MethodResult.of( getEpochForCalendar( c ) );
                     }
                     case "ingame":
                         // Get in-game epoch
                         synchronized( m_alarms )
                         {
-                            return new Object[] {
+                            return MethodResult.of(
                                 m_day * 86400000 + (int) (m_time * 3600000.0f)
-                            };
+                            );
                         }
                     default:
                         throw new LuaException( "Unsupported operation" );
@@ -413,11 +417,18 @@ public class OSAPI implements ILuaAPI
             }
             default:
             {
-                return null;
+                return MethodResult.empty();
             }
         }
     }
 
+    @Nullable
+    @Override
+    @Deprecated
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+    {
+        return callMethod( (ICallContext) context, method, arguments ).evaluate( context );
+    }
     // Private methods
 
     private void queueLuaEvent( String event, Object[] args )
