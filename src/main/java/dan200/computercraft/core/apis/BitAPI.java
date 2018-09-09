@@ -6,10 +6,13 @@
 
 package dan200.computercraft.core.apis;
 
+import dan200.computercraft.api.lua.ICallContext;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.MethodResult;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 
@@ -62,8 +65,9 @@ public class BitAPI implements ILuaAPI
         };
     }
     
+    @Nonnull
     @Override
-    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
+    public MethodResult callMethod( @Nonnull ICallContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         int ret = 0;
         switch(method) {
@@ -89,7 +93,15 @@ public class BitAPI implements ILuaAPI
                 ret = getInt( args, 0 ) >>> getInt( args, 1 );
                 break;
         }
-        
-        return new Object[]{ ret&0xFFFFFFFFL };
+
+        return MethodResult.of( ret & 0xFFFFFFFFL );
+    }
+
+    @Nullable
+    @Override
+    @Deprecated
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+    {
+        return callMethod( (ICallContext) context, method, arguments ).evaluate( context );
     }
 }

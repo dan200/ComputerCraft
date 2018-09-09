@@ -6,14 +6,17 @@
 
 package dan200.computercraft.core.apis;
 
+import dan200.computercraft.api.lua.ICallContext;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.core.computer.IComputerEnvironment;
 import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.shared.util.Palette;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
@@ -97,11 +100,9 @@ public class TermAPI implements ILuaAPI
         return colour;
     }
 
-    public static Object[] encodeColour( int colour ) throws LuaException
+    public static MethodResult encodeColour( int colour )
     {
-        return new Object[] {
-            1 << colour
-        };
+        return MethodResult.of( 1 << colour );
     }
 
     public static void setColour( Terminal terminal, int colour, double r, double g, double b )
@@ -113,8 +114,9 @@ public class TermAPI implements ILuaAPI
         }
     }
 
+    @Nonnull
     @Override
-    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
+    public MethodResult callMethod( @Nonnull ICallContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {
@@ -133,7 +135,7 @@ public class TermAPI implements ILuaAPI
                     m_terminal.write( text );
                     m_terminal.setCursorPos( m_terminal.getCursorX() + text.length(), m_terminal.getCursorY() );
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 1:
             {
@@ -143,7 +145,7 @@ public class TermAPI implements ILuaAPI
                 {
                     m_terminal.scroll(y);
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 2:
             {
@@ -154,7 +156,7 @@ public class TermAPI implements ILuaAPI
                 {
                     m_terminal.setCursorPos( x, y );
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 3:
             {
@@ -164,7 +166,7 @@ public class TermAPI implements ILuaAPI
                 {
                     m_terminal.setCursorBlink( b );
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 4:
             {
@@ -175,7 +177,7 @@ public class TermAPI implements ILuaAPI
                     x = m_terminal.getCursorX();
                     y = m_terminal.getCursorY();
                 }
-                return new Object[] { x + 1, y + 1 };
+                return MethodResult.of( x + 1, y + 1 );
             }
             case 5:
             {
@@ -186,7 +188,7 @@ public class TermAPI implements ILuaAPI
                     width = m_terminal.getWidth();
                     height = m_terminal.getHeight();
                 }                
-                return new Object[] { width, height };
+                return MethodResult.of( width, height );
             }
             case 6:
             {
@@ -195,7 +197,7 @@ public class TermAPI implements ILuaAPI
                 {
                     m_terminal.clear();
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 7:
             {
@@ -204,7 +206,7 @@ public class TermAPI implements ILuaAPI
                 {
                     m_terminal.clearLine();
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 8:
             case 9:
@@ -215,7 +217,7 @@ public class TermAPI implements ILuaAPI
                 {
                     m_terminal.setTextColour( colour );
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 10:
             case 11:
@@ -226,13 +228,13 @@ public class TermAPI implements ILuaAPI
                 {
                     m_terminal.setBackgroundColour( colour );
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 12:
             case 13:
             {
                 // isColour/isColor
-                return new Object[] { m_environment.isColour() };
+                return MethodResult.of( m_environment.isColour() );
             }
             case 14:
             case 15:
@@ -262,7 +264,7 @@ public class TermAPI implements ILuaAPI
                     m_terminal.blit( text, textColour, backgroundColour );
                     m_terminal.setCursorPos( m_terminal.getCursorX() + text.length(), m_terminal.getCursorY() );
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 19:
             case 20:
@@ -282,7 +284,7 @@ public class TermAPI implements ILuaAPI
                     double b = getReal( args, 3 );
                     setColour( m_terminal, colour, r, g, b );
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 21:
             case 22:
@@ -293,18 +295,26 @@ public class TermAPI implements ILuaAPI
                 {
                     if ( m_terminal.getPalette() != null )
                     {
-                        return ArrayUtils.toObject( m_terminal.getPalette().getColour( colour ) );
+                        return MethodResult.of( (Object[]) ArrayUtils.toObject( m_terminal.getPalette().getColour( colour ) ) );
                     }
                 }
-                return null;
+                return MethodResult.empty();
             }
             default:
             {
-                return null;
+                return MethodResult.empty();
             }
         }
     }
-    
+
+    @Nullable
+    @Override
+    @Deprecated
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+    {
+        return callMethod( (ICallContext) context, method, arguments ).evaluate( context );
+    }
+
     private static int getHighestBit( int group )
     {
         int bit = 0;

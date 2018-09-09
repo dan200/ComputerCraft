@@ -6,8 +6,10 @@
 
 package dan200.computercraft.shared.peripheral.monitor;
 
+import dan200.computercraft.api.lua.ICallContext;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.core.apis.TermAPI;
@@ -16,6 +18,7 @@ import dan200.computercraft.shared.util.Palette;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
@@ -69,8 +72,9 @@ public class MonitorPeripheral implements IPeripheral
         };
     }
 
+    @Nonnull
     @Override
-    public Object[] callMethod( @Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object args[] ) throws LuaException
+    public MethodResult callMethod( @Nonnull IComputerAccess computer, @Nonnull ICallContext context, int method, @Nonnull Object args[] ) throws LuaException
     {
         switch( method )
         {
@@ -78,15 +82,18 @@ public class MonitorPeripheral implements IPeripheral
             {
                 // write
                 String text;
-                if( args.length > 0 && args[0] != null ) {
-                    text = args[0].toString();
-                } else {
+                if( args.length > 0 && args[ 0 ] != null )
+                {
+                    text = args[ 0 ].toString();
+                }
+                else
+                {
                     text = "";
                 }
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.write( text );
                 terminal.setCursorPos( terminal.getCursorX() + text.length(), terminal.getCursorY() );
-                return null;
+                return MethodResult.empty();
             }
             case 1:
             {
@@ -94,7 +101,7 @@ public class MonitorPeripheral implements IPeripheral
                 int value = getInt( args, 0 );
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.scroll( value );
-                return null;
+                return MethodResult.empty();
             }
             case 2:
             {
@@ -103,7 +110,7 @@ public class MonitorPeripheral implements IPeripheral
                 int y = getInt( args, 1 ) - 1;
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setCursorPos( x, y );
-                return null;
+                return MethodResult.empty();
             }
             case 3:
             {
@@ -111,39 +118,39 @@ public class MonitorPeripheral implements IPeripheral
                 boolean blink = getBoolean( args, 0 );
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setCursorBlink( blink );
-                return null;
+                return MethodResult.empty();
             }
             case 4:
             {
                 // getCursorPos
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
-                return new Object[] {
+                return MethodResult.of(
                     terminal.getCursorX() + 1,
                     terminal.getCursorY() + 1
-                };
+                );
             }
             case 5:
             {
                 // getSize
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
-                return new Object[] {
+                return MethodResult.of(
                     terminal.getWidth(),
                     terminal.getHeight()
-                };
+                );
             }
             case 6:
             {
                 // clear
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.clear();
-                return null;
+                return MethodResult.empty();
             }
             case 7:
             {
                 // clearLine
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.clearLine();
-                return null;
+                return MethodResult.empty();
             }
             case 8:
             {
@@ -154,7 +161,7 @@ public class MonitorPeripheral implements IPeripheral
                     throw new LuaException( "Expected number in range 0.5-5" );
                 }
                 m_monitor.setTextScale( scale );
-                return null;
+                return MethodResult.empty();
             }
             case 9:
             case 10:
@@ -163,7 +170,7 @@ public class MonitorPeripheral implements IPeripheral
                 int colour = TermAPI.parseColour( args );
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setTextColour( colour );
-                return null;
+                return MethodResult.empty();
             }
             case 11:
             case 12:
@@ -172,15 +179,15 @@ public class MonitorPeripheral implements IPeripheral
                 int colour = TermAPI.parseColour( args );
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.setBackgroundColour( colour );
-                return null;
+                return MethodResult.empty();
             }
             case 13:
             case 14:
             {
                 // isColour/isColor
-                return new Object[] {
+                return MethodResult.of(
                     m_monitor.getTerminal().isColour()
-                };
+                );
             }
             case 15:
             case 16:
@@ -210,7 +217,7 @@ public class MonitorPeripheral implements IPeripheral
                 Terminal terminal = m_monitor.getTerminal().getTerminal();
                 terminal.blit( text, textColour, backgroundColour );
                 terminal.setCursorPos( terminal.getCursorX() + text.length(), terminal.getCursorY() );
-                return null;
+                return MethodResult.empty();
             }
             case 20:
             case 21:
@@ -232,7 +239,7 @@ public class MonitorPeripheral implements IPeripheral
                     double b = getReal( args, 3 );
                     TermAPI.setColour( terminal, colour, r, g, b );
                 }
-                return null;
+                return MethodResult.empty();
             }
             case 22:
             case 23:
@@ -245,12 +252,20 @@ public class MonitorPeripheral implements IPeripheral
 
                 if( palette != null )
                 {
-                    return ArrayUtils.toObject( palette.getColour( colour ) );
+                    return MethodResult.of( (Object[]) ArrayUtils.toObject( palette.getColour( colour ) ) );
                 }
-                return null;
+                return MethodResult.pullEvent();
             }
         }
-        return null;
+        return MethodResult.empty();
+    }
+
+    @Nullable
+    @Override
+    @Deprecated
+    public Object[] callMethod( @Nonnull IComputerAccess access, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+    {
+        return callMethod( access, (ICallContext) context, method, arguments ).evaluate( context );
     }
 
     @Override
@@ -270,7 +285,7 @@ public class MonitorPeripheral implements IPeripheral
     {
         if( other != null && other instanceof MonitorPeripheral )
         {
-            MonitorPeripheral otherMonitor = (MonitorPeripheral)other;
+            MonitorPeripheral otherMonitor = (MonitorPeripheral) other;
             if( otherMonitor.m_monitor == this.m_monitor )
             {
                 return true;

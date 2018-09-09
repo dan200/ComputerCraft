@@ -6,8 +6,10 @@
 
 package dan200.computercraft.core.apis;
 
+import dan200.computercraft.api.lua.ICallContext;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.core.apis.handles.BinaryInputHandle;
 import dan200.computercraft.core.apis.handles.BinaryOutputHandle;
 import dan200.computercraft.core.apis.handles.EncodedInputHandle;
@@ -16,6 +18,7 @@ import dan200.computercraft.core.filesystem.FileSystem;
 import dan200.computercraft.core.filesystem.FileSystemException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -83,8 +86,9 @@ public class FSAPI implements ILuaAPI
         };
     }
 
+    @Nonnull
     @Override
-    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] args ) throws LuaException
+    public MethodResult callMethod( @Nonnull ICallContext context, int method, @Nonnull Object[] args ) throws LuaException
     {
         switch( method )
         {
@@ -98,7 +102,7 @@ public class FSAPI implements ILuaAPI
                     for(int i=0; i<results.length; ++i ) {
                         table.put( i+1, results[i] );
                     }
-                    return new Object[] { table };
+                    return MethodResult.of( table );
                 }
                 catch( FileSystemException e )
                 {
@@ -110,13 +114,13 @@ public class FSAPI implements ILuaAPI
                 // combine
                 String pathA = getString( args, 0 );
                 String pathB = getString( args, 1 );
-                return new Object[] { m_fileSystem.combine( pathA, pathB ) };
+                return MethodResult.of( m_fileSystem.combine( pathA, pathB ) );
             }
             case 2:
             {
                 // getName
                 String path = getString( args, 0 );
-                return new Object[]{ FileSystem.getName( path ) };
+                return MethodResult.of( FileSystem.getName( path ) );
             }
             case 3:
             {
@@ -124,7 +128,7 @@ public class FSAPI implements ILuaAPI
                 String path = getString( args, 0 );
                 try
                 {
-                    return new Object[]{ m_fileSystem.getSize( path ) };
+                    return MethodResult.of( m_fileSystem.getSize( path ) );
                 }
                 catch( FileSystemException e )
                 {
@@ -136,9 +140,9 @@ public class FSAPI implements ILuaAPI
                 // exists
                 String path = getString( args, 0 );
                 try {
-                    return new Object[]{ m_fileSystem.exists( path ) };
+                    return MethodResult.of( m_fileSystem.exists( path ) );
                 } catch( FileSystemException e ) {
-                    return new Object[]{ false };
+                    return MethodResult.of( false );
                 }
             }
             case 5:
@@ -146,9 +150,9 @@ public class FSAPI implements ILuaAPI
                 // isDir
                 String path = getString( args, 0 );
                 try {
-                    return new Object[]{ m_fileSystem.isDir( path ) };
+                    return MethodResult.of( m_fileSystem.isDir( path ) );
                 } catch( FileSystemException e ) {
-                    return new Object[]{ false };
+                    return MethodResult.of( false );
                 }
             }
             case 6:
@@ -156,9 +160,9 @@ public class FSAPI implements ILuaAPI
                 // isReadOnly
                 String path = getString( args, 0 );
                 try {
-                    return new Object[]{ m_fileSystem.isReadOnly( path ) };
+                    return MethodResult.of( m_fileSystem.isReadOnly( path ) );
                 } catch( FileSystemException e ) {
-                    return new Object[]{ false };
+                    return MethodResult.of( false );
                 }
             }
             case 7:
@@ -167,7 +171,7 @@ public class FSAPI implements ILuaAPI
                 String path = getString( args, 0 );
                 try {
                     m_fileSystem.makeDir( path );
-                    return null;
+                    return MethodResult.empty();
                 } catch( FileSystemException e ) {
                     throw new LuaException( e.getMessage() );
                 }
@@ -179,7 +183,7 @@ public class FSAPI implements ILuaAPI
                 String dest = getString( args, 1 );
                 try {
                     m_fileSystem.move( path, dest );
-                    return null;
+                    return MethodResult.empty();
                 } catch( FileSystemException e ) {
                     throw new LuaException( e.getMessage() );
                 }
@@ -191,7 +195,7 @@ public class FSAPI implements ILuaAPI
                 String dest = getString( args, 1 );
                 try {
                     m_fileSystem.copy( path, dest );
-                    return null;
+                    return MethodResult.empty();
                 } catch( FileSystemException e ) {
                     throw new LuaException( e.getMessage() );
                 }
@@ -202,7 +206,7 @@ public class FSAPI implements ILuaAPI
                 String path = getString( args, 0 );
                 try {
                     m_fileSystem.delete( path );
-                    return null;
+                    return MethodResult.empty();
                 } catch( FileSystemException e ) {
                     throw new LuaException( e.getMessage() );
                 }
@@ -219,43 +223,43 @@ public class FSAPI implements ILuaAPI
                         {
                             // Open the file for reading, then create a wrapper around the reader
                             InputStream reader = m_fileSystem.openForRead( path );
-                            return new Object[] { new EncodedInputHandle( reader ) };
+                            return MethodResult.of( new EncodedInputHandle( reader ) );
                         }
                         case "w":
                         {
                             // Open the file for writing, then create a wrapper around the writer
                             OutputStream writer = m_fileSystem.openForWrite( path, false );
-                            return new Object[] { new EncodedOutputHandle( writer ) };
+                            return MethodResult.of( new EncodedOutputHandle( writer ) );
                         }
                         case "a":
                         {
                             // Open the file for appending, then create a wrapper around the writer
                             OutputStream writer = m_fileSystem.openForWrite( path, true );
-                            return new Object[] { new EncodedOutputHandle( writer ) };
+                            return MethodResult.of( new EncodedOutputHandle( writer ) );
                         }
                         case "rb":
                         {
                             // Open the file for binary reading, then create a wrapper around the reader
                             InputStream reader = m_fileSystem.openForRead( path );
-                            return new Object[] { new BinaryInputHandle( reader ) };
+                            return MethodResult.of( new BinaryInputHandle( reader ) );
                         }
                         case "wb":
                         {
                             // Open the file for binary writing, then create a wrapper around the writer
                             OutputStream writer = m_fileSystem.openForWrite( path, false );
-                            return new Object[] { new BinaryOutputHandle( writer ) };
+                            return MethodResult.of( new BinaryOutputHandle( writer ) );
                         }
                         case "ab":
                         {
                             // Open the file for binary appending, then create a wrapper around the reader
                             OutputStream writer = m_fileSystem.openForWrite( path, true );
-                            return new Object[] { new BinaryOutputHandle( writer ) };
+                            return MethodResult.of( new BinaryOutputHandle( writer ) );
                         }
                         default:
                             throw new LuaException( "Unsupported mode" );
                     }
                 } catch( FileSystemException e ) {
-                    return new Object[] { null, e.getMessage() };
+                    return MethodResult.of( null, e.getMessage() );
                 }
             }
             case 12:
@@ -265,9 +269,9 @@ public class FSAPI implements ILuaAPI
                 try {
                     if( !m_fileSystem.exists( path ) )
                     {
-                        return null;
+                        return MethodResult.empty();
                     }
-                    return new Object[]{ m_fileSystem.getMountLabel( path ) };
+                    return MethodResult.of( m_fileSystem.getMountLabel( path ) );
                 } catch( FileSystemException e ) {
                     throw new LuaException( e.getMessage() );
                 }
@@ -280,9 +284,9 @@ public class FSAPI implements ILuaAPI
                     long freeSpace = m_fileSystem.getFreeSpace( path );
                     if( freeSpace >= 0 )
                     {
-                        return new Object[]{ freeSpace };
+                        return MethodResult.of( freeSpace );
                     }
-                    return new Object[]{ "unlimited" };
+                    return MethodResult.of( "unlimited" );
                 } catch( FileSystemException e ) {
                     throw new LuaException( e.getMessage() );
                 }
@@ -297,7 +301,7 @@ public class FSAPI implements ILuaAPI
                     for(int i=0; i<results.length; ++i ) {
                         table.put( i+1, results[i] );
                     }
-                    return new Object[] { table };
+                    return MethodResult.of( table );
                 } catch( FileSystemException e ) {
                     throw new LuaException( e.getMessage() );
                 }
@@ -306,13 +310,21 @@ public class FSAPI implements ILuaAPI
             {
                 // getDir
                 String path = getString( args, 0 );
-                return new Object[]{ FileSystem.getDirectory( path ) };
+                return MethodResult.of( FileSystem.getDirectory( path ) );
             }
             default:
             {
                 assert( false );
-                return null;
+                return MethodResult.empty();
             }
         }
+    }
+
+    @Nullable
+    @Override
+    @Deprecated
+    public Object[] callMethod( @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments ) throws LuaException, InterruptedException
+    {
+        return callMethod( (ICallContext) context, method, arguments ).evaluate( context );
     }
 }
