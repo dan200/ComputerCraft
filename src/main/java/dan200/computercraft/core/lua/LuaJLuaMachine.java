@@ -93,7 +93,7 @@ public class LuaJLuaMachine implements ILuaMachine
         m_coroutine_yield = coroutine.get("yield");
         
         // Remove globals we don't want to expose
-        m_globals.set( "collectgarbage", LuaValue.NIL );
+        // m_globals.set( "collectgarbage", LuaValue.NIL );
         m_globals.set( "dofile", LuaValue.NIL );
         m_globals.set( "loadfile", LuaValue.NIL );
         m_globals.set( "module", LuaValue.NIL );
