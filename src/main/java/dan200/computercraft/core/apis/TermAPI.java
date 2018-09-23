@@ -78,7 +78,8 @@ public class TermAPI implements ILuaAPI
             "setPaletteColour",
             "setPaletteColor",
             "getPaletteColour",
-            "getPaletteColor"
+            "getPaletteColor",
+            "getCursorBlink",
         };
     }
     
@@ -298,6 +299,9 @@ public class TermAPI implements ILuaAPI
                 }
                 return null;
             }
+            case 23:
+                // getCursorBlink
+                return new Object[] { m_terminal.getCursorBlink() };
             default:
             {
                 return null;
