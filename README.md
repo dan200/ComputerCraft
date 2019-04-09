@@ -7,11 +7,11 @@ ComputerCraft是一个为我的世界添加了可编程的机器和电脑的模�
 关于这个仓库
 =====================
 
-ComputerCraft was originally released in late 2011 by [Daniel Ratcliffe](https://twitter.com/DanTwoHundred). In early 2017, after working on the mod solo for five years, it was decided to release the source code publicly to allow Dan to devote time to other projects. This repository marks the first public release of this source code.
+ComputerCraft最开始在2011末由[Daniel Ratcliffe](https://twitter.com/DanTwoHundred)发布，在2017年的早些时候，在单独开发了这个mod五年之后，我们打算公开发布源代码来允许Dan有更多的时间来关注其它的项目，这个仓库就是我们发布第一个公开源代码的地方。
 
 The code in this repository will always represent the "bleeding edge" of the ComputerCraft codebase, but stable builds back to 1.79 will be marked on the [Releases](https://github.com/dan200/ComputerCraft/releases) page.
 
-Contributing
+贡献
 ============
 
 While ComputerCraft will no longer be actively developed by Daniel Ratcliffe, you may still contribute pull requests which will be reviewed and incorporated into releases periodically. A pull request is more likely to be accepted if it meets the following criteria:
