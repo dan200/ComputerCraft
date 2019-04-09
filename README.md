@@ -2,10 +2,9 @@ ComputerCraft
 =============
 [![Build Status](https://travis-ci.org/dan200/ComputerCraft.svg?branch=master)](https://travis-ci.org/dan200/ComputerCraft)
 
-ComputerCraft is a Minecraft modification which adds programmable Robots and Computers to the world of Minecraft.
-If you're not familiar with ComputerCraft, visit the [Website](http://www.computercraft.info/download) or the [Wiki](http://www.computercraft.info/wiki) to find out more.
+ComputerCraft是一个为我的世界添加了可编程的机器和电脑的模组。如果对ComputerCraft不太熟悉，可以访问[这里](http://www.computercraft.info/download)或者访问我们的 [Wiki](http://www.computercraft.info/wiki)去查看更多信息。
 
-About this Repository
+关于这个仓库
 =====================
 
 ComputerCraft was originally released in late 2011 by [Daniel Ratcliffe](https://twitter.com/DanTwoHundred). In early 2017, after working on the mod solo for five years, it was decided to release the source code publicly to allow Dan to devote time to other projects. This repository marks the first public release of this source code.
