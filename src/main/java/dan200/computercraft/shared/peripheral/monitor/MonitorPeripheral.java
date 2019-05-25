@@ -65,7 +65,8 @@ public class MonitorPeripheral implements IPeripheral
             "setPaletteColour",
             "setPaletteColor",
             "getPaletteColour",
-            "getPaletteColor"
+            "getPaletteColor",
+            "getCursorBlink",
         };
     }
 
@@ -249,8 +250,13 @@ public class MonitorPeripheral implements IPeripheral
                 }
                 return null;
             }
+            case 24:
+                // getCursorBlink
+                Terminal terminal = m_monitor.getTerminal().getTerminal();
+                return new Object[] { terminal.getCursorBlink() };
+            default:
+                return null;
         }
-        return null;
     }
 
     @Override
