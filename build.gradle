@@ -41,6 +41,18 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
+repositories {
+    maven {
+        name = "squiddev"
+        url = "https://dl.bintray.com/squiddev/maven"
+    }
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
@@ -63,6 +75,11 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
+    shade 'org.squiddev:Cobalt:0.3.2'
+}
+
+jar {
+    from configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 jar {
