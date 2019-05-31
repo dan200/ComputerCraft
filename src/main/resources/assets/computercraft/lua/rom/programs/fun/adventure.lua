@@ -24,7 +24,7 @@ end
 local items = {
     ["no tea"] = {
         droppable = false,
-        desc = "Pull yourself together man.",
+        desc = "Pull yourself together, man.",
     },
     ["a pig"] = {
         heavy = true,
@@ -101,11 +101,12 @@ local items = {
     ["some wood"] = {
         aliases = { "wood" },
         material = true,
-        desc = "You could easilly craft this wood into planks.",
+        desc = "You could easily craft this wood into planks.",
     },
     ["some planks"] = {
         aliases = { "planks", "wooden planks", "wood planks" },
-        desc = "You could easilly craft these planks into sticks.",
+        material = true,
+        desc = "You could easily craft these planks into sticks.",
     },
     ["some sticks"] = {
         aliases = { "sticks", "wooden sticks", "wood sticks" },
@@ -208,7 +209,8 @@ local items = {
         ore = true,
         toolLevel = 1,
         toolType = "pick",
-        desc = "That coal looks useful for building torches, if only you had a pickaxe to mine it.",
+        desc = "That coal looks useful for building torches. If only you had a pickaxe to mine it.",
+        descInventory = "Useful for building torches.",
     },
     ["some dirt"] = {
         aliases = { "dirt" },
@@ -256,7 +258,7 @@ local items = {
     ["some pork"] = {
         aliases = { "pork", "porkchops" },
         food = true,
-        desc = "Delicious and nutricious.",
+        desc = "Delicious and nutritious.",
     },
     ["some chicken"] = {
         aliases = { "chicken" },
@@ -491,6 +493,7 @@ end
 local tMatches = {
     ["wait"] = {
         "wait",
+        "rest",
     },
     ["look"] = {
         "look at the ([%a ]+)",
@@ -499,6 +502,9 @@ local tMatches = {
         "inspect ([%a ]+)",
         "inspect the ([%a ]+)",
         "inspect",
+        "examine ([%a ]+)",
+        "examine the ([%a ]+)",
+        "examine",
     },
     ["inventory"] = {
         "check self",
@@ -511,6 +517,7 @@ local tMatches = {
         "travel (%a+)",
         "walk (%a+)",
         "run (%a+)",
+        "move (%a+)",
         "go",
     },
     ["dig"] = {
@@ -581,13 +588,16 @@ local tMatches = {
     },
     ["build"] = {
         "build ([%a ]+) out of ([%a ]+)",
+        "build ([%a ]+) made of ([%a ]+)",
         "build ([%a ]+) from ([%a ]+)",
+        "build ([%a ]+) of ([%a ]+)",
         "build ([%a ]+)",
         "build",
     },
     ["eat"] = {
         "eat a ([%a ]+)",
         "eat the ([%a ]+)",
+        "eat some ([%a ]+)",
         "eat ([%a ]+)",
         "eat",
     },
@@ -667,19 +677,21 @@ function commands.look( _sTarget )
         elseif _sTarget == "self" or _sTarget == "myself" then
             print( "Very handsome." )
         else
-            local tItem = nil
+            local tItem, sDescription = nil, nil
             local sItem = findItem( room.items, _sTarget )
             if sItem then
                 tItem = room.items[sItem]
+                sDescription = tItem.desc
             else
                 sItem = findItem( inventory, _sTarget )
                 if sItem then
                     tItem = inventory[sItem]
+                    sDescription = tItem.descInventory or tItem.desc
                 end
             end
             
             if tItem then
-                print( tItem.desc or ("You see nothing special about "..sItem..".") )
+                print( sDescription or ("You see nothing special about "..sItem..".") )
             else
                 print( "You don't see any ".._sTarget.." here." )
             end
@@ -1132,6 +1144,15 @@ function commands.build( _sThing, _sMaterial )
     end
     
     local room = getRoom( x,y,z )
+
+    if room.items[ _sThing ] ~= nil then
+        print( "There is already " .. _sThing .. " here." )
+        return
+    elseif room.trees and _sThing == "trees" then
+        print( "There are already trees here." )
+        return
+    end
+
     inventory[sMaterial] = nil
     room.items[ _sThing ] = {
         heavy = true,
@@ -1146,7 +1167,7 @@ function commands.help()
     local sText = 
         "Welcome to adventure, the greatest text adventure game on CraftOS. " ..
         "To get around the world, type actions, and the adventure will " ..
-        "be read back to you. The actions availiable to you are go, look, inspect, inventory, " ..
+        "be read back to you. The actions available to you are go, look, inspect, inventory, " ..
         "take, drop, place, punch, attack, mine, dig, craft, build, eat and exit."
     print( sText )
 end
