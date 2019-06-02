@@ -21,7 +21,7 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.core.apis.AddressPredicate;
 import dan200.computercraft.core.filesystem.ComboMount;
 import dan200.computercraft.core.filesystem.FileMount;
-import dan200.computercraft.core.filesystem.JarMount;
+import dan200.computercraft.core.filesystem.FileSystemMount;
 import dan200.computercraft.shared.common.DefaultBundledRedstoneProvider;
 import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
 import dan200.computercraft.shared.computer.blocks.BlockComputer;
@@ -81,10 +81,10 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.ProviderNotFoundException;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -812,11 +812,12 @@ public class ComputerCraft
         {
             try
             {
-                IMount jarMount = new JarMount( modJar, subPath );
-                mounts.add( jarMount );
+                FileSystem fs = FileSystems.newFileSystem( modJar.toPath(), ComputerCraft.class.getClassLoader() );
+                mounts.add( new FileSystemMount( fs, subPath ) );
             }
-            catch( IOException e )
+            catch( IOException | RuntimeException | ServiceConfigurationError e )
             {
+                ComputerCraft.log.error( "Could not load mount from mod jar", e );
                 // Ignore
             }
         }
@@ -826,16 +827,16 @@ public class ComputerCraft
         if( resourcePackDir.exists() && resourcePackDir.isDirectory() )
         {
             String[] resourcePacks = resourcePackDir.list();
-            for( String resourcePack1 : resourcePacks )
+            for( String resourcePackName : resourcePacks )
             {
                 try
                 {
-                    File resourcePack = new File( resourcePackDir, resourcePack1 );
+                    File resourcePack = new File( resourcePackDir, resourcePackName );
                     if( !resourcePack.isDirectory() )
                     {
                         // Mount a resource pack from a jar
-                        IMount resourcePackMount = new JarMount( resourcePack, subPath );
-                        mounts.add( resourcePackMount );
+                        FileSystem fs = FileSystems.newFileSystem( resourcePack.toPath(), ComputerCraft.class.getClassLoader() );
+                        mounts.add( new FileSystemMount( fs, subPath ) );
                     }
                     else
                     {
@@ -848,9 +849,9 @@ public class ComputerCraft
                         }
                     }
                 }
-                catch( IOException e )
+                catch( IOException | RuntimeException | ServiceConfigurationError e )
                 {
-                    // Ignore
+                    ComputerCraft.log.error( "Could not load resource pack '" + resourcePackName + "'", e );
                 }
             }
         }
