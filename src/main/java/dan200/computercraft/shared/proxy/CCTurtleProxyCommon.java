@@ -20,7 +20,6 @@ import dan200.computercraft.shared.turtle.items.ItemTurtleNormal;
 import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
 import dan200.computercraft.shared.turtle.recipes.TurtleUpgradeRecipe;
 import dan200.computercraft.shared.turtle.upgrades.*;
-import dan200.computercraft.shared.util.IEntityDropConsumer;
 import dan200.computercraft.shared.util.ImpostorRecipe;
 import dan200.computercraft.shared.util.InventoryUtil;
 import net.minecraft.block.Block;
@@ -32,33 +31,49 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
-{    
+{
     private Map<Integer, ITurtleUpgrade> m_legacyTurtleUpgrades;
     private Map<String, ITurtleUpgrade> m_turtleUpgrades;
-    private Map<Entity, IEntityDropConsumer> m_dropConsumers;
+
+    private Function<ItemStack, ItemStack> dropConsumer;
+    private List<ItemStack> remainingDrops;
+    private WeakReference<World> dropWorld;
+    private BlockPos dropPos;
+    private AxisAlignedBB dropBounds;
+    private WeakReference<Entity> dropEntity;
 
     public CCTurtleProxyCommon()
     {
         m_legacyTurtleUpgrades = new HashMap<>();
         m_turtleUpgrades = new HashMap<>();
-        m_dropConsumers = new WeakHashMap<>();
     }
-    
+
     // ICCTurtleProxy implementation
-    
-    @Override        
+
+    @Override
     public void preInit()
     {
         MinecraftForge.EVENT_BUS.register( this );
@@ -74,8 +89,8 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         // RecipeSorter.register( "computercraft:turtle", TurtleRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
         // RecipeSorter.register( "computercraft:turtle_upgrade", TurtleUpgradeRecipe.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless" );
     }
-    
-    @Override        
+
+    @Override
     public void init()
     {
         registerForgeHandlers();
@@ -93,7 +108,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             ComputerCraft.log.error( message );
             throw new RuntimeException( message );
         }
-        
+
         // Register
         registerTurtleUpgradeInternal( upgrade );
     }
@@ -109,7 +124,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     {
         return m_legacyTurtleUpgrades.get( legacyId );
     }
-    
+
     @Override
     public ITurtleUpgrade getTurtleUpgrade( @Nonnull ItemStack stack )
     {
@@ -125,7 +140,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             }
             catch( Exception e )
             {
-                ComputerCraft.log.error("Error getting computer upgrade item", e);
+                ComputerCraft.log.error( "Error getting computer upgrade item", e );
             }
         }
         return null;
@@ -147,7 +162,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             return true;
         }
     }
-    
+
     private void addAllUpgradedTurtles( ComputerFamily family, NonNullList<ItemStack> list )
     {
         ItemStack basicStack = TurtleItemFactory.create( -1, null, -1, family, null, null, 0, null );
@@ -168,7 +183,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
 
     private void addUpgradedTurtle( ComputerFamily family, ITurtleUpgrade upgrade, List<ItemStack> list )
     {
-        if ( isUpgradeSuitableForFamily( family, upgrade ) )
+        if( isUpgradeSuitableForFamily( family, upgrade ) )
         {
             ItemStack stack = TurtleItemFactory.create( -1, null, -1, family, upgrade, null, 0, null );
             if( !stack.isEmpty() )
@@ -177,54 +192,65 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
             }
         }
     }
-    
+
     @Override
     public void addAllUpgradedTurtles( NonNullList<ItemStack> list )
     {
         addAllUpgradedTurtles( ComputerFamily.Normal, list );
         addAllUpgradedTurtles( ComputerFamily.Advanced, list );
     }
-    
+
     @Override
-    public void setEntityDropConsumer( Entity entity, IEntityDropConsumer consumer )
+    public void setDropConsumer( Entity entity, Function<ItemStack, ItemStack> consumer )
     {
-        if( !m_dropConsumers.containsKey( entity ) )
-        {
-            boolean captured = entity.captureDrops;
-            
-            if( !captured )
-            {
-                entity.captureDrops = true;
-                ArrayList<EntityItem> items = entity.capturedDrops;
-                
-                if( items == null || items.size() == 0 )
-                {
-                    m_dropConsumers.put( entity, consumer );
-                }
-            }
-        }
-    }    
-    
+        dropConsumer = consumer;
+        remainingDrops = new ArrayList<>();
+        dropEntity = new WeakReference<>( entity );
+        dropWorld = new WeakReference<>( entity.world );
+        dropPos = null;
+        dropBounds = new AxisAlignedBB( entity.getPosition() ).grow( 2, 2, 2 );
+
+        entity.captureDrops = true;
+    }
+
     @Override
-    public void clearEntityDropConsumer( Entity entity )
+    public void setDropConsumer( World world, BlockPos pos, Function<ItemStack, ItemStack> consumer )
     {
-        if( m_dropConsumers.containsKey( entity ) )
+        dropConsumer = consumer;
+        remainingDrops = new ArrayList<>();
+        dropEntity = null;
+        dropWorld = new WeakReference<>( world );
+        dropPos = pos;
+        dropBounds = new AxisAlignedBB( pos ).grow( 2, 2, 2 );
+    }
+
+    @Override
+    public List<ItemStack> clearDropConsumer()
+    {
+        if( dropEntity != null )
         {
-            boolean captured = entity.captureDrops;
-            
-            if( captured )
+            Entity entity = dropEntity.get();
+            if( entity != null )
             {
                 entity.captureDrops = false;
-                ArrayList<EntityItem> items = entity.capturedDrops;
-                
-                if( items != null )
+                if( entity.capturedDrops != null )
                 {
-                    dispatchEntityDrops( entity, items );
-                    items.clear();
+                    for( EntityItem entityItem : entity.capturedDrops ) handleDrops( entityItem.getItem() );
+                    entity.capturedDrops.clear();
                 }
             }
-            m_dropConsumers.remove( entity );
         }
+
+        List<ItemStack> remainingStacks = remainingDrops;
+
+        dropConsumer = null;
+        remainingDrops = null;
+        dropEntity = null;
+        dropWorld = null;
+        dropPos = null;
+        dropBounds = null;
+
+        return remainingStacks;
     }
 
     private void registerTurtleUpgradeInternal( ITurtleUpgrade upgrade )
@@ -288,7 +314,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     {
         IForgeRegistry<Item> registry = event.getRegistry();
 
-        registry.register( new ItemTurtleLegacy( ComputerCraft.Blocks.turtle).setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle" ) ) );
+        registry.register( new ItemTurtleLegacy( ComputerCraft.Blocks.turtle ).setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle" ) ) );
         registry.register( new ItemTurtleNormal( ComputerCraft.Blocks.turtleExpanded ).setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle_expanded" ) ) );
         registry.register( new ItemTurtleAdvanced( ComputerCraft.Blocks.turtleAdvanced ).setRegistryName( new ResourceLocation( ComputerCraft.MOD_ID, "turtle_advanced" ) ) );
     }
@@ -361,7 +387,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
     private void registerUpgrades()
     {
         // Upgrades
-        ComputerCraft.Upgrades.wirelessModem =  new TurtleModem( false, new ResourceLocation( "computercraft", "wireless_modem" ), 1 );
+        ComputerCraft.Upgrades.wirelessModem = new TurtleModem( false, new ResourceLocation( "computercraft", "wireless_modem" ), 1 );
         registerTurtleUpgradeInternal( ComputerCraft.Upgrades.wirelessModem );
 
         ComputerCraft.Upgrades.craftingTable = new TurtleCraftingTable( 2 );
@@ -446,38 +472,59 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy
         GameRegistry.registerTileEntity( TileTurtleExpanded.class, ComputerCraft.LOWER_ID + " : " + "turtleex" );
         GameRegistry.registerTileEntity( TileTurtleAdvanced.class, ComputerCraft.LOWER_ID + " : " + "turtleadv" );
     }
-    
+
     private void registerForgeHandlers()
     {
         ForgeHandlers handlers = new ForgeHandlers();
         MinecraftForge.EVENT_BUS.register( handlers );
     }
-        
-    public class ForgeHandlers
-    {
-        private ForgeHandlers()
-        {
-        }
 
-        // Forge event responses 
+    private void handleDrops(ItemStack stack)
+    {
+        ItemStack remaining = dropConsumer.apply(stack);
+        if (!remaining.isEmpty()) remainingDrops.add(remaining);
+    }
+
+    private class ForgeHandlers
+    {
         @SubscribeEvent
         public void onEntityLivingDrops( LivingDropsEvent event )
         {
-            dispatchEntityDrops( event.getEntity(), event.getDrops() );
-        }
-    }
-    
-    private void dispatchEntityDrops( Entity entity, java.util.List<EntityItem> drops )
-    {
-        IEntityDropConsumer consumer = m_dropConsumers.get( entity );
-        if( consumer != null )
-        {
-            // All checks have passed, lets dispatch the drops
-            for(EntityItem entityItem : drops)
+            // Capture any mob drops for the current entity
+            if( dropEntity != null && event.getEntity() == dropEntity.get() )
             {
-                consumer.consumeDrop( entity, entityItem.getItem() );
+                List<EntityItem> drops = event.getDrops();
+                for( EntityItem entityItem : drops ) handleDrops( entityItem.getItem() );
+                drops.clear();
             }
-            drops.clear();
+        }
+
+        @SubscribeEvent(priority = EventPriority.LOWEST)
+        public void onHarvestDrops( BlockEvent.HarvestDropsEvent event )
+        {
+            // Capture block drops for the current entity
+            if( dropWorld != null && dropWorld.get() == event.getWorld()
+                && dropPos != null && dropPos.equals( event.getPos() ) )
+            {
+                for( ItemStack item : event.getDrops() )
+                {
+                    if( event.getWorld().rand.nextFloat() < event.getDropChance() ) handleDrops( item );
+                }
+                event.getDrops().clear();
+            }
+        }
+
+        @SubscribeEvent(priority = EventPriority.LOWEST)
+        public void onEntitySpawn( EntityJoinWorldEvent event )
+        {
+            // Capture any nearby item spawns
+            if( dropWorld != null && dropWorld.get() == event.getWorld() && event.getEntity() instanceof EntityItem
+                && dropBounds.contains( event.getEntity().getPositionVector() ) )
+            {
+                handleDrops( ((EntityItem) event.getEntity()).getItem() );
+                event.setCanceled( true );
+            }
         }
     }
+
 }
