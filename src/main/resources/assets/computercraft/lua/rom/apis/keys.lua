@@ -16,7 +16,7 @@ local tKeys = {
 	"comma",	"period",	"slash",	"rightShift","multiply",	-- 51
 	"leftAlt",	"space",	"capsLock",	"f1",		"f2",			-- 56
 	"f3",		"f4",		"f5",		"f6",		"f7",			-- 61
-	"f8",		"f9",		"f10",		"numLock",	"scollLock",	-- 66	
+	"f8",		"f9",		"f10",		"numLock",	"scrollLock",	-- 66	
 	"numPad7",	"numPad8",	"numPad9",	"numPadSubtract","numPad4",	-- 71
 	"numPad5",	"numPad6",	"numPadAdd","numPad1",	"numPad2",		-- 76
 	"numPad3",	"numPad0",	"numPadDecimal",nil,	nil,			-- 81
@@ -31,7 +31,7 @@ local tKeys = {
 	nil,		nil,		nil,		nil,		nil,			-- 126
 	nil,		nil,		nil,		nil,		nil,			-- 131
 	nil,		nil,		nil,		nil,		nil,			-- 136
-	"numPadEquals",nil,		nil,		"cimcumflex","at",			-- 141
+	"numPadEquals",nil,		nil,		"circumflex","at",			-- 141
 	"colon",	"underscore","kanji",	"stop",		"ax",			-- 146
 	nil,		nil,		nil,		nil,		nil,			-- 151
 	"numPadEnter","rightCtrl",nil,      nil,		nil,			-- 156
@@ -53,6 +53,9 @@ for nKey, sKey in pairs( tKeys ) do
 	keys[sKey] = nKey
 end
 keys["return"] = keys.enter
+--backwards compatibility to earlier, typo prone, versions
+keys.scollLock = keys.scrollLock
+keys.cimcumflex = keys.circumflex
 
 function getName( _nKey )
     if type( _nKey ) ~= "number" then
