@@ -422,11 +422,6 @@ public class ComputerCraft
         }
     }
 
-    public static String getVersion()
-    {
-        return "${version}";
-    }
-
     public static boolean isClient()
     {
         return proxy.isClient();
@@ -665,15 +660,6 @@ public class ComputerCraft
         return null;
     }
 
-    public static int getDefaultBundledRedstoneOutput( World world, BlockPos pos, EnumFacing side )
-    {
-        if( WorldUtil.isBlockInWorld( world, pos ) )
-        {
-            return DefaultBundledRedstoneProvider.getDefaultBundledRedstoneOutput( world, pos, side );
-        }
-        return -1;
-    }
-
     public static int getBundledRedstoneOutput( World world, BlockPos pos, EnumFacing side )
     {
         int y = pos.getY();
@@ -764,11 +750,6 @@ public class ComputerCraft
         }
 
         return upgrades;
-    }
-
-    public static IPacketNetwork getWirelessNetwork()
-    {
-        return WirelessNetwork.getUniversal();
     }
 
     public static int createUniqueNumberedSaveDir( World world, String parentSubPath )
