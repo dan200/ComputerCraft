@@ -1,4 +1,5 @@
 Functions in the Text Utilities API:
+textutils.prompt( table )
 textutils.slowPrint( text )
 textutils.tabulate( table, table2, ... )
 textutils.pagedTabulate( table, table2, ... )
