@@ -21,7 +21,7 @@ public class WorldUtil
 {
     public static boolean isBlockInWorld( World world, BlockPos pos )
     {
-        return pos.getY() >= 0 && pos.getY() < world.getHeight();
+        return !world.isOutsideBuildHeight( pos );
     }
 
     public static boolean isLiquidBlock( World world, BlockPos pos )
