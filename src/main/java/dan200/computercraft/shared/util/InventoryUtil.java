@@ -49,8 +49,7 @@ public class InventoryUtil
     public static IItemHandler getInventory( World world, BlockPos pos, EnumFacing side )
     {
         // Look for tile with inventory
-        int y = pos.getY();
-        if( y >= 0 && y < world.getHeight() )
+        if( !world.isOutsideBuildHeight( pos ) )
         {
             TileEntity tileEntity = world.getTileEntity( pos );
             if( tileEntity != null )
