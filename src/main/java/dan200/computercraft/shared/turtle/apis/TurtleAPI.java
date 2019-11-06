@@ -11,6 +11,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.ITurtleCommand;
 import dan200.computercraft.api.turtle.TurtleSide;
+import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.core.apis.IAPIEnvironment;
 import dan200.computercraft.core.apis.ILuaAPI;
 import dan200.computercraft.shared.turtle.core.*;
@@ -107,6 +108,8 @@ public class TurtleAPI implements ILuaAPI
             "inspectUp",
             "inspectDown",
             "getItemDetail",
+            "getEquipLeft",
+            "getEquipRight",
         };
     }
     
@@ -445,6 +448,40 @@ public class TurtleAPI implements ILuaAPI
                 {
                     return new Object[] { null };
                 }
+            }
+            case 42:
+            {
+                //getEquipLeft
+                ITurtleUpgrade upgrade = m_turtle.getUpgrade( TurtleSide.Left );
+                if( upgrade != null ) 
+                {
+                    ItemStack stack = upgrade.getCraftingItem();
+                    Item item = stack.getItem();
+                    String name = Item.REGISTRY.getNameForObject( item ).toString();
+                    return new Object[] { name };
+                }
+                else 
+                {
+                    return new Object[] { null };
+                }
+                    
+            }
+            case 43:
+            {
+                //getEquipRight
+                ITurtleUpgrade upgrade = m_turtle.getUpgrade( TurtleSide.Right );
+                if( upgrade != null ) 
+                {
+                    ItemStack stack = upgrade.getCraftingItem();
+                    Item item = stack.getItem();
+                    String name = Item.REGISTRY.getNameForObject( item ).toString();
+                    return new Object[] { name };
+                }
+                else 
+                {
+                    return new Object[] { null };
+                }
+                    
             }
             default:
             {
