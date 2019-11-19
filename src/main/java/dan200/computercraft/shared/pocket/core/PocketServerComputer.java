@@ -128,6 +128,27 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
     }
 
     /**
+     * Determine whether the item exists in the entity's inventory.
+     *
+     * Note this method is not thread safe - it must be called from the server thread.
+     *
+     * @return Whether this is in an entity.
+     */
+    public boolean inInventory()
+    {
+        if(m_stack == null) return false;
+        if( m_entity instanceof EntityPlayer )
+        {
+            InventoryPlayer inventory = ((EntityPlayer) m_entity).inventory;
+            return inventory.mainInventory.contains( m_stack ) || inventory.offHandInventory.contains( m_stack );
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
      * Set the upgrade for this pocket computer, also updating the item stack.
      *
      * Note this method is not thread safe - it must be called from the server thread.
