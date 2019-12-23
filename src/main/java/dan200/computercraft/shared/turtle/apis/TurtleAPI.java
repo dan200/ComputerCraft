@@ -16,6 +16,7 @@ import dan200.computercraft.core.apis.ILuaAPI;
 import dan200.computercraft.shared.turtle.core.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -107,6 +108,7 @@ public class TurtleAPI implements ILuaAPI
             "inspectUp",
             "inspectDown",
             "getItemDetail",
+            "getTurn",
         };
     }
     
@@ -444,6 +446,34 @@ public class TurtleAPI implements ILuaAPI
                 else
                 {
                     return new Object[] { null };
+                }
+            }
+            case 42:
+            {
+                // getTurn
+                EnumFacing direction = m_turtle.getDirection();
+                switch( direction.getIndex() )
+                {
+                    case 2:
+                    {
+                        return new Object[] { 1 };
+                    }
+                    case 5:
+                    {
+                        return new Object[] { 2 };
+                    }
+                    case 3:
+                    {
+                        return new Object[] { 3 };
+                    }
+                    case 4:
+                    {
+                        return new Object[] { 4 };
+                    }
+                    default:
+                    {
+                        return new Object[] { null };
+                    }
                 }
             }
             default:
