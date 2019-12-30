@@ -28,6 +28,22 @@ local scrollX, scrollY = 0,0
 local tLines = {}
 local bRunning = true
 
+local tMessages = {}
+local tMessageColours = {
+    error = colours.red,
+    warning = colours.orange,
+    info = colours.blue
+}
+
+local sLoadAPIDeprecated = "os.loadAPI is deprecated, use require instead"
+
+-- This is quite ugly, but we'd have to do outrageous bytecode analysis
+-- otherwise, so it's good enough.
+local tWarnings = {
+    ["os%.loadAPI%s?%(.+%)"] = sLoadAPIDeprecated,
+    ["os%.loadAPI%s?['\"].+['\"]"] = sLoadAPIDeprecated
+}
+
 -- Colours
 local highlightColour, keywordColour, commentColour, textColour, bgColour, stringColour
 if term.isColour() then
@@ -66,6 +82,48 @@ if string.len( sStatus ) > w - 5 then
     sStatus = "Press Ctrl for menu"
 end
 
+local function addMessage( nLine, sType, sContent )
+    tMessages[ nLine ] = {
+        sType = sType,
+        sContent = sContent,
+        bExpanded = false
+    }
+end
+
+local function removeMessage( nLine )
+    return table.remove( tMessages, nLine )
+end
+
+local function clearMessages()
+    tMessages = {}
+end
+
+local function findWarnings( tLines )
+    for i,v in pairs( tLines ) do
+        for p,m in pairs( tWarnings ) do
+            if string.match( v, p ) then
+                addMessage( i, "warning", m )
+                break
+            end
+        end
+    end
+end
+
+local function checkErrors()
+    clearMessages()
+    local fLoad = _G.load
+    local sProgram = table.concat( tLines, "\n" )
+    findWarnings( tLines )
+    local _, sErr = fLoad( sProgram )
+    if sErr then
+        local sLine, sMsg = string.match( sErr, ".+%:%d+%:%s%[.+%]%:(%d+)%:%s(.+)" )
+        local nLine = tonumber( sLine )
+        if nLine then
+            addMessage( nLine, "error", sMsg )
+        end
+    end
+end
+
 local function load( _sPath )
     tLines = {}
     if fs.exists( _sPath ) then
@@ -77,10 +135,12 @@ local function load( _sPath )
         end
         file:close()
     end
-    
+
     if #tLines == 0 then
         table.insert( tLines, "" )
     end
+
+    return checkErrors()
 end
 
 local function save( _sPath )
@@ -102,11 +162,13 @@ local function save( _sPath )
             error( "Failed to open ".._sPath )
         end
     end
-    
+
     local ok, err = pcall( innerSave )
-    if file then 
+    if file then
         file.close()
     end
+
+    checkErrors()
     return ok, err
 end
 
@@ -150,8 +212,8 @@ local function tryWrite( sLine, regex, colour )
 end
 
 local function writeHighlighted( sLine )
-    while string.len(sLine) > 0 do    
-        sLine = 
+    while string.len(sLine) > 0 do
+        sLine =
             tryWrite( sLine, "^%-%-%[%[.-%]%]", commentColour ) or
             tryWrite( sLine, "^%-%-.*", commentColour ) or
             tryWrite( sLine, "^\"\"", stringColour ) or
@@ -212,17 +274,41 @@ local function writeCompletion( sLine )
     end
 end
 
+local function drawMessage( y, tMsg )
+    local nPrevColour = term.getBackgroundColour()
+    local sSymbol = tMsg.bExpanded and string.char( 16 ) or string.char( 17 )
+    local nColour = tMessageColours[ tMsg.sType ] or colours.black
+
+    term.setBackgroundColour( nColour )
+
+    if tMsg.bExpanded then
+        term.clearLine()
+        term.setCursorPos( 1, y )
+        term.write( tMsg.sContent )
+    end
+
+    term.setCursorPos( w, y )
+    term.write( sSymbol )
+    term.setBackgroundColour( nPrevColour )
+end
+
 local function redrawText()
     local cursorX, cursorY = x, y
     for y=1,h-1 do
         term.setCursorPos( 1 - scrollX, y )
         term.clearLine()
 
-        local sLine = tLines[ y + scrollY ]
+        local nLine = y + scrollY
+        local sLine = tLines[ nLine ]
         if sLine ~= nil then
             writeHighlighted( sLine )
             if cursorY == y and cursorX == #sLine + 1 then
                 writeCompletion()
+            end
+
+            local tMsg = tMessages[ nLine ]
+            if tMsg then
+                drawMessage( y, tMsg )
             end
         end
     end
@@ -239,6 +325,11 @@ local function redrawLine(_nY)
             writeCompletion()
         end
         term.setCursorPos( x - scrollX, _nY - scrollY )
+
+        local tMsg = tMessages[_nY]
+        if tMsg then
+            drawMessage( _nY - scrollY, tMsg )
+        end
     end
 end
 
@@ -282,7 +373,7 @@ local function redrawMenu()
     term.setCursorPos( x - scrollX, y - scrollY )
 end
 
-local tMenuFuncs = { 
+local tMenuFuncs = {
     Save = function()
         if bReadOnly then
             sStatus = "Access denied"
@@ -290,6 +381,7 @@ local tMenuFuncs = {
             local ok, err = save( sPath )
             if ok then
                 sStatus="Saved to "..sPath
+                redrawText()
             else
                 sStatus="Error saving to "..sPath
             end
@@ -322,9 +414,9 @@ local tMenuFuncs = {
         }
         printerTerminal.scroll = function()
             if nPage == 1 then
-                printer.setPageTitle( sName.." (page "..nPage..")" )            
+                printer.setPageTitle( sName.." (page "..nPage..")" )
             end
-            
+
             while not printer.newPage()    do
                 if printer.getInkLevel() < 1 then
                     sStatus = "Printer out of ink, please refill"
@@ -333,11 +425,11 @@ local tMenuFuncs = {
                 else
                     sStatus = "Printer output tray full, please empty"
                 end
-    
+
                 term.redirect( screenTerminal )
                 redrawMenu()
                 term.redirect( printerTerminal )
-                
+
                 local timer = os.startTimer(0.5)
                 sleep(0.5)
             end
@@ -349,7 +441,7 @@ local tMenuFuncs = {
                 printer.setPageTitle( sName.." (page "..nPage..")" )
             end
         end
-        
+
         bMenu = false
         term.redirect( printerTerminal )
         local ok, error = pcall( function()
@@ -362,14 +454,14 @@ local tMenuFuncs = {
         if not ok then
             print( error )
         end
-        
+
         while not printer.endPage() do
             sStatus = "Printer output tray full, please empty"
             redrawMenu()
             sleep( 0.5 )
         end
         bMenu = true
-            
+
         if nPage > 1 then
             sStatus = "Printed "..nPage.." Pages"
         else
@@ -412,7 +504,7 @@ local function setCursor( newX, newY )
     x, y = newX, newY
     local screenX = x - scrollX
     local screenY = y - scrollY
-    
+
     local bRedraw = false
     if screenX < 1 then
         scrollX = x - 1
@@ -423,7 +515,7 @@ local function setCursor( newX, newY )
         screenX = w
         bRedraw = true
     end
-    
+
     if screenY < 1 then
         scrollY = y - 1
         screenY = 1
@@ -434,7 +526,19 @@ local function setCursor( newX, newY )
         bRedraw = true
     end
 
-    recomplete()
+    local bOnExpandedMsg = false
+    for nY,v in pairs( tMessages ) do
+        if y == nY and v.bExpanded then
+            bOnExpandedMsg = true
+            break
+        end
+    end
+
+    if not bOnExpandedMsg then
+        recomplete()
+    end
+    term.setCursorBlink( not bOnExpandedMsg )
+
     if bRedraw then
         redrawText()
     elseif y ~= oldY then
@@ -467,6 +571,11 @@ local function acceptCompletion()
         tLines[y] = tLines[y] .. sCompletion
         setCursor( x + string.len( sCompletion ), y )
     end
+end
+
+local function removeLine( nY )
+    table.remove( tLines, nY )
+    tMessages[ nY ] = nil
 end
 
 -- Handle input
@@ -630,7 +739,7 @@ while bRunning do
                     redrawLine(y)
                 elseif y<#tLines then
                     tLines[y] = tLines[y] .. tLines[y+1]
-                    table.remove( tLines, y+1 )
+                    removeLine( y+1 )
                     recomplete()
                     redrawText()
                 end
@@ -653,7 +762,7 @@ while bRunning do
                     -- Remove newline
                     local sPrevLen = string.len( tLines[y-1] )
                     tLines[y-1] = tLines[y-1] .. tLines[y]
-                    table.remove( tLines, y )
+                    removeLine( y )
                     setCursor( sPrevLen + 1, y - 1 )
                     redrawText()
                 end
@@ -682,15 +791,11 @@ while bRunning do
         elseif param == keys.leftCtrl or param == keys.rightCtrl or param == keys.rightAlt then
             -- Menu toggle
             bMenu = not bMenu
-            if bMenu then
-                term.setCursorBlink( false )
-            else
-                term.setCursorBlink( true )
-            end
+            term.setCursorBlink( bMenu )
             redrawMenu()
 
         end
-        
+
     elseif sEvent == "char" then
         if not bMenu and not bReadOnly then
             -- Input text
@@ -721,7 +826,7 @@ while bRunning do
             tLines[y] = string.sub(sLine,1,x-1) .. param .. string.sub(sLine,x)
             setCursor( x + string.len( param ), y )
         end
-        
+
     elseif sEvent == "mouse_click" then
         if not bMenu then
             if param == 1 then
@@ -730,11 +835,18 @@ while bRunning do
                 if cy < h then
                     local newY = math.min( math.max( scrollY + cy, 1 ), #tLines )
                     local newX = math.min( math.max( scrollX + cx, 1 ), string.len( tLines[newY] ) + 1 )
+
+                    local tMsg = tMessages[ newY ]
+                    if cx == w and tMsg then
+                        tMsg.bExpanded = not tMsg.bExpanded
+                        redrawLine( newY )
+                    end
+
                     setCursor( newX, newY )
                 end
             end
         end
-        
+
     elseif sEvent == "mouse_scroll" then
         if not bMenu then
             if param == -1 then
@@ -744,7 +856,7 @@ while bRunning do
                     scrollY = scrollY - 1
                     redrawText()
                 end
-            
+
             elseif param == 1 then
                 -- Scroll down
                 local nMaxScroll = #tLines - (h-1)
@@ -753,7 +865,7 @@ while bRunning do
                     scrollY = scrollY + 1
                     redrawText()
                 end
-                
+
             end
         end
 
