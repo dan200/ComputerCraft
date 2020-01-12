@@ -18,6 +18,32 @@ local tEnv = {
 }
 setmetatable( tEnv, { __index = _ENV } )
 
+local function displayTable( tDisplay )
+    local tSeen = {}
+    local sShow = "{\n"
+    for k, v in ipairs( tDisplay ) do
+        sShow = sShow .. "  "
+        if type( v ) == "string" then
+            sShow = sShow .. '"' .. v .. '",\n'
+        else
+            sShow = sShow .. tostring( v ) .. ",\n"
+        end
+        tSeen[k] = true
+    end
+    for k, v in pairs( tDisplay ) do
+        if not tSeen[k] then
+            sShow = sShow .. "  "
+            if type( v ) == "string" then
+                sShow = sShow ..k .. ' = "' .. v .. '",\n'
+            else
+                sShow = sShow .. k .. " = ".. tostring( v ) .. ",\n"
+            end
+        end
+    end
+    sShow = sShow .. "}"
+    return sShow
+end
+
 if term.isColour() then
     term.setTextColour( colours.yellow )
 end
@@ -78,7 +104,7 @@ while bRunning do
                         if ok then
                             print( serialised )
                         else
-                            print( tostring( value ) )
+                            print( displayTable( value ) )
                         end
                     end
                 else
