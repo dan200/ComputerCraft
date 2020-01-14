@@ -52,6 +52,9 @@ if not fs.exists( sPath ) and not string.find( sPath, "%." ) then
     end
 end
 
+if multishell and settings.get( "paint.multishell_title" ) == true then
+    multishell.setTitle( multishell.getCurrent(), "paint (" .. fs.getName( sPath ) .. ")" )
+end
 
 ---------------
 -- Functions --

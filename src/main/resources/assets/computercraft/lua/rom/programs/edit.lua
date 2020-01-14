@@ -21,6 +21,10 @@ if not fs.exists( sPath ) and not string.find( sPath, "%." ) then
     end
 end
 
+if multishell and settings.get( "edit.multishell_title" ) == true then
+    multishell.setTitle( multishell.getCurrent(), "edit (" .. fs.getName( sPath ) .. ")" )
+end
+
 local x,y = 1,1
 local w,h = term.getSize()
 local scrollX, scrollY = 0,0
