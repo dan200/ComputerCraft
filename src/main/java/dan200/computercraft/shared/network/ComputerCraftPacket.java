@@ -31,6 +31,7 @@ public class ComputerCraftPacket
     // To client
     public static final byte ComputerChanged = 7;
     public static final byte ComputerDeleted = 8;
+    public static final byte PlayRecord = 10;
 
     // Packet class
     public byte m_packetType;
