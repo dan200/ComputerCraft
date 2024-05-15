@@ -617,6 +617,9 @@ public class Computer
         {
             m_apis.add( new HTTPAPI( m_apiEnvironment ) );
         }
+        if (ComputerCraft.worldfs_enable) {
+            m_apis.add( new WorldFSAPI( m_apiEnvironment ) );
+        }
     }
     
     private void initLua()

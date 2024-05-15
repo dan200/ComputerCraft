@@ -33,5 +33,6 @@ New Features in ComputerCraft 1.80:
 * Added speaker block, turtle upgrade, pocket upgrade, and peripheral api
 * Startup can now be a directory containing multiple startup files
 * Added .getLabel to the computer peripheral
+* Added worldfs api to create global file shares
 
 Type "help changelog" to see the full version history.

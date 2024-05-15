@@ -21,6 +21,9 @@ end
 if http then
     sPath = sPath..":/rom/programs/http"
 end
+if worldfs then
+    sPath = sPath..":/rom/programs/worldfs"
+end
 shell.setPath( sPath )
 help.setPath( "/rom/help" )
 
@@ -229,6 +232,16 @@ if turtle then
     shell.setCompletionFunction( "rom/programs/turtle/turn.lua", completeTurn )
     shell.setCompletionFunction( "rom/programs/turtle/equip.lua", completeEquip )
     shell.setCompletionFunction( "rom/programs/turtle/unequip.lua", completeUnequip )
+end
+
+if worldfs then
+    local tWorldFsOptions = { "list", "mount", "unmount"}
+    local function completeWorldFs(shell, nIndex, sText)
+        if nIndex == 1 then
+            return completeMultipleChoice(sText, tWorldFsOptions)
+        end
+    end
+    shell.setCompletionFunction("rom/programs/worldfs/worldfs.lua", completeWorldFs)
 end
 
 

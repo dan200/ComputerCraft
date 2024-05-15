@@ -154,6 +154,9 @@ public class ComputerCraft
 
     public static int maxNotesPerTick = 8;
 
+    public static int worldfsLimit = floppySpaceLimit;
+    public static boolean worldfs_enable = false;
+
     // Blocks and Items
     public static class Blocks
     {
@@ -222,6 +225,9 @@ public class ComputerCraft
         public static Property floppySpaceLimit;
         public static Property maximumFilesOpen;
         public static Property maxNotesPerTick;
+
+        public static Property worldfsLimit;
+        public static Property worldfs_enable;
 
     }
 
@@ -344,6 +350,12 @@ public class ComputerCraft
         Config.maxNotesPerTick = Config.config.get( Configuration.CATEGORY_GENERAL, "maxNotesPerTick", maxNotesPerTick );
         Config.maxNotesPerTick.setComment( "Maximum amount of notes a speaker can play at once" );
 
+        Config.worldfs_enable = Config.config.get( Configuration.CATEGORY_GENERAL, "worldfs_enable", worldfs_enable );
+        Config.worldfs_enable.setComment( "Enable the \"worldfs\" API " );
+
+        Config.worldfsLimit = Config.config.get( Configuration.CATEGORY_GENERAL, "worldfsLimit", worldfsLimit );
+        Config.worldfsLimit.setComment( "The worldfs space limit for a worldfs channel, in bytes" );
+
         for (Property property : Config.config.getCategory( Configuration.CATEGORY_GENERAL ).getOrderedValues())
         {
             property.setLanguageKey( "gui.computercraft:config." + CaseFormat.LOWER_CAMEL.to( CaseFormat.LOWER_UNDERSCORE, property.getName() ) );
@@ -386,6 +398,9 @@ public class ComputerCraft
         turtlesCanPush = Config.turtlesCanPush.getBoolean();
 
         maxNotesPerTick = Math.max(1, Config.maxNotesPerTick.getInt());
+
+        worldfs_enable = Config.worldfs_enable.getBoolean();
+        worldfsLimit = Config.worldfsLimit.getInt();
 
         Config.config.save();
     }
