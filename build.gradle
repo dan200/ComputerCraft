@@ -28,7 +28,7 @@ group = "dan200.computercraft"
 archivesBaseName = "ComputerCraft"
 
 minecraft {
-    version = "1.12-14.21.1.2387"
+    version = "1.13-0.0.0.1"
     runDir = "run"
     replace '${version}', project.version
 
