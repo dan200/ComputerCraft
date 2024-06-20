@@ -14,12 +14,16 @@ import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.HTTPRequestException;
 import dan200.computercraft.core.apis.IAPIEnvironment;
-import dan200.computercraft.core.apis.handles.BinaryInputHandle;
-import dan200.computercraft.core.apis.handles.EncodedInputHandle;
+import dan200.computercraft.core.apis.handles.ArrayByteChannel;
+import dan200.computercraft.core.apis.handles.BinaryReadableHandle;
+import dan200.computercraft.core.apis.handles.EncodedReadableHandle;
 
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.*;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +83,7 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
     private final Map<String, String> m_headers;
 
     private boolean m_success = false;
-    private String m_encoding;
+    private Charset m_encoding;
     private byte[] m_result;
     private boolean m_binary;
     private int m_responseCode = -1;
@@ -96,12 +100,12 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
         m_headers = headers;
     }
 
-    public InputStream getContents()
+    public SeekableByteChannel getContents()
     {
         byte[] result = m_result;
         if( result != null )
         {
-            return new ByteArrayInputStream( result );
+            return new ArrayByteChannel( result );
         }
         return null;
     }
@@ -190,7 +194,9 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             m_success = responseSuccess;
             m_result = result;
             m_responseCode = connection.getResponseCode();
-            m_encoding = connection.getContentEncoding();
+            String encoding = connection.getContentEncoding();
+            m_encoding = encoding != null && Charset.isSupported( encoding )
+                ? Charset.forName( encoding ) : StandardCharsets.UTF_8;
 
             Joiner joiner = Joiner.on( ',' );
             Map<String, String> headers = m_responseHeaders = new HashMap<String, String>();
@@ -215,9 +221,9 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
         if( m_success )
         {
             // Queue the "http_success" event
-            InputStream contents = getContents();
+            SeekableByteChannel contents = getContents();
             Object result = wrapStream(
-                m_binary ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, m_encoding ),
+                m_binary ? new BinaryReadableHandle( contents ) : new EncodedReadableHandle( EncodedReadableHandle.open( contents, m_encoding ) ),
                 m_responseCode, m_responseHeaders
             );
             environment.queueEvent( "http_success", new Object[] { url, result } );
@@ -228,12 +234,12 @@ public class HTTPRequest implements HTTPTask.IHTTPTask
             String error = "Could not connect";
             if( m_errorMessage != null ) error = m_errorMessage;
 
-            InputStream contents = getContents();
+            SeekableByteChannel contents = getContents();
             Object result = null;
             if( contents != null )
             {
                 result = wrapStream(
-                    m_binary ? new BinaryInputHandle( contents ) : new EncodedInputHandle( contents, m_encoding ),
+                    m_binary ? new BinaryReadableHandle( contents ) : new EncodedReadableHandle( EncodedReadableHandle.open( contents, m_encoding ) ),
                     m_responseCode, m_responseHeaders
                 );
             }
