@@ -150,13 +150,9 @@ public class TurtleMoveCommand implements ITurtleCommand
 
     private TurtleCommandResult canEnter( TurtlePlayer turtlePlayer, World world, BlockPos position )
     {
-        if( position.getY() < 0 )
+        if( world.isOutsideBuildHeight( position ) )
         {
-            return TurtleCommandResult.failure( "Too low to move" );
-        }
-        else if( position.getY() > world.getHeight() - 1 )
-        {
-            return TurtleCommandResult.failure( "Too high to move" );
+            return TurtleCommandResult.failure( "Move would be outside world height." );
         }
         if( ComputerCraft.turtlesObeyBlockProtection )
         {
