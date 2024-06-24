@@ -48,7 +48,10 @@ import dan200.computercraft.shared.proxy.IComputerCraftProxy;
 import dan200.computercraft.shared.turtle.blocks.BlockTurtle;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.upgrades.*;
-import dan200.computercraft.shared.util.*;
+import dan200.computercraft.shared.util.CreativeTabMain;
+import dan200.computercraft.shared.util.IDAssigner;
+import dan200.computercraft.shared.util.InventoryUtil;
+import dan200.computercraft.shared.util.WorldUtil;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -85,6 +88,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -1015,13 +1019,18 @@ public class ComputerCraft
         turtleProxy.addAllUpgradedTurtles( list );
     }
 
-    public static void setEntityDropConsumer( Entity entity, IEntityDropConsumer consumer )
+    public static void setDropConsumer( Entity entity, Function<ItemStack, ItemStack> consumer )
     {
-        turtleProxy.setEntityDropConsumer( entity, consumer );
+        turtleProxy.setDropConsumer( entity, consumer );
     }
 
-    public static void clearEntityDropConsumer( Entity entity )
+    public static void setDropConsumer( World world, BlockPos pos, Function<ItemStack, ItemStack> consumer )
     {
-        turtleProxy.clearEntityDropConsumer( entity );
+        turtleProxy.setDropConsumer( world, pos, consumer );
+    }
+
+    public static List<ItemStack> clearDropConsumer( )
+    {
+        return turtleProxy.clearDropConsumer();
     }
 }
